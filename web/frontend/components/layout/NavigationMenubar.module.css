@@ -1,0 +1,90 @@
+.nav {
+  position: relative;
+  display: flex;
+  height: 3.5rem;
+  box-shadow: var(--p-shadow-top-bar);
+  background-color: var(--p-surface);
+  transition: var(--p-duration-200) background-color var(--p-ease-in-out);
+}
+.contentNav {
+  align-items: center !important;
+  /* display: none!important; */
+  flex: unset !important;
+  justify-content: center !important;
+  width: 100% !important;
+  z-index: var(--p-z-1);
+}
+.navigation {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: flex-start;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menuItems {
+  display: flex;
+  height: 100%;
+  position: relative;
+  text-align: left;
+  margin: 0px 10px;
+}
+.menuLink {
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  padding: 8px 15px;
+  text-decoration: none !important;
+  font-size: 1rem;
+  color: #1f2124;
+  fill: #1f2124;
+}
+.navTitle {
+  margin-left: 5px;
+}
+li:hover {
+  background-color: rgba(241, 242, 243, 1);
+}
+a:hover {
+  color: #1f2124;
+}
+.active {
+  color: #008060 !important;
+  /* width: 130px; */
+  background-color: #ebecef !important;
+  fill: var(--p-action-primary) !important;
+}
+.subMenu {
+  align-items: start;
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(23, 24, 24, 0.05), 0 1px 2px rgba(0, 0, 0, 0.15);
+  display: none;
+  list-style: none;
+  height: auto;
+  left: 0px;
+  min-width: 190px;
+  outline: 1px solid transparent;
+  padding: 8px;
+  position: absolute;
+  top: 100%;
+  z-index: 100;
+}
+.subMenuItems {
+  /* display: inline!important; */
+  /* display: flex; */
+  height: 100%;
+  width: 100%;
+  position: relative;
+  text-align: left;
+}
+.show {
+  display: block;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
+    Roboto, "Helvetica Neue", sans-serif;
+}

@@ -1,0 +1,376 @@
+.topBar {
+  display: flex;
+}
+.sideBar {
+  align-items: center;
+  background: #f9fafb;
+  border-right: 1px solid #dfe3e8;
+  box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  height: 3.6rem;
+  left: 0;
+  transition: 0.3s;
+  width: 500px;
+  z-index: 1;
+}
+.logo {
+  background: #444785;
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  height: 100%;
+  padding: 1rem;
+  position: relative;
+  width: 50px;
+  fill: #fff;
+  display: flex;
+  align-items: center;
+}
+.leftIcon {
+  display: table-cell;
+  height: 24px;
+  vertical-align: middle;
+  fill: #fff;
+}
+.backTitle {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  font-weight: 400;
+  height: 100%;
+  margin: 0 0.8rem;
+  min-width: 0;
+  padding: 0;
+}
+.leftContext {
+  background: #f9fafb;
+  border-right: 1px solid #dfe3e8;
+  float: left;
+  height: 100vh;
+  margin-top: -3.6rem;
+  overflow: hidden;
+  padding-top: 3.6rem;
+  position: relative;
+  transition: 0.3s;
+  width: 500px;
+}
+.rightContext {
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+  box-sizing: border-box;
+  display: flex;
+  flex-grow: 1;
+  height: 3.5rem;
+  width: 100%;
+  z-index: 1;
+}
+.rightContextInner {
+  display: flex;
+  flex: 1;
+  flex-basis: 100%;
+  height: 100%;
+  margin: 0 auto;
+  max-width: 1440px;
+  min-width: 0;
+  padding: 0 0.8rem;
+}
+.leftContext .Polaris-Tabs__Wrapper {
+  padding: 0 !important;
+}
+.leftContext ul {
+  margin: 0;
+  padding: 0;
+}
+.leftContext ul[role="tablist"] .Polaris-Tabs__TabContainer {
+  align-items: center;
+  height: 100%;
+}
+.tabContent {
+  height: calc(100vh - 5.6rem - 10px);
+  overflow-y: auto;
+  padding-top: 10px;
+}
+.rootContent {
+  border-radius: 0;
+  margin-bottom: 1rem;
+}
+.contentWrapper {
+  z-index: 99;
+}
+.listItem {
+  box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+}
+.row {
+  align-items: center;
+  background: #fff;
+  border: 0;
+  border-color: #dfe3e8;
+  border-radius: 0;
+  border-top: 1px solid #dfe3e8;
+  color: #212b36;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.5rem;
+  font-weight: 400;
+  justify-content: space-between;
+  letter-spacing: normal;
+  line-height: 2rem;
+  padding: 10px 15px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  text-transform: none;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  white-space: normal;
+}
+.row:hover {
+  background: #fff;
+  box-shadow: inset -4px 0 0 0 #444785;
+  color: #31373d;
+  outline: 0;
+  text-decoration: none;
+}
+.elementIcon {
+  fill: #454f5b;
+  color: #dfe3e8;
+  display: flex;
+  height: 40px;
+  margin-left: -spacing(extra-tight-fresh-ui);
+  margin-right: 0.8rem;
+  min-width: 40px;
+  width: 40px;
+  /* width: 100%; */
+}
+.elementTitle {
+  flex-grow: 1;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.subHeading {
+  webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  color: #637381;
+  font-family: -apple-system, BlinkMacSystemFont, San Francisco, Roboto,
+    Segoe UI, Helvetica Neue, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.6rem;
+  margin: 0.5rem;
+  text-rendering: auto !important;
+  text-transform: uppercase;
+}
+.nested {
+  background: #f9fafb;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transition: all 0.3s;
+  width: 500px;
+  /* z-index: -1; */
+}
+.toggle {
+  animation-duration: 0.3s;
+  animation-name: floatFromRight;
+  z-index: 200;
+}
+.nestedHeader {
+  align-items: center;
+  background: #f9fafb;
+  box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  height: 3.6rem;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.nestedTitle {
+  cursor: default;
+  font-size: 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  padding: 15px 40px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.backIcon {
+  /* color: #454f5b; */
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  left: 0;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  width: 40px;
+}
+.nestedContent {
+  height: calc(100% - 5.6rem);
+  overflow-y: auto;
+}
+.formFields {
+  margin-top: 1rem;
+  padding: 0 1.2rem;
+}
+.textWrapper {
+  position: relative;
+}
+.innerContext {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  flex-basis: 100%;
+  height: 100%;
+  margin: 0 auto;
+  max-width: 1440px;
+  min-width: 0;
+  padding: 0 0.8rem;
+}
+.itemAction {
+  align-items: center;
+  display: flex;
+  min-width: 0;
+  /* position: relative; */
+  justify-content: flex-end;
+  /* margin-top: 1rem; */
+  padding: 0 1.2rem;
+}
+.drawer_container {
+  width: 100%;
+  position: absolute;
+  right: 0;
+  left: unset;
+}
+.chooseItems {
+  background: #fafbfc;
+  border: 1px solid #d3dbe2;
+  border-radius: 3px;
+  display: flex;
+  overflow: hidden;
+}
+.chooseItem {
+  border-right: 1px solid #d3dbe2;
+  cursor: pointer;
+  flex: 33.33%;
+  font-size: 12px;
+  padding: 8px;
+  text-align: center;
+}
+/* .formFields:last-child{
+  padding-top: 2rem;
+} */
+.resourceItemColumn {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.resouceItemTd {
+  flex: 1;
+  margin-left: 15px;
+}
+.submissionBtn {
+  margin: 15px;
+}
+.dateTimeItem {
+  max-width: 200px;
+  text-align: right;
+}
+.formNameWrapper {
+  align-items: center;
+  display: flex;
+  min-width: 0;
+  padding: 0 0.8rem;
+  position: relative;
+}
+.itemViewPort {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  min-width: 0;
+  padding: 0 0.8rem;
+  position: relative;
+}
+.hideLimit {
+  display: none;
+}
+.colorBox {
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+.previewColor {
+  border: none;
+  border-radius: inherit;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  height: 19px;
+  margin: 0;
+  width: 38px;
+}
+.colorLabel {
+  margin: 0;
+  padding: 8px;
+}
+.sketchPicker {
+  width: 200px;
+  padding: 10px 10px 0px;
+  box-sizing: initial;
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.15) 0px 8px 16px;
+}
+.pickerWrapper {
+  left: 0;
+  position: absolute;
+  top: 100%;
+  z-index: 99;
+}
+.viewPortSelector {
+  display: flex;
+  height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mobileView {
+  cursor: pointer;
+  display: flex;
+  padding: 0 0.8rem;
+}
+.desktopView {
+  cursor: pointer;
+  display: flex;
+  padding: 0 0.8rem;
+}
+.active {
+  box-shadow: inset 0 -4px 0 0 #444785;
+}
+.helperLink {
+  color: var(--p-text-subdued-on-surface, #637381);
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 2rem;
+  margin-top: 0.4rem;
+  text-transform: none;
+}
+.sortInput {
+  padding: 10px;
+  transition: all 0.3s;
+}

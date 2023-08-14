@@ -1,0 +1,72 @@
+.card {
+  flex: none;
+  min-width: 40%;
+}
+
+.layoutContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.dropdownSection {
+  margin-bottom: 1rem;
+  width: 20%;
+}
+
+.submissions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.submissionHeading {
+  display: flex;
+}
+
+.optionListPopover {
+  display: flex;
+}
+
+.submissionHeading h2 {
+  margin-left: 0.5rem;
+}
+
+.totalSubmission {
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 0.5rem;
+}
+
+.classicInput {
+  /* display: block; */
+  height: 41px;
+  padding: 10px 12px;
+  color: #000;
+  background-color: #f1f1f1;
+  border-radius: 2px;
+  font-size: 14px;
+  position: relative;
+  flex: 1 1 auto;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  /* width: 100%; */
+  box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.15s ease;
+  background-image: none !important;
+  border: none;
+  outline: none;
+}
+.footer {
+  padding: 0 4;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
+.footerLogo {
+  bottom: 20px;
+  position: fixed;
+  right: 20px;
+}

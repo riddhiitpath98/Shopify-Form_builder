@@ -1,0 +1,31 @@
+/* .layoutContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  } */
+
+/* .card {
+    width: 250px;
+  } */
+
+.submissions {
+  display: flex;
+  align-items: center;
+  width: 170px;
+  cursor: pointer;
+}
+
+.saveButton {
+  margin-top: 1.4rem;
+}
+
+.formLayoutContainer {
+  max-width: 800px;
+}
+
+.active {
+  color: #008060 !important;
+  fill: var(--p-action-primary) !important;
+}

@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "my-node-app"
+client_id = "67a8e140adf72d766ecaa5daf205b6c5"
+application_url = "https://continues-battle-bacon-wild.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://continues-battle-bacon-wild.trycloudflare.com/auth/callback",
+  "https://continues-battle-bacon-wild.trycloudflare.com/auth/shopify/callback",
+  "https://continues-battle-bacon-wild.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-07"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "it-path-dev-store.myshopify.com"

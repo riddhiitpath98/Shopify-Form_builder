@@ -1,0 +1,1 @@
+(function(n){const i=n["si"]=n["si"]||{};i.dictionary=Object.assign(i.dictionary||{},{"%0 of %1":"",Bold:"තදකුරු",Cancel:"",Italic:"ඇලකුරු",Redo:"නැවත කරන්න",Save:"","Show more items":"",Underline:"",Undo:"අහෝසි කරන්න"});i.getPluralForm=function(n){return n!=1}})(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={}));

@@ -1,0 +1,14 @@
+.Polaris-ResourceItem__Container {
+  align-items: center !important;
+}
+.Polaris-ResourceItem__Content {
+  align-items: center;
+  display: flex;
+  justify-content: space-around !important;
+}
+.Polaris-EmptyState__Image {
+  width: 250px !important;
+}
+.Polaris-Tabs__Tab--selected .Polaris-Tabs__Title::before {
+  background: #444785;
+}

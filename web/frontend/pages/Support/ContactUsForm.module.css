@@ -1,0 +1,25 @@
+.layoutContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  /* .card {
+    width: 250px;
+  } */
+
+  .submissions {
+    display: flex;
+    align-items: center;
+    width: 150px;
+  }
+
+  /* .saveButton{
+    margin-top: 1.4rem;
+  } */
+  
+  .formLayoutContainer{
+    max-width: 800px;
+  }
