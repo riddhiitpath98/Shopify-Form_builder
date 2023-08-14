@@ -1,3 +1,4 @@
+
 # Dependency directory
 ./node_modules
 
@@ -16,3 +17,4 @@ dist/
 # Without this, they may get a warning if using a different package manager to us
 yarn.lock
 package-lock.json
+node_modules

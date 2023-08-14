@@ -36,8 +36,6 @@ function Dashboard() {
     );
     const [date, setDate] = useState({ startDate: "", endDate: "" });
 
-    const shop = useAppQuery({ url: "/api/shop" });
-
     useEffect(() => {
         if (date.startDate && date.endDate) {
             dispatch(filterSubmissionByDate({ date, filterBy: selected }));

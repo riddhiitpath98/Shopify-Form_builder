@@ -112,6 +112,7 @@ import {
 import FeedbackForm from "./Support/FeedbackForm";
 import FormList from "./Forms/FormList";
 import FormLayout from "./Forms/FormLayout/FormLayout";
+import Auth from "./Auth";
 
 export const navigation = [
   {
@@ -199,6 +200,13 @@ export const Tabs = [
 ];
 
 const routes = [
+  {
+    id: "auth",
+    name: "Auth",
+    path: "/",
+    exact: true,
+    element: <Auth />,
+  },
   {
     id: "dashboard",
     name: "Dashboard",

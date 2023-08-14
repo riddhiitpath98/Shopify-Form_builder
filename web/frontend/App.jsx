@@ -24,7 +24,6 @@ export default function App() {
 
   return (
     <PolarisProvider>
-
       <Provider
         store={store}
         config={{
@@ -68,7 +67,7 @@ export default function App() {
             <Routing />
           </QueryProvider>
         </AppBridgeProvider>
-      </Provider> 
+      </Provider>
     </PolarisProvider>
   );
 }
