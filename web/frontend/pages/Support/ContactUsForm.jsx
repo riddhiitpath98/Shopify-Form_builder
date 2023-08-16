@@ -73,8 +73,7 @@ function ContactUsForm() {
   };
 
   return (
-    <Page fullWidth>
-      <Heading>Contact us</Heading>
+    <Page fullWidth title="Contact Us">
       <div>
         <Layout>
           <Layout.Section>

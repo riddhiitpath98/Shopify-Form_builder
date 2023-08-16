@@ -78,8 +78,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <Page fullWidth>
-      <Heading>Feedback</Heading>
+    <Page fullWidth title="Feedback">
       <div>
         <Layout>
           <Layout.Section>

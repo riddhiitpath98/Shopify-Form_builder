@@ -161,6 +161,7 @@ function FormList() {
   function renderItem(items, index) {
     return (
       <ResourceItem id={index} name={items?._id} persistActions={true}>
+        <div style={{display:"flex", alignItems: "center"}}>
         <div
           className={styles.resourceItemColumn}
           onClick={() => navigate(`/form/${items?._id}`)}
@@ -188,7 +189,7 @@ function FormList() {
           )}
         </div>
 
-        <div style={{ display: "inherit" }}>
+        <div>
           {formData?.loading ? (
             <SkeletonThumbnail size="small" />
           ) : (
@@ -220,6 +221,7 @@ function FormList() {
           ) : (
             <div>{moment(items.createdAt).format("MM/DD/YYYY")}</div>
           )}
+        </div>
         </div>
       </ResourceItem>
 

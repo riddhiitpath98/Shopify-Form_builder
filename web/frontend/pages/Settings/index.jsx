@@ -138,8 +138,7 @@ function Settings() {
 
   return (
     <Frame>
-      <Page fullWidth>
-        <Heading>Settings</Heading>
+      <Page fullWidth title="Settings">
         <div>
           <Layout>
             <div>
