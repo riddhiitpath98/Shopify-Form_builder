@@ -5,6 +5,17 @@ import { toastConfig } from "../../constant";
 import { concat } from "../../utils/function";
 axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
 
+// ====================================== Store data API started =========================================
+
+export const addShopData = createAsyncThunk("shop/addShopData", async (shopData, { rejectWithValue, dispatch }) => {
+  try {
+    const response = await axios.post("/user", shopData);
+    return response.data
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
 
 // ======================================== Custom Form API started =========================================
 export const addFormData = createAsyncThunk(

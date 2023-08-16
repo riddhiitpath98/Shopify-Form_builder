@@ -22,7 +22,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Toast, Frame } from "@shopify/polaris";
 import { ToastContainer, toast } from "react-toastify";
-import { Icons, toastConfig, validateTextField } from "../../constant";
+import { Icons, validateTextField } from "../../constant";
 import styles from "./Settings.module.css";
 
 function Settings() {

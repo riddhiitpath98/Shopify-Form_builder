@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 name = "my-node-app"
-client_id = "7254d6ed04480e37f3b095e754f71c6e"
-application_url = "https://childhood-ending-gnome-anti.trycloudflare.com"
+client_id = "bc655ee29ec527170f5df4937c23e237"
+application_url = "https://ct-urban-utah-ser.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://childhood-ending-gnome-anti.trycloudflare.com/auth/callback",
-  "https://childhood-ending-gnome-anti.trycloudflare.com/auth/shopify/callback",
-  "https://childhood-ending-gnome-anti.trycloudflare.com/api/auth/callback"
+  "https://ct-urban-utah-ser.trycloudflare.com/auth/callback",
+  "https://ct-urban-utah-ser.trycloudflare.com/auth/shopify/callback",
+  "https://ct-urban-utah-ser.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -24,4 +24,4 @@ embedded = false
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "it-path-dev-store.myshopify.com"
+dev_store_url = "quickstart-32f3d426.myshopify.com"

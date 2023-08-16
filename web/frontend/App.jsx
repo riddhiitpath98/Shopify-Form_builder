@@ -67,7 +67,7 @@ export default function App() {
             <Routing />
           </QueryProvider>
         </AppBridgeProvider>
-      </Provider> 
+      </Provider>
     </PolarisProvider>
   );
 }
