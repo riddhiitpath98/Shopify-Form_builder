@@ -22,7 +22,6 @@ const userSlice = createSlice({
                     data: {},
                     error: "",
                     loading: true,
-                    success: false
                 }
             };
         })
@@ -44,11 +43,10 @@ const userSlice = createSlice({
                         data: {},
                         error: action.payload,
                         loading: false,
-                        success: false
                     }
                 };
             })
     }
 })
 
-export default userSlice
+export default userSlice.reducer

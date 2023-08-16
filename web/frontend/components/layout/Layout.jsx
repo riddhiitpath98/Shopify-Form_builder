@@ -6,6 +6,7 @@ import Footer from "./Footer";
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
   const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
+  
   return (
     <div {...props}>
       {!isHideNavbar ? <NavigationMenubar /> : null}

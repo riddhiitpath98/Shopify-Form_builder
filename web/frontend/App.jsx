@@ -4,6 +4,7 @@ import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
 import { store } from './redux'
 
+
 import {
   AppBridgeProvider,
   QueryProvider,
