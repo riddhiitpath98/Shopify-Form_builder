@@ -10,5 +10,9 @@
   width: 250px !important;
 }
 .Polaris-Tabs__Tab--selected .Polaris-Tabs__Title::before {
-  background: #444785;
+  background: #444785 !important;
+}
+.Polaris-HorizontalStack{
+  display: flex !important;
+  align-items: center !important;
 }

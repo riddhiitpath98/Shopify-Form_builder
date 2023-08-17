@@ -7,6 +7,7 @@ import {
   Page,
   ChoiceList,
   Select,
+  LegacyCard,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo } from "react";
 import { useState, useCallback } from "react";
@@ -22,12 +23,12 @@ import {
   sortNFilterSubmissionById,
 } from "../../redux/actions/allActions";
 import { useLocation } from "react-router-dom";
-import "./Modal.css";
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
+import "./Modal.css";
 
 function Submissions() {
   const location = useLocation();
@@ -332,7 +333,7 @@ function Submissions() {
 
   const promotedBulkActions = [
     {
-      content: "Delete submission(s)",
+      content: "Delete submissions",
       onAction: () => {
         dispatch(
           deleteSubmissionData({
@@ -498,7 +499,7 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
-        <Card>
+        <LegacyCard>
           <ResourceList
             resourceName={resourceName}
             items={
@@ -528,7 +529,7 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
-        </Card>
+        </LegacyCard>
         <ToastContainer />
       </Page>
     </>
@@ -547,6 +548,7 @@ function Submissions() {
             onClick={() => handleOpen(items)}
             persistActions={true}
           >
+            <div style={{display:"flex", alignItems: "center"}}>
             {Object.entries(items?.submission[0])
               .filter(([key]) =>
                 ["text", "email", "name", "textarea", "phone"].includes(
@@ -560,6 +562,7 @@ function Submissions() {
               ))}
             <div className={styles.dateTimeItem}>
               {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+            </div>
             </div>
           </ResourceItem>
           {/* <ResourceItem

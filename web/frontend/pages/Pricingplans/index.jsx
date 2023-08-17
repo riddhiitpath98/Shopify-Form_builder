@@ -28,8 +28,7 @@ function Pricingplans() {
     alert("Premium plan")
   }
   return (
-    <Page fullWidth>
-      <Heading>Pricing Plans</Heading>
+    <Page fullWidth title="Pricing Plans">
       <div style={{ width: "70%" }}>
         <Card>
           <Card.Section>

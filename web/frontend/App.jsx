@@ -3,8 +3,6 @@ import { useTranslation } from "react-i18next";
 import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
 import { store } from './redux'
-
-
 import {
   AppBridgeProvider,
   QueryProvider,
@@ -12,6 +10,7 @@ import {
 } from "./components";
 import Routing from "./Routes";
 import { Provider } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route

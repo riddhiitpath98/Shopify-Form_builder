@@ -1,6 +1,6 @@
 import { EmptyState } from '@shopify/polaris'
 import React from 'react'
-import noDataFound from '../../assets/noDataFound.png';
+import noDataFound from '../../assets/noData.gif';
 
 const Nodatafound = () => {
     return (

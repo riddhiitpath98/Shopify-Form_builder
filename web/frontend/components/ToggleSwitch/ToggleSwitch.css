@@ -1,14 +1,14 @@
 .container {
   text-align: start;
-  display: flex;
-  align-items: center;
+  /* display: flex;
+  align-items: center; */
 }
 .toggle-switch {
   position: relative;
   width: 75px;
   display: inline-block;
   text-align: left;
-  top: 6px;
+  top: 4px;
 }
 .checkbox {
   display: none;
