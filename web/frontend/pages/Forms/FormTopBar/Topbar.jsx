@@ -162,13 +162,13 @@ const Topbar = ({ handleRedirectToForm }) => {
     <div>
       <div className={styles.topBar}>
         <div className={styles.sideBar}>
-          <div className={styles.logo}>
-            <Link url="/form" onClick={handleRedirectToForm}>
+          <div className={styles.logo} onClick={handleRedirectToForm}>
+            <Link url="/form">
               <Icon source={Icons.backArrow} className={styles.leftIcon} />
             </Link>
           </div>
-          <div className={styles.backTitle}>
-            <Link url="/form" onClick={handleRedirectToForm}>
+          <div className={styles.backTitle} onClick={handleRedirectToForm}>
+            <Link url="/form">
               <span>Back to List</span>
             </Link>
           </div>

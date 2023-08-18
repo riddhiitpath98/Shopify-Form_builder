@@ -2,33 +2,48 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Checkbox, Icon } from "@shopify/polaris";
 import { Icons } from "../../../constant";
-import styles from "../FormStyle.module.css";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { getRecaptchaSettingsByAppId, updateReCaptchaSettings } from "../../../redux/actions/allActions";
+import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
+import {
+  getRecaptchaSettingsByAppId,
+  updateReCaptchaSettings,
+} from "../../../redux/actions/allActions";
 import { updateEnableRecaptcha } from "../../../redux/reducers/inputFieldSlice";
-
+import styles from "../FormStyle.module.css";
 
 const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
+  const [appName, setAppName] = useState("");
   const { title, attributes } = tabId;
   const app = useAppBridge();
   const dispatch = useDispatch();
-  const appId = useSelector(state => state?.appId?.appId)
-  const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
-  const formData = useSelector(state => state?.inputField?.editFormData?.formData)
-  const googelRecaptcha = useSelector(state => state?.inputField?.googelRecaptcha);
+  const navigate =  useNavigate();
+  const shopOrigin = sessionStorage.getItem("hostOrigin");
+
+  const appId = useSelector((state) => state?.appId?.appId);
+
+  const recaptchaSettings = useSelector(
+    (state) => state?.setting?.reCaptchaSettingData?.data
+  );
+  const formData = useSelector(
+    (state) => state?.inputField?.editFormData?.formData
+  );
+  const googelRecaptcha = useSelector(
+    (state) => state?.inputField?.googelRecaptcha
+  );
 
   useEffect(() => {
-    dispatch(getRecaptchaSettingsByAppId(appId))
+    dispatch(getRecaptchaSettingsByAppId(appId));
+    app.getState().then((state) => {
+      setAppName(state.titleBar.appInfo.name)
+    });
   }, [dispatch]);
 
   const handleChange = (value) => {
-    const update = { ...googelRecaptcha, enable: value }
-    dispatch(updateEnableRecaptcha(update))
+    const update = { ...googelRecaptcha, enable: value };
+    dispatch(updateEnableRecaptcha(update));
     if (googelRecaptcha.formId) {
-      dispatch(updateReCaptchaSettings(update))
-    }
-    else {
-      dispatch(updateEnableRecaptcha(update))
+      dispatch(updateReCaptchaSettings(update));
+    } else {
+      dispatch(updateEnableRecaptcha(update));
     }
   };
   return (
@@ -46,33 +61,19 @@ const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
               <div className={styles.formFields}>
                 <div className={styles.textWrapper}>
                   <div className={styles.paragraph}>
-                    {recaptchaSettings?.siteKey !== "" &&
-                      recaptchaSettings?.secretKey !== "" ? (
+                    {Object.keys(recaptchaSettings).length === 0 ? (
+                      <span>
+                        Please make sure that you have set Google reCaptcha v2
+                        Site key and Secret key in{" "}
+                        <span className={styles.redirectText} onClick={()=> navigate("/settings")}>reCaptcha Settings</span>
+                      </span>
+                    ) : (
                       <Checkbox
                         label="Enable"
                         name="enableReCaptcha"
                         checked={googelRecaptcha?.enable}
                         onChange={handleChange}
                       />
-                    ) : (
-                      <span>
-                        Please make sure that you have set Google reCaptcha v2
-                        Site key and Secret key in{" "}
-                        <a
-                          href="https://anavya-store.myshopify.com/admin/apps/contact-form-app-new/settings"
-                          target="_blank"
-                          onClick={() =>
-                            app.dispatch(
-                              Redirect.create(
-                                app,
-                                "https://anavya-store.myshopify.com/admin/apps/contact-form-app-new/settings"
-                              )
-                            )
-                          }
-                        >
-                          reCaptcha Settings
-                        </a>
-                      </span>
                     )}
                   </div>
                 </div>
