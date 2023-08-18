@@ -63,43 +63,21 @@ function Submissions() {
       if (submission) {
         const entries = Object.entries(submission);
         for (const [key, value] of entries) {
-          if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
+          if (typeof value === "string" && value?.toLowerCase().includes(queryValue?.toLowerCase())) {
             return item;
           }
         }
       }
-    });
+    }).sort((a, b) => {
+      if (sortValue === '-createdAt')
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      else
+        return new Date(a.createdAt) - new Date(b.createdAt)
+    }
+    );
 
-    return data;
+    return data
   }, [submissionData, queryValue]);
-  // const newSubmissionData = useMemo(() => {
-  //   const data = submissionData?.map((item) => {
-  //     const submission = item?.submission[0];
-  //     const modifiedSubmission = {};
-
-  //     for (const key in submission) {
-  //       modifiedSubmission[key] = submission[key];
-  //       // const name = key.split('_').pop();
-  //       // const value = submission[key] || '-';
-  //       // Object.keys(modifiedSubmission).filter(key => {
-  //       //   // if (key === name) {
-  //       // }
-  //       // })
-  //     }
-  //     return { ...item, submission: modifiedSubmission };
-  //   }).filter((item) => {
-  //     const submission = item.submission;
-  //     const values = Object.values(submission);
-
-  //     for (const value of values) {
-  //       if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   });
-  //   return data;
-  // }, [submissionData, queryValue]);
 
   const csvData = useMemo(() => {
     const data = [];
