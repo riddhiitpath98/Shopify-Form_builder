@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ClassicEditor from 'ckeditor5-custom-build';
 
 const Editor = ({ value, handleEditiorChange, name, label, id }) => {
@@ -15,12 +14,8 @@ const Editor = ({ value, handleEditiorChange, name, label, id }) => {
                 id={id}
                 name={name}
                 data={value}
-                onReady={editor => {
-                    // console.log('Editor is ready to use!', editor);
-                }}
                 onChange={handleEditiorChange}
             />
-            {/* <ErrorMessage {...{ name }} component={TextError} /> */}
         </>
     )
 }

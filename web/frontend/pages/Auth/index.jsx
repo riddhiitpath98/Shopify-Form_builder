@@ -10,7 +10,6 @@ import { Spinner } from '@shopify/polaris';
 
 const Auth = () => {
     const user = useSelector(state => state);
-    console.log('user: ', user);
     const dispatch = useDispatch();
     const shop = useAppQuery({ url: "/api/shop" });
     const navigate = useNavigate();

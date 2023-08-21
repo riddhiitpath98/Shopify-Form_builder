@@ -216,11 +216,6 @@ function FormList() {
           className={styles.dateTimeItem}
           onClick={() => navigate(`/form/${items?._id}`)}
         >
-          {formData?.loading ? (
-            <SkeletonDisplayText size="small" />
-          ) : (
-            <div>{moment(items.createdAt).format("MM/DD/YYYY")}</div>
-          )}
         </div>
         </div>
       </ResourceItem>
