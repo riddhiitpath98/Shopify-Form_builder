@@ -50,8 +50,7 @@ const FormPreview = () => {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
 
-  const [showGenrateCodeBtn, setShowGenrateCodeBtn] = useState(false);
-  const [codeVal, setCodeVal] = useState("");
+
   const showMessage = useSelector(
     (state) => state.submission.submissionData?.showMessage
   );
