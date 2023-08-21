@@ -2,7 +2,7 @@
 
 name = "form-builder"
 client_id = "c4351fdf89a0ae86be14e8815039a599"
-application_url = "https://tf-triple-suspected-research.trycloudflare.com"
+application_url = "https://greece-multi-exact-marc.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://tf-triple-suspected-research.trycloudflare.com/auth/callback",
-  "https://tf-triple-suspected-research.trycloudflare.com/auth/shopify/callback",
-  "https://tf-triple-suspected-research.trycloudflare.com/api/auth/callback"
+  "https://greece-multi-exact-marc.trycloudflare.com/auth/callback",
+  "https://greece-multi-exact-marc.trycloudflare.com/auth/shopify/callback",
+  "https://greece-multi-exact-marc.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

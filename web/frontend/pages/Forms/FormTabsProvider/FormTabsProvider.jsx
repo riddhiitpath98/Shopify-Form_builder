@@ -1,17 +1,13 @@
 import AcceptTermsFields from "../FormElementsTab/AcceptTermsFields";
 import CheckboxGroupFields from "../FormElementsTab/CheckboxGroupFields";
-import DateTimeFields from "../FormElementsTab/DateTimeFields";
 import DividerInputFields from "../FormElementsTab/DividerInputFields";
-import FileInputFields from "../FormElementsTab/FileInputFields";
 import FormFields from "../FormElementsTab/FormFields";
 import HeadingInputFields from "../FormElementsTab/HeadingInputFields";
 import HiddenInputFields from "../FormElementsTab/HiddenInputFields";
-import HtmlInputFields from "../FormElementsTab/HtmlInputFields";
 import ParagraphInputFields from "../FormElementsTab/ParagraphInputFields";
 import AfterSubmitFields from "../FormSettingsTab/AfterSubmitFields";
 import AppearanceFields from "../FormSettingsTab/AppearanceFields";
 import ErrorMessageFields from "../FormSettingsTab/ErrorMessageFields";
-import GooglereCaptcha from "../FormSettingsTab/GooglereCaptcha";
 import AddElementList from "./Providers/AddElementList";
 import FooterFields from "./Providers/FooterFields";
 import HeaderFields from "./Providers/HeaderFields";
@@ -31,12 +27,7 @@ const FormTabsProvider = ({ isEdit, tabId, toggleDrawer }) => {
     case "password":
     case "number":
     case "textarea":
-    case "url":
       return <FormFields {...{ isEdit, tabId, toggleDrawer }} />;
-    case "date_time":
-      return <DateTimeFields {...{ isEdit, tabId, toggleDrawer }} />;
-    case "file":
-      return <FileInputFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "checkbox":
     case "radio":
     case "dropdown":
@@ -51,12 +42,8 @@ const FormTabsProvider = ({ isEdit, tabId, toggleDrawer }) => {
       return <ParagraphInputFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "divider":
       return <DividerInputFields {...{ isEdit, tabId, toggleDrawer }} />;
-    case "html":
-      return <HtmlInputFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "appearance":
       return <AppearanceFields {...{ isEdit, tabId, toggleDrawer }} />;
-    case "reCaptcha":
-      return <GooglereCaptcha {...{ isEdit, tabId, toggleDrawer }} />;
     case "error_msg":
       return <ErrorMessageFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "submit_actions":

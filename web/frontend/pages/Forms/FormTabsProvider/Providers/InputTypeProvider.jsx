@@ -39,23 +39,13 @@ export const InputTypeProvider = ({
   hiddenOptions,
   ...props
 }) => {
-  // if (Array.isArray(selected)) {
-  //   let selectedValue = selected[0];
-  // }
+
   const dispatch = useDispatch();
   const handleRemoveElement = (tabId) => {
     dispatch(removeElement({ id: tabId?.inputId }));
     toggleDrawer();
   };
-  //   let labelStr =''
-  //  const filedLabel =inputFields?.filter((i)=> i.id==='radio_group');
-  //  filedLabel?.map((j)=>{j?.attributes?.radio_options?.map(k=>{
-  //  labelStr = labelStr.concat(`${k.label}\n`)
-  // })})
-  // console.log('att', att)
 
-  // console.log('labelStr', labelStr)
-  // console.log('id', id)
   switch (type) {
     case "text":
       return (

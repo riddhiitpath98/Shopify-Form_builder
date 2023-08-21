@@ -8,7 +8,6 @@ import styles from "../FormStyle.module.css";
 
 
 const CheckboxGroupFields = ({ isEdit, tabId, toggleDrawer }) => {
-  console.log('tabId: ', tabId);
   const { inputId, title, attributes } = tabId;
   const dispatch = useDispatch();
   const formData = useSelector((state) => state?.inputField?.inputFields);
@@ -223,7 +222,7 @@ const CheckboxGroupFields = ({ isEdit, tabId, toggleDrawer }) => {
       cloneData.splice(4, 2, ...radioFields);
       data = cloneData;
     } else {
-      cloneData.splice(4, 2, ...dropDownFields);
+      cloneData.splice(4, 3, ...dropDownFields);
       data = cloneData;
     }
     return data;
