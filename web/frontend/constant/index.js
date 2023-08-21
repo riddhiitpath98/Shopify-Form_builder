@@ -33,7 +33,6 @@ import {
   ListMajor,
   FormsMajor,
   DragHandleMinor,
-  DuplicateMinor
 } from "@shopify/polaris-icons";
 
 export const Icons = {
@@ -70,7 +69,6 @@ export const Icons = {
   submission: ListMajor,
   form: FormsMajor,
   dragElement: DragHandleMinor,
-  copy: DuplicateMinor
 };
 
 export const pricingPlanData = [

@@ -284,3 +284,12 @@ b {
 .rc-anchor-content{
   width: 156px;
 } */
+.genrateCode {
+  padding: 20px;
+  width: 50%;
+}
+
+.genrateCodeDiv {
+  padding: 10px 5px;
+  background-color: #ffffff;
+}

@@ -41,21 +41,11 @@ function FormList() {
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
 
-  const appId = useSelector((state) => state.appId.appId);
-
   const formData = useSelector((state) => state?.inputField?.finalFormData);
   const handleSubmission = (id) => {
     navigate("/submissions", { state: { id: id } });
   };
 
-  const handleCopyCode = (id) => {
-
-    const filter = formData.formData?.filter?.(item => item._id === id)
-    const textToCopy = `<div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""}'></div>`;
-    navigator.clipboard.writeText(textToCopy)
-  }
-
-  console.log('formData', formData.formData)
   const sortedItems = useMemo(() => {
     switch (sortValue) {
       case "DATE_MODIFIED_DESC":
@@ -171,60 +161,67 @@ function FormList() {
   function renderItem(items, index) {
     return (
       <ResourceItem id={index} name={items?._id} persistActions={true}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            className={styles.resouceItemTd}
-            onClick={() => navigate(`/form/${items?._id}`)}
-          >
-            {formData?.loading ? (
-              <SkeletonDisplayText size="medium" />
-            ) : (
-              <div>
-                {items?.customForm?.map((item, idx) => (
-                  <div>{item.formTitle}</div>
-                ))}
-              </div>
-            )}
-          </div>
+        <div style={{display:"flex", alignItems: "center"}}>
+        <div
+          className={styles.resourceItemColumn}
+          onClick={() => navigate(`/form/${items?._id}`)}
+        >
+          {formData?.loading ? (
+            <SkeletonDisplayText size="medium" />
+          ) : (
+            <span>
+              <b>{items.short_code}</b>
+            </span>
+          )}
+        </div>
+        <div
+          className={styles.resouceItemTd}
+          onClick={() => navigate(`/form/${items?._id}`)}
+        >
+          {formData?.loading ? (
+            <SkeletonDisplayText size="medium" />
+          ) : (
+            <div>
+              {items?.customForm?.map((item, idx) => (
+                <div>{item.formTitle}</div>
+              ))}
+            </div>
+          )}
+        </div>
 
-          <div>
-            {formData?.loading ? (
-              <SkeletonThumbnail size="small" />
-            ) : (
-              <ToggleSwitch items={items} />
-            )}
-          </div>
+        <div>
+          {formData?.loading ? (
+            <SkeletonThumbnail size="small" />
+          ) : (
+            <ToggleSwitch items={items} />
+          )}
+        </div>
 
-          <div
-            className={styles.submissionBtn}
-            onClick={() => handleSubmission(items?._id)}
-          >
-            {formData?.loading ? (
-              <SkeletonThumbnail size="small" />
-            ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="View Submissions">
-                  <Icon source={Icons.submission} />
-                </Tooltip>
-              </Button>
-            )}
-          </div>
-          <div
-            className={styles.submissionBtn}
-            onClick={() => handleCopyCode(items?._id)}
-          >
-            {formData?.loading ? (
-              <SkeletonThumbnail size="small" />
-            ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="Copy HTML code ">
-                  <Icon source={Icons.copy} />
-                </Tooltip>
-              </Button>
-            )}
-          </div>
+        <div
+          className={styles.submissionBtn}
+          onClick={() => handleSubmission(items?._id)}
+        >
+          {formData?.loading ? (
+            <SkeletonThumbnail size="small" />
+          ) : (
+            <Button type="button">
+              {" "}
+              <Tooltip content="View Submissions">
+                <Icon source={Icons.submission} />
+              </Tooltip>
+            </Button>
+          )}
+        </div>
+        <div
+          className={styles.dateTimeItem}
+          onClick={() => navigate(`/form/${items?._id}`)}
+        >
+          {formData?.loading ? (
+            <SkeletonDisplayText size="small" />
+          ) : (
+            <div>{moment(items.createdAt).format("MM/DD/YYYY")}</div>
+          )}
+        </div>
         </div>
       </ResourceItem>
 

@@ -6,15 +6,11 @@ import {
   filterSubmissionByDate,
   getSubmission,
   getSubmissionByFormId,
-  loadMoreSubmission,
   sortNFilterSubmission,
   sortNFilterSubmissionById,
 } from "../actions/allActions";
 
 const initialState = {
-  currentPage: 1,
-  itemPrPage: 10,
-  isOver: false,
   submissionData: {
     data: [],
     error: "",
@@ -30,12 +26,6 @@ const submissionSlice = createSlice({
   name: "submission",
   initialState,
   reducers: {
-    updateCurrentPage: (state, action) => {
-      return {
-        ...state,
-        currentPage: action.payload
-      }
-    },
     setShowMessage: (state, action) => {
       return {
         ...state,
@@ -114,40 +104,6 @@ const submissionSlice = createSlice({
         };
       })
       .addCase(getSubmission.rejected, (state, action) => {
-        return {
-          ...state,
-          submissionData: {
-            success: false,
-            loading: false,
-            data: [],
-            error: action.payload,
-          },
-        };
-      })
-      .addCase(loadMoreSubmission.pending, (state, action) => {
-        return {
-          ...state,
-          submissionData: {
-            success: false,
-            loading: true,
-            data: [...state.submissionData.data],
-            error: "",
-          },
-        };
-      })
-      .addCase(loadMoreSubmission.fulfilled, (state, action) => {
-        return {
-          ...state,
-          isOver: action.payload.isOver,
-          submissionData: {
-            success: true,
-            loading: false,
-            data: [...state.submissionData.data, ...action.payload.data],
-            error: "",
-          },
-        };
-      })
-      .addCase(loadMoreSubmission.rejected, (state, action) => {
         return {
           ...state,
           submissionData: {
@@ -360,5 +316,5 @@ const submissionSlice = createSlice({
   },
 });
 
-export const { setShowMessage, setFormSubmitted, updateCurrentPage } = submissionSlice.actions;
+export const { setShowMessage, setFormSubmitted } = submissionSlice.actions;
 export default submissionSlice.reducer;

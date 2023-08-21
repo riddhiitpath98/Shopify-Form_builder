@@ -50,7 +50,8 @@ const FormPreview = () => {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
 
-
+  const [showGenrateCodeBtn, setShowGenrateCodeBtn] = useState(false);
+  const [codeVal, setCodeVal] = useState("");
   const showMessage = useSelector(
     (state) => state.submission.submissionData?.showMessage
   );
@@ -102,6 +103,11 @@ const FormPreview = () => {
   );
   const selectedValue = afterSubmitFields?.submitAction;
   const redirectUrl = afterSubmitFields?.redirectUrl;
+
+  const handleGenrateCode = () => {
+    setCodeVal(`<div id="form-builder-ips" data-ap-key='${appId}' data-key='${editFormId}'></div>`)
+    setShowGenrateCodeBtn(true);
+  }
 
 
   useEffect(() => {
@@ -459,6 +465,16 @@ const FormPreview = () => {
             className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
               }`}
           >
+            {editFormId &&
+              <div className={styles.genrateCode}>
+                {showGenrateCodeBtn ?
+                  <><TextField className={styles.genrateCodeDiv} name="genrate_code" onFocus={(event) => handleSelectText(event)} readOnly value={codeVal && codeVal} />
+                    <span className={styles.description}>Please copy the referral code</span>
+                  </> :
+                  <Button pressed onClick={handleGenrateCode}>genrate code </Button>
+                }
+              </div>
+            }
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"

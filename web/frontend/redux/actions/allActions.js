@@ -210,17 +210,6 @@ export const getSubmission = createAsyncThunk("submission/getSubmission", async 
   }
 })
 
-export const loadMoreSubmission = createAsyncThunk('submission/loadMoreSubmission', async (data) => {
-  console.log('data', data)
-  try {
-    const response = await axios.get(`/submission?page=${data.page}&per_page=${data.per_page}`)
-    console.log('response?.data?.data', response?.data)
-    return response?.data;
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
-
 export const sortNFilterSubmission = createAsyncThunk("submission/sortNFilterSubmission", async ({ path, query }) => {
   const { isRead, formId } = query
   const params = new URLSearchParams();
