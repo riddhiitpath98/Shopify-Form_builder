@@ -2,8 +2,6 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 const contactRegex = /^[2-9]{1}[0-9]{9}$/;
-const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
-const fileRegex = /^.*\.(jpg|jpeg|png|pdf|docx)$/;
 
 export const validation = (name, value, error_messages, obj) => {
   if (Array.isArray(value)) {
@@ -30,11 +28,6 @@ export const validation = (name, value, error_messages, obj) => {
     case "Phone":
       if (!contactRegex.test(value))
         return error_messages?.['invalidPhone'];
-      else return "";
-
-    case "Url":
-      if (!urlRegex.test(value))
-        return error_messages?.['invalidUrl'];
       else return "";
 
     default:

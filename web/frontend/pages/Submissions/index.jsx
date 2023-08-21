@@ -8,6 +8,7 @@ import {
   ChoiceList,
   Select,
   LegacyCard,
+  Text,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo } from "react";
 import { useState, useCallback } from "react";
@@ -23,7 +24,6 @@ import {
   sortNFilterSubmissionById,
 } from "../../redux/actions/allActions";
 import { useLocation } from "react-router-dom";
-import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import ModalSubmission from "./ModalSubmission";
@@ -53,53 +53,27 @@ function Submissions() {
   const [deleteFormArr, setDeleteFormArr] = useState([]);
   const [active, setActive] = useState(false);
 
-  const fileName = `export_submission_${new Date()
-    .toISOString()
-    .slice(0, 10)}.csv`;
-
   const newSubmissionData = useMemo(() => {
     const data = submissionData?.filter((item, index) => {
       const submission = item?.submission[0];
       if (submission) {
         const entries = Object.entries(submission);
         for (const [key, value] of entries) {
-          if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
+          if (typeof value === "string" && value?.toLowerCase().includes(queryValue?.toLowerCase())) {
             return item;
           }
         }
       }
-    });
+    }).sort((a, b) => {
+      if (sortValue === '-createdAt')
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      else
+        return new Date(a.createdAt) - new Date(b.createdAt)
+    }
+    );
 
-    return data;
+    return data
   }, [submissionData, queryValue]);
-  // const newSubmissionData = useMemo(() => {
-  //   const data = submissionData?.map((item) => {
-  //     const submission = item?.submission[0];
-  //     const modifiedSubmission = {};
-
-  //     for (const key in submission) {
-  //       modifiedSubmission[key] = submission[key];
-  //       // const name = key.split('_').pop();
-  //       // const value = submission[key] || '-';
-  //       // Object.keys(modifiedSubmission).filter(key => {
-  //       //   // if (key === name) {
-  //       // }
-  //       // })
-  //     }
-  //     return { ...item, submission: modifiedSubmission };
-  //   }).filter((item) => {
-  //     const submission = item.submission;
-  //     const values = Object.values(submission);
-
-  //     for (const value of values) {
-  //       if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   });
-  //   return data;
-  // }, [submissionData, queryValue]);
 
   const csvData = useMemo(() => {
     const data = [];
@@ -124,6 +98,17 @@ function Submissions() {
     }
     return data;
   }, [newSubmissionData]);
+
+  const formTitleById = useMemo(()=> {
+    let titleById= {};
+    const foundObject = formData.find(obj => obj._id === location?.state?.id);
+    if (foundObject) {
+      titleById.id=foundObject._id;
+      titleById.formTitle = foundObject.customForm[0].formTitle;
+    }
+    setFormStatus([titleById.id])
+    return titleById;
+  },[]);
 
   const formTitle = useMemo(() => {
     const formTitleData = [];
@@ -499,6 +484,11 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
+      { formTitleById.formTitle && <Text variant="headingSm" as="h6">
+        <div style={{marginBottom: "6px"}}>
+        Form Title: {formTitleById.formTitle}
+        </div>
+      </Text>}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}
@@ -515,9 +505,6 @@ function Submissions() {
             selectable
             alternateTool={
               <>
-                <CSVLink data={csvData} filename={fileName}>
-                  <Button>Export all Data</Button>
-                </CSVLink>
                 <Select
                   label="Sort by"
                   labelInline
@@ -565,28 +552,6 @@ function Submissions() {
             </div>
             </div>
           </ResourceItem>
-          {/* <ResourceItem
-            id={index}
-            name={items?._id}
-            onClick={() => handleOpen(items)}
-            persistActions={true}
-          >
-            {console.log('Object.values(items?.submission)', Object.values(items?.submission))}
-            {Object.values(items?.submission).map((value, index) => {
-              if (Array.isArray(value)) {
-                console.log('value', value)
-                return false
-              }
-              else {
-                (<div className={styles.resourceItem} key={index} >
-                  {value}
-                </div >)
-              }
-            })}
-            <div className={styles.resourceItem}>
-              {moment(items.createdAt).format("DD-MM-YYYY HH:MM ")}
-            </div >
-          </ResourceItem > */}
         </div >
 
         {

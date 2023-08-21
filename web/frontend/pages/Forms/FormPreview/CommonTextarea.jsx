@@ -55,7 +55,7 @@ const CommonTextarea = ({
                 style={{
                     ...inputStyles,
                     width: widthInput,
-                    resize: resizeTextarea ? "both" : "none",
+                    resize: resizeTextarea ? "vertical" : "none",
                     maxHeight: "200px",
                     minHeight: "80px",
                 }}

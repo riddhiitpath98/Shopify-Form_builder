@@ -104,12 +104,6 @@ const FormPreview = () => {
   const selectedValue = afterSubmitFields?.submitAction;
   const redirectUrl = afterSubmitFields?.redirectUrl;
 
-  const handleGenrateCode = () => {
-    setCodeVal(`<div id="form-builder-ips" data-ap-key='${appId}' data-key='${editFormId}'></div>`)
-    setShowGenrateCodeBtn(true);
-  }
-
-
   useEffect(() => {
     if (inputFields.length) {
       let fieldArry = [...formFeildData];
@@ -465,16 +459,6 @@ const FormPreview = () => {
             className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
               }`}
           >
-            {editFormId &&
-              <div className={styles.genrateCode}>
-                {showGenrateCodeBtn ?
-                  <><TextField className={styles.genrateCodeDiv} name="genrate_code" onFocus={(event) => handleSelectText(event)} readOnly value={codeVal && codeVal} />
-                    <span className={styles.description}>Please copy the referral code</span>
-                  </> :
-                  <Button pressed onClick={handleGenrateCode}>genrate code </Button>
-                }
-              </div>
-            }
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"

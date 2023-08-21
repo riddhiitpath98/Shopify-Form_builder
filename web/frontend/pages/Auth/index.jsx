@@ -10,7 +10,6 @@ import { Spinner } from '@shopify/polaris';
 
 const Auth = () => {
     const user = useSelector(state => state);
-    console.log('user: ', user);
     const dispatch = useDispatch();
     const shop = useAppQuery({ url: "/api/shop" });
     const navigate = useNavigate();
@@ -19,7 +18,7 @@ const Auth = () => {
         if (shop.isSuccess) {
             const { id, shop_owner, phone, name, city, customer_email, email, myshopify_domain } = shop.data;
             const data = {
-                id, shop_owner, phone: "12346576878", name, city, customer_email, email, myshopify_domain, isShowPlan: false, isPremium: false
+                id, shop_owner, phone, name, city, customer_email, email, myshopify_domain, isShowPlan: false, isPremium: false
             }
             dispatch(addShopData(data));
         }
@@ -34,4 +33,4 @@ const Auth = () => {
     )
 }
 
-export default Auth
+export default Auth;
