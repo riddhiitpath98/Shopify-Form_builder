@@ -115,7 +115,7 @@ const FormPreview = () => {
         if (findIndex === -1) {
           let feildData = {
             id: input.inputId,
-            feildId: `${input?.inputId}_${input.id}`,
+            feildId: `${input?.inputId}_${input?.attributes?.label}`,
             feildValue: input.attributes?.default_value || "",
             errorMessage: "",
             feildName: input.title,
@@ -125,7 +125,7 @@ const FormPreview = () => {
             fieldArry.push({
               ...feildData,
               confirmPassword: input?.attributes?.confirmPassword,
-              confirmFeildId: `${input?.inputId}_confirm_${input.id}`
+              confirmFeildId: `${input?.inputId}_confirm_${input?.attributes?.label}`
             });
           } else {
             fieldArry.push({
@@ -153,7 +153,7 @@ const FormPreview = () => {
           });
           setFormFeildData(cloneData);
         }
-        const unique_id = `${input?.inputId}_${input.id}`;
+        const unique_id = `${input?.inputId}_${input?.attributes?.label}`;
         formData = { ...formData, [unique_id]: input.attributes.default_value || "" }
         let value = formData[unique_id] || "";
         if (Array.isArray(input?.attributes?.default_value)) {
@@ -208,6 +208,8 @@ const FormPreview = () => {
     setFormFeildData(cloneData);
   }, [formSubmissionData]);
 
+  console.log('submissionData', submissionData)
+  console.log('formFeildData', formFeildData)
   const handleDateTimeChange = (dateTime, name, id) => {
     const dateValue = dateTime;
     setSelectedDateTime(dateTime);
@@ -383,7 +385,7 @@ const FormPreview = () => {
 
     if (isAllFieldsRequired) {
       dispatch(
-        createSubmissions({ form: editFormId, submission: formSubmissionData })
+        createSubmissions({ form: editFormId, appId: appId, submission: formSubmissionData })
       );
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {

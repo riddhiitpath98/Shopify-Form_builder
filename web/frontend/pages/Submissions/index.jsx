@@ -22,21 +22,29 @@ import {
   getSubmissionByFormId,
   sortNFilterSubmission,
   sortNFilterSubmissionById,
+  loadMoreSubmission,
 } from "../../redux/actions/allActions";
 import { useLocation } from "react-router-dom";
+import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
 import "./Modal.css";
+import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 
 function Submissions() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const submissionData = useSelector(
-    (state) => state.submission.submissionData.data
+    (state) => state.submission.submissionBypage.data
   );
+
+  const total_count = useSelector(state => state.submission.submissionBypage.total_count);
+  console.log('total_count: ', total_count, submissionData.length);
+  const itemPrPage = 10;
   const submissionsLoading = useSelector(
     (state) => state.submission.submissionData
   );
@@ -44,6 +52,13 @@ function Submissions() {
     (state) => state?.inputField?.finalFormData?.formData
   );
 
+  const fetchMoreData = async () => {
+    try {
+      dispatch(loadMoreSubmission({ page: currentPage, per_page: itemPrPage }))
+    } catch (error) {
+      // Handle error
+    }
+  };
   const [selectedItems, setSelectedItems] = useState([]);
   const [sortValue, setSortValue] = useState("-createdAt");
   const [status, setStatus] = useState([]);
@@ -52,6 +67,10 @@ function Submissions() {
   const [editItem, setEditItem] = useState({});
   const [deleteFormArr, setDeleteFormArr] = useState([]);
   const [active, setActive] = useState(false);
+
+  const fileName = `export_submission_${new Date()
+    .toISOString()
+    .slice(0, 10)}.csv`;
 
   const newSubmissionData = useMemo(() => {
     const data = submissionData?.filter((item, index) => {
@@ -98,17 +117,6 @@ function Submissions() {
     }
     return data;
   }, [newSubmissionData]);
-
-  const formTitleById = useMemo(()=> {
-    let titleById= {};
-    const foundObject = formData.find(obj => obj._id === location?.state?.id);
-    if (foundObject) {
-      titleById.id=foundObject._id;
-      titleById.formTitle = foundObject.customForm[0].formTitle;
-    }
-    setFormStatus([titleById.id])
-    return titleById;
-  },[]);
 
   const formTitle = useMemo(() => {
     const formTitleData = [];
@@ -297,8 +305,8 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId(location.state?.id)
-        : getSubmission()
+        ? getSubmissionByFormId({ id: location.state?.id, page: currentPage, per_page: itemPrPage })
+        : loadMoreSubmission({ page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
     );
   }, [dispatch, location?.state?.id]);
 
@@ -484,11 +492,6 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
-      { formTitleById.formTitle && <Text variant="headingSm" as="h6">
-        <div style={{marginBottom: "6px"}}>
-        Form Title: {formTitleById.formTitle}
-        </div>
-      </Text>}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}
@@ -505,6 +508,9 @@ function Submissions() {
             selectable
             alternateTool={
               <>
+                <CSVLink data={csvData} filename={fileName}>
+                  <Button>Export all Data</Button>
+                </CSVLink>
                 <Select
                   label="Sort by"
                   labelInline
@@ -516,6 +522,10 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
+          {console.log('submissionData.length === total_count', submissionData.length === total_count)}
+          {submissionData.length !== total_count && <button onClick={fetchMoreData}>
+            Load More
+          </button>}
         </LegacyCard>
         <ToastContainer />
       </Page>
@@ -535,23 +545,45 @@ function Submissions() {
             onClick={() => handleOpen(items)}
             persistActions={true}
           >
-            <div style={{display:"flex", alignItems: "center"}}>
-            {Object.entries(items?.submission[0])
-              .filter(([key]) =>
-                ["text", "email", "name", "textarea", "phone"].includes(
-                  key.split("_").pop()
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {Object.entries(items?.submission[0])
+                .filter(([key]) =>
+                  ["text", "email", "name", "textarea", "phone"].includes(
+                    key.split("_").pop()
+                  )
                 )
-              )
-              .map(([key, value]) => (
-                <div className={styles.resourceItem} key={key}>
-                  {value}
-                </div>
-              ))}
-            <div className={styles.dateTimeItem}>
-              {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-            </div>
+                .map(([key, value]) => (
+                  <div className={styles.resourceItem} key={key}>
+                    {value}
+                  </div>
+                ))}
+              <div className={styles.dateTimeItem}>
+                {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+              </div>
             </div>
           </ResourceItem>
+          {/* <ResourceItem
+            id={index}
+            name={items?._id}
+            onClick={() => handleOpen(items)}
+            persistActions={true}
+          >
+            {console.log('Object.values(items?.submission)', Object.values(items?.submission))}
+            {Object.values(items?.submission).map((value, index) => {
+              if (Array.isArray(value)) {
+                console.log('value', value)
+                return false
+              }
+              else {
+                (<div className={styles.resourceItem} key={index} >
+                  {value}
+                </div >)
+              }
+            })}
+            <div className={styles.resourceItem}>
+              {moment(items.createdAt).format("DD-MM-YYYY HH:MM ")}
+            </div >
+          </ResourceItem > */}
         </div >
 
         {
