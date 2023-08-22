@@ -99,16 +99,16 @@ function Submissions() {
     return data;
   }, [newSubmissionData]);
 
-  // const formTitleById = useMemo(() => {
-  //   let titleById = {};
-  //   const foundObject = formData.find(obj => obj._id === location?.state?.id);
-  //   if (foundObject) {
-  //     titleById.id = foundObject._id;
-  //     titleById.formTitle = foundObject.customForm[0].formTitle;
-  //   }
-  //   setFormStatus([titleById.id])
-  //   return titleById;
-  // }, []);
+  const formTitleById = useMemo(()=> {
+    let titleById= {};
+    const foundObject = formData.find(obj => obj._id === location?.state?.id);
+    if (foundObject) {
+      titleById.id=foundObject._id;
+      titleById.formTitle = foundObject.customForm[0].formTitle;
+    }
+    setFormStatus([titleById.id])
+    return titleById;
+  },[]);
 
   const formTitle = useMemo(() => {
     const formTitleData = [];
@@ -484,11 +484,11 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
-        {/* { formTitleById.formTitle && <Text variant="headingSm" as="h6">
+      { formTitleById.formTitle && <Text variant="headingSm" as="h6">
         <div style={{marginBottom: "6px"}}>
         Form Title: {formTitleById.formTitle}
         </div>
-      </Text>} */}
+      </Text>}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}
@@ -535,21 +535,21 @@ function Submissions() {
             onClick={() => handleOpen(items)}
             persistActions={true}
           >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {Object.entries(items?.submission[0])
-                .filter(([key]) =>
-                  ["text", "email", "name", "textarea", "phone"].includes(
-                    key.split("_").pop()
-                  )
+            <div style={{display:"flex", alignItems: "center"}}>
+            {Object.entries(items?.submission[0])
+              .filter(([key]) =>
+                ["text", "email", "name", "textarea", "phone"].includes(
+                  key.split("_").pop()
                 )
-                .map(([key, value]) => (
-                  <div className={styles.resourceItem} key={key}>
-                    {value}
-                  </div>
-                ))}
-              <div className={styles.dateTimeItem}>
-                {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
-              </div>
+              )
+              .map(([key, value]) => (
+                <div className={styles.resourceItem} key={key}>
+                  {value}
+                </div>
+              ))}
+            <div className={styles.dateTimeItem}>
+              {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+            </div>
             </div>
           </ResourceItem>
         </div >

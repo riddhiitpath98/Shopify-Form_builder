@@ -11,12 +11,11 @@ import {
   Heading,
   Layout,
   Icon,
+  LegacyCard,
 } from "@shopify/polaris";
 import {
-  createRecaptchaSettings,
   createSMTPSettings,
   editSmtpSettings,
-  getRecaptchaSettingsByAppId,
   getSmtpSettingByAppId,
 } from "../../redux/actions/allActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,11 +33,6 @@ function Settings() {
     port: "",
     appId: "",
   });
-  const [reCaptchaValues, setreCaptchaValues] = useState({
-    siteKey: "",
-    secretKey: "",
-    appId: "",
-  });
   const dispatch = useDispatch();
 
   const settingData = useSelector((state) => state?.setting?.settingData);
@@ -54,7 +48,6 @@ function Settings() {
   const [errorValues, setErrorValues] = useState({});
 
   const [selectedSetting, setSelectedSetting] = useState("smtp");
-  const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
 
   const handleChange = (name, value) => {
     let formVal = {};
@@ -65,12 +58,6 @@ function Settings() {
       ...formValues,
       [name]: value,
       port: value === "ssl" ? 465 : value === "tls" ? 587 : "",
-    });
-  };
-  const handleSettingsChange = (name, value) => {
-    setreCaptchaValues({
-      ...reCaptchaValues,
-      [name]: value,
     });
   };
 
@@ -97,17 +84,9 @@ function Settings() {
     }
   };
 
-  const handleSettingsSubmit = (e) => {
-    e.preventDefault();
-    dispatch(createRecaptchaSettings(reCaptchaValues));
-    setreCaptchaValues({});
-  };
-
   useEffect(() => {
     setFormValues({ ...formValues, appId: appId });
-    setreCaptchaValues({ ...reCaptchaValues, appId: appId });
     dispatch(getSmtpSettingByAppId(appId));
-    dispatch(getRecaptchaSettingsByAppId(appId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -121,14 +100,7 @@ function Settings() {
         appId: smtpSettingData.appId,
       });
     }
-    if (recaptchaSettings) {
-      setreCaptchaValues({
-        appId: appId,
-        siteKey: recaptchaSettings?.siteKey,
-        secretKey: recaptchaSettings?.secretKey,
-      })
-    }
-  }, [smtpSettingData, recaptchaSettings]);
+  }, [smtpSettingData]);
 
   const mailEncOptions = [
     { label: "Choose Option", value: "" },
@@ -143,7 +115,7 @@ function Settings() {
           <Layout>
             <div>
               <Layout.Section>
-                <Card sectioned>
+                <LegacyCard sectioned>
                   <div
                     className={`${styles.submissions} ${selectedSetting === "smtp" ? styles.active : ""
                       }`}
@@ -154,25 +126,13 @@ function Settings() {
                     </div>
                     <Heading>SMTP Settings</Heading>
                   </div>
-                </Card>
-                <Card sectioned>
-                  <div
-                    className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
-                      }`}
-                    onClick={() => setSelectedSetting("recaptcha")}
-                  >
-                    <div style={{ marginRight: 4 }}>
-                      <Icon source={Icons.settingFile} />
-                    </div>
-                    <Heading>reCaptcha Settings</Heading>
-                  </div>
-                </Card>
+                </LegacyCard>
               </Layout.Section>
             </div>
             <Layout.Section>
-              {selectedSetting === "smtp" ? (
+              {selectedSetting === "smtp" && (
                 <div className={styles.formLayoutContainer}>
-                  <Card sectioned>
+                  <LegacyCard sectioned>
                     <Form onSubmit={(e) => handleSubmit(e)} noValidate>
                       <FormLayout>
                         <Grid>
@@ -267,65 +227,7 @@ function Settings() {
                       </FormLayout>
                     </Form>
                     <ToastContainer />
-                  </Card>
-                </div>
-              ) : (
-                <div className={styles.formLayoutContainer}>
-                  <Card sectioned>
-                    <Form onSubmit={(e) => handleSettingsSubmit(e)}>
-                      <FormLayout>
-                        <Heading>Google reCaptcha type v2</Heading>
-                        <Grid>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="siteKey"
-                              name="siteKey"
-                              value={
-                                reCaptchaValues?.siteKey || ""
-
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("siteKey", value)
-                              }
-                              label="Site Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="secretKey"
-                              name="secretKey"
-                              value={
-                                reCaptchaValues?.secretKey ||
-                                ""
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("secretKey", value)
-                              }
-                              label="Secret Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <Button submit primary>
-                              Save
-                            </Button>
-                          </Grid.Cell>
-                        </Grid>
-                      </FormLayout>
-                    </Form>
-                    <ToastContainer />
-                  </Card>
+                  </LegacyCard>
                 </div>
               )}
             </Layout.Section>

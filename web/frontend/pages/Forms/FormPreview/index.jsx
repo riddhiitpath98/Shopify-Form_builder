@@ -383,7 +383,7 @@ const FormPreview = () => {
 
     if (isAllFieldsRequired) {
       dispatch(
-        createSubmissions({ appId: appId, form: editFormId, submission: formSubmissionData })
+        createSubmissions({ form: editFormId, submission: formSubmissionData })
       );
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {
