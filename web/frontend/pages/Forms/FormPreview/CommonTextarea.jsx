@@ -48,14 +48,14 @@ const CommonTextarea = ({
                 placeholder={placeholder}
                 id={inputId}
                 rows={3}
-                name={`${inputId}_${id}`}
+                name={`${inputId}_${label}`}
                 className={styles.classicInput}
                 required={""}
                 maxLength={limit_chars ? limit_chars_count : undefined}
                 style={{
                     ...inputStyles,
                     width: widthInput,
-                    resize: resizeTextarea ? "both" : "none",
+                    resize: resizeTextarea ? "vertical" : "none",
                     maxHeight: "200px",
                     minHeight: "80px",
                 }}

@@ -15,7 +15,7 @@ import { useState } from "react";
 import styles from "./ContactUsForm.module.css";
 import { addFeedback } from "../../redux/actions/allActions";
 import { useDispatch, useSelector } from "react-redux";
-// import StarRating from "../../components/StarRating";
+import StarRating from "../../components/StarRating";
 import { ToastContainer } from "react-toastify";
 import { validateTextField } from "../../constant";
 
@@ -78,8 +78,7 @@ const FeedbackForm = () => {
   };
 
   return (
-    <Page fullWidth>
-      <Heading>Feedback</Heading>
+    <Page fullWidth title="Feedback">
       <div>
         <Layout>
           <Layout.Section>
@@ -141,7 +140,7 @@ const FeedbackForm = () => {
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <Label id="rating" children="Rating" />
-                        {/* <StarRating name="rating" rating={formValues.rating} handleRateChange={handleRateChange} /> */}
+                        <StarRating name="rating" rating={formValues.rating} handleRateChange={handleRateChange} />
                       </Grid.Cell>
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>

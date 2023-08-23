@@ -72,8 +72,6 @@ import NotFound from "./pages/NotFound";
 //   return routes;
 // }
 
-console.log('withNavbarRoute', withNavbarRoute)
-console.log('withoutNavbarRoute', withoutNavbarRoute)
 export default function Routing({ ...props }) {
   const app = useAppBridge();
   sessionStorage.setItem("hostOrigin", app.hostOrigin)

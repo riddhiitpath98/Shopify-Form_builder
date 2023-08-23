@@ -9,7 +9,7 @@ axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
 
 export const addShopData = createAsyncThunk("shop/addShopData", async (shopData, { rejectWithValue, dispatch }) => {
   try {
-    const response = await axios.post("/shop", shopData)
+    const response = await axios.post("/user", shopData);
     return response.data
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -172,7 +172,7 @@ export const createSubmissions = createAsyncThunk(
   "submission/addSubmissions",
   async (submissionData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/submission/${submissionData.form}`, submissionData.submission);
+      const response = await axios.post(`/submission/${submissionData.form}`, { appId: submissionData.appId, submission: submissionData.submission });
       // toast.success(response?.data?.msg, toastConfig)
       return response.data.data;
     } catch (error) {
@@ -191,10 +191,10 @@ export const editisReadFlag = createAsyncThunk("submission/editisReadFlag", asyn
   }
 })
 
-export const getSubmissionByFormId = createAsyncThunk("submission/getSubmissionByFormId", async (id) => {
+export const getSubmissionByFormId = createAsyncThunk("submission/getSubmissionByFormId", async (data) => {
   try {
-    const response = await axios.get(`/submission/${id}`)
-    return response?.data?.data;
+    const response = await axios.get(`/submission/${data.id}?page=${data.page}&per_page=${data.per_page}`)
+    return response?.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
   }
@@ -207,6 +207,17 @@ export const getSubmission = createAsyncThunk("submission/getSubmission", async 
 
   } catch (error) {
     return rejectWithValue(error.response.data);
+  }
+})
+
+export const loadMoreSubmission = createAsyncThunk('submission/loadMoreSubmission', async (data) => {
+  console.log('data', data)
+  try {
+    const response = await axios.get(`/submission/data/loadmore?page=${data.page}&per_page=${data.per_page}`)
+    console.log('response?.data?.data', response?.data)
+    return response?.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data)
   }
 })
 

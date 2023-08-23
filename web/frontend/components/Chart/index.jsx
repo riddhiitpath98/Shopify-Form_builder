@@ -34,21 +34,7 @@ const ChartDashboard = (props) => {
             Forms
         </Button>
     );
-    // const dateOption = useMemo(() => {
-    //     let date = [];
-    //     const sortedData = [...submission].map(item => {
-    //         return {
-    //             ...item, createdAt: new Date(item.createdAt)
-    //         }
-    //     }).sort((a, b) => a.createdAt - b.createdAt).map(data => {
-    //         return { ...data, createdAt: moment(data.createdAt).format(`ddd`) }
-    //     }).forEach(item => {
-    //         if (!date.includes(item.createdAt)) {
-    //             date.push(item.createdAt)
-    //         }
-    //     })
-    //     return date
-    // }, [formStatus])
+  
     const formTitleOption = useMemo(() => {
         const title = [];
         formData.map(formItem =>

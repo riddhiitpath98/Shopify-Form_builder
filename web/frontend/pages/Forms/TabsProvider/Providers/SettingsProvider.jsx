@@ -21,11 +21,6 @@ const SettingsProvider = ({ isEdit }) => {
       attributes: appearanceAttributes,
     },
     {
-      id: "reCaptcha",
-      title: "Google reCaptcha",
-      icon: Icons.reCaptcha,
-    },
-    {
       id: "error_msg",
       title: "Error message",
       icon: Icons.error_msg,

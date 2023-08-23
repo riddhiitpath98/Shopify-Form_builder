@@ -50,8 +50,7 @@ const FormPreview = () => {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
 
-  const [showGenrateCodeBtn, setShowGenrateCodeBtn] = useState(false);
-  const [codeVal, setCodeVal] = useState("");
+
   const showMessage = useSelector(
     (state) => state.submission.submissionData?.showMessage
   );
@@ -104,12 +103,6 @@ const FormPreview = () => {
   const selectedValue = afterSubmitFields?.submitAction;
   const redirectUrl = afterSubmitFields?.redirectUrl;
 
-  const handleGenrateCode = () => {
-    setCodeVal(`<div id="form-builder-ips" data-ap-key='${appId}' data-key='${editFormId}'></div>`)
-    setShowGenrateCodeBtn(true);
-  }
-
-
   useEffect(() => {
     if (inputFields.length) {
       let fieldArry = [...formFeildData];
@@ -122,7 +115,7 @@ const FormPreview = () => {
         if (findIndex === -1) {
           let feildData = {
             id: input.inputId,
-            feildId: `${input?.inputId}_${input.id}`,
+            feildId: `${input?.inputId}_${input?.attributes?.label}`,
             feildValue: input.attributes?.default_value || "",
             errorMessage: "",
             feildName: input.title,
@@ -132,7 +125,7 @@ const FormPreview = () => {
             fieldArry.push({
               ...feildData,
               confirmPassword: input?.attributes?.confirmPassword,
-              confirmFeildId: `${input?.inputId}_confirm_${input.id}`
+              confirmFeildId: `${input?.inputId}_confirm_${input?.attributes?.label}`
             });
           } else {
             fieldArry.push({
@@ -160,7 +153,7 @@ const FormPreview = () => {
           });
           setFormFeildData(cloneData);
         }
-        const unique_id = `${input?.inputId}_${input.id}`;
+        const unique_id = `${input?.inputId}_${input?.attributes?.label}`;
         formData = { ...formData, [unique_id]: input.attributes.default_value || "" }
         let value = formData[unique_id] || "";
         if (Array.isArray(input?.attributes?.default_value)) {
@@ -215,6 +208,8 @@ const FormPreview = () => {
     setFormFeildData(cloneData);
   }, [formSubmissionData]);
 
+  console.log('submissionData', submissionData)
+  console.log('formFeildData', formFeildData)
   const handleDateTimeChange = (dateTime, name, id) => {
     const dateValue = dateTime;
     setSelectedDateTime(dateTime);
@@ -390,7 +385,7 @@ const FormPreview = () => {
 
     if (isAllFieldsRequired) {
       dispatch(
-        createSubmissions({ form: editFormId, submission: formSubmissionData })
+        createSubmissions({ form: editFormId, appId: appId, submission: formSubmissionData })
       );
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {
@@ -465,16 +460,6 @@ const FormPreview = () => {
             className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
               }`}
           >
-            {editFormId &&
-              <div className={styles.genrateCode}>
-                {showGenrateCodeBtn ?
-                  <><TextField className={styles.genrateCodeDiv} name="genrate_code" onFocus={(event) => handleSelectText(event)} readOnly value={codeVal && codeVal} />
-                    <span className={styles.description}>Please copy the referral code</span>
-                  </> :
-                  <Button pressed onClick={handleGenrateCode}>genrate code </Button>
-                }
-              </div>
-            }
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"

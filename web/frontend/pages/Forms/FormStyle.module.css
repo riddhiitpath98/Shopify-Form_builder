@@ -374,3 +374,11 @@
   padding: 10px;
   transition: all 0.3s;
 }
+legend {
+  font-size: 0.875rem;
+}
+.redirectText {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}

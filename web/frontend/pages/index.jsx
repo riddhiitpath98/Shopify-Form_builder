@@ -205,6 +205,7 @@ const routes = [
     name: "Auth",
     path: "/",
     exact: true,
+    isHideNavbar: true,
     element: <Auth />,
   },
   {

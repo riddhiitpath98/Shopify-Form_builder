@@ -6,11 +6,22 @@ import {
   filterSubmissionByDate,
   getSubmission,
   getSubmissionByFormId,
+  loadMoreSubmission,
   sortNFilterSubmission,
   sortNFilterSubmissionById,
 } from "../actions/allActions";
 
 const initialState = {
+
+  submissionBypage: {
+    total_count: 0,
+    data: [],
+    error: "",
+    showMessage: false,
+    formSubmitted: false,
+    loading: false,
+    success: false,
+  },
   submissionData: {
     data: [],
     error: "",
@@ -26,6 +37,12 @@ const submissionSlice = createSlice({
   name: "submission",
   initialState,
   reducers: {
+    updateCurrentPage: (state, action) => {
+      return {
+        ...state,
+        currentPage: action.payload
+      }
+    },
     setShowMessage: (state, action) => {
       return {
         ...state,
@@ -114,13 +131,47 @@ const submissionSlice = createSlice({
           },
         };
       })
+      .addCase(loadMoreSubmission.pending, (state, action) => {
+        return {
+          ...state,
+          submissionBypage: {
+            success: false,
+            loading: true,
+            data: [...state.submissionBypage.data],
+            error: "",
+          },
+        };
+      })
+      .addCase(loadMoreSubmission.fulfilled, (state, action) => {
+        return {
+          ...state,
+          submissionBypage: {
+            success: true,
+            loading: false,
+            data: [...state.submissionBypage.data, ...action.payload.data],
+            total_count: action.payload.total_count,
+            error: "",
+          },
+        };
+      })
+      .addCase(loadMoreSubmission.rejected, (state, action) => {
+        return {
+          ...state,
+          submissionBypage: {
+            success: false,
+            loading: false,
+            data: [],
+            error: action.payload,
+          },
+        };
+      })
       .addCase(getSubmissionByFormId.pending, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: true,
-            data: [],
+            data: [...state.submissionBypage.data],
             error: "",
           },
         };
@@ -128,10 +179,11 @@ const submissionSlice = createSlice({
       .addCase(getSubmissionByFormId.fulfilled, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: true,
             loading: false,
-            data: action.payload,
+            data: [...state.submissionBypage.data, ...action.payload.data],
+            total_count: action.payload.total_count,
             error: "",
           },
         };
@@ -139,7 +191,7 @@ const submissionSlice = createSlice({
       .addCase(getSubmissionByFormId.rejected, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: false,
             data: [],
@@ -316,5 +368,5 @@ const submissionSlice = createSlice({
   },
 });
 
-export const { setShowMessage, setFormSubmitted } = submissionSlice.actions;
+export const { setShowMessage, setFormSubmitted, updateCurrentPage } = submissionSlice.actions;
 export default submissionSlice.reducer;

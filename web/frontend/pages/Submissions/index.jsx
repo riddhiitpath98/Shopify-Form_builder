@@ -7,6 +7,8 @@ import {
   Page,
   ChoiceList,
   Select,
+  LegacyCard,
+  Text,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo } from "react";
 import { useState, useCallback } from "react";
@@ -20,22 +22,29 @@ import {
   getSubmissionByFormId,
   sortNFilterSubmission,
   sortNFilterSubmissionById,
+  loadMoreSubmission,
 } from "../../redux/actions/allActions";
 import { useLocation } from "react-router-dom";
-import "./Modal.css";
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
+import "./Modal.css";
+import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 
 function Submissions() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const submissionData = useSelector(
-    (state) => state.submission.submissionData.data
+    (state) => state.submission.submissionBypage.data
   );
+
+  const total_count = useSelector(state => state.submission.submissionBypage.total_count);
+  console.log('total_count: ', total_count, submissionData.length);
+  const itemPrPage = 10;
   const submissionsLoading = useSelector(
     (state) => state.submission.submissionData
   );
@@ -43,6 +52,13 @@ function Submissions() {
     (state) => state?.inputField?.finalFormData?.formData
   );
 
+  const fetchMoreData = async () => {
+    try {
+      dispatch(loadMoreSubmission({ page: currentPage, per_page: itemPrPage }))
+    } catch (error) {
+      // Handle error
+    }
+  };
   const [selectedItems, setSelectedItems] = useState([]);
   const [sortValue, setSortValue] = useState("-createdAt");
   const [status, setStatus] = useState([]);
@@ -62,43 +78,21 @@ function Submissions() {
       if (submission) {
         const entries = Object.entries(submission);
         for (const [key, value] of entries) {
-          if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
+          if (typeof value === "string" && value?.toLowerCase().includes(queryValue?.toLowerCase())) {
             return item;
           }
         }
       }
-    });
+    }).sort((a, b) => {
+      if (sortValue === '-createdAt')
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      else
+        return new Date(a.createdAt) - new Date(b.createdAt)
+    }
+    );
 
-    return data;
+    return data
   }, [submissionData, queryValue]);
-  // const newSubmissionData = useMemo(() => {
-  //   const data = submissionData?.map((item) => {
-  //     const submission = item?.submission[0];
-  //     const modifiedSubmission = {};
-
-  //     for (const key in submission) {
-  //       modifiedSubmission[key] = submission[key];
-  //       // const name = key.split('_').pop();
-  //       // const value = submission[key] || '-';
-  //       // Object.keys(modifiedSubmission).filter(key => {
-  //       //   // if (key === name) {
-  //       // }
-  //       // })
-  //     }
-  //     return { ...item, submission: modifiedSubmission };
-  //   }).filter((item) => {
-  //     const submission = item.submission;
-  //     const values = Object.values(submission);
-
-  //     for (const value of values) {
-  //       if (value?.toLowerCase().includes(queryValue?.toLowerCase())) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   });
-  //   return data;
-  // }, [submissionData, queryValue]);
 
   const csvData = useMemo(() => {
     const data = [];
@@ -311,8 +305,8 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId(location.state?.id)
-        : getSubmission()
+        ? getSubmissionByFormId({ id: location.state?.id, page: currentPage, per_page: itemPrPage })
+        : loadMoreSubmission({ page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
     );
   }, [dispatch, location?.state?.id]);
 
@@ -332,7 +326,7 @@ function Submissions() {
 
   const promotedBulkActions = [
     {
-      content: "Delete submission(s)",
+      content: "Delete submissions",
       onAction: () => {
         dispatch(
           deleteSubmissionData({
@@ -498,7 +492,7 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
-        <Card>
+        <LegacyCard>
           <ResourceList
             resourceName={resourceName}
             items={
@@ -528,7 +522,11 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
-        </Card>
+          {console.log('submissionData.length === total_count', submissionData.length === total_count)}
+          {submissionData.length !== total_count && <button onClick={fetchMoreData}>
+            Load More
+          </button>}
+        </LegacyCard>
         <ToastContainer />
       </Page>
     </>
@@ -547,19 +545,21 @@ function Submissions() {
             onClick={() => handleOpen(items)}
             persistActions={true}
           >
-            {Object.entries(items?.submission[0])
-              .filter(([key]) =>
-                ["text", "email", "name", "textarea", "phone"].includes(
-                  key.split("_").pop()
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {Object.entries(items?.submission[0])
+                .filter(([key]) =>
+                  ["text", "email", "name", "textarea", "phone"].includes(
+                    key.split("_").pop()
+                  )
                 )
-              )
-              .map(([key, value]) => (
-                <div className={styles.resourceItem} key={key}>
-                  {value}
-                </div>
-              ))}
-            <div className={styles.dateTimeItem}>
-              {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+                .map(([key, value]) => (
+                  <div className={styles.resourceItem} key={key}>
+                    {value}
+                  </div>
+                ))}
+              <div className={styles.dateTimeItem}>
+                {moment(items?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+              </div>
             </div>
           </ResourceItem>
           {/* <ResourceItem
