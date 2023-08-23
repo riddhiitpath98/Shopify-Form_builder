@@ -41,7 +41,7 @@ export function AppBridgeProvider({ children }) {
   // See: https://stackoverflow.com/questions/60482318/version-of-usememo-for-caching-a-value-that-will-never-change
   const [appBridgeConfig] = useState(() => {
     const host =
-      new URLSearchParams(location.search).get("host") ||
+      // new URLSearchParams(location.search).get("host") ||
       window.__SHOPIFY_DEV_HOST;
     const shop = window.location
     window.__SHOPIFY_DEV_HOST = host;
