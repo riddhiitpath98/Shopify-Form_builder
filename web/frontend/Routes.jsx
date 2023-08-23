@@ -77,6 +77,7 @@ console.log('withoutNavbarRoute', withoutNavbarRoute)
 export default function Routing({ ...props }) {
   const app = useAppBridge();
   sessionStorage.setItem("hostOrigin", app.hostOrigin)
+  console.log('app.hostOrigin: ', app);
 
   return (
     <Routes>
