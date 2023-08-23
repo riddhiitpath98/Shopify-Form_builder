@@ -54,6 +54,8 @@ export function AppBridgeProvider({ children }) {
   });
 
   dispatch(addAppId(appBridgeConfig.apiKey))
+  console.log('appBridgeConfig: ', appBridgeConfig);
+
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {
@@ -70,6 +72,8 @@ export function AppBridgeProvider({ children }) {
         title: "Missing host query argument",
         children: (
           <>
+          {console.log('appBridgeConfig.host', appBridgeConfig.host)}
+          {appBridgeConfig}
             Your app can only load if the URL has a <b>host</b> argument.
             Please ensure that it is set, or access your app using the
             Partners Dashboard <b>Test your app</b> feature
