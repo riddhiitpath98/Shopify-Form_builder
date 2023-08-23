@@ -69,11 +69,9 @@ export function AppBridgeProvider({ children }) {
         ),
       }
       : {
-        title: "Missing host query argument",
+        title: { appBridgeConfig },
         children: (
           <>
-          {console.log('appBridgeConfig.host', appBridgeConfig.host)}
-          {appBridgeConfig}
             Your app can only load if the URL has a <b>host</b> argument.
             Please ensure that it is set, or access your app using the
             Partners Dashboard <b>Test your app</b> feature
