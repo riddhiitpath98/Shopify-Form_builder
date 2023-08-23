@@ -38,12 +38,11 @@ function Submissions() {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
+  const appId = useSelector((state) => state.appId.appId);
   const submissionData = useSelector(
-    (state) => state.submission.submissionBypage.data
+    (state) => state.submission.submissionData.data
   );
 
-  const total_count = useSelector(state => state.submission.submissionBypage.total_count);
-  console.log('total_count: ', total_count, submissionData.length);
   const itemPrPage = 10;
   const submissionsLoading = useSelector(
     (state) => state.submission.submissionData
@@ -311,7 +310,7 @@ function Submissions() {
   }, [dispatch, location?.state?.id]);
 
   useEffect(() => {
-    dispatch(fetchFormData());
+    dispatch(fetchFormData(appId));
   }, []);
 
   const resourceName = {
@@ -522,10 +521,13 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
-          {console.log('submissionData.length === total_count', submissionData.length === total_count)}
-          {submissionData.length !== total_count && <button onClick={fetchMoreData}>
-            Load More
-          </button>}
+          <div className={styles.pagination_button}>
+
+            <Button primary onClick={fetchMoreData}>
+              Load More
+            </Button>
+          </div>
+
         </LegacyCard>
         <ToastContainer />
       </Page>
@@ -536,7 +538,7 @@ function Submissions() {
     return (
       <>
         <div
-          className={`${submissionData?.[index]?.isRead ? "" : styles.isReadElement
+          className={`${items?.isRead ? "" : styles.isReadElement
             }`}
         >
           <ResourceItem
