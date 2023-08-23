@@ -1,20 +1,19 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "contact-form-app-new"
-client_id = "da285a34b8d71cdf0a204d50c593874e"
-application_url = "https://herbal-fibre-blocked-classes.trycloudflare.com"
+name = "Contact form to any API"
+client_id = "c4351fdf89a0ae86be14e8815039a599"
+application_url = "https://mountains-trial-eligibility-bold.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_products"
-use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/auth/callback",
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/auth/shopify/callback",
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/api/auth/callback"
+  "https://mountains-trial-eligibility-bold.trycloudflare.com/auth/callback",
+  "https://mountains-trial-eligibility-bold.trycloudflare.com/auth/shopify/callback",
+  "https://mountains-trial-eligibility-bold.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
