@@ -42,8 +42,9 @@ function Submissions() {
     (state) => state.submission.submissionBypage.data
   );
 
-  const total_count = useSelector(state => state.submission.submissionBypage.total_count);
-  console.log('total_count: ', total_count, submissionData.length);
+  const total_count = useSelector(
+    (state) => state.submission.submissionData.total_count
+  );
   const itemPrPage = 10;
   const submissionsLoading = useSelector(
     (state) => state.submission.submissionData
@@ -54,7 +55,7 @@ function Submissions() {
 
   const fetchMoreData = async () => {
     try {
-      dispatch(loadMoreSubmission({ page: currentPage, per_page: itemPrPage }))
+      dispatch(loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }))
     } catch (error) {
       // Handle error
     }
@@ -160,6 +161,7 @@ function Submissions() {
           sortNFilterSubmission({
             path: sortValue,
             query: { isRead: true, formId: formStatus },
+            appId
           })
         );
       setStatus(value);
@@ -176,6 +178,7 @@ function Submissions() {
           sortNFilterSubmission({
             path: sortValue,
             query: { isRead: false, formId: formStatus },
+            appId
           })
         );
       setStatus(value);
@@ -195,6 +198,7 @@ function Submissions() {
         sortNFilterSubmission({
           path: sortValue,
           query: { isRead: "", formId: formStatus },
+          appId
         })
       );
     setStatus([]);
@@ -230,6 +234,7 @@ function Submissions() {
                     : "",
               formId: value,
             },
+            appId
           })
         );
       setFormStatus(value);
@@ -265,6 +270,7 @@ function Submissions() {
                   : "",
             formId: [],
           },
+          appId
         })
       );
     setFormStatus([]);
@@ -306,7 +312,7 @@ function Submissions() {
     dispatch(
       location.state?.id
         ? getSubmissionByFormId({ id: location.state?.id, page: currentPage, per_page: itemPrPage })
-        : loadMoreSubmission({ page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
+        : loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
     );
   }, [dispatch, location?.state?.id]);
 
@@ -440,6 +446,7 @@ function Submissions() {
                     : "",
               formId: formStatus,
             },
+            appId
           })
         );
       setSortValue(selected);
@@ -472,6 +479,7 @@ function Submissions() {
                     : "",
               formId: formStatus,
             },
+            appId
           })
         );
       setSortValue(selected);
@@ -522,10 +530,12 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
-          {console.log('submissionData.length === total_count', submissionData.length === total_count)}
-          {submissionData.length !== total_count && <button onClick={fetchMoreData}>
-            Load More
-          </button>}
+          {submissionData.length < total_count ? <div className={styles.pagination_button}>
+            <Button primary onClick={fetchMoreData}>
+              Load More
+            </Button>
+          </div> : null}
+
         </LegacyCard>
         <ToastContainer />
       </Page>
