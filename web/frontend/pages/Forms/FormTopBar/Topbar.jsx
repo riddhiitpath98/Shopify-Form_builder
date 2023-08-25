@@ -30,6 +30,7 @@ const Topbar = ({ handleRedirectToForm }) => {
   const navigate = useNavigate();
   const { editFormId } = useParams();
 
+  const appId = useSelector((state) => state.appId.appId);
 
   const selectedViewPort = useSelector(
     (state) => state.viewPort?.selectedViewport
@@ -93,6 +94,7 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const handleSubmit = () => {
     const combinedObjectArr = {
+      appId: appId,
       enableReCaptcha: googelRecaptcha?.enable || false,
       customForm: [{ formTitle: titleValue.title },
       { header: headerFieldData },

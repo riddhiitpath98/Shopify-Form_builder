@@ -29,3 +29,9 @@
 .isReadElement {
   font-weight: 600;
 }
+.pagination_button {
+  display: flex;
+  justify-content: flex-end;
+  margin: 7px 15px;
+  padding: 10px;
+}

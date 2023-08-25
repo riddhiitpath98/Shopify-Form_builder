@@ -20,8 +20,10 @@ function Dashboard() {
     dailySubmission: false,
     monthlySubmission: false,
   });
+
+  const appId = useSelector((state) => state.appId.appId);
   const submissionData = useSelector(
-    (state) => state.submission.submissionData.data
+    (state) => state.submission.submissions.data
   );
   const [date, setDate] = useState({ startDate: "", endDate: "" });
 
@@ -32,8 +34,8 @@ function Dashboard() {
   }, [date]);
 
   useEffect(() => {
-    dispatch(getSubmission());
-    dispatch(fetchFormData());
+    dispatch(getSubmission(appId));
+    dispatch(fetchFormData(appId));
   }, [dispatch]);
 
   return (

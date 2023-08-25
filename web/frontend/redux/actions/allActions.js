@@ -35,11 +35,11 @@ export const addFormData = createAsyncThunk(
   }
 );
 
-export const deleteFormData = createAsyncThunk("inputs/deleteFormData", async (customFormIdArr, { rejectWithValue }) => {
+export const deleteFormData = createAsyncThunk("inputs/deleteFormData", async (data, { rejectWithValue }) => {
   try {
-    const response = await axios.delete("/custom_form", {
+    const response = await axios.delete(`/custom_form?appId=${data.appId}`, {
       data: {
-        ids: customFormIdArr
+        ids: data.deleteFormArr
       }
     })
     toast.success(response?.data?.msg, toastConfig);
@@ -76,7 +76,7 @@ export const updateFormData = createAsyncThunk("inputs/editFormData", async (upd
 
 export const editVisibleFlag = createAsyncThunk("inputs/editVisibleFlag", async (editCustomFormData, { rejectWithValue }) => {
   try {
-    const response = await axios.put(`/custom_form/visible/${editCustomFormData._id}`, { isVisible: editCustomFormData?.isVisible });
+    const response = await axios.put(`/custom_form/visible/${editCustomFormData._id}?appId=${editCustomFormData.appId}`, { isVisible: editCustomFormData?.isVisible });
     return response?.data?.data;
   } catch (error) {
     return rejectWithValue(error?.response?.data);
@@ -94,9 +94,9 @@ export const updateReCaptchaSettings = createAsyncThunk("/inputs/updateReCaptcha
 
 export const fetchFormData = createAsyncThunk(
   "inputs/fetchFormData",
-  async () => {
+  async (appId) => {
     try {
-      const response = await axios.get("/custom_form");
+      const response = await axios.get(`/custom_form?appId=${appId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -200,9 +200,9 @@ export const getSubmissionByFormId = createAsyncThunk("submission/getSubmissionB
   }
 })
 
-export const getSubmission = createAsyncThunk("submission/getSubmission", async () => {
+export const getSubmission = createAsyncThunk("submission/getSubmission", async (appId) => {
   try {
-    const response = await axios.get(`/submission`);
+    const response = await axios.get(`/submission?appId=${appId}`);
     return response?.data?.data;
 
   } catch (error) {
@@ -211,17 +211,15 @@ export const getSubmission = createAsyncThunk("submission/getSubmission", async 
 })
 
 export const loadMoreSubmission = createAsyncThunk('submission/loadMoreSubmission', async (data) => {
-  console.log('data', data)
   try {
-    const response = await axios.get(`/submission/data/loadmore?page=${data.page}&per_page=${data.per_page}`)
-    console.log('response?.data?.data', response?.data)
+    const response = await axios.get(`/submission/data/loadmore?appId=${data.appId}&page=${data.page}&per_page=${data.per_page}`)
     return response?.data;
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
 })
 
-export const sortNFilterSubmission = createAsyncThunk("submission/sortNFilterSubmission", async ({ path, query }) => {
+export const sortNFilterSubmission = createAsyncThunk("submission/sortNFilterSubmission", async ({ path, query, appId }) => {
   const { isRead, formId } = query
   const params = new URLSearchParams();
   formId.forEach((item) => {
@@ -231,8 +229,8 @@ export const sortNFilterSubmission = createAsyncThunk("submission/sortNFilterSub
   const queryString = params.toString();
 
   try {
-    const response = await axios.get(concat('/submission/sortdate/sorting/', path, (isRead !== '') ? `?isRead=${isRead}` : '', (formId.length !== 0) ? `${(isRead !== '') ? '&' : '?'}${queryString}` : ''))
-    return response?.data?.data;
+    const response = await axios.get(concat('/submission/sortdate/sorting/', path, (isRead !== '') ? `?isRead=${isRead}` : '', (formId.length !== 0) ? `${(isRead !== '') ? '&' : '?'}${queryString}` : '', (appId !== "") ? `${(isRead !== '' || formId.length !== 0) ? '&' : '?'}appId=${appId}` : ''))
+    return response?.data.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
   }

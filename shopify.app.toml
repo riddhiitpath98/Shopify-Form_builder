@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "contact-form-app-new"
-client_id = "da285a34b8d71cdf0a204d50c593874e"
-application_url = "https://herbal-fibre-blocked-classes.trycloudflare.com"
+name = "form-builder"
+client_id = "c4351fdf89a0ae86be14e8815039a599"
+application_url = "https://bb-copper-hill-quantities.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -12,9 +12,9 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/auth/callback",
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/auth/shopify/callback",
-  "https://herbal-fibre-blocked-classes.trycloudflare.com/api/auth/callback"
+  "https://bb-copper-hill-quantities.trycloudflare.com/auth/callback",
+  "https://bb-copper-hill-quantities.trycloudflare.com/auth/shopify/callback",
+  "https://bb-copper-hill-quantities.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

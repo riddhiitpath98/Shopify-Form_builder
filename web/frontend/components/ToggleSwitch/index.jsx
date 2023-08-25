@@ -1,12 +1,13 @@
 import React from "react";
 import "./ToggleSwitch.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { editVisibleFlag } from "../../redux/actions/allActions";
 
 const ToggleSwitch = ({ items }) => {
   const dispatch = useDispatch();
+  const appId = useSelector((state) => state.appId.appId);
   const handleVisibility = (e, id) => {
-    dispatch(editVisibleFlag({ _id: id, isVisible: e.target.checked }))
+    dispatch(editVisibleFlag({ appId: appId, _id: id, isVisible: e.target.checked }))
   }
 
   return (

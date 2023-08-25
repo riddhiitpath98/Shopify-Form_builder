@@ -107,7 +107,7 @@ function FormList() {
     {
       content: "Delete form",
       onAction: () => {
-        dispatch(deleteFormData(deleteFormArr));
+        dispatch(deleteFormData({ deleteFormArr, appId }));
         setDeleteFormArr([]);
         setSelectedItems([]);
       },
@@ -120,7 +120,7 @@ function FormList() {
   };
 
   useEffect(() => {
-    dispatch(fetchFormData());
+    dispatch(fetchFormData(appId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch]);
 
