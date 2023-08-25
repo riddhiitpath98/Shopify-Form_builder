@@ -43,7 +43,7 @@ export function AppBridgeProvider({ children }) {
     const host =
       new URLSearchParams(location.search).get("host") ||
       window.__SHOPIFY_DEV_HOST;
-
+    const shop = window.location
     window.__SHOPIFY_DEV_HOST = host;
     return {
       host,
@@ -68,7 +68,7 @@ export function AppBridgeProvider({ children }) {
         ),
       }
       : {
-        title: { appBridgeConfig },
+        title: "Missing host query argument",
         children: (
           <>
             Your app can only load if the URL has a <b>host</b> argument.
