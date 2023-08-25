@@ -12,9 +12,16 @@ import {
 } from "../actions/allActions";
 
 const initialState = {
-  currentPage: 1,
-  itemPrPage: 10,
-  isOver: false,
+
+  submissionBypage: {
+    total_count: 0,
+    data: [],
+    error: "",
+    showMessage: false,
+    formSubmitted: false,
+    loading: false,
+    success: false,
+  },
   submissionData: {
     data: [],
     error: "",
@@ -127,10 +134,10 @@ const submissionSlice = createSlice({
       .addCase(loadMoreSubmission.pending, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: true,
-            data: [...state.submissionData.data],
+            data: [...state.submissionBypage.data],
             error: "",
           },
         };
@@ -138,11 +145,11 @@ const submissionSlice = createSlice({
       .addCase(loadMoreSubmission.fulfilled, (state, action) => {
         return {
           ...state,
-          isOver: action.payload.isOver,
-          submissionData: {
+          submissionBypage: {
             success: true,
             loading: false,
-            data: [...state.submissionData.data, ...action.payload.data],
+            data: [...state.submissionBypage.data, ...action.payload.data],
+            total_count: action.payload.total_count,
             error: "",
           },
         };
@@ -150,7 +157,7 @@ const submissionSlice = createSlice({
       .addCase(loadMoreSubmission.rejected, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: false,
             data: [],
@@ -161,10 +168,10 @@ const submissionSlice = createSlice({
       .addCase(getSubmissionByFormId.pending, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: true,
-            data: [],
+            data: [...state.submissionBypage.data],
             error: "",
           },
         };
@@ -172,10 +179,11 @@ const submissionSlice = createSlice({
       .addCase(getSubmissionByFormId.fulfilled, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: true,
             loading: false,
-            data: action.payload,
+            data: [...state.submissionBypage.data, ...action.payload.data],
+            total_count: action.payload.total_count,
             error: "",
           },
         };
@@ -183,7 +191,7 @@ const submissionSlice = createSlice({
       .addCase(getSubmissionByFormId.rejected, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: false,
             loading: false,
             data: [],
@@ -300,14 +308,14 @@ const submissionSlice = createSlice({
         };
       })
       .addCase(editisReadFlag.fulfilled, (state, action) => {
-        const cloneData = [...state.submissionData?.data];
+        const cloneData = [...state.submissionBypage?.data];
         const index = cloneData.findIndex(
           (data) => data?._id === action.payload?._id
         );
         cloneData?.splice(index, 1, action.payload);
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             success: true,
             loading: false,
             submissionItem: action.payload,
@@ -319,7 +327,7 @@ const submissionSlice = createSlice({
       .addCase(editisReadFlag.rejected, (state, action) => {
         return {
           ...state,
-          submissionData: {
+          submissionBypage: {
             ...state?.submissionData,
             loading: false,
             error: action.payload,

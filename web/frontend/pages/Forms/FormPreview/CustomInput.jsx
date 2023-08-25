@@ -5,10 +5,8 @@ import { useEffect } from "react";
 import { addFormSubmission, setDateKeyName } from "../../../redux/reducers/inputFieldSlice";
 
 import CommonTextFeild from "./CommonTextFeild";
-import CommonFileInput from "./CommonFileInput";
 import CommonPassword from "./CommonPassword";
 import CommonTextarea from "./CommonTextarea";
-import CommonDateInput from "./CommonDateInput";
 
 export const CustomInput = ({
   id,
@@ -96,25 +94,6 @@ export const CustomInput = ({
           ...props
         }} />
       );
-    case "file":
-      return (
-        <CommonFileInput {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleFileChange,
-          formFeildData,
-          acceptExtensions,
-          ...props
-        }} />
-      );
     case "password":
       return (
         <CommonPassword {...{
@@ -151,25 +130,6 @@ export const CustomInput = ({
           ...props
         }} />
       );
-    case "date":
-      return (
-        <CommonDateInput {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          handleDateTimeChange,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleChange,
-          formFeildData,
-          ...props
-        }} />
-      );
     case "checkbox":
       if (id === "accept_terms") {
         return (
@@ -182,7 +142,7 @@ export const CustomInput = ({
                 className={styles.checkBoxInput}
                 id={inputId}
                 type={type}
-                name={`${inputId}_${id}`}
+                name={`${inputId}_${label}`}
                 onChange={(event) => handleChange(event)}
               />
               <label
@@ -257,7 +217,7 @@ export const CustomInput = ({
                           type={type}
                           value={option.value}
                           id={inputId}
-                          name={`${inputId}_${id}`}
+                          name={`${inputId}_${label}`}
                           checked={
                             formSubmissionData[`${inputId}_${id}`] &&
                             formSubmissionData[`${inputId}_${id}`]?.some(
@@ -322,7 +282,7 @@ export const CustomInput = ({
                         className={styles.checkBoxInput}
                         type={type}
                         id={inputId}
-                        name={`${inputId}_${id}`}
+                        name={`${inputId}_${label}`}
                         checked={
                           formSubmissionData[`${inputId}_${id}`] === option.value
                         }
@@ -361,7 +321,7 @@ export const CustomInput = ({
           </label>
           <span className={styles.textRequired}> {required ? " *" : ""}</span>
           <select
-            name={`${inputId}_${id}`}
+            name={`${inputId}_${label}`}
             id={inputId}
             className={styles.classicInput}
             defaultValue={default_value}
@@ -400,7 +360,7 @@ export const CustomInput = ({
             type={type}
             data-type="fixed"
             id={inputId}
-            name={`${inputId}_${id}`}
+            name={`${inputId}_${label}`}
             value={hiddenValue}
           />
         </div>
