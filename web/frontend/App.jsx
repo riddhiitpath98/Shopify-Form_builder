@@ -26,11 +26,6 @@ export default function App() {
     <PolarisProvider>
       <Provider
         store={store}
-        config={{
-          apiKey: apiKey,
-          shopOrigin: shopOrigin,
-          forceRedirect: true,
-        }}
       >
         <AppBridgeProvider>
           <QueryProvider>

@@ -1,8 +1,11 @@
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { Routes as ReactRouterRoutes, Route, Routes } from "react-router-dom";
+import { Routes as ReactRouterRoutes, Route, Routes, useLocation } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import { withNavbarRoute, withoutNavbarRoute } from "./pages";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
+import { Redirect } from "@shopify/app-bridge/actions";
+import ExitIframe from "./pages/ExitIframe";
 
 /**
  * File-based routing.
@@ -73,11 +76,10 @@ import NotFound from "./pages/NotFound";
 // }
 
 export default function Routing({ ...props }) {
-  const app = useAppBridge();
-  sessionStorage.setItem("hostOrigin", app.hostOrigin)
 
   return (
     <Routes>
+      <Route path="/exitiframe" element={<ExitIframe />} />
       <Route path="/" element={<Layout isShowFooter {...props} />} >
         {
           withNavbarRoute?.map(({ id, ...data }) => <Route index key={id} {...data} />)

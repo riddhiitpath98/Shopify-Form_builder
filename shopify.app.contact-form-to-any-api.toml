@@ -1,0 +1,27 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "contact-form-to-any-api"
+client_id = "fd58883a78355983c5ae21752cd0588a"
+application_url = "https://administration-gdp-licence-deliver.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://administration-gdp-licence-deliver.trycloudflare.com/auth/callback",
+  "https://administration-gdp-licence-deliver.trycloudflare.com/auth/shopify/callback",
+  "https://administration-gdp-licence-deliver.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-07"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "it-path-dev-store.myshopify.com"
