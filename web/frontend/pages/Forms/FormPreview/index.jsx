@@ -115,7 +115,7 @@ const FormPreview = () => {
         if (findIndex === -1) {
           let feildData = {
             id: input.inputId,
-            feildId: `${input?.inputId}_${input?.attributes?.label}`,
+            feildId: `${input?.inputId}_${input?.id}`,
             feildValue: input.attributes?.default_value || "",
             errorMessage: "",
             feildName: input.title,
@@ -125,7 +125,7 @@ const FormPreview = () => {
             fieldArry.push({
               ...feildData,
               confirmPassword: input?.attributes?.confirmPassword,
-              confirmFeildId: `${input?.inputId}_confirm_${input?.attributes?.label}`
+              confirmFeildId: `${input?.inputId}_confirm_${input?.id}`
             });
           } else {
             fieldArry.push({
@@ -153,7 +153,7 @@ const FormPreview = () => {
           });
           setFormFeildData(cloneData);
         }
-        const unique_id = `${input?.inputId}_${input?.attributes?.label}`;
+        const unique_id = `${input?.inputId}_${input?.id}`;
         formData = { ...formData, [unique_id]: input.attributes.default_value || "" }
         let value = formData[unique_id] || "";
         if (Array.isArray(input?.attributes?.default_value)) {
@@ -194,7 +194,7 @@ const FormPreview = () => {
         enable: editFormData?.formData?.enableRecaptcha,
       })
     );
-    dispatch(getRecaptchaSettingsByAppId(appId));
+
   }, [dispatch, inputFields]);
   useEffect(() => {
     let cloneData = formFeildData.map((feild) => {

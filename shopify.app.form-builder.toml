@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "contact-form-to-any-api"
-client_id = "fd58883a78355983c5ae21752cd0588a"
-application_url = "https://administration-gdp-licence-deliver.trycloudflare.com"
+name = "form-builder"
+client_id = "b1dde03422dce735642fb2d448471911"
+application_url = "https://factory-congress-enhancements-upgrade.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://administration-gdp-licence-deliver.trycloudflare.com/auth/callback",
-  "https://administration-gdp-licence-deliver.trycloudflare.com/auth/shopify/callback",
-  "https://administration-gdp-licence-deliver.trycloudflare.com/api/auth/callback"
+  "https://factory-congress-enhancements-upgrade.trycloudflare.com/auth/callback",
+  "https://factory-congress-enhancements-upgrade.trycloudflare.com/auth/shopify/callback",
+  "https://factory-congress-enhancements-upgrade.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

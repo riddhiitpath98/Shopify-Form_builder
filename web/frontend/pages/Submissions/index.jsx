@@ -34,6 +34,15 @@ import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 
 function Submissions() {
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [sortValue, setSortValue] = useState("-createdAt");
+  const [status, setStatus] = useState([]);
+  const [formStatus, setFormStatus] = useState([]);
+  const [queryValue, setQueryValue] = useState("");
+  const [editItem, setEditItem] = useState({});
+  const [deleteFormArr, setDeleteFormArr] = useState([]);
+  const [active, setActive] = useState(false);
+
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,20 +64,8 @@ function Submissions() {
   );
 
   const fetchMoreData = async () => {
-    try {
-      dispatch(loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }))
-    } catch (error) {
-      // Handle error
-    }
+    setCurrentPage(currentPage + 1)
   };
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [sortValue, setSortValue] = useState("-createdAt");
-  const [status, setStatus] = useState([]);
-  const [formStatus, setFormStatus] = useState([]);
-  const [queryValue, setQueryValue] = useState("");
-  const [editItem, setEditItem] = useState({});
-  const [deleteFormArr, setDeleteFormArr] = useState([]);
-  const [active, setActive] = useState(false);
 
   const fileName = `export_submission_${new Date()
     .toISOString()
@@ -85,11 +82,6 @@ function Submissions() {
           }
         }
       }
-    }).sort((a, b) => {
-      if (sortValue === '-createdAt')
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      else
-        return new Date(a.createdAt) - new Date(b.createdAt)
     }
     );
 
@@ -155,13 +147,13 @@ function Submissions() {
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
-            query: { isRead: true, formId: formStatus },
+            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
           })
         )
         : dispatch(
           sortNFilterSubmission({
             path: sortValue,
-            query: { isRead: true, formId: formStatus },
+            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
             appId
           })
         );
@@ -172,13 +164,13 @@ function Submissions() {
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
-            query: { isRead: false, formId: formStatus },
+            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
           })
         )
         : dispatch(
           sortNFilterSubmission({
             path: sortValue,
-            query: { isRead: false, formId: formStatus },
+            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
             appId
           })
         );
@@ -192,13 +184,13 @@ function Submissions() {
         sortNFilterSubmissionById({
           filterFormId: location?.state?.id,
           path: sortValue,
-          query: { isRead: "", formId: formStatus },
+          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
         })
       )
       : dispatch(
         sortNFilterSubmission({
           path: sortValue,
-          query: { isRead: "", formId: formStatus },
+          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
           appId
         })
       );
@@ -220,6 +212,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: value,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -234,6 +228,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: value,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
@@ -256,6 +252,8 @@ function Submissions() {
                   ? false
                   : "",
             formId: [],
+            page: currentPage,
+            per_page: itemPrPage
           },
         })
       )
@@ -270,6 +268,8 @@ function Submissions() {
                   ? false
                   : "",
             formId: [],
+            page: currentPage,
+            per_page: itemPrPage
           },
           appId
         })
@@ -312,10 +312,10 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId({ id: location.state?.id, page: currentPage, per_page: itemPrPage })
-        : loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
+        ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: curcrentPage, per_page: itemPrPage })
+        : loadMoreSubmission({ order: sortValue, appId, page: currentPage, per_page: itemPrPage })
     );
-  }, [dispatch, location?.state?.id]);
+  }, [dispatch, location?.state?.id, currentPage]);
 
   useEffect(() => {
     dispatch(fetchFormData(appId));
@@ -330,6 +330,7 @@ function Submissions() {
     { label: "Newest", value: "-createdAt" },
     { label: "Oldest", value: "createdAt" },
   ];
+
 
   const promotedBulkActions = [
     {
@@ -349,6 +350,7 @@ function Submissions() {
                     : "",
               formId: formStatus,
             },
+            appId
           })
         );
         setDeleteFormArr([]);
@@ -432,6 +434,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -446,6 +450,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
@@ -465,6 +471,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -479,6 +487,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
