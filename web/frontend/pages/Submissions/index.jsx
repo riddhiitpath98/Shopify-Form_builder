@@ -88,6 +88,17 @@ function Submissions() {
     return data
   }, [submissionData, queryValue]);
 
+  const formTitleById = useMemo(() => {
+    let titleById = {};
+    const foundObject = formData.find((obj) => obj._id === location?.state?.id);
+    if (foundObject) {
+      titleById.id = foundObject._id;
+      titleById.formTitle = foundObject.customForm[0].formTitle;
+      setFormStatus([titleById.id]);
+    }
+    return titleById;
+  }, []);
+
   const csvData = useMemo(() => {
     const data = [];
     if (newSubmissionData?.length) {
@@ -312,7 +323,7 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: curcrentPage, per_page: itemPrPage })
+        ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: currentPage, per_page: itemPrPage })
         : loadMoreSubmission({ order: sortValue, appId, page: currentPage, per_page: itemPrPage })
     );
   }, [dispatch, location?.state?.id, currentPage]);
@@ -412,11 +423,15 @@ function Submissions() {
       const selectedFormTitle = formTitle.find((title) => title.id === val);
       return selectedFormTitle ? selectedFormTitle.title : "";
     });
-    appliedFilters.push({
-      key: "formStatus",
-      label: `Form ${selectedFormTitles.join(", ")}`,
-      onRemove: handleFormStatusRemove,
-    });
+    {
+      Object.keys(formTitleById).length !== 0
+        ? appliedFilters.push({
+          key: "formStatus",
+          label: `Form ${selectedFormTitles.join(", ")}`,
+          onRemove: handleFormStatusRemove,
+        })
+        : null;
+    }
   }
 
   const onSortChange = (selected) => {
@@ -511,6 +526,13 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
+        {formTitleById.formTitle ? (
+          <Text variant="headingSm" as="h6">
+            <div style={{ marginBottom: "6px" }}>
+              Form Title: {formTitleById.formTitle}
+            </div>
+          </Text>
+        ) : null}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}

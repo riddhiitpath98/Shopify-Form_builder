@@ -208,8 +208,7 @@ const FormPreview = () => {
     setFormFeildData(cloneData);
   }, [formSubmissionData]);
 
-  console.log('submissionData', submissionData)
-  console.log('formFeildData', formFeildData)
+
   const handleDateTimeChange = (dateTime, name, id) => {
     const dateValue = dateTime;
     setSelectedDateTime(dateTime);
