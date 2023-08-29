@@ -1,3 +1,5 @@
 web/node_modules
+README.md
+.gitignore
 web/frontend/node_modules
 web/frontend/dist

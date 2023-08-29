@@ -2,7 +2,7 @@
 
 name = "form-builder"
 client_id = "b1dde03422dce735642fb2d448471911"
-application_url = "https://schedules-packing-dangerous-antibody.trycloudflare.com"
+application_url = "https://regulation-kentucky-card-units.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://schedules-packing-dangerous-antibody.trycloudflare.com/auth/callback",
-  "https://schedules-packing-dangerous-antibody.trycloudflare.com/auth/shopify/callback",
-  "https://schedules-packing-dangerous-antibody.trycloudflare.com/api/auth/callback"
+  "https://regulation-kentucky-card-units.trycloudflare.com/auth/callback",
+  "https://regulation-kentucky-card-units.trycloudflare.com/auth/shopify/callback",
+  "https://regulation-kentucky-card-units.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
