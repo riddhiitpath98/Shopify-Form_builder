@@ -2,7 +2,7 @@
 
 name = "form-builder"
 client_id = "b1dde03422dce735642fb2d448471911"
-application_url = "https://shopify-form-builder-gcmn.vercel.app"
+application_url = "https://shopify-form-builder-git-riddhishopify-vishwasitpath-gmailcom.vercel.app"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://shopify-form-builder-gcmn.vercel.app/auth/callback",
-  "https://shopify-form-builder-gcmn.vercel.app/auth/shopify/callback",
-  "https://shopify-form-builder-gcmn.vercel.app/api/auth/callback"
+  "https://shopify-form-builder-git-riddhishopify-vishwasitpath-gmailcom.vercel.app/auth/callback",
+  "https://shopify-form-builder-git-riddhishopify-vishwasitpath-gmailcom.vercel.app/auth/shopify/callback",
+  "https://shopify-form-builder-git-riddhishopify-vishwasitpath-gmailcom.vercel.app/api/auth/callback"
 ]
 
 [webhooks]
