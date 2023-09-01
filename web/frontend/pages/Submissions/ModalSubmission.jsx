@@ -14,7 +14,7 @@ const ModalSubmission = ({
     const data = formData.find(formItem => formItem?._id === item?.form)
     return data ? data.customForm[0]?.formTitle : ""
   }, [])
-  console.log('formData', formData)
+
   const fieldLabel = useMemo(() => {
     const labelMap = {};
     formData.forEach((obj, index) => {
@@ -30,8 +30,6 @@ const ModalSubmission = ({
     });
     return labelMap;
   }, [])
-
-  console.log('fieldLabel', fieldLabel)
   return (
     <Modal
       instant
@@ -66,15 +64,10 @@ const ModalSubmission = ({
           <DescriptionList
             items={Object.entries(item?.submission[0]).map(([key, value]) => {
               const term = fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
-              console.log('term: ', term);
               let val = value;
               if (Array.isArray(val)) {
                 val = term === 'file' ? val.map(obj => obj.name).join(', ') : val.map(obj => obj.value).join(', ')
               }
-              console.log(' ggf', {
-                term: term?.charAt(0).toUpperCase() + term?.slice(1),
-                description: val,
-              })
               return {
                 term: term?.charAt(0).toUpperCase() + term?.slice(1),
                 description: val,

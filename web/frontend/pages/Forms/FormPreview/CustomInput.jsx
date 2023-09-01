@@ -34,7 +34,6 @@ export const CustomInput = ({
     required,
     options,
     radio_options,
-    hideDivider,
     hideLabel,
     allowedExtensions,
     hiddenValue,
@@ -346,8 +345,7 @@ export const CustomInput = ({
           </small>
         </div>
       );
-    case "divider":
-      return !hideDivider && <hr />;
+
     case "hidden":
       return (
         <div

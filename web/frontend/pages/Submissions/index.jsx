@@ -409,7 +409,19 @@ function Submissions() {
       shortcut: true,
     },
   ];
-
+  const formFilter = [];
+  if (formStatus && formStatus.length > 0) {
+    const selectedFormTitles = formStatus.map((val) => {
+      const selectedFormTitle = formTitle.find((title) => title.id === val);
+      return selectedFormTitle ? selectedFormTitle.title : "";
+    });
+    formFilter.push({
+      key: "formStatus",
+      label: `Form : ${selectedFormTitles.join(", ")}`,
+      onRemove: handleFormStatusRemove,
+    });
+  }
+  console.log('formFilter', formFilter)
   const appliedFilters = [];
   if (status && !isEmpty(status)) {
     appliedFilters.push({
@@ -423,17 +435,13 @@ function Submissions() {
       const selectedFormTitle = formTitle.find((title) => title.id === val);
       return selectedFormTitle ? selectedFormTitle.title : "";
     });
-    {
-      Object.keys(formTitleById).length !== 0
-        ? appliedFilters.push({
-          key: "formStatus",
-          label: `Form ${selectedFormTitles.join(", ")}`,
-          onRemove: handleFormStatusRemove,
-        })
-        : null;
-    }
-  }
 
+    appliedFilters.push({
+      key: "formStatus",
+      label: `Form : ${selectedFormTitles.join(", ")}`,
+      onRemove: handleFormStatusRemove,
+    });
+  }
   const onSortChange = (selected) => {
     if (selected === "createdAt") {
       location?.state?.id
@@ -526,10 +534,10 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
-        {formTitleById.formTitle ? (
+        {formFilter.length > 0 ? (
           <Text variant="headingSm" as="h6">
             <div style={{ marginBottom: "6px" }}>
-              Form Title: {formTitleById.formTitle}
+              {formFilter[0]?.label}
             </div>
           </Text>
         ) : null}
@@ -549,9 +557,6 @@ function Submissions() {
             selectable
             alternateTool={
               <>
-                <CSVLink data={csvData} filename={fileName}>
-                  <Button>Export all Data</Button>
-                </CSVLink>
                 <Select
                   label="Sort by"
                   labelInline
@@ -605,28 +610,6 @@ function Submissions() {
               </div>
             </div>
           </ResourceItem>
-          {/* <ResourceItem
-            id={index}
-            name={items?._id}
-            onClick={() => handleOpen(items)}
-            persistActions={true}
-          >
-            {console.log('Object.values(items?.submission)', Object.values(items?.submission))}
-            {Object.values(items?.submission).map((value, index) => {
-              if (Array.isArray(value)) {
-                console.log('value', value)
-                return false
-              }
-              else {
-                (<div className={styles.resourceItem} key={index} >
-                  {value}
-                </div >)
-              }
-            })}
-            <div className={styles.resourceItem}>
-              {moment(items.createdAt).format("DD-MM-YYYY HH:MM ")}
-            </div >
-          </ResourceItem > */}
         </div >
 
         {

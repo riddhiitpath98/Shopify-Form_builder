@@ -20,6 +20,7 @@ export default function App() {
 
   const location = useLocation();
   const apiKey = process.env.SHOPIFY_API_KEY;
+  
   // const shopOrigin = sessionStorage.getItem("hostOrigin");
 
   return (
@@ -57,8 +58,6 @@ export default function App() {
                 },
               ]}
             />
-
-            {/* <Routes pages={pages} /> */}
             <Routing />
           </QueryProvider>
         </AppBridgeProvider>
