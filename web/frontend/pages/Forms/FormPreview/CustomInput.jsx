@@ -34,7 +34,6 @@ export const CustomInput = ({
     required,
     options,
     radio_options,
-    hideDivider,
     hideLabel,
     allowedExtensions,
     hiddenValue,
@@ -144,7 +143,7 @@ export const CustomInput = ({
                 className={styles.checkBoxInput}
                 id={inputId}
                 type={type}
-                name={`${inputId}_${label}`}
+                name={`${inputId}_${id}`}
                 onChange={(event) => handleChange(event)}
               />
               <label
@@ -219,7 +218,7 @@ export const CustomInput = ({
                           type={type}
                           value={option.value}
                           id={inputId}
-                          name={`${inputId}_${label}`}
+                          name={`${inputId}_${id}`}
                           checked={
                             formSubmissionData[`${inputId}_${id}`] &&
                             formSubmissionData[`${inputId}_${id}`]?.some(
@@ -284,7 +283,7 @@ export const CustomInput = ({
                         className={styles.checkBoxInput}
                         type={type}
                         id={inputId}
-                        name={`${inputId}_${label}`}
+                        name={`${inputId}_${id}`}
                         checked={
                           formSubmissionData[`${inputId}_${id}`] === option.value
                         }
@@ -323,7 +322,7 @@ export const CustomInput = ({
           </label>
           <span className={styles.textRequired}> {required ? " *" : ""}</span>
           <select
-            name={`${inputId}_${label}`}
+            name={`${inputId}_${id}`}
             id={inputId}
             className={styles.classicInput}
             defaultValue={default_value}
@@ -346,8 +345,7 @@ export const CustomInput = ({
           </small>
         </div>
       );
-    case "divider":
-      return !hideDivider && <hr />;
+
     case "hidden":
       return (
         <div
@@ -362,7 +360,7 @@ export const CustomInput = ({
             type={type}
             data-type="fixed"
             id={inputId}
-            name={`${inputId}_${label}`}
+            name={`${inputId}_${id}`}
             value={hiddenValue}
           />
         </div>

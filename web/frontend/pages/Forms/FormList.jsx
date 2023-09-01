@@ -55,7 +55,6 @@ function FormList() {
     navigator.clipboard.writeText(textToCopy)
   }
 
-  console.log('formData', formData.formData)
   const sortedItems = useMemo(() => {
     switch (sortValue) {
       case "DATE_MODIFIED_DESC":

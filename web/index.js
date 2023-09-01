@@ -7,19 +7,22 @@ import serveStatic from "serve-static";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
 
+const host = process.env.HOST
+console.log('host: ', host);
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
 const app = express();
-
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
