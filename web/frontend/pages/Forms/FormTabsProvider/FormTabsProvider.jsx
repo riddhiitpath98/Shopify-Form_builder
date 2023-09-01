@@ -1,6 +1,5 @@
 import AcceptTermsFields from "../FormElementsTab/AcceptTermsFields";
 import CheckboxGroupFields from "../FormElementsTab/CheckboxGroupFields";
-import DividerInputFields from "../FormElementsTab/DividerInputFields";
 import FormFields from "../FormElementsTab/FormFields";
 import HeadingInputFields from "../FormElementsTab/HeadingInputFields";
 import HiddenInputFields from "../FormElementsTab/HiddenInputFields";
@@ -40,8 +39,6 @@ const FormTabsProvider = ({ isEdit, tabId, toggleDrawer }) => {
       return <AcceptTermsFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "paragraph":
       return <ParagraphInputFields {...{ isEdit, tabId, toggleDrawer }} />;
-    case "divider":
-      return <DividerInputFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "appearance":
       return <AppearanceFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "error_msg":

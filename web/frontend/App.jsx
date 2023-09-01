@@ -20,17 +20,13 @@ export default function App() {
 
   const location = useLocation();
   const apiKey = process.env.SHOPIFY_API_KEY;
-  const shopOrigin = sessionStorage.getItem("hostOrigin");
+  
+  // const shopOrigin = sessionStorage.getItem("hostOrigin");
 
   return (
     <PolarisProvider>
       <Provider
         store={store}
-        config={{
-          apiKey: apiKey,
-          shopOrigin: shopOrigin,
-          forceRedirect: true,
-        }}
       >
         <AppBridgeProvider>
           <QueryProvider>
@@ -62,8 +58,6 @@ export default function App() {
                 },
               ]}
             />
-
-            {/* <Routes pages={pages} /> */}
             <Routing />
           </QueryProvider>
         </AppBridgeProvider>

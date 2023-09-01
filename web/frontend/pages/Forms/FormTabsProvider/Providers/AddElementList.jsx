@@ -251,20 +251,6 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
         },
       ],
     },
-    {
-      label: "Structure",
-      fields: [
-        {
-          id: "divider",
-          title: "Divider",
-          type: "divider",
-          icon: Icons.divider,
-          attributes: {
-            hideDivider: false,
-          },
-        },
-      ],
-    },
   ];
 
   const handleRedirectToFields = (data) => {

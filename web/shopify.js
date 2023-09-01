@@ -1,9 +1,10 @@
 import { BillingInterval, LATEST_API_VERSION } from "@shopify/shopify-api";
 import { shopifyApp } from "@shopify/shopify-app-express";
 import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
-import { restResources } from "@shopify/shopify-api/rest/admin/2023-04";
+import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
+import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mongodb';
 
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+// const DB_PATH = `${process.cwd()}/database.sqlite`;
 
 // The transactions with Shopify will always be marked as test transactions, unless NODE_ENV is production.
 // See the ensureBilling helper to learn more about billing in this template.
@@ -19,6 +20,7 @@ const billingConfig = {
 const shopify = shopifyApp({
   api: {
     apiVersion: LATEST_API_VERSION,
+    isEmbeddedApp: true,
     restResources,
     billing: undefined, // or replace with billingConfig above to enable example billing
   },
@@ -30,7 +32,8 @@ const shopify = shopifyApp({
     path: "/api/webhooks",
   },
   // This should be replaced with your preferred storage strategy
-  sessionStorage: new SQLiteSessionStorage(DB_PATH),
+  sessionStorage: new MongoDBSessionStorage('mongodb+srv://rajkumaritpath:vx5ACFtKiE9Rlypa@cluster0.bkscd84.mongodb.net',
+    'shopify',),
 });
 
 export default shopify;

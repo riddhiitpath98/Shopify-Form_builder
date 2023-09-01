@@ -43,13 +43,7 @@ export function AppBridgeProvider({ children }) {
     const host =
       new URLSearchParams(location.search).get("host") ||
       window.__SHOPIFY_DEV_HOST;
-    const shop = window.location
     window.__SHOPIFY_DEV_HOST = host;
-    const currentURL = window.location.href;
-    const urlObject = new URL(currentURL);
-    const hostname = urlObject.hostname;
-    console.log('hostname: ', hostname);
-    console.log('window.location', window.location)
     return {
       host,
       apiKey: process.env.SHOPIFY_API_KEY,
@@ -58,8 +52,6 @@ export function AppBridgeProvider({ children }) {
   });
 
   dispatch(addAppId(appBridgeConfig.apiKey))
-  console.log('appBridgeConfig: ', appBridgeConfig);
-
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {

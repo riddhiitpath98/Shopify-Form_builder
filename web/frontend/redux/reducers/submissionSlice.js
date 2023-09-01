@@ -216,7 +216,8 @@ const submissionSlice = createSlice({
           submissionData: {
             success: true,
             loading: false,
-            data: action.payload,
+            data: action.payload.data,
+            total_count: action.payload.total_count,
             error: "",
           },
         };
@@ -249,7 +250,8 @@ const submissionSlice = createSlice({
           submissionData: {
             success: true,
             loading: false,
-            data: action.payload,
+            data: action.payload.data,
+            total_count: action.payload.total_count,
             error: "",
           },
         };

@@ -34,6 +34,15 @@ import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 
 function Submissions() {
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [sortValue, setSortValue] = useState("-createdAt");
+  const [status, setStatus] = useState([]);
+  const [formStatus, setFormStatus] = useState([]);
+  const [queryValue, setQueryValue] = useState("");
+  const [editItem, setEditItem] = useState({});
+  const [deleteFormArr, setDeleteFormArr] = useState([]);
+  const [active, setActive] = useState(false);
+
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,20 +63,8 @@ function Submissions() {
   );
 
   const fetchMoreData = async () => {
-    try {
-      dispatch(loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }))
-    } catch (error) {
-      // Handle error
-    }
+    setCurrentPage(currentPage + 1)
   };
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [sortValue, setSortValue] = useState("-createdAt");
-  const [status, setStatus] = useState([]);
-  const [formStatus, setFormStatus] = useState([]);
-  const [queryValue, setQueryValue] = useState("");
-  const [editItem, setEditItem] = useState({});
-  const [deleteFormArr, setDeleteFormArr] = useState([]);
-  const [active, setActive] = useState(false);
 
   const fileName = `export_submission_${new Date()
     .toISOString()
@@ -84,16 +81,22 @@ function Submissions() {
           }
         }
       }
-    }).sort((a, b) => {
-      if (sortValue === '-createdAt')
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      else
-        return new Date(a.createdAt) - new Date(b.createdAt)
     }
     );
 
     return data
   }, [submissionData, queryValue]);
+
+  const formTitleById = useMemo(() => {
+    let titleById = {};
+    const foundObject = formData.find((obj) => obj._id === location?.state?.id);
+    if (foundObject) {
+      titleById.id = foundObject._id;
+      titleById.formTitle = foundObject.customForm[0].formTitle;
+      setFormStatus([titleById.id]);
+    }
+    return titleById;
+  }, []);
 
   const csvData = useMemo(() => {
     const data = [];
@@ -154,13 +157,13 @@ function Submissions() {
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
-            query: { isRead: true, formId: formStatus },
+            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
           })
         )
         : dispatch(
           sortNFilterSubmission({
             path: sortValue,
-            query: { isRead: true, formId: formStatus },
+            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
             appId
           })
         );
@@ -171,13 +174,13 @@ function Submissions() {
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
-            query: { isRead: false, formId: formStatus },
+            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
           })
         )
         : dispatch(
           sortNFilterSubmission({
             path: sortValue,
-            query: { isRead: false, formId: formStatus },
+            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
             appId
           })
         );
@@ -191,13 +194,13 @@ function Submissions() {
         sortNFilterSubmissionById({
           filterFormId: location?.state?.id,
           path: sortValue,
-          query: { isRead: "", formId: formStatus },
+          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
         })
       )
       : dispatch(
         sortNFilterSubmission({
           path: sortValue,
-          query: { isRead: "", formId: formStatus },
+          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
           appId
         })
       );
@@ -219,6 +222,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: value,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -233,6 +238,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: value,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
@@ -255,6 +262,8 @@ function Submissions() {
                   ? false
                   : "",
             formId: [],
+            page: currentPage,
+            per_page: itemPrPage
           },
         })
       )
@@ -269,6 +278,8 @@ function Submissions() {
                   ? false
                   : "",
             formId: [],
+            page: currentPage,
+            per_page: itemPrPage
           },
           appId
         })
@@ -311,10 +322,10 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId({ id: location.state?.id, page: currentPage, per_page: itemPrPage })
-        : loadMoreSubmission({ appId, page: currentPage, per_page: itemPrPage }), setCurrentPage(currentPage + 1)
+        ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: currentPage, per_page: itemPrPage })
+        : loadMoreSubmission({ order: sortValue, appId, page: currentPage, per_page: itemPrPage })
     );
-  }, [dispatch, location?.state?.id]);
+  }, [dispatch, location?.state?.id, currentPage]);
 
   useEffect(() => {
     dispatch(fetchFormData());
@@ -329,6 +340,7 @@ function Submissions() {
     { label: "Newest", value: "-createdAt" },
     { label: "Oldest", value: "createdAt" },
   ];
+
 
   const promotedBulkActions = [
     {
@@ -348,6 +360,7 @@ function Submissions() {
                     : "",
               formId: formStatus,
             },
+            appId
           })
         );
         setDeleteFormArr([]);
@@ -395,7 +408,18 @@ function Submissions() {
       shortcut: true,
     },
   ];
-
+  const formFilter = [];
+  if (formStatus && formStatus.length > 0) {
+    const selectedFormTitles = formStatus.map((val) => {
+      const selectedFormTitle = formTitle.find((title) => title.id === val);
+      return selectedFormTitle ? selectedFormTitle.title : "";
+    });
+    formFilter.push({
+      key: "formStatus",
+      label: `Form : ${selectedFormTitles.join(", ")}`,
+      onRemove: handleFormStatusRemove,
+    });
+  }
   const appliedFilters = [];
   if (status && !isEmpty(status)) {
     appliedFilters.push({
@@ -409,13 +433,13 @@ function Submissions() {
       const selectedFormTitle = formTitle.find((title) => title.id === val);
       return selectedFormTitle ? selectedFormTitle.title : "";
     });
+
     appliedFilters.push({
       key: "formStatus",
-      label: `Form ${selectedFormTitles.join(", ")}`,
+      label: `Form : ${selectedFormTitles.join(", ")}`,
       onRemove: handleFormStatusRemove,
     });
   }
-
   const onSortChange = (selected) => {
     if (selected === "createdAt") {
       location?.state?.id
@@ -431,6 +455,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -445,6 +471,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
@@ -464,6 +492,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
           })
         )
@@ -478,6 +508,8 @@ function Submissions() {
                     ? false
                     : "",
               formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage
             },
             appId
           })
@@ -500,6 +532,13 @@ function Submissions() {
   return (
     <>
       <Page fullWidth title="Submissions">
+        {formFilter.length > 0 ? (
+          <Text variant="headingSm" as="h6">
+            <div style={{ marginBottom: "6px" }}>
+              {formFilter[0]?.label}
+            </div>
+          </Text>
+        ) : null}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}
@@ -516,9 +555,6 @@ function Submissions() {
             selectable
             alternateTool={
               <>
-                <CSVLink data={csvData} filename={fileName}>
-                  <Button>Export all Data</Button>
-                </CSVLink>
                 <Select
                   label="Sort by"
                   labelInline
@@ -572,28 +608,6 @@ function Submissions() {
               </div>
             </div>
           </ResourceItem>
-          {/* <ResourceItem
-            id={index}
-            name={items?._id}
-            onClick={() => handleOpen(items)}
-            persistActions={true}
-          >
-            {console.log('Object.values(items?.submission)', Object.values(items?.submission))}
-            {Object.values(items?.submission).map((value, index) => {
-              if (Array.isArray(value)) {
-                console.log('value', value)
-                return false
-              }
-              else {
-                (<div className={styles.resourceItem} key={index} >
-                  {value}
-                </div >)
-              }
-            })}
-            <div className={styles.resourceItem}>
-              {moment(items.createdAt).format("DD-MM-YYYY HH:MM ")}
-            </div >
-          </ResourceItem > */}
         </div >
 
         {
