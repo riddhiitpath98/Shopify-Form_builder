@@ -421,7 +421,6 @@ function Submissions() {
       onRemove: handleFormStatusRemove,
     });
   }
-  console.log('formFilter', formFilter)
   const appliedFilters = [];
   if (status && !isEmpty(status)) {
     appliedFilters.push({

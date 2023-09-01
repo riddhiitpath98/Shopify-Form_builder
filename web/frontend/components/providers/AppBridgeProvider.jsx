@@ -52,7 +52,6 @@ export function AppBridgeProvider({ children }) {
   });
 
   dispatch(addAppId(appBridgeConfig.apiKey))
-  console.log('appBridgeConfig: ', appBridgeConfig);
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {
