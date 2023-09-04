@@ -2,7 +2,7 @@
 
 name = "Contact form to any api"
 client_id = "763f8082fff2f80f70d9b6766f654c10"
-application_url = "https://rides-jessica-scores-streets.trycloudflare.com"
+application_url = "https://contents-port-flu-mw.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://rides-jessica-scores-streets.trycloudflare.com/auth/callback",
-  "https://rides-jessica-scores-streets.trycloudflare.com/auth/shopify/callback",
-  "https://rides-jessica-scores-streets.trycloudflare.com/api/auth/callback"
+  "https://contents-port-flu-mw.trycloudflare.com/auth/callback",
+  "https://contents-port-flu-mw.trycloudflare.com/auth/shopify/callback",
+  "https://contents-port-flu-mw.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

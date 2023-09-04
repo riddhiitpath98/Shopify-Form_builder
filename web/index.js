@@ -43,7 +43,8 @@ app.use(express.json());
 app.get("/api/shop", async (_req, res) => {
   const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
   const response = await client.get({ path: 'shop' })
-  res.status(200).send(response.body.shop)
+  console.log('response: ', response);
+  res.status(200).send(response)
 })
 
 app.get("/api/products/count", async (_req, res) => {

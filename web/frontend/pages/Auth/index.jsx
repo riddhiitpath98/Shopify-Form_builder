@@ -12,6 +12,7 @@ const Auth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const shop = useAppQuery({ url: "/api/shop" });
+    console.log('shop: ', shop);
 
     useEffect(() => {
         if (shop.isSuccess) {
