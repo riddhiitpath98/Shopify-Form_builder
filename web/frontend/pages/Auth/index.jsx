@@ -11,8 +11,6 @@ import { Spinner } from '@shopify/polaris';
 const Auth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const shop = useAppQuery({ url: "/api/shop" });
-    console.log('shop: ', shop);
 
     useEffect(() => {
         navigate("/dashboard", { replace: true })

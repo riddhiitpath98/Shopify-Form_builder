@@ -2,7 +2,7 @@
 
 name = "Contact form to any api"
 client_id = "763f8082fff2f80f70d9b6766f654c10"
-application_url = "https://contents-port-flu-mw.trycloudflare.com"
+application_url = "https://shopify-form-builder-gcmn.vercel.app"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://contents-port-flu-mw.trycloudflare.com/auth/callback",
-  "https://contents-port-flu-mw.trycloudflare.com/auth/shopify/callback",
-  "https://contents-port-flu-mw.trycloudflare.com/api/auth/callback"
+  "https://shopify-form-builder-gcmn.vercel.app/auth/callback",
+  "https://shopify-form-builder-gcmn.vercel.app/auth/shopify/callback",
+  "https://shopify-form-builder-gcmn.vercel.app/api/auth/callback"
 ]
 
 [webhooks]
@@ -23,5 +23,5 @@ api_version = "2023-07"
 embedded = false
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 dev_store_url = "it-path-dev-store.myshopify.com"
