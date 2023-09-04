@@ -51,7 +51,9 @@ function FormList() {
   const handleCopyCode = (id) => {
 
     const filter = formData.formData?.filter?.(item => item._id === id)
-    const textToCopy = `<div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""}'></div>`;
+    const textToCopy = `<script type="module" crossorigin src="https://contactformtoapiapp.project-demo.info/assets/render.js"></script>
+  <link rel="stylesheet" href="https://contactformtoapiapp.project-demo.info/assets/render.css"/>
+  <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""}'></div>`;
     navigator.clipboard.writeText(textToCopy)
   }
 

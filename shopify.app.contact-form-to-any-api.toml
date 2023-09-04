@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "form-builder"
-client_id = "b1dde03422dce735642fb2d448471911"
-application_url = "https://plans-beliefs-automation-fields.trycloudflare.com"
+name = "Contact form to any api"
+client_id = "763f8082fff2f80f70d9b6766f654c10"
+application_url = "https://rides-jessica-scores-streets.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://plans-beliefs-automation-fields.trycloudflare.com/auth/callback",
-  "https://plans-beliefs-automation-fields.trycloudflare.com/auth/shopify/callback",
-  "https://plans-beliefs-automation-fields.trycloudflare.com/api/auth/callback"
+  "https://rides-jessica-scores-streets.trycloudflare.com/auth/callback",
+  "https://rides-jessica-scores-streets.trycloudflare.com/auth/shopify/callback",
+  "https://rides-jessica-scores-streets.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
