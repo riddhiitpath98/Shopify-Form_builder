@@ -360,3 +360,23 @@ export const createRecaptchaSettings = createAsyncThunk("recaptchaSettings/creat
     return rejectWithValue(error.response.data)
   }
 })
+
+// =====================subscription api ===========================
+export const getAllSubscription = createAsyncThunk("subscription/getAllSubscription", async () => {
+  try {
+    const response = await axios.get("/subscriptions")
+    return response.data.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+export const getSubscriptionById = createAsyncThunk("subscription/getSubscriptionById", async (id) => {
+  try {
+    const response = await axios.get(`/subscription/${id}`)
+    return response.data.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
