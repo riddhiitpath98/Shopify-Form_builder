@@ -7,6 +7,7 @@ import submissionSlice from "./reducers/submissionSlice";
 import formSettingSlice from "./reducers/formSettingSlice";
 import viewPortSlice from "./reducers/viewPortSlice";
 import userSlice from "./reducers/userSlice";
+import subscriptionSlice from "./reducers/subscriptionSlice";
 // import counterReducer from './reducers/'
 const reducers = combineReducers({
     inputField: inputFieldSlice,
@@ -16,7 +17,8 @@ const reducers = combineReducers({
     submission: submissionSlice,
     formSetting: formSettingSlice,
     viewPort: viewPortSlice,
-    user: userSlice
+    user: userSlice,
+    subscription: subscriptionSlice
 });
 
 export const store = configureStore({

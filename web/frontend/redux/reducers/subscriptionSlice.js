@@ -2,78 +2,73 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getAllSubscription, getSubscriptionById } from "../actions/allActions";
 
 const initialState = {
-    subscription: {
-        data: {},
-        error: "",
-        loading: false,
-    },
-    feedbackData: {
+    subscriptionData: {
         data: {},
         error: "",
         loading: false,
     },
 };
 
-const supportSlice = createSlice({
-    name: "setting",
+const subscriptionSlice = createSlice({
+    name: "",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(contactUs.pending, (state, action) => {
+            .addCase(getAllSubscription.pending, (state, action) => {
                 return {
                     ...state,
-                    contactUsData: {
+                    subscriptionData: {
                         loading: true,
                         data: {},
                         error: "",
                     },
                 };
             })
-            .addCase(contactUs.fulfilled, (state, action) => {
+            .addCase(getAllSubscription.fulfilled, (state, action) => {
                 return {
                     ...state,
-                    contactUsData: {
+                    subscriptionData: {
                         loading: false,
                         data: action.payload,
                         error: "",
                     },
                 };
             })
-            .addCase(contactUs.rejected, (state, action) => {
+            .addCase(getAllSubscription.rejected, (state, action) => {
                 return {
                     ...state,
-                    contactUsData: {
+                    subscriptionData: {
                         loading: false,
                         data: {},
                         error: action.payload,
                     },
                 };
             })
-            .addCase(addFeedback.pending, (state, action) => {
+            .addCase(getSubscriptionById.pending, (state, action) => {
                 return {
                     ...state,
-                    feedbackData: {
+                    subscriptionData: {
                         loading: true,
                         data: {},
                         error: "",
                     },
                 };
             })
-            .addCase(addFeedback.fulfilled, (state, action) => {
+            .addCase(getSubscriptionById.fulfilled, (state, action) => {
                 return {
                     ...state,
-                    feedbackData: {
+                    subscriptionData: {
                         loading: false,
                         data: action.payload,
                         error: "",
                     },
                 };
             })
-            .addCase(addFeedback.rejected, (state, action) => {
+            .addCase(getSubscriptionById.rejected, (state, action) => {
                 return {
                     ...state,
-                    feedbackData: {
+                    subscriptionData: {
                         loading: false,
                         data: {},
                         error: action.payload,
@@ -83,6 +78,4 @@ const supportSlice = createSlice({
     },
 });
 
-// export const { contactUsData } = supportSlice.actions;
-
-export default supportSlice.reducer;
+export default subscriptionSlice.reducer;
