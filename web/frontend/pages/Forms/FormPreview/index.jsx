@@ -2,24 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Button,
-  Card,
-  Form,
   FormLayout,
   Grid,
   Heading,
   Layout,
-  Page,
+  LegacyCard,
   SkeletonBodyText,
-  SkeletonDisplayText,
   SkeletonPage,
-  Spinner,
-  TextContainer,
-  TextField,
-  TextStyle,
+  Spinner
 } from "@shopify/polaris";
 import { CustomInput } from "./CustomInput";
-import { createSubmissions, getRecaptchaSettingsByAppId } from "../../../redux/actions/allActions";
+import { createSubmissions } from "../../../redux/actions/allActions";
 import BannerCard from "./BannerCard";
 import { allFieldsAreRequired, validation } from "../../../utils/validation";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -186,7 +179,7 @@ const FormPreview = () => {
       const mapData = inputFields.map((input) => {
         return fieldArry.find((feild) => input.inputId === feild.id);
       });
-      setFormFeildData(mapData); //set updated inputFields after removal of input
+      setFormFeildData(mapData); //set updated inputFields after removal of any input
     }
     dispatch(
       updateEnableRecaptcha({
@@ -440,7 +433,7 @@ const FormPreview = () => {
         <SkeletonPage>
           <Layout>
             <Layout.Section>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <div className={styles.previewCard}>
                   <div className={styles.previewBox}>
                     <SkeletonBodyText />
@@ -449,7 +442,7 @@ const FormPreview = () => {
                     <SkeletonBodyText />
                   </div>
                 </div>
-              </Card>
+              </LegacyCard>
             </Layout.Section>
           </Layout>
         </SkeletonPage>

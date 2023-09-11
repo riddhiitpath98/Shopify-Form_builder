@@ -10,7 +10,7 @@ const ToggleSwitch = ({ items }) => {
   }
 
   return (
-    <div className="container">
+    <div className="container" onClick={() => handleVisibility({target: {checked: !items.isVisible}}, items._id)} >
       <div className="toggle-switch">
         <input type="checkbox" checked={items.isVisible} className="checkbox" name="isvisible_switch" id={`isvisible_switch_${items._id}`} onChange={(e) => handleVisibility(e, items._id)} />
         <label className="label" htmlFor={`isvisible_switch_${items._id}`}>

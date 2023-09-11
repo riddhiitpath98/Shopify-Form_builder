@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import {
+  Button,
   Layout,
   Page,
 } from "@shopify/polaris";
@@ -12,9 +13,16 @@ import {
 import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import ChartDashboard from "../../components/Chart";
+import PlanModal from "../Pricingplans/PlanModal";
 
 function Dashboard() {
   const dispatch = useDispatch();
+  const [active, setActive] = useState(false);
+  console.log('active: ', active);
+
+  const toggleModal = useCallback(() => setActive((active) => !active), []);
+
+  const activator = <Button onClick={toggleModal}>Open</Button>;
   const [selected, setSelected] = useState("Select an option");
   const [popoverActive, setPopoverActive] = useState({
     dailySubmission: false,
@@ -89,6 +97,8 @@ function Dashboard() {
               </Layout.Section>
             </div>
           </Layout>
+                  <Button onClick={toggleModal}>Open</Button>
+            {active && <PlanModal {...{active,setActive,activator,toggleModal}}/>}
         </div>
       </Page>
     </>

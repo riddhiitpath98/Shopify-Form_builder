@@ -136,10 +136,20 @@ tbody td {
 .rupees {
   display: inline-block;
   vertical-align: top;
+  font-size: 30px;
 }
 .pmuBadge {
   opacity: 1;
 }
 .rowTransparent {
   background-color: transparent;
+}
+.subscription_time_wrapper{
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+.gridItem{
+  overflow-x: auto;
+  width: 100%;
 }

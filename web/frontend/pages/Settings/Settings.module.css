@@ -29,3 +29,8 @@
   color: #008060 !important;
   fill: var(--p-action-primary) !important;
 }
+
+.textRequired {
+  font-size: 12px;
+  color: red;
+}

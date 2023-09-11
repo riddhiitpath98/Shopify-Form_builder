@@ -14,7 +14,7 @@ const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
-
+console.log('PORT', PORT)
 const host = process.env.HOST
 console.log('host: ', host);
 const STATIC_PATH =

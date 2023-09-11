@@ -3,13 +3,13 @@ import {
   FormLayout,
   TextField,
   Button,
-  Card,
   Page,
   RadioButton,
   Stack,
   Checkbox,
   Label,
   Select,
+  LegacyCard,
 } from "@shopify/polaris";
 import { useState, useCallback } from "react";
 
@@ -39,7 +39,7 @@ export default function UserForm() {
 
   return (
     <Page>
-      <Card sectioned title="Form">
+      <LegacyCard sectioned title="Form">
         <Form onSubmit={handleSubmit}>
           <FormLayout>
             <TextField
@@ -81,7 +81,7 @@ export default function UserForm() {
             <Button submit>Submit</Button>
           </FormLayout>
         </Form>
-      </Card>
+      </LegacyCard>
     </Page>
   );
 }

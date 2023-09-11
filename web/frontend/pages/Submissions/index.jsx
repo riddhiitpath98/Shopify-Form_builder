@@ -2,7 +2,6 @@ import {
   Button,
   ResourceList,
   ResourceItem,
-  Card,
   Filters,
   Page,
   ChoiceList,
@@ -25,7 +24,6 @@ import {
   loadMoreSubmission,
 } from "../../redux/actions/allActions";
 import { useLocation } from "react-router-dom";
-import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
 import ModalSubmission from "./ModalSubmission";
@@ -65,10 +63,6 @@ function Submissions() {
   const fetchMoreData = async () => {
     setCurrentPage(currentPage + 1)
   };
-
-  const fileName = `export_submission_${new Date()
-    .toISOString()
-    .slice(0, 10)}.csv`;
 
   const newSubmissionData = useMemo(() => {
     const data = submissionData?.filter((item, index) => {

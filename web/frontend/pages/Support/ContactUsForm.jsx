@@ -4,11 +4,10 @@ import {
   FormLayout,
   TextField,
   Button,
-  Card,
   Page,
   Grid,
-  Heading,
   Layout,
+  LegacyCard,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from 'react-redux';
 import { contactUs } from "../../redux/actions/allActions";
@@ -78,7 +77,7 @@ function ContactUsForm() {
         <Layout>
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>
                     <Grid>
@@ -90,6 +89,7 @@ function ContactUsForm() {
                           onChange={(value) => handleChange("firstName", value)}
                           label="First Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.firstName}
                           autoComplete="off"
                         />
@@ -101,6 +101,7 @@ function ContactUsForm() {
                           onChange={(value) => handleChange("lastName", value)}
                           label="Last Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.lastName}
                           autoComplete="off"
                         />
@@ -113,6 +114,7 @@ function ContactUsForm() {
                           onChange={(value) => handleChange("email", value)}
                           label="Email ID"
                           type="email"
+                          requiredIndicator
                           error={errorValues.email}
                           autoComplete="off"
                         />
@@ -126,6 +128,7 @@ function ContactUsForm() {
                           }
                           label="Contact Number"
                           type="text"
+                          requiredIndicator
                           error={errorValues.contactNumber}
                           autoComplete="off"
                         />
@@ -140,6 +143,7 @@ function ContactUsForm() {
                           }
                           label="Subject Line"
                           type="text"
+                          requiredIndicator
                           error={errorValues.subjectLine}
                           autoComplete="off"
                         />
@@ -153,6 +157,7 @@ function ContactUsForm() {
                           label="Message"
                           type="text"
                           multiline={4}
+                          requiredIndicator
                           error={errorValues.message}
                           autoComplete="off"
                         />
@@ -167,7 +172,7 @@ function ContactUsForm() {
                   </FormLayout>
                   <ToastContainer />
                 </Form>
-              </Card>
+              </LegacyCard>
             </div>
           </Layout.Section>
         </Layout>

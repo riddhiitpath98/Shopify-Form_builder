@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
-import { Card, Layout, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, Tabs, TextContainer } from "@shopify/polaris";
+import { Layout, LegacyCard, SkeletonBodyText, SkeletonDisplayText, SkeletonPage, Tabs, TextContainer } from "@shopify/polaris";
 import { tabs } from "../../../constant";
 import TabsProvider from "../TabsProvider/TabsProvider";
 import styles from "../FormStyle.module.css";
@@ -21,30 +21,30 @@ const FormSidebar = ({ isEdit }) => {
           <SkeletonPage primaryAction>
             <Layout>
               <Layout.Section>
-                <Card sectioned>
+                <LegacyCard sectioned>
                   <TextContainer>
                     <SkeletonDisplayText size="small" />
                     <SkeletonBodyText />
                   </TextContainer>
-                </Card>
-                <Card sectioned>
+                </LegacyCard>
+                <LegacyCard sectioned>
                   <TextContainer>
                     <SkeletonDisplayText size="small" />
                     <SkeletonBodyText />
                   </TextContainer>
-                </Card>
-                <Card sectioned>
+                </LegacyCard>
+                <LegacyCard sectioned>
                   <TextContainer>
                     <SkeletonDisplayText size="small" />
                     <SkeletonBodyText />
                   </TextContainer>
-                </Card>
-                <Card sectioned>
+                </LegacyCard>
+                <LegacyCard sectioned>
                   <TextContainer>
                     <SkeletonDisplayText size="small" />
                     <SkeletonBodyText />
                   </TextContainer>
-                </Card>
+                </LegacyCard>
               </Layout.Section>
             </Layout>
           </SkeletonPage>

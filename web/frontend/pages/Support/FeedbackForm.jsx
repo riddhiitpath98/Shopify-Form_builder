@@ -1,13 +1,11 @@
-import { useAppBridge } from "@shopify/app-bridge-react";
 import {
   Button,
-  Card,
   Form,
   FormLayout,
   Grid,
-  Heading,
   Label,
   Layout,
+  LegacyCard,
   Page,
   TextField,
 } from "@shopify/polaris";
@@ -83,7 +81,7 @@ const FeedbackForm = () => {
         <Layout>
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>
                     <Grid>
@@ -95,6 +93,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("name", value)}
                           label="Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.name}
                           autoComplete="off"
                         />
@@ -108,6 +107,7 @@ const FeedbackForm = () => {
                           }
                           label="Website/Company Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.websiteName}
                           autoComplete="off"
                         />
@@ -120,6 +120,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("email", value)}
                           label="Email ID"
                           type="email"
+                          requiredIndicator
                           error={errorValues.email}
                           autoComplete="off"
                         />
@@ -133,6 +134,7 @@ const FeedbackForm = () => {
                           }
                           label="Contact Number"
                           type="text"
+                          requiredIndicator
                           error={errorValues.contactNumber}
                           autoComplete="off"
                         />
@@ -151,6 +153,7 @@ const FeedbackForm = () => {
                           label="Message"
                           type="textarea"
                           multiline={4}
+                          requiredIndicator
                           error={errorValues.message}
                           autoComplete="off"
                         />
@@ -165,7 +168,7 @@ const FeedbackForm = () => {
                   </FormLayout>
                 </Form>
                 <ToastContainer />
-              </Card>
+              </LegacyCard>
             </div>
           </Layout.Section>
         </Layout>

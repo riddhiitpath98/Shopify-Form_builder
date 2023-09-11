@@ -4,16 +4,10 @@ import {
   ResourceList,
   ResourceItem,
   Page,
-  Card,
   Button,
   Icon,
   Tooltip,
   Select,
-  EmptyState,
-  SkeletonPage,
-  Layout,
-  SkeletonBodyText,
-  TextContainer,
   SkeletonDisplayText,
   SkeletonThumbnail,
   LegacyCard,
@@ -23,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import { ToastContainer } from "react-toastify";
-import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
 import { Icons } from "../../constant";
@@ -218,7 +211,7 @@ function FormList() {
             ) : (
               <Button type="button">
                 {" "}
-                <Tooltip content="Copy HTML code ">
+                <Tooltip content="Copy code ">
                   <Icon source={Icons.copy} />
                 </Tooltip>
               </Button>
@@ -231,3 +224,202 @@ function FormList() {
   }
 }
 export default React.memo(FormList);
+
+// import {
+//   Button,
+//   Card,
+//   Heading,
+//   Icon,
+//   IndexTable,
+//   Layout,
+//   Link,
+//   Page,
+//   Select,
+//   Stack,
+//   TextStyle,
+//   Thumbnail,
+//   useIndexResourceState,
+// } from "@shopify/polaris";
+// import { CategoriesMajor } from "@shopify/polaris-icons";
+// import { DeleteMajor } from "@shopify/polaris-icons";
+// import { useCallback, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import ToggleSwitch from "../../components/ToggleSwitch";
+// import SubmissionSVG from "../../utils/SubmissionSVG";
+// import { useAppBridge } from "@shopify/app-bridge-react";
+// import { Fullscreen } from "@shopify/app-bridge/actions";
+// import { fetchFormData } from "../../redux/actions/allActions";
+// import { useSelector, useDispatch } from "react-redux";
+// import { useEffect } from "react";
+
+// export default function Forms() {
+//   const [sortValue, setSortValue] = useState("");
+//   const app = useAppBridge();
+//   const dispatch = useDispatch();
+//   const fullscreen = Fullscreen.create(app);
+//   const [isFullScreen, setIsFullScreen] = useState(false);
+//   const formData = useSelector((state) => state?.inputField?.finalFormData);
+
+//   const sortOptions = [
+//     { label: "Newest", value: "newest" },
+//     { label: "Yesterday", value: "yesterday" },
+//     { label: "Last 7 days", value: "lastWeek" },
+//   ];
+
+//   const customers = [
+//     {
+//       id: "1",
+//       url: "#",
+//       shortCode: "MTA3OTE4",
+//       title: "Contact Form",
+//       createdOn: "2023-02-28 05:58:25",
+//     },
+//     {
+//       id: "2",
+//       url: "#",
+//       shortCode: "MTA3Nzg3",
+//       title: "Registration Form",
+//       createdOn: "2023-02-28 06:48:18",
+//     },
+//   ];
+
+//   const resourceName = {
+//     singular: "Forms",
+//     plural: "forms",
+//   };
+
+//   const navigate = useNavigate();
+//   const { selectedResources, allResourcesSelected, handleSelectionChange } =
+//     useIndexResourceState(customers);
+
+//   const rowMarkup =
+//     formData?.formData &&
+//     formData?.formData.map(
+//       ({ _id, url, short_code, createdAt, isVisible }, index) => (
+//         <IndexTable.Row
+//           id={_id}
+//           key={_id}
+//           selected={selectedResources.includes(_id)}
+//           position={index}
+//         >
+//           <IndexTable.Cell>
+//             <Link
+//               // dataPrimaryLink
+//               // url={url}
+//               onClick={() => navigate("/form/new")}
+//             >
+//               <span>
+//                 <b>{short_code}</b>
+//               </span>
+//             </Link>
+//           </IndexTable.Cell>
+//           <IndexTable.Cell>{isVisible}</IndexTable.Cell>
+
+//           <IndexTable.Cell>
+//             <Stack alignment="center">
+//               <ToggleSwitch items={{ _id, isVisible }} />
+//             </Stack>
+//           </IndexTable.Cell>
+//           <IndexTable.Cell>
+//             <Link
+//               // url={url} 
+//               onClick={() => navigate("/submissions")}>
+//               <Stack alignment="center">
+//                 <Thumbnail source={SubmissionSVG} alt={"title"} size="medium" />
+//               </Stack>
+//             </Link>
+//           </IndexTable.Cell>
+//           <IndexTable.Cell>
+//             <span>{createdAt}</span>
+//           </IndexTable.Cell>
+//         </IndexTable.Row>
+//       )
+//     );
+
+//   const handleSortChange = useCallback((value) => setSortValue(value), []);
+//   const handleCreateForm = () => {
+//     fullscreen.dispatch(Fullscreen.Action.ENTER);
+//     setIsFullScreen(true);
+//     navigate("/form/new");
+//   };
+
+//   useEffect(() => {
+//     dispatch(fetchFormData("2976c6111934ce218e6a854d3a881822"));
+//   }, []);
+
+//   return (
+//     <Page fullWidth>
+//       <Layout>
+//         <Layout.Section>
+//           <Stack>
+//             <Stack.Item fill>
+//               <Heading>Form</Heading>
+//             </Stack.Item>
+//             <Stack.Item>
+//               <Button primary onClick={handleCreateForm}>
+//                 Create Form
+//               </Button>
+//             </Stack.Item>
+//           </Stack>
+//         </Layout.Section>
+//         <Layout.Section>
+//           <Card>
+//             <div
+//               style={{
+//                 padding: "16px",
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//               }}
+//             >
+//               <div>
+//                 <TextStyle variation="strong">2 Forms</TextStyle>
+//               </div>
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   flexWrap: "wrap",
+//                   width: "200px",
+//                   justifyContent: "space-between",
+//                 }}
+//               >
+//                 <Button
+//                   plain
+//                   icon={<Icon source={CategoriesMajor} color="base" />}
+//                 />
+//                 <Button
+//                   plain
+//                   icon={<Icon source={DeleteMajor} color="base" />}
+//                 />
+//                 <Select
+//                   labelInline
+//                   label="Sort by"
+//                   options={sortOptions}
+//                   value={sortValue}
+//                   onChange={handleSortChange}
+//                 />
+//               </div>
+//             </div>
+//             <IndexTable
+//               resourceName={resourceName}
+//               itemCount={customers.length}
+//               selectedItemsCount={
+//                 allResourcesSelected ? "All" : selectedResources.length
+//               }
+//               onSelectionChange={handleSelectionChange}
+//               headings={[
+//                 { title: "Short Code" },
+//                 { title: "Title" },
+//                 { title: "Status" },
+//                 { title: "Submission" },
+//                 { title: "Created On" },
+//               ]}
+//               loading={formData?.loading}
+//             >
+//               {rowMarkup}
+//             </IndexTable>
+//           </Card>
+//         </Layout.Section>
+//       </Layout>
+//     </Page>
+//   );
+// }
