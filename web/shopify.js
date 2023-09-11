@@ -25,7 +25,6 @@ const shopify = shopifyApp({
     apiKey: process.env.SHOPIFY_API_KEY,
     apiSecretKey: process.env.SHOPIFY_API_SECRET,
     scopes: process.env.SCOPES,
-    hostName: process.env.HOST,
     isEmbeddedApp: true,
     restResources,
     billing: undefined, // or replace with billingConfig above to enable example billing

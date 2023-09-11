@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const subscriptionSlice = createSlice({
-    name: "",
+    name: "subscription",
     initialState,
     reducers: {},
     extraReducers: (builder) => {

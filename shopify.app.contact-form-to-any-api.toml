@@ -2,7 +2,7 @@
 
 name = "Contact form to any api"
 client_id = "763f8082fff2f80f70d9b6766f654c10"
-application_url = "https://shopify-form-builder-gcmn.vercel.app"
+application_url = "https://informational-songs-housing-wt.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://shopify-form-builder-gcmn.vercel.app/auth/callback",
-  "https://shopify-form-builder-gcmn.vercel.app/auth/shopify/callback",
-  "https://shopify-form-builder-gcmn.vercel.app/api/auth/callback"
+  "https://informational-songs-housing-wt.trycloudflare.com/auth/callback",
+  "https://informational-songs-housing-wt.trycloudflare.com/auth/shopify/callback",
+  "https://informational-songs-housing-wt.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -23,5 +23,5 @@ api_version = "2023-07"
 embedded = false
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
 dev_store_url = "it-path-dev-store.myshopify.com"
