@@ -3,6 +3,8 @@ import { shopifyApp } from "@shopify/shopify-app-express";
 import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
 import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mongodb';
+import dotenv from 'dotenv'
+dotenv.config()
 
 // const DB_PATH = `${process.cwd()}/database.sqlite`;
 
@@ -20,6 +22,10 @@ const billingConfig = {
 const shopify = shopifyApp({
   api: {
     apiVersion: LATEST_API_VERSION,
+    apiKey: process.env.SHOPIFY_API_KEY,
+    apiSecretKey: process.env.SHOPIFY_API_SECRET,
+    scopes: process.env.SCOPES,
+    hostName: process.env.HOST,
     isEmbeddedApp: true,
     restResources,
     billing: undefined, // or replace with billingConfig above to enable example billing

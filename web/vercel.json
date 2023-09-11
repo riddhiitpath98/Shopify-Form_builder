@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "shopify.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "shopify.js"
+    }
+  ]
+}
