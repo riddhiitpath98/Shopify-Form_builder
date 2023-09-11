@@ -3,26 +3,68 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
+import fs from "fs";
+import https from "https";
 
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = parseInt(
-  process.env.BACKEND_PORT || process.env.PORT || "3000",
+  process.env.BACKEND_PORT || process.env.PORT || "3007",
   10
 );
-console.log('PORT', PORT)
-const host = process.env.HOST
-console.log('host: ', host);
+console.log("PORT", PORT);
+const host = process.env.HOST;
+console.log("host: ", host);
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
 const app = express();
+
+let httpServer;
+const privateKey = fs.readFileSync("certy/privkey.pem", "utf8");
+const certificate = fs.readFileSync("certy/cert.pem", "utf8");
+const caBundle = fs.readFileSync("certy/fullchain.pem", "utf8");
+const credentials = { key: privateKey, cert: certificate, ca: caBundle };
+httpServer = https.createServer(credentials, app);
+console.log("API Server created in HTTPS mode");
+
+httpServer.listen(PORT);
+httpServer.on("error", onError);
+httpServer.on("listening", onListening);
+httpServer.keepAliveTimeout = 180 * 1000;
+
+function onError(error) {
+  if (error.syscall !== "listen") throw error;
+
+  const bind = typeof PORT === "string" ? "Pipe " + PORT : "PORT " + PORT;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  let addr = httpServer.address();
+  const bind = typeof addr === "string" ? `pipe ${addr}` : `PORT ${addr.port}`;
+  console.log(`Listening on ${bind}`);
+}
+
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
@@ -43,10 +85,13 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use(express.json());
 
 app.get("/api/shop", async (_req, res) => {
-  const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
-  const response = await client.get({ path: 'shop' })
-  res.status(200).send(response.body.shop)
-})
+  const client = new shopify.api.clients.Rest({
+    session: res.locals.shopify.session,
+  });
+  const response = await client.get({ path: "shop" });
+  console.log("response: ", response);
+  res.status(200).send(response);
+});
 
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
@@ -79,4 +124,15 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
     .send(readFileSync(join(STATIC_PATH, "index.html")));
 });
 
-app.listen(PORT);
+// app.listen(PORT);
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  req.header("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});

@@ -305,6 +305,7 @@ const submissionSlice = createSlice({
           ...state,
           submissionData: {
             ...state.submissionData,
+            total_count: state.submissionData.total_count,
             loading: true,
           },
         };
@@ -322,6 +323,7 @@ const submissionSlice = createSlice({
             loading: false,
             submissionItem: action.payload,
             data: cloneData,
+            total_count: state.submissionData.total_count,
             error: "",
           },
         };
