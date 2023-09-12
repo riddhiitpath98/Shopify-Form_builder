@@ -4,7 +4,7 @@ import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
 import fs from 'fs';
-import https from "https";
+import https from "https";  
 
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
@@ -119,10 +119,15 @@ app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
-  return res
-    .status(200)
-    .set("Content-Type", "text/html")
-    .send(readFileSync(join(STATIC_PATH, "index.html")));
+  try {
+    return res
+      .status(200)
+      .set("Content-Type", "text/html")
+      .send(readFileSync(join(STATIC_PATH, "index.html")));
+  } catch (error) {
+    console.log('error', error)
+  }
+
 });
 
 app.listen(PORT);
