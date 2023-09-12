@@ -22,8 +22,6 @@ const STATIC_PATH =
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
-console.log('STATIC_PATH', STATIC_PATH)
-console.log('PORT', PORT)
 
 const app = express();
 
