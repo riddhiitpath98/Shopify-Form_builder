@@ -11,59 +11,63 @@ import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from 'dotenv';
 dotenv.config();
-
-const PORT = 3007
-
+const PORT = 3007;
+// const PORT = parseInt(
+//   process.env.BACKEND_PORT || process.env.PORT || "3007",
+//   10
+// );
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
 
+console.log('STATIC_PATH', STATIC_PATH)
+console.log('PORT', PORT)
 
 const app = express();
 
-let httpServer;
-const privateKey = fs.readFileSync('certy/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('certy/cert.pem', 'utf8');
-const caBundle = fs.readFileSync('certy/fullchain.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate, ca: caBundle };
-httpServer = https.createServer(credentials, app);
-console.log('API Server created in HTTPS mode');
+// let httpServer;
+// const privateKey = fs.readFileSync('certy/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('certy/cert.pem', 'utf8');
+// const caBundle = fs.readFileSync('certy/fullchain.pem', 'utf8');
+// const credentials = { key: privateKey, cert: certificate, ca: caBundle };
+// httpServer = https.createServer(credentials, app);
+// console.log('API Server created in HTTPS mode');
 
-httpServer.listen(PORT);
-httpServer.on('error', onError);
-httpServer.on('listening', onListening);
-httpServer.keepAliveTimeout = 180 * 1000;
+// httpServer.listen(PORT);
+// httpServer.on('error', onError);
+// httpServer.on('listening', onListening);
+// httpServer.keepAliveTimeout = 180 * 1000;
 
-function onError(error) {
-  console.log('error', error)
-  if (error.syscall !== "listen") throw error;
+// function onError(error) {
+//   console.log('error', error)
+//   if (error.syscall !== "listen") throw error;
 
-  const bind = typeof PORT === "string" ? "Pipe " + PORT : "PORT " + PORT;
+//   const bind = typeof PORT === "string" ? "Pipe " + PORT : "PORT " + PORT;
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+//   // handle specific listen errors with friendly messages
+//   switch (error.code) {
+//     case "EACCES":
+//       console.error(bind + " requires elevated privileges");
+//       process.exit(1);
+//       break;
+//     case "EADDRINUSE":
+//       console.error(bind + " is already in use");
+//       process.exit(1);
+//       break;
+//     default:
+//       throw error;
+//   }
+// }
 
 
 
-function onListening() {
-  let addr = httpServer.address();
-  const bind = typeof addr === "string" ? `pipe ${addr}` : `PORT ${addr.port}`;
-  console.log(`Listening on ${bind}`);
-}
+// function onListening() {
+//   let addr = httpServer.address();
+//   const bind = typeof addr === "string" ? `pipe ${addr}` : `PORT ${addr.port}`;
+//   console.log(`Listening on ${bind}`);
+// }
 
 
 // Set up Shopify authentication and webhook handling
@@ -88,7 +92,7 @@ app.use(express.json());
 app.get("/api/shop", async (_req, res) => {
   const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
   const response = await client.get({ path: 'shop' })
-  console.log('response: ', response);
+  // console.log('response: ', response);
   res.status(200).send(response)
 })
 
@@ -128,15 +132,15 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
 
 });
 
-// app.listen(PORT);
-app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  req.header("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Credentials", true);
-  next();
-});
+app.listen(PORT);
+// app.use(function (req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader("Access-Control-Allow-Headers", "*");
+//   req.header("Content-Type", "application/json");
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// });
