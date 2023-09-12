@@ -69,6 +69,9 @@ const app = express();
 
 
 // Set up Shopify authentication and webhook handling
+app.get("/test", async (req, res) => {
+  console.log("testing");
+})
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
