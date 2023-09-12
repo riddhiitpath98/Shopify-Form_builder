@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "^/web/(.*)",
+      "dest": "/backend/$1"
+    },
+    {
+      "src": "^/web/frontend/(.*)",
+      "dest": "/frontend/dist/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "(/sw\\.js)",
+      "dest": "public$1"
+    },
+    {
+      "src": "(/precache-manifest\\..*\\.js)",
+      "dest": "public$1"
+    },
+    {
+      "src": "(/workbox-.+\\.js)",
+      "dest": "public$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/dist/$1"
+    }
+  ]
+}
