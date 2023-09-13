@@ -3,7 +3,7 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
-import fs from 'fs';
+import fs from "fs";
 import https from "https";
 
 import shopify from "./shopify.js";
@@ -20,7 +20,6 @@ const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
     : `${process.cwd()}/frontend/`;
-
 
 const app = express();
 
@@ -65,7 +64,6 @@ const app = express();
 //   const bind = typeof addr === "string" ? `pipe ${addr}` : `PORT ${addr.port}`;
 //   console.log(`Listening on ${bind}`);
 // }
-
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
