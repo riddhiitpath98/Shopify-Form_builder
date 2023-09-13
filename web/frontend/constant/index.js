@@ -455,3 +455,9 @@ export const getIncrementedKeysData = (data) => {
     return item;
   });
 };
+
+export const SUBSCRIPTION_TYPES = {
+  FREE: 'free',
+  PREMIUM: 'premium',
+  ENTERPRISE: 'enterprise'
+}
