@@ -90,7 +90,7 @@ app.get("/api/shop", async (_req, res) => {
   const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
   const response = await client.get({ path: 'shop' })
   console.log('response: ', response);
-  res.status(200).send(response)
+  res.status(200).send(response?.body?.shop)
 })
 
 app.get("/api/products/count", async (_req, res) => {
@@ -118,10 +118,15 @@ app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
-  return res
-    .status(200)
-    .set("Content-Type", "text/html")
-    .send(readFileSync(join(STATIC_PATH, "index.html")));
+  try {
+    return res
+      .status(200)
+      .set("Content-Type", "text/html")
+      .send(readFileSync(join(STATIC_PATH, "index.html")));
+  } catch (error) {
+    console.log('error', error)
+  }
+
 });
 
 app.listen(PORT);

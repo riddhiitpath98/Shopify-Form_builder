@@ -6,26 +6,56 @@ import {
   LegacyCard,
   HorizontalStack,
   Badge,
+  Icon,
 } from "@shopify/polaris";
-import { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styles from "./PricingPlan.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { Icons } from "../../constant";
+import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
+import { addShopData } from "../../redux/actions/allActions";
 
-export default function PlanModal({
-  active,
-  setActive,
-  toggleModal,
-  activator,
-}) {
-  //   const [active, setActive] = useState(true);
+export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const subscriptionData = useSelector(
+    (state) => state.subscription?.subscriptionData?.data
+  );
+  const renderStatusIcon = (status) => {
+    if (status === true) {
+      return (
+        <span className={styles.priceValue}>
+          <Icon source={Icons.tick} color="primary" />
+        </span>
+      );
+    } else if (status === false || status === null) {
+      return (
+        <span className={styles.priceValue}>
+          <Icon source={Icons.divider} color="base" />
+        </span>
+      );
+    } else {
+      return status;
+    }
+  };
 
-  //   const toggleModal = useCallback(() => setActive((active) => !active), []);
-
-  //   const activator = <Button onClick={toggleModal}>Open</Button>;
+  const handleUserNavigation = (plan) => {
+    const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
+    let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
+    subscriptionData.filter(({ subscriptionName, _id }, index) => {
+      if (subscriptionName === plan) {
+        user = { ...user, subscriptionName, subscriptionId: _id }
+      }
+    })
+    dispatch(addShopData(user))
+    navigate("/dashboard", { replace: true })
+  }
 
   return (
     <div style={{ height: "500px" }}>
       <Modal
-        activator={activator}
+        // activator={activator}
         open={active}
         onClose={toggleModal}
         title="Pricing plans"
@@ -81,7 +111,7 @@ export default function PlanModal({
                           </span>
                         </div>
 
-                        <Button outline disabled fullWidth>
+                        <Button primary fullWidth onClick={() => handleUserNavigation('free')}>
                           <span>
                             <span>
                               <span>Choose this plan</span>
@@ -116,7 +146,15 @@ export default function PlanModal({
                           <span className={styles.month}>
                             {/* /<span>mo</span> */}
                           </span>
+
                         </div>
+                        <Button primary fullWidth onClick={() => handleUserNavigation('primium')}>
+                          <span>
+                            <span>
+                              <span>Choose this plan</span>
+                            </span>
+                          </span>
+                        </Button>
                         {/* 
                       <Button onClick={handleClick} primary fullWidth>
                         <span>
@@ -129,35 +167,53 @@ export default function PlanModal({
                         <span>7 days trial</span>
                       </div> */}
                       </td>
-                      {/* {pricingPlanData?.map((planData, id) => ( */}
-                        <>
-                          <tr >
-                            <th colSpan={3}>
-                              <span className={styles.tableHeader}>
-                                {/* <span>{planData?.heading}</span> */}
-                              </span>
-                            </th>
-                          </tr>
-                          {/* {planData?.tableData?.map((data, id) => ( */}
-                            <tr >
-                              <th scope="row" className={styles.rowData}>
-                                <div className={styles.rowTitle}>
-                                  <dl className={styles.labelName}>
-                                    <dt className={styles.labelText}>
-                                      {/* <span>{data?.title}</span> */}
-                                    </dt>
-                                    <dd
-                                      className={styles.labelDescription}
-                                    ></dd>
-                                  </dl>
-                                </div>
+
+                      {subscriptionData.length > 0 && Object.keys(subscriptionData[0]?.features).map(
+                        (featureKey) => (
+                          <React.Fragment key={featureKey}>
+                            <tr>
+                              <th colSpan={3}>
+                                <span className={styles.tableHeader}>
+                                  <span>{featureKey}</span>
+                                </span>
                               </th>
-                              {/* <td>{renderStatusIcon(data?.unpaid)}</td>
-                              <td>{renderStatusIcon(data?.paid)}</td> */}
                             </tr>
-                          {/* ))} */}
-                        </>
-                      {/* ))} */}
+
+                            {Object.entries(
+                              subscriptionData[0].features[featureKey]
+                            ).map(([innerKey, innerValue]) => (
+                              <tr key={innerKey}>
+                                <th scope="row" className={styles.rowData}>
+                                  <div className={styles.rowTitle}>
+                                    <dl className={styles.labelName}>
+                                      <dt className={styles.labelText}>
+                                        <span>{innerKey}</span>
+                                      </dt>
+                                      <dd
+                                        className={styles.labelDescription}
+                                      ></dd>
+                                    </dl>
+                                  </div>
+                                </th>
+                                <td>
+                                  {renderStatusIcon(
+                                    subscriptionData[0].features[featureKey][
+                                    innerKey
+                                    ]
+                                  )}
+                                </td>
+                                <td>
+                                  {renderStatusIcon(
+                                    subscriptionData[1].features[featureKey][
+                                    innerKey
+                                    ]
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        )
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -165,20 +221,6 @@ export default function PlanModal({
             </LegacyCard.Section>
           </LegacyCard>
         </div>
-        {/* <Modal.Section>
-          <LegacyStack vertical>
-            <LegacyStack.Item>
-              <TextContainer>
-                <p>
-                  You can share this discount link with your customers via email
-                  or social media. Your discount will be automatically applied
-                  at checkout.
-                </p>
-              </TextContainer>
-            </LegacyStack.Item>
-          </LegacyStack>
-        </Modal.Section> */}
       </Modal>
-    </div>
-  );
+    </div>);
 }
