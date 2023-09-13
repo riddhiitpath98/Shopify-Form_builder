@@ -11,11 +11,11 @@ import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from 'dotenv';
 dotenv.config();
-const PORT = 3007;
-// const PORT = parseInt(
-//   process.env.BACKEND_PORT || process.env.PORT || "3007",
-//   10
-// );
+
+const PORT = parseInt(
+  process.env.BACKEND_PORT || process.env.PORT || "3007",
+  10
+);
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
@@ -69,9 +69,6 @@ const app = express();
 
 
 // Set up Shopify authentication and webhook handling
-app.get("/test", async (req, res) => {
-  console.log("testing");
-})
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
@@ -93,8 +90,8 @@ app.use(express.json());
 app.get("/api/shop", async (_req, res) => {
   const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
   const response = await client.get({ path: 'shop' })
-  // console.log('response: ', response);
-  res.status(200).send(response)
+  console.log('response: ', response);
+  res.status(200).send(response?.body?.shop)
 })
 
 app.get("/api/products/count", async (_req, res) => {

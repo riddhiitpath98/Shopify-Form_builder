@@ -3,7 +3,7 @@ import { getAllSubscription, getSubscriptionById } from "../actions/allActions";
 
 const initialState = {
     subscriptionData: {
-        data: {},
+        data: [],
         error: "",
         loading: false,
     },
@@ -20,7 +20,7 @@ const subscriptionSlice = createSlice({
                     ...state,
                     subscriptionData: {
                         loading: true,
-                        data: {},
+                        data: [],
                         error: "",
                     },
                 };
@@ -40,7 +40,7 @@ const subscriptionSlice = createSlice({
                     ...state,
                     subscriptionData: {
                         loading: false,
-                        data: {},
+                        data: [],
                         error: action.payload,
                     },
                 };
@@ -50,7 +50,7 @@ const subscriptionSlice = createSlice({
                     ...state,
                     subscriptionData: {
                         loading: true,
-                        data: {},
+                        data: [],
                         error: "",
                     },
                 };
@@ -70,7 +70,7 @@ const subscriptionSlice = createSlice({
                     ...state,
                     subscriptionData: {
                         loading: false,
-                        data: {},
+                        data: [],
                         error: action.payload,
                     },
                 };

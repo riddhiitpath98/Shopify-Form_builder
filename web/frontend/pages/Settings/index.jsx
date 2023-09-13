@@ -15,6 +15,8 @@ import {
 } from "@shopify/polaris";
 import {
   createSMTPSettings,
+  getRecaptchaSettingsByAppId,
+  createRecaptchaSettings,
   editSmtpSettings,
   getSmtpSettingByAppId,
 } from "../../redux/actions/allActions";
@@ -33,6 +35,11 @@ function Settings() {
     port: "",
     appId: "",
   });
+  const [reCaptchaValues, setreCaptchaValues] = useState({
+    siteKey: "",
+    secretKey: "",
+    appId: "",
+  });
   const dispatch = useDispatch();
 
   const settingData = useSelector((state) => state?.setting?.settingData);
@@ -42,6 +49,7 @@ function Settings() {
   const isEdit = useSelector(
     (state) => state?.setting?.smtpSettingData?.isEdit
   );
+  const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
   const appId = useSelector((state) => state.appId.appId);
   const [showValidation, setShowValidation] = useState(false);
 
@@ -59,6 +67,19 @@ function Settings() {
       [name]: value,
       port: value === "ssl" ? 465 : value === "tls" ? 587 : "",
     });
+  };
+
+  const handleSettingsChange = (name, value) => {
+    setreCaptchaValues({
+      ...reCaptchaValues,
+      [name]: value,
+    });
+  };
+
+  const handleSettingsSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createRecaptchaSettings(reCaptchaValues));
+    setreCaptchaValues({});
   };
 
   const handleSubmit = (e) => {
@@ -86,7 +107,9 @@ function Settings() {
 
   useEffect(() => {
     setFormValues({ ...formValues, appId: appId });
+    setreCaptchaValues({ ...reCaptchaValues, appId: appId });
     dispatch(getSmtpSettingByAppId(appId));
+    dispatch(getRecaptchaSettingsByAppId(appId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -100,7 +123,14 @@ function Settings() {
         appId: smtpSettingData.appId,
       });
     }
-  }, [smtpSettingData]);
+    if (recaptchaSettings) {
+      setreCaptchaValues({
+        appId: appId,
+        siteKey: recaptchaSettings?.siteKey,
+        secretKey: recaptchaSettings?.secretKey,
+      })
+    }
+  }, [smtpSettingData, recaptchaSettings]);
 
   const mailEncOptions = [
     { label: "Choose Option", value: "" },
@@ -127,10 +157,22 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
+                <LegacyCard sectioned>
+                  <div
+                    className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
+                      }`}
+                    onClick={() => setSelectedSetting("recaptcha")}
+                  >
+                    <div style={{ marginRight: 4 }}>
+                      <Icon source={Icons.settingFile} />
+                    </div>
+                    <Heading>reCaptcha Settings</Heading>
+                  </div>
+                </LegacyCard>
               </Layout.Section>
             </div>
             <Layout.Section>
-              {selectedSetting === "smtp" && (
+              {selectedSetting === "smtp" ? (
                 <div className={styles.formLayoutContainer}>
                   <LegacyCard sectioned>
                     <Form onSubmit={(e) => handleSubmit(e)} noValidate>
@@ -229,7 +271,66 @@ function Settings() {
                     <ToastContainer />
                   </LegacyCard>
                 </div>
+              ) : (
+                <div className={styles.formLayoutContainer}>
+                  <Card sectioned>
+                    <Form onSubmit={(e) => handleSettingsSubmit(e)}>
+                      <FormLayout>
+                        <Heading>Google reCaptcha type v2</Heading>
+                        <Grid>
+                          <Grid.Cell
+                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                          >
+                            <TextField
+                              id="siteKey"
+                              name="siteKey"
+                              value={
+                                reCaptchaValues?.siteKey || ""
+
+                              }
+                              onChange={(value) =>
+                                handleSettingsChange("siteKey", value)
+                              }
+                              label="Site Key"
+                              type="text"
+                              autoComplete="off"
+                            // error={errorValues.smtpName}
+                            />
+                          </Grid.Cell>
+                          <Grid.Cell
+                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                          >
+                            <TextField
+                              id="secretKey"
+                              name="secretKey"
+                              value={
+                                reCaptchaValues?.secretKey ||
+                                ""
+                              }
+                              onChange={(value) =>
+                                handleSettingsChange("secretKey", value)
+                              }
+                              label="Secret Key"
+                              type="text"
+                              autoComplete="off"
+                            // error={errorValues.smtpName}
+                            />
+                          </Grid.Cell>
+                          <Grid.Cell
+                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                          >
+                            <Button submit primary>
+                              Save
+                            </Button>
+                          </Grid.Cell>
+                        </Grid>
+                      </FormLayout>
+                    </Form>
+                    <ToastContainer />
+                  </Card>
+                </div>
               )}
+
             </Layout.Section>
           </Layout>
         </div>
