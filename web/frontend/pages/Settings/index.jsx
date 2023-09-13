@@ -25,6 +25,7 @@ import { Toast, Frame } from "@shopify/polaris";
 import { ToastContainer, toast } from "react-toastify";
 import { Icons, validateTextField } from "../../constant";
 import styles from "./Settings.module.css";
+import { getRestrictionWithPlan } from "../../utils/function";
 
 function Settings() {
   const [formValues, setFormValues] = useState({
@@ -138,6 +139,169 @@ function Settings() {
     { label: "SSL", value: "ssl" },
   ];
 
+  const TabProvider = ({ type, isShow }) => {
+    switch (type) {
+      case 'smtp':
+        return <div className={styles.formLayoutContainer}>
+          <LegacyCard sectioned>
+            <Form onSubmit={(e) => handleSubmit(e)} noValidate>
+              <FormLayout>
+                <Grid>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                  >
+                    <TextField
+                      id="smtpName"
+                      name="smtpName"
+                      value={
+                        settingData.smtpName || formValues.smtpName
+                      }
+                      onChange={(value) =>
+                        handleChange("smtpName", value)
+                      }
+                      label="SMTP"
+                      type="text"
+                      autoComplete="off"
+                      error={errorValues.smtpName}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                  >
+                    <TextField
+                      value={formValues.email || ""}
+                      name="email"
+                      onChange={(value) => handleChange("email", value)}
+                      label="Username/Email address"
+                      type="text"
+                      autoComplete="off"
+                      error={errorValues.email}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                  >
+                    <TextField
+                      value={formValues.password || ""}
+                      name="password"
+                      onChange={(value) =>
+                        handleChange("password", value)
+                      }
+                      label="Password/App password"
+                      type="password"
+                      autoComplete="off"
+                      error={errorValues.password}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                  >
+                    <Select
+                      label="Mail encryption"
+                      name="mail_encryption"
+                      options={mailEncOptions}
+                      onChange={(value) =>
+                        handleChange("mail_encryption", value)
+                      }
+                      value={formValues.mail_encryption || ""}
+                      error={errorValues.mail_encryption}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                  >
+                    <TextField
+                      value={formValues.port || ""}
+                      name="port"
+                      onChange={(value) => handleChange("port", value)}
+                      label="Port"
+                      type="text"
+                      autoComplete="off"
+                      error={errorValues.port}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                  >
+                    <Button
+                      submit
+                      primary
+                      loading={settingData?.loading}
+                    >
+                      {`${isEdit || settingData?.isEdit
+                        ? "Update"
+                        : "Save"
+                        }`}
+                    </Button>
+                  </Grid.Cell>
+                </Grid>
+              </FormLayout>
+            </Form>
+            <ToastContainer />
+          </LegacyCard>
+        </div>
+      case 'recaptcha':
+        return isShow ? <div className={styles.formLayoutContainer}>
+          <Card sectioned>
+            <Form onSubmit={(e) => handleSettingsSubmit(e)}>
+              <FormLayout>
+                <Heading>Google reCaptcha type v2</Heading>
+                <Grid>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                  >
+                    <TextField
+                      id="siteKey"
+                      name="siteKey"
+                      value={
+                        reCaptchaValues?.siteKey || ""
+
+                      }
+                      onChange={(value) =>
+                        handleSettingsChange("siteKey", value)
+                      }
+                      label="Site Key"
+                      type="text"
+                      autoComplete="off"
+                    // error={errorValues.smtpName}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                  >
+                    <TextField
+                      id="secretKey"
+                      name="secretKey"
+                      value={
+                        reCaptchaValues?.secretKey ||
+                        ""
+                      }
+                      onChange={(value) =>
+                        handleSettingsChange("secretKey", value)
+                      }
+                      label="Secret Key"
+                      type="text"
+                      autoComplete="off"
+                    // error={errorValues.smtpName}
+                    />
+                  </Grid.Cell>
+                  <Grid.Cell
+                    columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                  >
+                    <Button submit primary>
+                      Save
+                    </Button>
+                  </Grid.Cell>
+                </Grid>
+              </FormLayout>
+            </Form>
+            <ToastContainer />
+          </Card>
+        </div> : null
+      default: return null
+    }
+  }
+
   return (
     <Frame>
       <Page fullWidth title="Settings">
@@ -157,7 +321,7 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
-                <LegacyCard sectioned>
+                {getRestrictionWithPlan({ name: 'free' }) ? <LegacyCard sectioned>
                   <div
                     className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
                       }`}
@@ -168,179 +332,16 @@ function Settings() {
                     </div>
                     <Heading>reCaptcha Settings</Heading>
                   </div>
-                </LegacyCard>
+                </LegacyCard> : null}
               </Layout.Section>
             </div>
             <Layout.Section>
-              {selectedSetting === "smtp" ? (
-                <div className={styles.formLayoutContainer}>
-                  <LegacyCard sectioned>
-                    <Form onSubmit={(e) => handleSubmit(e)} noValidate>
-                      <FormLayout>
-                        <Grid>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="smtpName"
-                              name="smtpName"
-                              value={
-                                settingData.smtpName || formValues.smtpName
-                              }
-                              onChange={(value) =>
-                                handleChange("smtpName", value)
-                              }
-                              label="SMTP"
-                              type="text"
-                              autoComplete="off"
-                              requiredIndicator
-                              error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                          >
-                            <TextField
-                              value={formValues.email || ""}
-                              name="email"
-                              onChange={(value) => handleChange("email", value)}
-                              label="Username/Email address"
-                              type="text"
-                              autoComplete="off"
-                              requiredIndicator
-                              error={errorValues.email}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                          >
-                            <TextField
-                              value={formValues.password || ""}
-                              name="password"
-                              onChange={(value) =>
-                                handleChange("password", value)
-                              }
-                              label="Password/App password"
-                              type="password"
-                              autoComplete="off"
-                              requiredIndicator
-                              error={errorValues.password}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                          >
-                            <Select
-                              label="Mail encryption"
-                              name="mail_encryption"
-                              options={mailEncOptions}
-                              onChange={(value) =>
-                                handleChange("mail_encryption", value)
-                              }
-                              value={formValues.mail_encryption || ""}
-                              requiredIndicator
-                              error={errorValues.mail_encryption}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                          >
-                            <TextField
-                              value={formValues.port || ""}
-                              name="port"
-                              onChange={(value) => handleChange("port", value)}
-                              label="Port"
-                              type="text"
-                              autoComplete="off"
-                              requiredIndicator
-                              error={errorValues.port}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <Button
-                              submit
-                              primary
-                              loading={settingData?.loading}
-                            >
-                              {`${isEdit || settingData?.isEdit
-                                ? "Update"
-                                : "Save"
-                                }`}
-                            </Button>
-                          </Grid.Cell>
-                        </Grid>
-                      </FormLayout>
-                    </Form>
-                    <ToastContainer />
-                  </LegacyCard>
-                </div>
-              ) : (
-                <div className={styles.formLayoutContainer}>
-                  <Card sectioned>
-                    <Form onSubmit={(e) => handleSettingsSubmit(e)}>
-                      <FormLayout>
-                        <Heading>Google reCaptcha type v2</Heading>
-                        <Grid>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="siteKey"
-                              name="siteKey"
-                              value={
-                                reCaptchaValues?.siteKey || ""
-
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("siteKey", value)
-                              }
-                              label="Site Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="secretKey"
-                              name="secretKey"
-                              value={
-                                reCaptchaValues?.secretKey ||
-                                ""
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("secretKey", value)
-                              }
-                              label="Secret Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <Button submit primary>
-                              Save
-                            </Button>
-                          </Grid.Cell>
-                        </Grid>
-                      </FormLayout>
-                    </Form>
-                    <ToastContainer />
-                  </Card>
-                </div>
-              )}
-
+              <TabProvider {...{ type: selectedSetting, isShow: getRestrictionWithPlan({ name: 'free' }) }} />
             </Layout.Section>
           </Layout>
         </div>
       </Page>
-    </Frame>
+    </Frame >
   );
 }
 
