@@ -6,7 +6,7 @@
   "scripts": {
     "shopify": "shopify",
     "build": "env-cmd -f .env shopify app build",
-    "dev": "env-cmd -f .env shopify app dev",
+    "dev": "shopify app dev",
     "info": "shopify app info",
     "generate": "shopify app generate",
     "deploy": "shopify app deploy"
