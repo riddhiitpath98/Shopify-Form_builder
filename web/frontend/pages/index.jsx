@@ -150,7 +150,7 @@ export const Tabs = [
   },
   {
     id: "form",
-    content: "Form",
+    content: "Forms",
     icon: FormsMajor,
     path: "/form",
   },

@@ -20,31 +20,28 @@ const SubMenuList = ({ submenus, isOpenMenu, setIsOpenMenu }) => {
   }, []);
   return (
     <ul
-      className={`${styles.subMenu} ${`dropdown ${
-        isOpenMenu ? styles.show : ""
-      }`}`}
+      className={`${styles.subMenu} ${`dropdown ${isOpenMenu ? styles.show : ""
+        }`}`}
     >
       {submenus.map(({ id, content, path, icon }) => (
         <li key={id} className={styles.subMenuItems}>
           {id === "faq" ? (
             <Link
-              to="https://www.itpathsolutions.com/"
+              to="https://www.contactformtoapi.com/#faq"
               target="_blank"
               onClick={() =>
                 app.dispatch(
-                  Redirect.create(app, "https://www.itpathsolutions.com/")
+                  Redirect.create(app, "https://www.contactformtoapi.com/#faq")
                 )
               }
-              className={`${styles.menuLink} ${
-                location.pathname?.includes(path) ? styles.active : ""
-              }`}
+              className={`${styles.menuLink} ${location.pathname?.includes(path) ? styles.active : ""
+                }`}
             >
               <div style={{ margin: 0 }}>
                 <Icon
                   source={icon}
-                  className={`${
-                    location.pathname?.includes(path) ? styles.active : ""
-                  }`}
+                  className={`${location.pathname?.includes(path) ? styles.active : ""
+                    }`}
                 />
               </div>
               <span className={styles.navTitle}>{content}</span>
@@ -52,16 +49,14 @@ const SubMenuList = ({ submenus, isOpenMenu, setIsOpenMenu }) => {
           ) : (
             <Link
               to={path}
-              className={`${styles.menuLink} ${
-                location.pathname?.includes(path) ? styles.active : ""
-              }`}
+              className={`${styles.menuLink} ${location.pathname?.includes(path) ? styles.active : ""
+                }`}
             >
               <div style={{ margin: 0 }}>
                 <Icon
                   source={icon}
-                  className={`${
-                    location.pathname?.includes(path) ? styles.active : ""
-                  }`}
+                  className={`${location.pathname?.includes(path) ? styles.active : ""
+                    }`}
                 />
               </div>
               <span className={styles.navTitle}>{content}</span>

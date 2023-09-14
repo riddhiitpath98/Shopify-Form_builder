@@ -19,7 +19,7 @@ logs
 config/tunnel.pid
 
 # vite build output
-dist/
+# dist/
 
 # extensions build output
 extensions/*/build
