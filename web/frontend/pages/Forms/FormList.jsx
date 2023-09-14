@@ -17,6 +17,7 @@ import {
   SkeletonDisplayText,
   SkeletonThumbnail,
   LegacyCard,
+  Text,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -49,12 +50,14 @@ function FormList() {
   };
 
   const handleCopyCode = (id) => {
-    const filter = formData.formData?.filter?.(item => item._id === id)
+    const filter = formData.formData?.filter?.((item) => item._id === id);
     const textToCopy = `<link rel="stylesheet" href="https://contactformtoapiapp.project-demo.info/assets/render.css"/>
     <script src="https://contactformtoapiapp.project-demo.info/assets/render.js"></script>
-    <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""}'></div>`;
-    navigator.clipboard.writeText(textToCopy)
-  }
+    <div id="form-builder-ips" data-ap-key='${appId}' data-key='${
+      filter[0].isVisible ? id : ""
+    }'></div>`;
+    navigator.clipboard.writeText(textToCopy);
+  };
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -191,7 +194,12 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <ToggleSwitch items={items} />
+              <>
+                <ToggleSwitch items={items} />
+                <div style={{ marginTop: "16px" }}>
+                  <Text variant="headingXs" as="h6"></Text>
+                </div>
+              </>
             )}
           </div>
 
@@ -202,14 +210,20 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="View Submissions">
+              <>
+                <Button type="button" >
+                  {" "}
                   <Icon source={Icons.submission} />
-                </Tooltip>
-              </Button>
+                </Button>
+                <div style={{ marginTop: "4px" }}>
+                  <Text variant="headingXs" as="h6">
+                    View Submission
+                  </Text>
+                </div>
+              </>
             )}
           </div>
+
           <div
             className={styles.submissionBtn}
             onClick={() => handleCopyCode(items?._id)}
@@ -217,17 +231,21 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="Copy HTML code ">
+              <>
+                <Button type="button" >
+                  {" "}
                   <Icon source={Icons.copy} />
-                </Tooltip>
-              </Button>
+                </Button>
+                <div style={{ marginTop: "5px" }}>
+                  <Text variant="headingXs" as="h6">
+                    Copy HTML code
+                  </Text>
+                </div>
+              </>
             )}
           </div>
         </div>
       </ResourceItem>
-
     );
   }
 }

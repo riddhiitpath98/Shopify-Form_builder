@@ -44,7 +44,7 @@ iframe {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   padding: 15px;
-  font-family: initial;
+  /* font-family: initial; */
 }
 .mainForm {
   max-width: 600px;
@@ -120,7 +120,7 @@ iframe {
 .classicLabel {
   color: #000;
   text-align: left !important;
-  font-size: 16px;
+  font-size: 14px;
   display: inline-block;
   margin-bottom: 4px;
   font-weight: 400;
