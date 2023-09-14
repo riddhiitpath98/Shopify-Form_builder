@@ -318,16 +318,17 @@ const catchFormDivAndAppendForm = (data) => {
   setTimeout(() => {
     let mainFormElement = document.getElementById("form-builder-ips");
     const divElement = document.createElement("div");
-    divElement.className = `formBuilder ${selectedBackground === "image" ? "formImageBackground" : ""
-      }`;
+    divElement.className = `formBuilder ${
+      selectedBackground === "image" ? "formImageBackground" : ""
+    }`;
 
     divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
     divElement.style.backgroundColor =
       selectedBackground === "color"
         ? appearanceFields?.formBackgroundColor
         : selectedBackground === "none"
-          ? "#fff"
-          : "#fff";
+        ? "#fff"
+        : "#fff";
     divElement.style.backgroundImage =
       selectedBackground === "image"
         ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -406,14 +407,14 @@ const catchFormDivAndAppendForm = (data) => {
           column_width === "33%"
             ? 4
             : column_width === "50%"
-              ? 6
-              : column_width === "100%" && 12,
+            ? 6
+            : column_width === "100%" && 12,
         xl:
           column_width === "33%"
             ? 4
             : column_width === "50%"
-              ? 6
-              : column_width === "100%" && 12,
+            ? 6
+            : column_width === "100%" && 12,
       };
 
       const noOfOptions = parseInt(no_of_options?.[0]);
@@ -1020,10 +1021,11 @@ const catchFormDivAndAppendForm = (data) => {
 
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
+      buttonElement.className = `${
+        footerFieldData?.attributes?.buttonWidth
           ? "buttonWidth"
           : "classicButton submitButton"
-        }`;
+      }`;
       buttonElement.style.backgroundColor = appearanceFields?.mainColor;
       buttonElement.style.border = "none";
       buttonElement.textContent = footerFieldData?.attributes?.submitButton;
@@ -1033,10 +1035,11 @@ const catchFormDivAndAppendForm = (data) => {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
+        resetButton.className = `${
+          footerFieldData?.attributes?.buttonWidth
             ? "buttonWidth"
             : "classicButton"
-          }`;
+        }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
 
         footerDivElement.appendChild(resetButton);
@@ -1114,7 +1117,8 @@ function fetchData() {
     const mainElement = document.getElementById("form-builder-ips");
     formId = mainElement.getAttribute("data-key");
     appId = mainElement.getAttribute('data-ap-key');
-
+    console.log('appId', appId)
+    
     try {
       const elementData = await getData();
       const validationData = await getValidation();
