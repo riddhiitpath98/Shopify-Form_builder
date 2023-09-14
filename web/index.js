@@ -17,10 +17,11 @@ const PORT = 3007;
 //   10
 // );
 
-const STATIC_PATH =
-  process.env.NODE_ENV === "production"
-    ? `${process.cwd()}/frontend/dist`
-    : `${process.cwd()}/frontend/`;
+
+const STATIC_PATH = `${process.cwd()}/frontend/dist`
+// process.env.NODE_ENV === "production"
+//   ? `${process.cwd()}/frontend/dist`
+//   : `${process.cwd()}/frontend/`;
 
 
 const app = express();
