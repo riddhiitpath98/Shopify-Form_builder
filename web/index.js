@@ -5,7 +5,7 @@ import express from "express";
 import serveStatic from "serve-static";
 import fs from 'fs';
 import https from "https";
-
+import cors from 'cors'
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
@@ -25,6 +25,17 @@ const STATIC_PATH = `${process.cwd()}/frontend/dist`
 
 
 const app = express();
+app.use(cors());
+
+//for CORS
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  req.header("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 // let httpServer;
 // const privateKey = fs.readFileSync('certy/privkey.pem', 'utf8');
