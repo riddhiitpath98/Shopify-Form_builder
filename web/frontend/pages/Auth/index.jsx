@@ -14,16 +14,16 @@ const Auth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const shop = useAppQuery({ url: "/api/shop" });
+    // const shop = useAppQuery({ url: "/api/shop" });
     // console.log('shop: ', shop);
     // console.log('isActive: ', isActive);
 
-    useEffect(() => {
-        if (shop.isSuccess) {
-            setIsActive(true);
-            dispatch(getAllSubscription())
-        }
-    })
+    // useEffect(() => {
+    //     if (shop.isSuccess) {
+    //         setIsActive(true);
+    //         dispatch(getAllSubscription())
+    //     }
+    // })
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', margin: '100px auto', height: '200px', width: '200px' }}>
             <Spinner accessibilityLabel="Spinner example" size="large" />

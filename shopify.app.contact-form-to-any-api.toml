@@ -2,7 +2,7 @@
 
 name = "Contact form to any api"
 client_id = "763f8082fff2f80f70d9b6766f654c10"
-application_url = "https://e2d1-122-170-99-65.ngrok-free.app"
+application_url = "https://odds-sounds-twist-blowing.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://e2d1-122-170-99-65.ngrok-free.app/auth/callback",
-  "https://e2d1-122-170-99-65.ngrok-free.app/auth/shopify/callback",
-  "https://e2d1-122-170-99-65.ngrok-free.app/api/auth/callback"
+  "https://odds-sounds-twist-blowing.trycloudflare.com/auth/callback",
+  "https://odds-sounds-twist-blowing.trycloudflare.com/auth/shopify/callback",
+  "https://odds-sounds-twist-blowing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -23,5 +23,5 @@ api_version = "2023-07"
 embedded = false
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
 dev_store_url = "it-path-dev-store.myshopify.com"

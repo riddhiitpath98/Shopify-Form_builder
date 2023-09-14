@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addShopData } from '../actions/allActions';
+import { addShopData, getUserByShopId } from '../actions/allActions';
 
 const initialState = {
     userData: {
@@ -24,28 +24,54 @@ const userSlice = createSlice({
                     loading: true,
                 }
             };
-        })
-            .addCase(addShopData.fulfilled, (state, action) => {
-                return {
-                    ...state,
-                    userData: {
-                        data: action.payload,
-                        error: "",
-                        loading: false,
-                        success: true,
-                    }
-                };
-            })
-            .addCase(addShopData.rejected, (state, action) => {
-                return {
-                    ...state,
-                    userData: {
-                        data: {},
-                        error: action.payload,
-                        loading: false,
-                    }
-                };
-            })
+        }).addCase(addShopData.fulfilled, (state, action) => {
+            return {
+                ...state,
+                userData: {
+                    data: action.payload,
+                    error: "",
+                    loading: false,
+                    success: true,
+                }
+            };
+        }).addCase(addShopData.rejected, (state, action) => {
+            return {
+                ...state,
+                userData: {
+                    data: {},
+                    error: action.payload,
+                    loading: false,
+                }
+            };
+        }).addCase(getUserByShopId.pending, (state, action) => {
+            return {
+                ...state,
+                userData: {
+                    data: {},
+                    error: "",
+                    loading: true,
+                }
+            };
+        }).addCase(getUserByShopId.fulfilled, (state, action) => {
+            return {
+                ...state,
+                userData: {
+                    data: action.payload,
+                    error: "",
+                    loading: false,
+                    success: true,
+                }
+            };
+        }).addCase(getUserByShopId.rejected, (state, action) => {
+            return {
+                ...state,
+                userData: {
+                    data: {},
+                    error: action.payload,
+                    loading: false,
+                }
+            };
+        });
     }
 })
 
