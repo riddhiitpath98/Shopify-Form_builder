@@ -11,14 +11,13 @@ import {
 import React, { useState, useCallback, useEffect } from "react";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons } from "../../constant";
+import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { addShopData } from "../../redux/actions/allActions";
 
-export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
-  const navigate = useNavigate();
+export default function PlanModal({ active, toggleModal, shopData }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
@@ -50,6 +49,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
     })
     dispatch(addShopData(user))
     navigate("/dashboard", { replace: true })
+    toggleModal();
   }
 
   return (
@@ -111,7 +111,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                           </span>
                         </div>
 
-                        <Button primary fullWidth onClick={() => handleUserNavigation('free')}>
+                        <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.FREE)}>
                           <span>
                             <span>
                               <span>Choose this plan</span>
@@ -148,7 +148,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                           </span>
 
                         </div>
-                        <Button primary fullWidth onClick={() => handleUserNavigation('primium')}>
+                        <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)}>
                           <span>
                             <span>
                               <span>Choose this plan</span>

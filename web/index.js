@@ -12,18 +12,23 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
+// const PORT = 3007;
 const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3007",
   10
 );
 
-// `${process.cwd()}/frontend/dist`
-// console.log(process.env.NODE_ENV, "+++");
+// const STATIC_PATH = `${process.cwd()}/frontend/`;
 
-const STATIC_PATH = `${process.cwd()}/frontend/dist`
-process.env.NODE_ENV === "production"
-  ? `${process.cwd()}/frontend/dist`
-  : `${process.cwd()}/frontend/`;
+const STATIC_PATH =
+  process.env.NODE_ENV === "production"
+    ? `${process.cwd()}/frontend/dist`
+    : `${process.cwd()}/frontend/`;
+
+// const STATIC_PATH = `${process.cwd()}/frontend/dist`
+// process.env.NODE_ENV === "production"
+//   ? `${process.cwd()}/frontend/dist`
+//   : `${process.cwd()}/frontend/`;
 
 // console.log(STATIC_PATH, "STATIC_PATH");
 
@@ -105,7 +110,6 @@ app.use(express.json());
 app.get("/api/shop", async (_req, res) => {
   const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
   const response = await client.get({ path: 'shop' })
-  console.log('response: ', response);
   res.status(200).send(response?.body?.shop)
 })
 
