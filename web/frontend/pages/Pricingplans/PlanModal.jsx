@@ -13,11 +13,15 @@ import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
 import { addShopData } from "../../redux/actions/allActions";
 
-export default function PlanModal({ active, toggleModal, shopData }) {
-  const dispatch = useDispatch();
+export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
+
+  console.log('active', active)
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
@@ -48,8 +52,9 @@ export default function PlanModal({ active, toggleModal, shopData }) {
       }
     })
     dispatch(addShopData(user))
+    toggleModal()
     navigate("/dashboard", { replace: true })
-    toggleModal();
+
   }
 
   return (

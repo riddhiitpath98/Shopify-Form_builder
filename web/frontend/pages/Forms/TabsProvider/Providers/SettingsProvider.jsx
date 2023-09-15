@@ -16,9 +16,15 @@ const SettingsProvider = ({ isEdit }) => {
   const settingsElements = [
     {
       id: "appearance",
-      title: "Appearance",
+    title: "Appearance",
       icon: Icons.appearance,
       attributes: appearanceAttributes,
+    },
+    {
+      id: "reCaptcha",
+      viewAccess: ['premium', 'enterprise'],
+      title: "Google reCaptcha",
+      icon: Icons.reCaptcha,
     },
     {
       id: "error_msg",

@@ -6,21 +6,31 @@ import { useDispatch, useSelector } from "react-redux";
 import PlanModal from "../../pages/Pricingplans/PlanModal";
 import { useAppQuery } from "../../hooks";
 import { getAllSubscription, getUserByShopId } from "../../redux/actions/allActions";
+import { Spinner } from "@shopify/polaris";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
   const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector(state => state.user.userData.data);
+  const user = useSelector(state => state.user.userData);
   console.log('user: ', user);
 
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
-  console.log('isShowPlan: ', isShowPlan);
+
+  console.log('shop', shop)
+
   useEffect(() => {
     if (shop.isSuccess) {
-      dispatch(getUserByShopId(shop?.data?.id));
+      dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
+        const { payload } = data
+        setIsShowPlan(!user?.loading && !payload?.subscriptionName)
+        if (payload?.subscriptionName) {
+          setIsShowPlan(false)
+          navigate('/dashboard')
+        }
+      });
     }
   }, [dispatch, shop.isSuccess])
 
@@ -28,26 +38,21 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const toggleModal = () => {
     setIsShowPlan(false)
   }
-  useEffect(() => {
-    if (!user.subscriptionName) {
-      console.log('!user.subscriptionName', !user.subscriptionName)
-      setIsShowPlan(true);
-    } else {
-      setIsShowPlan(false);
-      navigate("/dashboard", { replace: true })
-    }
-  }, [!user.subscriptionName])
 
   return (
-    <div>
-      {isShowPlan ?
-        <PlanModal active={isShowPlan} toggleModal={toggleModal} shopData={shop?.data} />
-        : <div {...props}>
-          {!isHideNavbar ? <NavigationMenubar /> : null}
-          <Outlet />
-          {isShowFooter && !hideFooter ? <Footer /> : null}
-        </div>}
-    </div>
+    <>
+      <div>
+        {
+          isShowPlan ?
+            <PlanModal active={isShowPlan} toggleModal={toggleModal} shopData={shop?.data} />
+            : <div {...props}>
+              {!isHideNavbar ? <NavigationMenubar /> : null}
+              <Outlet />
+              {isShowFooter && !hideFooter ? <Footer /> : null}
+            </div>
+        }
+      </div >
+    </>
   );
 };
 

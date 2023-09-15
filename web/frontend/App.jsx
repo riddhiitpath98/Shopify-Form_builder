@@ -22,9 +22,7 @@ export default function App() {
   const apiKey = process.env.SHOPIFY_API_KEY;
   return (
     <PolarisProvider>
-      <Provider
-        store={store}
-      >
+      <Provider store={store} >
         <AppBridgeProvider>
           <QueryProvider>
             <NavigationMenu
