@@ -20,9 +20,6 @@ export default function App() {
 
   const location = useLocation();
   const apiKey = process.env.SHOPIFY_API_KEY;
-  
-  // const shopOrigin = sessionStorage.getItem("hostOrigin");
-
   return (
     <PolarisProvider>
       <Provider
@@ -37,7 +34,7 @@ export default function App() {
                   destination: "/dashboard",
                 },
                 {
-                  label: "Form",
+                  label: "Forms",
                   destination: "/form",
                 },
                 {

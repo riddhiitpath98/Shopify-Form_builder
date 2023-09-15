@@ -14,6 +14,7 @@
   "dependencies": {
     "@shopify/app": "^3.0.0",
     "@shopify/cli": "^3.0.0",
+    "cors": "^2.8.5",
     "env-cmd": "^10.1.0"
   }
 }

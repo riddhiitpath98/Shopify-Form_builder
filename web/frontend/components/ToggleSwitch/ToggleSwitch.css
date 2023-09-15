@@ -41,13 +41,13 @@
 }
 .inner:before {
   content: "Enable";
-  padding-left: 6px;
+  padding-left: 5px;
   background-color: #008060;
   color: #fff;
 }
 .inner:after {
   content: "Disable";
-  padding-right: 6px;
+  padding-right: 2px;
   background-color: #e81e1e;
   color: #fff;
   text-align: right;
@@ -60,9 +60,9 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 51px;
+  right: 48px;
   border: 0 solid #bbb;
-  border-radius: 18px;
+  border-radius: 24px;
   transition: all 0.3s ease-in 0s;
   height: 24px;
 }

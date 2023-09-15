@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Heading, Icon, Page } from "@shopify/polaris";
+import { Badge, Button, Icon, LegacyCard, Page } from "@shopify/polaris";
 import { pricingPlanData } from "../../constant";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
@@ -24,14 +24,11 @@ function Pricingplans() {
     }
   };
 
-  const handleClick = () => {
-    alert("Premium plan")
-  }
   return (
     <Page fullWidth title="Pricing Plans">
       <div style={{ width: "70%" }}>
-        <Card>
-          <Card.Section>
+        <LegacyCard>
+          <LegacyCard.Section>
             <div className="grid">
               <div className={styles.gridItem}>
                 <table className={styles.pricingTable} border={1}>
@@ -87,29 +84,29 @@ function Pricingplans() {
                       </div>
                     </td>
                     <td>
-                      <div className={styles.pmuBadge}>
+                      {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
                             <span>-33% lifetime off</span>
                           </span>
                         </Badge>
-                      </div>
+                      </div> */}
                       <div className={styles.monthlyPrice}>
-                        <span className={styles.monthlyPriceCur}>USD</span>
+                        {/* <span className={styles.monthlyPriceCur}>USD</span> */}
                         <span className={styles.priceValue}>
                           <span className={styles.price}>
                             <span>
-                              <sub className={styles.dollar}>$</sub>
-                              <span className={styles.dollarValue}>14.9</span>
-                              <span className={styles.rupees}>9.99</span>
+                              {/* <sub className={styles.dollar}>$</sub> */}
+                              {/* <span className={styles.dollarValue}>14.9</span> */}
+                              <span className={styles.rupees}>Coming Soon...</span>
                             </span>
                           </span>
                         </span>
                         <span className={styles.month}>
-                          /<span>mo</span>
+                          {/* /<span>mo</span> */}
                         </span>
                       </div>
-
+{/* 
                       <Button onClick={handleClick} primary fullWidth>
                         <span>
                           <span>
@@ -119,7 +116,7 @@ function Pricingplans() {
                       </Button>
                       <div className={styles.pmuBadge}>
                         <span>7 days trial</span>
-                      </div>
+                      </div> */}
                     </td>
                     {pricingPlanData?.map((planData, id) => (
                       <>
@@ -153,8 +150,8 @@ function Pricingplans() {
               </div>
             </div>
             {/* </div> */}
-          </Card.Section>
-        </Card>
+          </LegacyCard.Section>
+        </LegacyCard>
       </div>
     </Page>
   );

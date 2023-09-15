@@ -12,7 +12,7 @@
   height: 100%;
   justify-content: center;
 }
-.banner {
+.messageBanner {
   max-width: 1440px;
   width: 100%;
 }
@@ -35,8 +35,8 @@ iframe {
 .formBuilder {
   height: auto !important;
   /* display: flex;
-  justify-content: center; */
-  /* max-width: 700px; */
+    justify-content: center; */
+  max-width: 600px;
   width: -webkit-fill-available;
   /* background-color: #fff; */
   margin: 20px auto;
@@ -56,13 +56,13 @@ iframe {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  margin: 30px 33px;
+  margin: 30px auto;
 }
 /* @media only screen and (max-width: 768px) {
-  .mainForm {
-    padding: 15px;
-  }
-} */
+    .mainForm {
+      padding: 15px;
+    }
+  } */
 .header {
   padding: 0;
   margin-bottom: 2rem;
@@ -74,6 +74,12 @@ iframe {
 .form {
   display: flex;
   flex-wrap: wrap;
+}
+.myGrid {
+  /* display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px; */
+  width: 100% !important;
 }
 
 .myGridCell {
@@ -90,7 +96,7 @@ iframe {
 .formContainer {
   display: grid;
   /* grid-template-columns: 1fr 1fr; */
-  grid-gap: 10px;
+  /* grid-gap: 10px; */
 }
 .inputContainer {
   margin-bottom: 1.5rem;
@@ -143,12 +149,14 @@ iframe {
   line-height: 24px;
   text-align: left;
   box-sizing: border-box;
-  display: contents;
+  display: inline-block;
   position: relative;
   margin-bottom: 0;
   cursor: pointer;
   font-size: 14px;
   top: 0;
+  display: flex;
+  align-items: center;
 }
 
 textarea {
@@ -180,6 +188,7 @@ textarea {
   cursor: pointer;
   position: relative;
   margin-right: 3px;
+  background-color: transparent;
 }
 .buttonWidth {
   border: 1px solid #90c3f9;
@@ -197,7 +206,6 @@ textarea {
 .description {
   color: #6c757d;
   font-size: 12px;
-  word-break: break-word;
 }
 a {
   text-decoration: underline;
@@ -230,15 +238,15 @@ a {
 button:focus {
   outline: none;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: 2em;
-  font-weight: bold;
-}
+/* h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 2em;
+    font-weight: bold;
+  } */
 b {
   font-weight: bold;
 }
@@ -262,8 +270,8 @@ b {
   margin: 10px;
 }
 /* .inputWidth{
-  width: 100% !important;
-} */
+    width: 100% !important;
+  } */
 .formColorBackground {
   background-color: #fff;
 }
@@ -279,8 +287,48 @@ b {
 }
 
 /* .rc-anchor-container{
-  width: 250px;
+    width: 250px;
+  }
+  .rc-anchor-content{
+    width: 156px;
+  } */
+.divider {
+  margin: 1.5rem 0 !important;
 }
-.rc-anchor-content{
-  width: 156px;
-} */
+.grid-container {
+  display: grid;
+  gap: 0px 20px;
+  grid-template-columns: auto auto auto;
+}
+
+.polaris-banner {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #95c9b4;
+  background-color: #f1f8f5;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.banner-main {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.Polaris-Banner__Ribbon {
+  margin: auto;
+  margin-top: 16px;
+  margin-left: 4px;
+}
+.Polaris-Button {
+  margin-top: 19px;
+  margin-right: 10px;
+}
+.heading-text {
+  font-size: medium;
+  font-weight: bold;
+}
+.Polaris-Banner__ContentWrapper {
+  margin-left: 10px;
+}
