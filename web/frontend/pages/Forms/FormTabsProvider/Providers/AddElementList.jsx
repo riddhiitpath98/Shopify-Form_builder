@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "@shopify/polaris";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { addElement } from "../../../../redux/reducers/inputFieldSlice";
 import { Icons } from "../../../../constant";
@@ -8,7 +8,8 @@ import styles from "../../FormStyle.module.css";
 import useElements from "../../../../hooks/useElements";
 
 const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
-
+  const user = useSelector(state => state.user.userData.data)
+  console.log('user.subscriptionName', user.subscriptionName)
   const { elements } = useElements()
 
   const { title } = tabId;
@@ -34,7 +35,7 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           <div className={styles.nestedContent}>
             <div>
               <div>
-                {elements('premium')?.map(({ label, fields }, index) => (
+                {elements(user.subscriptionName)?.map(({ label, fields }, index) => (
                   <div className={styles.contentWrapper} key={index}>
                     <div>
                       <div className={styles.subHeading}>{label}</div>

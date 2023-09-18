@@ -11,6 +11,7 @@ import {
   SkeletonDisplayText,
   SkeletonThumbnail,
   LegacyCard,
+  Text,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,12 +43,13 @@ function FormList() {
   };
 
   const handleCopyCode = (id) => {
-    const filter = formData.formData?.filter?.(item => item._id === id)
-    const textToCopy = `<link rel="stylesheet" href="https://contactformtoapiapp.project-demo.info/assets/render.css"/>
-    <script src="https://contactformtoapiapp.project-demo.info/assets/render.js"></script>
-    <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""}'></div>`;
-    navigator.clipboard.writeText(textToCopy)
-  }
+    const filter = formData.formData?.filter?.((item) => item._id === id);
+    const textToCopy = `<link rel="stylesheet" href="https://shopify-app-latest.onrender.com/assets/render.css"/>
+    <script src="https://shopify-app-latest.onrender.com/assets/render.js"></script>
+    <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
+      }'></div>`;
+    navigator.clipboard.writeText(textToCopy);
+  };
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -184,7 +186,12 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <ToggleSwitch items={items} />
+              <>
+                <ToggleSwitch items={items} />
+                <div style={{ marginTop: "16px" }}>
+                  <Text variant="headingXs" as="h6"></Text>
+                </div>
+              </>
             )}
           </div>
 
@@ -195,14 +202,20 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="View Submissions">
+              <>
+                <Button type="button" >
+                  {" "}
                   <Icon source={Icons.submission} />
-                </Tooltip>
-              </Button>
+                </Button>
+                <div style={{ marginTop: "4px" }}>
+                  <Text variant="headingXs" as="h6">
+                    View Submission
+                  </Text>
+                </div>
+              </>
             )}
           </div>
+
           <div
             className={styles.submissionBtn}
             onClick={() => handleCopyCode(items?._id)}
@@ -210,217 +223,22 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <Button type="button">
-                {" "}
-                <Tooltip content="Copy code ">
+              <>
+                <Button type="button" >
+                  {" "}
                   <Icon source={Icons.copy} />
-                </Tooltip>
-              </Button>
+                </Button>
+                <div style={{ marginTop: "5px" }}>
+                  <Text variant="headingXs" as="h6">
+                    Copy HTML code
+                  </Text>
+                </div>
+              </>
             )}
           </div>
         </div>
       </ResourceItem>
-
     );
   }
 }
 export default React.memo(FormList);
-
-// import {
-//   Button,
-//   Card,
-//   Heading,
-//   Icon,
-//   IndexTable,
-//   Layout,
-//   Link,
-//   Page,
-//   Select,
-//   Stack,
-//   TextStyle,
-//   Thumbnail,
-//   useIndexResourceState,
-// } from "@shopify/polaris";
-// import { CategoriesMajor } from "@shopify/polaris-icons";
-// import { DeleteMajor } from "@shopify/polaris-icons";
-// import { useCallback, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import ToggleSwitch from "../../components/ToggleSwitch";
-// import SubmissionSVG from "../../utils/SubmissionSVG";
-// import { useAppBridge } from "@shopify/app-bridge-react";
-// import { Fullscreen } from "@shopify/app-bridge/actions";
-// import { fetchFormData } from "../../redux/actions/allActions";
-// import { useSelector, useDispatch } from "react-redux";
-// import { useEffect } from "react";
-
-// export default function Forms() {
-//   const [sortValue, setSortValue] = useState("");
-//   const app = useAppBridge();
-//   const dispatch = useDispatch();
-//   const fullscreen = Fullscreen.create(app);
-//   const [isFullScreen, setIsFullScreen] = useState(false);
-//   const formData = useSelector((state) => state?.inputField?.finalFormData);
-
-//   const sortOptions = [
-//     { label: "Newest", value: "newest" },
-//     { label: "Yesterday", value: "yesterday" },
-//     { label: "Last 7 days", value: "lastWeek" },
-//   ];
-
-//   const customers = [
-//     {
-//       id: "1",
-//       url: "#",
-//       shortCode: "MTA3OTE4",
-//       title: "Contact Form",
-//       createdOn: "2023-02-28 05:58:25",
-//     },
-//     {
-//       id: "2",
-//       url: "#",
-//       shortCode: "MTA3Nzg3",
-//       title: "Registration Form",
-//       createdOn: "2023-02-28 06:48:18",
-//     },
-//   ];
-
-//   const resourceName = {
-//     singular: "Forms",
-//     plural: "forms",
-//   };
-
-//   const navigate = useNavigate();
-//   const { selectedResources, allResourcesSelected, handleSelectionChange } =
-//     useIndexResourceState(customers);
-
-//   const rowMarkup =
-//     formData?.formData &&
-//     formData?.formData.map(
-//       ({ _id, url, short_code, createdAt, isVisible }, index) => (
-//         <IndexTable.Row
-//           id={_id}
-//           key={_id}
-//           selected={selectedResources.includes(_id)}
-//           position={index}
-//         >
-//           <IndexTable.Cell>
-//             <Link
-//               // dataPrimaryLink
-//               // url={url}
-//               onClick={() => navigate("/form/new")}
-//             >
-//               <span>
-//                 <b>{short_code}</b>
-//               </span>
-//             </Link>
-//           </IndexTable.Cell>
-//           <IndexTable.Cell>{isVisible}</IndexTable.Cell>
-
-//           <IndexTable.Cell>
-//             <Stack alignment="center">
-//               <ToggleSwitch items={{ _id, isVisible }} />
-//             </Stack>
-//           </IndexTable.Cell>
-//           <IndexTable.Cell>
-//             <Link
-//               // url={url} 
-//               onClick={() => navigate("/submissions")}>
-//               <Stack alignment="center">
-//                 <Thumbnail source={SubmissionSVG} alt={"title"} size="medium" />
-//               </Stack>
-//             </Link>
-//           </IndexTable.Cell>
-//           <IndexTable.Cell>
-//             <span>{createdAt}</span>
-//           </IndexTable.Cell>
-//         </IndexTable.Row>
-//       )
-//     );
-
-//   const handleSortChange = useCallback((value) => setSortValue(value), []);
-//   const handleCreateForm = () => {
-//     fullscreen.dispatch(Fullscreen.Action.ENTER);
-//     setIsFullScreen(true);
-//     navigate("/form/new");
-//   };
-
-//   useEffect(() => {
-//     dispatch(fetchFormData("2976c6111934ce218e6a854d3a881822"));
-//   }, []);
-
-//   return (
-//     <Page fullWidth>
-//       <Layout>
-//         <Layout.Section>
-//           <Stack>
-//             <Stack.Item fill>
-//               <Heading>Form</Heading>
-//             </Stack.Item>
-//             <Stack.Item>
-//               <Button primary onClick={handleCreateForm}>
-//                 Create Form
-//               </Button>
-//             </Stack.Item>
-//           </Stack>
-//         </Layout.Section>
-//         <Layout.Section>
-//           <Card>
-//             <div
-//               style={{
-//                 padding: "16px",
-//                 display: "flex",
-//                 justifyContent: "space-between",
-//               }}
-//             >
-//               <div>
-//                 <TextStyle variation="strong">2 Forms</TextStyle>
-//               </div>
-//               <div
-//                 style={{
-//                   display: "flex",
-//                   flexWrap: "wrap",
-//                   width: "200px",
-//                   justifyContent: "space-between",
-//                 }}
-//               >
-//                 <Button
-//                   plain
-//                   icon={<Icon source={CategoriesMajor} color="base" />}
-//                 />
-//                 <Button
-//                   plain
-//                   icon={<Icon source={DeleteMajor} color="base" />}
-//                 />
-//                 <Select
-//                   labelInline
-//                   label="Sort by"
-//                   options={sortOptions}
-//                   value={sortValue}
-//                   onChange={handleSortChange}
-//                 />
-//               </div>
-//             </div>
-//             <IndexTable
-//               resourceName={resourceName}
-//               itemCount={customers.length}
-//               selectedItemsCount={
-//                 allResourcesSelected ? "All" : selectedResources.length
-//               }
-//               onSelectionChange={handleSelectionChange}
-//               headings={[
-//                 { title: "Short Code" },
-//                 { title: "Title" },
-//                 { title: "Status" },
-//                 { title: "Submission" },
-//                 { title: "Created On" },
-//               ]}
-//               loading={formData?.loading}
-//             >
-//               {rowMarkup}
-//             </IndexTable>
-//           </Card>
-//         </Layout.Section>
-//       </Layout>
-//     </Page>
-//   );
-// }

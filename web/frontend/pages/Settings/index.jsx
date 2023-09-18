@@ -50,6 +50,7 @@ function Settings() {
   const isEdit = useSelector(
     (state) => state?.setting?.smtpSettingData?.isEdit
   );
+  const user = useSelector(state => state.user.userData.data)
   const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
   const appId = useSelector((state) => state.appId.appId);
   const [showValidation, setShowValidation] = useState(false);
@@ -321,7 +322,7 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
-                {getRestrictionWithPlan({ name: 'free' }) ? <LegacyCard sectioned>
+                {getRestrictionWithPlan({ name: user.subscriptionName }) ? <LegacyCard sectioned>
                   <div
                     className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
                       }`}
@@ -336,7 +337,7 @@ function Settings() {
               </Layout.Section>
             </div>
             <Layout.Section>
-              <TabProvider {...{ type: selectedSetting, isShow: getRestrictionWithPlan({ name: 'free' }) }} />
+              <TabProvider {...{ type: selectedSetting, isShow: getRestrictionWithPlan({ name: user.subscriptionName }) }} />
             </Layout.Section>
           </Layout>
         </div>

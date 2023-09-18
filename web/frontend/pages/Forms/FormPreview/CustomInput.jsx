@@ -307,6 +307,44 @@ export const CustomInput = ({
           </div>
         </>
       );
+    case "file":
+      return (
+        <CommonFileInput {...{
+          id,
+          inputId,
+          type,
+          formSubmissionData,
+          appearanceFields,
+          title,
+          index,
+          attributes,
+          inputStyles,
+          widthInput,
+          handleFileChange,
+          formFeildData,
+          acceptExtensions,
+          ...props
+        }} />
+      );
+    case "date":
+      return (
+        <CommonDateInput {...{
+          id,
+          inputId,
+          type,
+          formSubmissionData,
+          appearanceFields,
+          handleDateTimeChange,
+          title,
+          index,
+          attributes,
+          inputStyles,
+          widthInput,
+          handleChange,
+          formFeildData,
+          ...props
+        }} />
+      );
     case "select":
       return (
         <div className={styles.inputContainer}>

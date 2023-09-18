@@ -24,9 +24,6 @@ function Pricingplans() {
     }
   };
 
-  const handleClick = () => {
-    alert("Premium plan")
-  }
   return (
     <Page fullWidth title="Pricing Plans">
       <div style={{ width: "70%" }}>
