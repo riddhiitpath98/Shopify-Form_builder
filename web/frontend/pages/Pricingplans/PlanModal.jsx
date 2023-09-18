@@ -1,19 +1,15 @@
+import React from "react";
 import {
   Button,
   Modal,
-  LegacyStack,
-  TextContainer,
   LegacyCard,
-  HorizontalStack,
   Badge,
   Icon,
 } from "@shopify/polaris";
-import React, { useState, useCallback, useEffect } from "react";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { addShopData } from "../../redux/actions/allActions";
 
 export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
@@ -55,17 +51,18 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
 
   }
 
+  const capitalizeFirstLetter = (str) => {
+    return str
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <div style={{ height: "500px" }}>
       <Modal
-        // activator={activator}
         open={active}
-        onClose={toggleModal}
         title="Pricing plans"
-        primaryAction={{
-          content: "Close",
-          onAction: toggleModal,
-        }}
         large
       >
         <div className="pricing-component-wrapper">
@@ -190,7 +187,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                                   <div className={styles.rowTitle}>
                                     <dl className={styles.labelName}>
                                       <dt className={styles.labelText}>
-                                        <span>{innerKey}</span>
+                                        <span>{capitalizeFirstLetter(innerKey)}</span>
                                       </dt>
                                       <dd
                                         className={styles.labelDescription}

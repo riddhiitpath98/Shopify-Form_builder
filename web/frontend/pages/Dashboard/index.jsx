@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import ChartDashboard from "../../components/Chart";
+import { ToastContainer } from "react-toastify";
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -92,6 +93,7 @@ function Dashboard() {
             </div>
           </Layout>
         </div>
+        <ToastContainer/>
       </Page>
     </>
   );
