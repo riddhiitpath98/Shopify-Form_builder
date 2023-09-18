@@ -36,7 +36,6 @@ function FormList() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [deleteFormArr, setDeleteFormArr] = useState([]);
-
   const app = useAppBridge();
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
@@ -57,6 +56,9 @@ function FormList() {
       }'></div>`;
     navigator.clipboard.writeText(textToCopy);
   };
+
+  const subscription = useSelector(state => state.user.userData.subscription);
+  const user = useSelector(state => state.user.userData.data);
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -134,6 +136,7 @@ function FormList() {
         primaryAction={{
           content: "Create new Form",
           onAction: () => handleCreateForm(),
+          disabled: formData.formData.length >= subscription?.features?.form?.number_of_forms ? true : false
         }}
       >
         <LegacyCard>

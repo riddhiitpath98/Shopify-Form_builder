@@ -13,7 +13,9 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector(state => state.user.userData);
+  const user = useSelector(state => state.user.userData.user);
+  const subscription = useSelector(state => state.user.userData.subscription);
+
 
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
@@ -21,9 +23,9 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   useEffect(() => {
     if (shop.isSuccess) {
       dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
-        const { payload } = data
-        setIsShowPlan(!user?.loading && !payload?.subscriptionName)
-        if (payload?.subscriptionName) {
+        const { userData } = data.payload
+        setIsShowPlan(!user?.loading && !userData?.subscriptionName)
+        if (userData?.subscriptionName) {
           setIsShowPlan(false)
           navigate('/dashboard')
         }

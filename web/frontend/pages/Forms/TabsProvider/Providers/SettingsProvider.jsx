@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const SettingsProvider = ({ isEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabId, setTabId] = useState({});
-  const user = useSelector(state => state.user.userData.data)
+  const user = useSelector(state => state.user.userData.user);
   const { elements } = useSettingsElement();
   const toggleDrawer = (id, title, attributes) => {
     setTabId({ id, title, attributes });

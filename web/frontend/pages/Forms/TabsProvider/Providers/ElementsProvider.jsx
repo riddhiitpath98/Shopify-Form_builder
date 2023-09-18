@@ -8,7 +8,7 @@ import {
   addHeaderElement,
   handleDragDrop,
 } from "../../../../redux/reducers/inputFieldSlice";
-import { Icons } from "../../../../constant";
+import { Icons, SUBSCRIPTION_TYPES } from "../../../../constant";
 import styles from "../../FormStyle.module.css";
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ElementItem from "./ElementItem";
@@ -18,11 +18,13 @@ const ElementsProvider = ({ isEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabId, setTabId] = useState({});
   const formData = useSelector((state) => state?.inputField?.inputFields);
-
+  const user = useSelector(state => state.user.userData.data);
+  const subscription = useSelector(state => state.user.userData.subscription);
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
 
+  const isShowDrawer = formData.length >= subscription?.features?.form?.number_of_fields_per_form && user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM;
   const dispatch = useDispatch();
   const toggleDrawer = (id, title, attributes, inputId) => {
     setTabId({ id, title, attributes, inputId });
@@ -174,7 +176,7 @@ const ElementsProvider = ({ isEdit }) => {
             );
           }
         )}
-      <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />
+      {isShowDrawer ? null : <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />}
     </section >
   );
 };
