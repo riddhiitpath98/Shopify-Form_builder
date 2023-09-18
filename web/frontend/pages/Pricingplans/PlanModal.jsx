@@ -18,8 +18,6 @@ import { addShopData } from "../../redux/actions/allActions";
 
 export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
 
-  console.log('active', active)
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const subscriptionData = useSelector(

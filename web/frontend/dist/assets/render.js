@@ -1117,7 +1117,6 @@ function fetchData() {
     const mainElement = document.getElementById("form-builder-ips");
     formId = mainElement.getAttribute("data-key");
     appId = mainElement.getAttribute('data-ap-key');
-    console.log('appId', appId)
     
     try {
       const elementData = await getData();

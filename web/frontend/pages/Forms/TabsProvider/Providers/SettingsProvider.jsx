@@ -1,51 +1,23 @@
 import React, { useState } from "react";
 import FormDrawer from "../../FormDrawer/FormDrawer";
 import styles from "../../FormStyle.module.css";
-import { Icons, appearanceAttributes, validationAttributes } from "../../../../constant";
 import { Icon } from "@shopify/polaris";
+import useSettingsElement from "../../../../hooks/useSettingsElement";
+import { useSelector } from "react-redux";
 
 const SettingsProvider = ({ isEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabId, setTabId] = useState({});
-
+  const user = useSelector(state => state.user.userData.data)
+  const { elements } = useSettingsElement();
   const toggleDrawer = (id, title, attributes) => {
     setTabId({ id, title, attributes });
     setIsOpen((prev) => !prev);
   };
 
-  const settingsElements = [
-    {
-      id: "appearance",
-    title: "Appearance",
-      icon: Icons.appearance,
-      attributes: appearanceAttributes,
-    },
-    {
-      id: "reCaptcha",
-      viewAccess: ['premium', 'enterprise'],
-      title: "Google reCaptcha",
-      icon: Icons.reCaptcha,
-    },
-    {
-      id: "error_msg",
-      title: "Error message",
-      icon: Icons.error_msg,
-      attributes: validationAttributes
-    },
-    {
-      id: "submit_actions",
-      title: "After Submit",
-      icon: Icons.after_submit,
-      attributes: {
-        submitAction: "",
-        submitMessage: "",
-      }
-    },
-  ];
-
   return (
     <section>
-      {settingsElements?.map(({ id, title, icon, attributes }) => (
+      {elements(user.subscriptionName)?.map(({ id, title, icon, attributes }) => (
         <div className={styles.rootContent} key={id}>
           <div className={styles.contentWrapper}>
             <div>

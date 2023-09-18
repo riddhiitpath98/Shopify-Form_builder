@@ -9,7 +9,6 @@ import useElements from "../../../../hooks/useElements";
 
 const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
   const user = useSelector(state => state.user.userData.data)
-  console.log('user.subscriptionName', user.subscriptionName)
   const { elements } = useElements()
 
   const { title } = tabId;

@@ -14,12 +14,9 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user.userData);
-  console.log('user: ', user);
 
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
-
-  console.log('shop', shop)
 
   useEffect(() => {
     if (shop.isSuccess) {

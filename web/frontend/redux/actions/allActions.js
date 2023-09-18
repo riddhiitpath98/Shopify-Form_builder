@@ -19,7 +19,6 @@ export const addShopData = createAsyncThunk("shop/addShopData", async (shopData,
 export const getUserByShopId = createAsyncThunk("shop/getUserByShopId", async (id, { rejectWithValue, dispatch }) => {
   try {
     const response = await axios.get(`/user/${id}`)
-    console.log('response: ', response);
     return response.data.data
   } catch (error) {
     return rejectWithValue(error.response.data)
