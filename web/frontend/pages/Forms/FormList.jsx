@@ -18,6 +18,8 @@ import {
   SkeletonThumbnail,
   LegacyCard,
   Text,
+  TextField,
+  Link,
 } from "@shopify/polaris";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,9 +29,10 @@ import { ToastContainer } from "react-toastify";
 import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
-import { Icons } from "../../constant";
+import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
+import BannerPremium from "../../components/BannerPremium";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -50,7 +53,8 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<link rel="stylesheet" href="https://shopify-app-latest.onrender.com/assets/render.css"/>
+    const textToCopy = `
+    <link rel="stylesheet" href="https://shopify-app-latest.onrender.com/assets/render.css"/>
     <script src="https://shopify-app-latest.onrender.com/assets/render.js"></script>
     <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
       }'></div>`;
@@ -58,7 +62,7 @@ function FormList() {
   };
 
   const subscription = useSelector(state => state.user.userData.subscription);
-  const user = useSelector(state => state.user.userData.data);
+  const user = useSelector(state => state.user.userData.user);
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -127,18 +131,26 @@ function FormList() {
     dispatch(fetchFormData(appId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch]);
-
+  const isShowPremium = formData.formData.length >= subscription?.features?.form?.number_of_forms && user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   return (
     <>
+      {isShowPremium ?
+        <BannerPremium
+          text="You can only create 1 form with a free plan. Upgrade to premium to create more forms."
+          url="/plans"
+          linkText="Try Premium"
+        />
+        : null}
       <Page
         fullWidth
         title="Form"
         primaryAction={{
           content: "Create new Form",
           onAction: () => handleCreateForm(),
-          disabled: formData.formData.length >= subscription?.features?.form?.number_of_forms ? true : false
+          disabled: isShowPremium ? true : false
         }}
       >
+
         <LegacyCard>
           {formData?.formData?.length > 0 ? (
             <ResourceList

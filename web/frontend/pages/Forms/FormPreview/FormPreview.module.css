@@ -284,3 +284,23 @@ b {
 .rc-anchor-content{
   width: 156px;
 } */
+
+.premiumPlan {
+  width: 80%;
+  padding: 15px 0px;
+  text-align: center;
+  font-size: 1.1rem;
+  line-height: normal;
+  background-color: #ffffff;
+  margin: auto;
+  margin-top: 18px;
+  border-radius: 10px;
+  border: 2px solid #ebecef;
+}
+.premiumPlanText {
+  font-weight: 500;
+}
+.premiumPlanLink {
+  color: #088060;
+  text-decoration-line: underline;
+}

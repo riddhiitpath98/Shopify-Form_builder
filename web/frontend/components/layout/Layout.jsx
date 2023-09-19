@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import PlanModal from "../../pages/Pricingplans/PlanModal";
 import { useAppQuery } from "../../hooks";
 import { getAllSubscription, getUserByShopId } from "../../redux/actions/allActions";
-import { Spinner } from "@shopify/polaris";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
@@ -14,9 +13,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user.userData.user);
-  const subscription = useSelector(state => state.user.userData.subscription);
-
-
+  const path = location?.pathname === "/" ? "/dashboard" : location?.pathname
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
 
@@ -27,7 +24,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
         setIsShowPlan(!user?.loading && !userData?.subscriptionName)
         if (userData?.subscriptionName) {
           setIsShowPlan(false)
-          navigate('/dashboard')
+          navigate(path, { replace: true })
         }
       });
     }

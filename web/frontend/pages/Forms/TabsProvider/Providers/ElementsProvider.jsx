@@ -18,19 +18,20 @@ const ElementsProvider = ({ isEdit }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tabId, setTabId] = useState({});
   const formData = useSelector((state) => state?.inputField?.inputFields);
-  const user = useSelector(state => state.user.userData.data);
+  const user = useSelector(state => state.user.userData.user);
   const subscription = useSelector(state => state.user.userData.subscription);
+
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
 
-  const isShowDrawer = formData.length >= subscription?.features?.form?.number_of_fields_per_form && user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM;
   const dispatch = useDispatch();
   const toggleDrawer = (id, title, attributes, inputId) => {
     setTabId({ id, title, attributes, inputId });
     setIsOpen((prev) => !prev);
   };
 
+  const isShowDrawer = formData.length >= subscription?.features?.form?.number_of_fields_per_form && tabId.id === 'add_element';
   const formElements = [
     {
       id: "header",
@@ -176,7 +177,7 @@ const ElementsProvider = ({ isEdit }) => {
             );
           }
         )}
-      {isShowDrawer ? null : <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />}
+      {!isShowDrawer && <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />}
     </section >
   );
 };

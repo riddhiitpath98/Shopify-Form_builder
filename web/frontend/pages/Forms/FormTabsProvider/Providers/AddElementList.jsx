@@ -8,7 +8,7 @@ import styles from "../../FormStyle.module.css";
 import useElements from "../../../../hooks/useElements";
 
 const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
-  const user = useSelector(state => state.user.userData.data);
+  const user = useSelector(state => state.user.userData.user);
   const { elements } = useElements()
 
   const { title } = tabId;
