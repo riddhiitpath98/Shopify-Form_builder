@@ -54,17 +54,20 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
     navigate("/dashboard", { replace: true })
   }
 
+  const removeUnderScoreNdSetFirstLetterCapital = (key) => {
+    let string = "";
+    string = key.replace(/_/g, " ");
+    string = string[0].toUpperCase() + string.substring(1);
+    return string;
+  }
+
+
   return (
     <div style={{ height: "500px" }}>
       <Modal
-        // activator={activator}
         open={active}
-        onClose={toggleModal}
+        // onClose={toggleModal}
         title="Pricing plans"
-        primaryAction={{
-          content: "Close",
-          onAction: toggleModal,
-        }}
         large
       >
         <div className="pricing-component-wrapper">
@@ -133,22 +136,18 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                         </Badge>
                       </div> */}
                         <div className={styles.monthlyPrice}>
-                          {/* <span className={styles.monthlyPriceCur}>USD</span> */}
+                          <span className={styles.monthlyPriceCur}>USD</span>
                           <span className={styles.priceValue}>
                             <span className={styles.price}>
                               <span>
-                                {/* <sub className={styles.dollar}>$</sub> */}
-                                {/* <span className={styles.dollarValue}>14.9</span> */}
-                                <span className={styles.rupees}>
-                                  Coming Soon...
-                                </span>
+                                <sub className={styles.dollar}>$</sub>
+                                <span className={styles.rupees}>5.99</span>
                               </span>
                             </span>
                           </span>
                           <span className={styles.month}>
-                            {/* /<span>mo</span> */}
+                            /<span>mo</span>
                           </span>
-
                         </div>
                         <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)}>
                           <span>
@@ -176,7 +175,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                             <tr>
                               <th colSpan={3}>
                                 <span className={styles.tableHeader}>
-                                  <span>{featureKey}</span>
+                                  <span>{removeUnderScoreNdSetFirstLetterCapital(featureKey)}</span>
                                 </span>
                               </th>
                             </tr>
@@ -189,7 +188,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                                   <div className={styles.rowTitle}>
                                     <dl className={styles.labelName}>
                                       <dt className={styles.labelText}>
-                                        <span>{innerKey}</span>
+                                        <span>{removeUnderScoreNdSetFirstLetterCapital(innerKey)}</span>
                                       </dt>
                                       <dd
                                         className={styles.labelDescription}
