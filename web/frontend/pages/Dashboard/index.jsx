@@ -7,15 +7,20 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchFormData,
   filterSubmissionByDate,
+  getAllSubscription,
   getSubmission,
 } from "../../redux/actions/allActions";
 import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import ChartDashboard from "../../components/Chart";
 import { ToastContainer } from "react-toastify";
+import { Fullscreen } from "@shopify/app-bridge/actions";
+import { useAppBridge } from "@shopify/app-bridge-react";
 
 function Dashboard() {
   const dispatch = useDispatch();
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
   const [selected, setSelected] = useState("Select an option");
   const [popoverActive, setPopoverActive] = useState({
     dailySubmission: false,
@@ -35,8 +40,10 @@ function Dashboard() {
   }, [date]);
 
   useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getSubmission(appId));
     dispatch(fetchFormData(appId));
+    dispatch(getAllSubscription());
   }, [dispatch]);
 
   return (

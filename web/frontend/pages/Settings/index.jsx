@@ -50,7 +50,7 @@ function Settings() {
   const isEdit = useSelector(
     (state) => state?.setting?.smtpSettingData?.isEdit
   );
-  const user = useSelector(state => state.user.userData.data)
+  const user = useSelector(state => state?.user?.userData?.user)
   const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
   const appId = useSelector((state) => state.appId.appId);
   const [showValidation, setShowValidation] = useState(false);

@@ -4,8 +4,16 @@ import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
 import styles from "./PricingPlan.module.css";
+import { useEffect } from "react";
+import { Fullscreen } from "@shopify/app-bridge/actions";
+import { useAppBridge } from "@shopify/app-bridge-react";
 
 function Pricingplans() {
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
+  useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
+  }, [])
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -106,7 +114,7 @@ function Pricingplans() {
                           {/* /<span>mo</span> */}
                         </span>
                       </div>
-{/* 
+                      {/* 
                       <Button onClick={handleClick} primary fullWidth>
                         <span>
                           <span>

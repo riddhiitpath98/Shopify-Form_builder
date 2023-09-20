@@ -8,7 +8,7 @@ import styles from "../../FormStyle.module.css";
 import useElements from "../../../../hooks/useElements";
 
 const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
-  const user = useSelector(state => state.user.userData.data)
+  const user = useSelector(state => state.user.userData.user);
   const { elements } = useElements()
 
   const { title } = tabId;
@@ -34,7 +34,7 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           <div className={styles.nestedContent}>
             <div>
               <div>
-                {elements(user.subscriptionName)?.map(({ label, fields }, index) => (
+                {elements(user?.subscriptionName)?.map(({ label, fields }, index) => (
                   <div className={styles.contentWrapper} key={index}>
                     <div>
                       <div className={styles.subHeading}>{label}</div>

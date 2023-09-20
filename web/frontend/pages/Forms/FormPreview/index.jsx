@@ -9,6 +9,7 @@ import {
   Grid,
   Heading,
   Layout,
+  Link,
   Page,
   SkeletonBodyText,
   SkeletonDisplayText,
@@ -33,6 +34,8 @@ import { setFormSubmitted } from "../../../redux/reducers/submissionSlice";
 import "./Preview.css";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
+import BannerPremium from "../../../components/BannerPremium";
+import { SUBSCRIPTION_TYPES } from "../../../constant";
 
 const FormPreview = () => {
   const dispatch = useDispatch();
@@ -100,9 +103,12 @@ const FormPreview = () => {
   const afterSubmitFields = useSelector(
     (state) => state.formSetting?.afterSubmitData?.afterSubmitFields
   );
+
+  const user = useSelector(state => state.user.userData.user)
   const selectedValue = afterSubmitFields?.submitAction;
   const redirectUrl = afterSubmitFields?.redirectUrl;
-
+  const subscription = useSelector(state => state.user.userData.subscription)
+  const isShowDrawer = inputFields.length >= subscription?.features?.form?.number_of_fields_per_form && user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   useEffect(() => {
     if (inputFields.length) {
       let fieldArry = [...formFeildData];
@@ -436,6 +442,12 @@ const FormPreview = () => {
 
   return (
     <div className={styles.formContent}>
+      {isShowDrawer ?
+        <BannerPremium
+          text="You can only add 12 element for a form with a free plan. Upgrade to premium to create more forms."
+          url="/plans"
+          linkText="Try Premium"
+        /> : null}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>

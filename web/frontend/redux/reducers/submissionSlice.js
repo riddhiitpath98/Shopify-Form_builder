@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Navigation } from "@shopify/polaris";
 import {
   createSubmissions,
   deleteSubmissionData,

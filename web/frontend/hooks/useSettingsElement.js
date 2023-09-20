@@ -46,7 +46,7 @@ const useSettingsElement = () => {
         })
     }
 
-    const elements = (selectedPlan = 'free') => {
+    const elements = (selectedPlan = SUBSCRIPTION_TYPES.FREE) => {
         if (!selectedPlan) return []
         return checkElements(selectedPlan)
     }

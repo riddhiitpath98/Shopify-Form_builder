@@ -3,6 +3,8 @@ import { addShopData, getUserByShopId } from '../actions/allActions';
 
 const initialState = {
     userData: {
+        user: {},
+        subscription: {},
         data: {},
         error: "",
         loading: false,
@@ -19,7 +21,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: {},
+                    user: {},
+                    subscription: {},
                     error: "",
                     loading: true,
                 }
@@ -28,7 +31,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: action.payload,
+                    user: action.payload.userData,
+                    subscription: action.payload.subscriptionData,
                     error: "",
                     loading: false,
                     success: true,
@@ -38,7 +42,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: {},
+                    user: {},
+                    subscription: {},
                     error: action.payload,
                     loading: false,
                 }
@@ -47,7 +52,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: {},
+                    user: {},
+                    subscription: {},
                     error: "",
                     loading: true,
                 }
@@ -56,7 +62,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: action.payload,
+                    user: action.payload.userData,
+                    subscription: action.payload.subscriptionData,
                     error: "",
                     loading: false,
                     success: true,
@@ -66,7 +73,8 @@ const userSlice = createSlice({
             return {
                 ...state,
                 userData: {
-                    data: {},
+                    user: {},
+                    subscription: {},
                     error: action.payload,
                     loading: false,
                 }

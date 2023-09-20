@@ -48,7 +48,6 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
     dispatch(addShopData(user))
     toggleModal()
     navigate("/dashboard", { replace: true })
-
   }
 
   const capitalizeFirstLetter = (str) => {
