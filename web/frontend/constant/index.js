@@ -78,7 +78,7 @@ export const pricingPlanData = [
     heading: "Form",
     tableData: [
       { title: "Number of form(s)", unpaid: "Unlimited", paid: "-" },
-      { title: "Number of fields per form", unpaid: 13, paid: "-" },
+      { title: "Number of fields per form", unpaid: 12, paid: "-" },
       {
         title: "Number of submissions per month",
         unpaid: "Unlimited",
