@@ -30,9 +30,9 @@ import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
 import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
+import BannerPremium from "../../components/BannerPremium";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
-import BannerPremium from "../../components/BannerPremium";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -136,9 +136,11 @@ function FormList() {
     <>
       {isShowPremium ?
         <BannerPremium
-          text="You can only create 1 form with a free plan. Upgrade to premium to create more forms."
+          title="Current Plan"
+          text={<p style={{fontSize: "1.125em",marginTop: "0.5rem", fontWeight: 500}}>You are in Free plan.  You've created 1 form allowed in your plan. Upgrade to premium to create more forms.</p>}
           url="/plans"
-          linkText="Try Premium"
+          status="info"
+          buttonText="Upgrade plan"
         />
         : null}
       <Page

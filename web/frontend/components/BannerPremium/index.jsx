@@ -1,14 +1,18 @@
-import React from 'react'
+import React from "react";
+import { Banner } from "@shopify/polaris";
 import styles from "./BannerPremium.module.css";
-import { Link } from '@shopify/polaris';
 
-
-const BannerPremium = ({ text, url, linkText }) => {
-    return (
-        <div className={styles.premiumPlan}>
-            <p className={styles.premiumPlanText}>{text}<Link url={url}><span className={styles.premiumPlanLink}>{linkText}</span></Link></p>
-        </div>
-    )
+export default function BannerPremium({ title, text, url, status, buttonText }) {
+  return (
+    <div className={styles.premiumPlan}>
+      <Banner
+        title={title}
+        action={{ content: buttonText, url: url }}
+        status={status}
+        onDismiss={() => {}}
+      >
+        <p>{text}</p>
+      </Banner>
+    </div>
+  );
 }
-
-export default BannerPremium
