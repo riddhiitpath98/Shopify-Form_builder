@@ -8,24 +8,32 @@ let appId;
 const server = "https://shopifyappapi.project-demo.info:3008/api";
 
 const getValidation = async () => {
-  const response = await fetch(`${server}/formsettings/validation/${formId}`);
+  const response = await fetch(
+    `${server}/formsettings/validation/${formId}`
+  );
   const data = await response.json();
   return data.data.validation;
 };
 const getApperence = async () => {
-  const response = await fetch(`${server}/formsettings/appearance/${formId}`);
+  const response = await fetch(
+    `${server}/formsettings/appearance/${formId}`
+  );
   const data = await response.json();
   return data.data.appearance;
 };
 
 const getAfterSubmit = async () => {
-  const response = await fetch(`${server}/formsettings/afterSubmit/${formId}`);
+  const response = await fetch(
+    `${server}/formsettings/afterSubmit/${formId}`
+  );
   const data = await response.json();
   return data.data.afterSubmit;
 };
 
 const getData = async () => {
-  const response = await fetch(`${server}/custom_form/${formId}`);
+  const response = await fetch(
+    `${server}/custom_form/${formId}`
+  );
   const data = await response.json();
   return data.data;
 };
@@ -37,7 +45,10 @@ const createSubmission = async (data) => {
       headers: {
         "Content-Type": "application/json", // Set the Content-Type header to specify JSON data
       },
-      body: JSON.stringify({ submission: data, appId }), // Convert the data to JSON format
+      body: JSON.stringify({
+        submission: data,
+        appId: appId,
+      }), // Convert the data to JSON format
     };
     const response = await fetch(
       `${server}/submission/${formId}`,
@@ -157,10 +168,7 @@ const updateFormData = () => {
     let index = formFieldData.findIndex(
       (element) => element.id === input.inputId
     );
-    if (
-      input.type !== "editor" &&
-      input.type !== "heading"
-    ) {
+    if (input.type !== "editor" && input.type !== "heading") {
       formData = {
         ...formData,
         [`${input.inputId}_${input.id}`]: input.attributes?.default_value || "",
@@ -231,7 +239,7 @@ const setDefaultValue = () => {
   });
 };
 
-const handleSubmit = async (event) => {
+const handleSubmit = async (event, buttonText) => {
   event.preventDefault();
   const banner = document.getElementById("polaris-banner");
   banner.style.display = "none";
@@ -264,26 +272,46 @@ const handleSubmit = async (event) => {
   });
 
   if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
-    const response = await createSubmission(formData);
-    if (response.ok) {
-      if (afterSubmit.submitAction === "clearForm") {
-        updateFormData();
-        banner.style.display = "flex";
-        form.reset();
-        // setTimeout(()=>{
-        //   window.location.reload();
-        // },5000)
-      } else if (afterSubmit.submitAction === "hideForm") {
-        form.style.display = "none";
-        banner.style.display = "flex";
-        // setTimeout(()=>{
-        //   window.location.reload();
-        // },5000)
-      } else if (afterSubmit.submitAction === "pageRedirect") {
-        window.open(afterSubmit.redirectUrl, "_blank");
-        banner.style.display = "flex";
-        // window.location.reload();
-      } else alert("submission addeed");
+    const loader = document.getElementById("loader");
+    const buttonElement = document.querySelector("#submit");
+    const buttonTextElement = buttonElement.querySelector("#span_submit_button");
+    buttonTextElement.style.display = "none";
+    loader.style.display = 'block';
+    loader.style.zIndex = 10000;
+
+    // loader.style.position = "absolute"
+    try {
+      const response = await createSubmission(formData);
+      if (response.ok) {
+        buttonTextElement.style.display = "block";
+        loader.style.display = "none";
+        if (afterSubmit.submitAction === "clearForm") {
+          updateFormData();
+          banner.style.display = "flex";
+          form.reset();
+          // setTimeout(()=>{
+          //   window.location.reload();
+          // },5000)
+        } else if (afterSubmit.submitAction === "hideForm") {
+          form.style.display = "none";
+          banner.style.display = "flex";
+          // setTimeout(()=>{
+          //   window.location.reload();
+          // },5000)
+        } else if (afterSubmit.submitAction === "pageRedirect") {
+          window.open(afterSubmit.redirectUrl, "_blank");
+          banner.style.display = "flex";
+          // window.location.reload();
+        } else alert("submission addeed");
+      } else {
+        alert("API request failed. Please try again later.");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+
+    } finally {
+      buttonElement.textContent = buttonText;
+      loader.style.display = "none";
     }
   }
 };
@@ -318,17 +346,16 @@ const catchFormDivAndAppendForm = (data) => {
   setTimeout(() => {
     let mainFormElement = document.getElementById("form-builder-ips");
     const divElement = document.createElement("div");
-    divElement.className = `formBuilder ${
-      selectedBackground === "image" ? "formImageBackground" : ""
-    }`;
+    divElement.className = `formBuilder ${selectedBackground === "image" ? "formImageBackground" : ""
+      }`;
 
     divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
     divElement.style.backgroundColor =
       selectedBackground === "color"
         ? appearanceFields?.formBackgroundColor
         : selectedBackground === "none"
-        ? "#fff"
-        : "#fff";
+          ? "#fff"
+          : "#fff";
     divElement.style.backgroundImage =
       selectedBackground === "image"
         ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -347,7 +374,9 @@ const catchFormDivAndAppendForm = (data) => {
     formElement.noValidate = true;
     formElement.enctype = "multipart/form-data";
 
-    formElement.addEventListener("submit", handleSubmit);
+    formElement.addEventListener("submit", (event) => {
+      handleSubmit(event, footerFieldData?.attributes?.submitButton)
+    });
     divElement.appendChild(formElement);
 
     if (headerFieldData) {
@@ -407,14 +436,14 @@ const catchFormDivAndAppendForm = (data) => {
           column_width === "33%"
             ? 4
             : column_width === "50%"
-            ? 6
-            : column_width === "100%" && 12,
+              ? 6
+              : column_width === "100%" && 12,
         xl:
           column_width === "33%"
             ? 4
             : column_width === "50%"
-            ? 6
-            : column_width === "100%" && 12,
+              ? 6
+              : column_width === "100%" && 12,
       };
 
       const noOfOptions = parseInt(no_of_options?.[0]);
@@ -1019,27 +1048,56 @@ const catchFormDivAndAppendForm = (data) => {
       footerContent.innerHTML = footerFieldData?.attributes?.text;
       footerElement.appendChild(footerContent);
 
+      // const buttonElement = document.createElement("button");
+      // buttonElement.type = "submit";
+      // buttonElement.className = `${
+      //   footerFieldData?.attributes?.buttonWidth
+      //     ? "buttonWidth"
+      //     : "classicButton submitButton"
+      // }`;
+      // buttonElement.style.backgroundColor = appearanceFields?.mainColor;
+      // buttonElement.style.border = "none";
+      // buttonElement.textContent = footerFieldData?.attributes?.submitButton;
+      // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${
-        footerFieldData?.attributes?.buttonWidth
-          ? "buttonWidth"
-          : "classicButton submitButton"
-      }`;
+      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
+        ? "buttonWidth classicButton submitButton"
+        : "classicButton submitButton"
+        }`;
+      const spanSubmit = document.createElement("span")
+      spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
+      spanSubmit.id = 'span_submit_button'
+      buttonElement.appendChild(spanSubmit);
+      buttonElement.id = "submit";
       buttonElement.style.backgroundColor = appearanceFields?.mainColor;
       buttonElement.style.border = "none";
-      buttonElement.textContent = footerFieldData?.attributes?.submitButton;
-      footerDivElement.appendChild(buttonElement);
+      const loaderElement = document.createElement("div");
+      loaderElement.id = "loader";
+      loaderElement.className = "loader";
+      // loaderElement.style.backgroundColor = 'red';
+      const imageElement = document.createElement("img");
+      imageElement.style.height = "20px"; // Change to your desired height
+      imageElement.style.width = "20px";
 
+      imageElement.setAttribute(
+        "src",
+        "/spinner_img.gif"
+      );
+      // imageElement.src = "";
+      // loaderElement.textContent = "loading.."
+      loaderElement.appendChild(imageElement);
+      buttonElement.appendChild(loaderElement);
+      loaderElement.style.display = 'none';
+      footerDivElement.appendChild(buttonElement);
       if (footerFieldData?.attributes?.resetButton) {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${
-          footerFieldData?.attributes?.buttonWidth
-            ? "buttonWidth"
-            : "classicButton"
-        }`;
+        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
+          ? "buttonWidth classicButton resetButton"
+          : "classicButton resetButton"
+          }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
 
         footerDivElement.appendChild(resetButton);
@@ -1109,6 +1167,8 @@ const catchFormDivAndAppendForm = (data) => {
 
     const close = document.getElementById("close");
     close.addEventListener("click", handleClose);
+
+
   }, 2000);
 };
 
@@ -1116,9 +1176,8 @@ function fetchData() {
   setTimeout(async () => {
     const mainElement = document.getElementById("form-builder-ips");
     formId = mainElement.getAttribute("data-key");
-    appId = mainElement.getAttribute('data-ap-key');
-    console.log('appId', appId)
-    
+    appId = mainElement.getAttribute("data-ap-key");
+
     try {
       const elementData = await getData();
       const validationData = await getValidation();

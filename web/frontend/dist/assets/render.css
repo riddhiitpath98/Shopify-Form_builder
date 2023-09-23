@@ -173,6 +173,9 @@ textarea {
   background-color: #007bff;
   color: #ffffff;
 }
+.resetButton {
+  color: #ffffff;
+}
 .classicButton {
   border: 1px solid #90c3f9;
   text-transform: none;
@@ -308,7 +311,7 @@ b {
   border: 1px solid #95c9b4;
   background-color: #f1f8f5;
   border-radius: 10px;
-  padding: 10px;
+  /* padding: 10px; */
 }
 
 .banner-main {
@@ -328,7 +331,17 @@ b {
 .heading-text {
   font-size: medium;
   font-weight: bold;
+  color: #000000;
 }
 .Polaris-Banner__ContentWrapper {
   margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

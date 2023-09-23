@@ -90,6 +90,7 @@ function ContactUsForm() {
                           onChange={(value) => handleChange("firstName", value)}
                           label="First Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.firstName}
                           autoComplete="off"
                         />
@@ -101,6 +102,7 @@ function ContactUsForm() {
                           onChange={(value) => handleChange("lastName", value)}
                           label="Last Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.lastName}
                           autoComplete="off"
                         />
@@ -108,11 +110,13 @@ function ContactUsForm() {
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <TextField
+                        
                           value={formValues.email || ""}
                           name="email"
                           onChange={(value) => handleChange("email", value)}
                           label="Email ID"
                           type="email"
+                          requiredIndicator
                           error={errorValues.email}
                           autoComplete="off"
                         />
@@ -126,6 +130,7 @@ function ContactUsForm() {
                           }
                           label="Contact Number"
                           type="text"
+                          requiredIndicator
                           error={errorValues.contactNumber}
                           autoComplete="off"
                         />
@@ -140,6 +145,7 @@ function ContactUsForm() {
                           }
                           label="Subject Line"
                           type="text"
+                          requiredIndicator
                           error={errorValues.subjectLine}
                           autoComplete="off"
                         />
@@ -153,6 +159,7 @@ function ContactUsForm() {
                           label="Message"
                           type="text"
                           multiline={4}
+                          requiredIndicator
                           error={errorValues.message}
                           autoComplete="off"
                         />

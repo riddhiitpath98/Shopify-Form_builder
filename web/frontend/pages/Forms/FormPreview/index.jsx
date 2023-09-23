@@ -2,28 +2,23 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  Button,
   Card,
-  Form,
   FormLayout,
   Grid,
   Heading,
   Layout,
-  Page,
   SkeletonBodyText,
-  SkeletonDisplayText,
   SkeletonPage,
   Spinner,
-  TextContainer,
-  TextField,
-  TextStyle,
 } from "@shopify/polaris";
 import { CustomInput } from "./CustomInput";
-import { createSubmissions, getRecaptchaSettingsByAppId } from "../../../redux/actions/allActions";
+import {
+  createSubmissions,
+  getRecaptchaSettingsByAppId,
+} from "../../../redux/actions/allActions";
 import BannerCard from "./BannerCard";
 import { allFieldsAreRequired, validation } from "../../../utils/validation";
 import ReCAPTCHA from "react-google-recaptcha";
-import styles from "./FormPreview.module.css";
 import {
   addFormSubmission,
   setDateKeyName,
@@ -33,6 +28,9 @@ import { setFormSubmitted } from "../../../redux/reducers/submissionSlice";
 import "./Preview.css";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Redirect } from "@shopify/app-bridge/actions";
+import { SUBSCRIPTION_TYPES } from "../../../constant";
+import styles from "./FormPreview.module.css";
+import ElementListBanner from "../../../components/ElementListBanner";
 
 const FormPreview = () => {
   const dispatch = useDispatch();
@@ -49,7 +47,6 @@ const FormPreview = () => {
   const { editFormId } = useParams();
   const app = useAppBridge();
   const redirect = Redirect.create(app);
-
 
   const showMessage = useSelector(
     (state) => state.submission.submissionData?.showMessage
@@ -102,6 +99,14 @@ const FormPreview = () => {
   );
   const selectedValue = afterSubmitFields?.submitAction;
   const redirectUrl = afterSubmitFields?.redirectUrl;
+  const user = useSelector((state) => state.user?.userData?.user);
+  const subscription = useSelector(
+    (state) => state.user?.userData?.subscription
+  );
+  const isShowDrawer =
+    inputFields.length >=
+      subscription?.features?.form?.number_of_fields_per_form &&
+    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {
@@ -120,16 +125,16 @@ const FormPreview = () => {
             errorMessage: "",
             feildName: input.title,
             required: input?.attributes?.required,
-          }
+          };
           if (input?.attributes?.confirmPassword) {
             fieldArry.push({
               ...feildData,
               confirmPassword: input?.attributes?.confirmPassword,
-              confirmFeildId: `${input?.inputId}_confirm_${input?.id}`
+              confirmFeildId: `${input?.inputId}_confirm_${input?.id}`,
             });
           } else {
             fieldArry.push({
-              ...feildData
+              ...feildData,
             });
           }
 
@@ -144,7 +149,9 @@ const FormPreview = () => {
               item.required = input?.attributes?.required;
               if (input?.attributes?.confirmPassword) {
                 item.confirmPassword = input?.attributes?.confirmPassword;
-                item.confirmErrorMessage = input?.attributes?.required ? item?.confirmErrorMessage : "";
+                item.confirmErrorMessage = input?.attributes?.required
+                  ? item?.confirmErrorMessage
+                  : "";
                 item.errorMessage = input?.attributes?.required
                   ? item?.errorMessage
                   : "";
@@ -154,7 +161,10 @@ const FormPreview = () => {
           setFormFeildData(cloneData);
         }
         const unique_id = `${input?.inputId}_${input?.id}`;
-        formData = { ...formData, [unique_id]: input.attributes.default_value || "" }
+        formData = {
+          ...formData,
+          [unique_id]: input.attributes.default_value || "",
+        };
         let value = formData[unique_id] || "";
         if (Array.isArray(input?.attributes?.default_value)) {
           if (!value) {
@@ -170,15 +180,15 @@ const FormPreview = () => {
           value = input?.attributes?.isDefaultSelected
             ? input?.attributes?.isDefaultSelected
             : input?.attributes?.default_value
-              ? input?.attributes?.default_value
-              : formSubmissionData[unique_id];
+            ? input?.attributes?.default_value
+            : formSubmissionData[unique_id];
         }
         formData = {
           ...formData,
           [unique_id]: value || "",
         };
         dispatch(addFormSubmission(formData));
-        if (input.type === 'date') {
+        if (input.type === "date") {
           dispatch(setDateKeyName(unique_id));
         }
       });
@@ -194,7 +204,6 @@ const FormPreview = () => {
         enable: editFormData?.formData?.enableRecaptcha,
       })
     );
-
   }, [dispatch, inputFields]);
   useEffect(() => {
     let cloneData = formFeildData.map((feild) => {
@@ -208,7 +217,6 @@ const FormPreview = () => {
     setFormFeildData(cloneData);
   }, [formSubmissionData]);
 
-
   const handleDateTimeChange = (dateTime, name, id) => {
     const dateValue = dateTime;
     setSelectedDateTime(dateTime);
@@ -219,10 +227,10 @@ const FormPreview = () => {
       ["feildValue"]: dateValue,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-          fieldArry?.[fieldIndex]?.["feildName"],
-          dateValue,
-          errorFields
-        )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            dateValue,
+            errorFields
+          )
         : "",
     };
     setFormFeildData([...fieldArry]);
@@ -238,7 +246,7 @@ const FormPreview = () => {
     const { id, name, value, type, checked } = event.target;
     const inputValue = type === "checkbox" ? checked : value;
     if (!confirmPassword) {
-      const formData = { ...formSubmissionData, [name]: inputValue }
+      const formData = { ...formSubmissionData, [name]: inputValue };
       dispatch(addFormSubmission(formData));
     }
 
@@ -247,28 +255,29 @@ const FormPreview = () => {
     if (confirmPassword) {
       fieldArry[fieldIndex] = {
         ...fieldArry[fieldIndex],
-        ['confirmFeildName']: name.replace(/^[a-z0-9]+_/, ''),
+        ["confirmFeildName"]: name.replace(/^[a-z0-9]+_/, ""),
         ["confirmFeildValue"]: inputValue,
         ["confirmErrorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-            fieldArry?.[fieldIndex]?.["confirmFeildName"],
-            inputValue,
-            errorFields,
-            fieldArry?.[fieldIndex]
-          )
-          : inputValue !== fieldArry?.[fieldIndex].feildValue ? errorFields?.["confirmedPasswordMatch"] : ""
+              fieldArry?.[fieldIndex]?.["confirmFeildName"],
+              inputValue,
+              errorFields,
+              fieldArry?.[fieldIndex]
+            )
+          : inputValue !== fieldArry?.[fieldIndex].feildValue
+          ? errorFields?.["confirmedPasswordMatch"]
+          : "",
       };
     } else {
-
       fieldArry[fieldIndex] = {
         ...fieldArry[fieldIndex],
         ["feildValue"]: inputValue,
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            inputValue,
-            errorFields
-          )
+              fieldArry?.[fieldIndex]?.["feildName"],
+              inputValue,
+              errorFields
+            )
           : "",
       };
     }
@@ -292,10 +301,10 @@ const FormPreview = () => {
       ["feildValue"]: fileData,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-          fieldArry?.[fieldIndex]?.["feildName"],
-          fileList,
-          errorFields
-        )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            fileList,
+            errorFields
+          )
         : "",
     };
     setFormFeildData([...fieldArry]);
@@ -316,10 +325,10 @@ const FormPreview = () => {
         ["feildValue"]: data,
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            value,
-            errorFields
-          )
+              fieldArry?.[fieldIndex]?.["feildName"],
+              value,
+              errorFields
+            )
           : "",
       };
       setFormFeildData([...fieldArry]);
@@ -334,10 +343,10 @@ const FormPreview = () => {
         ["feildValue"]: data.filter((item) => item.value !== value),
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            value,
-            errorFields
-          )
+              fieldArry?.[fieldIndex]?.["feildName"],
+              value,
+              errorFields
+            )
           : "",
       };
       setFormFeildData([...fieldArry]);
@@ -356,7 +365,7 @@ const FormPreview = () => {
     const cloneData = [...formFeildData];
     let formData = {};
     formFeildData?.forEach((value) => {
-      formData = { ...formData, [value.feildId]: "" }
+      formData = { ...formData, [value.feildId]: "" };
 
       const error = validation(
         value?.["feildName"],
@@ -375,7 +384,7 @@ const FormPreview = () => {
       if (value?.required && error) {
         errorObj[value?.["id"]] = error;
         if (value?.required && confirm) {
-          errorObj[value?.['confirmFeildId']] = confirm
+          errorObj[value?.["confirmFeildId"]] = confirm;
         }
       }
     });
@@ -384,11 +393,20 @@ const FormPreview = () => {
 
     if (isAllFieldsRequired) {
       dispatch(
-        createSubmissions({ form: editFormId, appId: appId, submission: formSubmissionData })
+        createSubmissions({
+          form: editFormId,
+          appId: appId,
+          submission: formSubmissionData,
+        })
       );
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {
-        return { ...feild, feildValue: "", errorMessage: "", confirmErrorMessage: "" };
+        return {
+          ...feild,
+          feildValue: "",
+          errorMessage: "",
+          confirmErrorMessage: "",
+        };
       });
       setFormFeildData(data);
       if (selectedValue === "clearForm" || selectedValue === "hideForm") {
@@ -409,7 +427,10 @@ const FormPreview = () => {
           array.push({
             ...value,
             errorMessage: value?.required ? errorObj[value?.["id"]] : "",
-            confirmErrorMessage: value?.required || value?.confirmPassword ? errorObj[value?.['confirmFeildId']] : "",
+            confirmErrorMessage:
+              value?.required || value?.confirmPassword
+                ? errorObj[value?.["confirmFeildId"]]
+                : "",
           });
         } else
           array.push({
@@ -424,18 +445,19 @@ const FormPreview = () => {
   const handleResetForm = () => {
     let formData = {};
     formFeildData.forEach((value) => {
-      formData = { ...formData, [value.feildId]: "" }
-    })
-    dispatch(addFormSubmission({ ...formData }))
+      formData = { ...formData, [value.feildId]: "" };
+    });
+    dispatch(addFormSubmission({ ...formData }));
     formRef.current.reset();
   };
 
   const handleSelectText = (event) => {
     event.target.select();
-  }
+  };
 
   return (
     <div className={styles.formContent}>
+      {isShowDrawer ? <div className={styles.elementBanner}><ElementListBanner title={"You can only add 12 element for a form with a Free plan."}/></div> : null}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>
@@ -456,23 +478,26 @@ const FormPreview = () => {
       ) : (
         <div className={styles.previewCard}>
           <div
-            className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
-              }`}
+            className={`${styles.previewBox} ${
+              selectedViewPort === "mobile" ? styles.mobile : ""
+            }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${styles.formBuilder} ${selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
-                  } ${selectedBackground === "image" && styles.formImageBackground
-                  } `}
+                className={`${styles.formBuilder} ${
+                  selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
+                } ${
+                  selectedBackground === "image" && styles.formImageBackground
+                } `}
                 style={{
                   maxWidth: appearanceFields?.appearanceWidth || "700px",
                   backgroundColor:
                     selectedBackground === "color"
                       ? appearanceFields?.formBackgroundColor
                       : selectedBackground === "none"
-                        ? "#fff"
-                        : "#fff",
+                      ? "#fff"
+                      : "#fff",
                   backgroundImage:
                     selectedBackground === "image"
                       ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -533,9 +558,21 @@ const FormPreview = () => {
                       {inputFields.map(
                         ({ id, title, type, attributes, inputId }, index) => {
                           const width = {
-                            md: (selectedViewPort === "mobile" && 12) || (attributes?.column_width === "33%" ? 4 : attributes?.column_width === "50%" ? 6 : attributes?.column_width === "100%" && 12),
-                            xl: (selectedViewPort === "mobile" && 12) || (attributes?.column_width === "33%" ? 4 : attributes?.column_width === "50%" ? 6 : attributes?.column_width === "100%" && 12),
-                          }
+                            md:
+                              (selectedViewPort === "mobile" && 12) ||
+                              (attributes?.column_width === "33%"
+                                ? 4
+                                : attributes?.column_width === "50%"
+                                ? 6
+                                : attributes?.column_width === "100%" && 12),
+                            xl:
+                              (selectedViewPort === "mobile" && 12) ||
+                              (attributes?.column_width === "33%"
+                                ? 4
+                                : attributes?.column_width === "50%"
+                                ? 6
+                                : attributes?.column_width === "100%" && 12),
+                          };
                           return (
                             <Grid.Cell columnSpan={{ ...width }}>
                               <CustomInput
@@ -558,10 +595,11 @@ const FormPreview = () => {
                                 }}
                                 handleChange={handleChange}
                               />
-                            </Grid.Cell>)
+                            </Grid.Cell>
+                          );
                         }
                       )}
-                    </Grid >
+                    </Grid>
                   </FormLayout>
                   {googelRecaptcha?.enable ? (
                     <div className={styles.captchaContainer}>
@@ -594,11 +632,13 @@ const FormPreview = () => {
 
                         <button
                           type="submit"
-                          className={`${styles.classicButton} ${styles.submitButton
-                            }
-                            ${footerFieldData?.attributes?.buttonWidth
-                              ? styles.buttonWidth
-                              : `${styles.classicButton}${styles.submitButton}`
+                          className={`${styles.classicButton} ${
+                            styles.submitButton
+                          }
+                            ${
+                              footerFieldData?.attributes?.buttonWidth
+                                ? styles.buttonWidth
+                                : `${styles.classicButton}${styles.submitButton}`
                             } ${submissionData.loading && styles.loadingBtn}`}
                           style={{
                             backgroundColor:
@@ -616,10 +656,13 @@ const FormPreview = () => {
                         {footerFieldData.attributes.resetButton ? (
                           <button
                             type="button"
-                            className={`${styles.classicButton} 
-                              ${footerFieldData?.attributes?.buttonWidth
-                                ? styles.buttonWidth
-                                : styles.classicButton
+                            className={`${styles.classicButton} ${
+                              styles.resetButton
+                            }
+                              ${
+                                footerFieldData?.attributes?.buttonWidth
+                                  ? styles.buttonWidth
+                                  : `${styles.classicButton}${styles.resetButton}`
                               }`}
                             onClick={handleResetForm}
                           >

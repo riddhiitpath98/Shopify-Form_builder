@@ -1,52 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addShopData } from '../actions/allActions';
+import { addShopData } from "../actions/allActions";
 
 const initialState = {
-    userData: {
-        data: {},
-        error: "",
-        loading: false,
-        success: false
-    }
-}
+  userData: {
+    user: {},
+    subscription: {},
+    error: "",
+    loading: false,
+    success: false,
+  },
+};
 
 const userSlice = createSlice({
-    name: "user",
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(addShopData.pending, (state, action) => {
-            return {
-                ...state,
-                userData: {
-                    data: {},
-                    error: "",
-                    loading: true,
-                }
-            };
-        })
-            .addCase(addShopData.fulfilled, (state, action) => {
-                return {
-                    ...state,
-                    userData: {
-                        data: action.payload,
-                        error: "",
-                        loading: false,
-                        success: true,
-                    }
-                };
-            })
-            .addCase(addShopData.rejected, (state, action) => {
-                return {
-                    ...state,
-                    userData: {
-                        data: {},
-                        error: action.payload,
-                        loading: false,
-                    }
-                };
-            })
-    }
-})
+  name: "user",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(addShopData.pending, (state, action) => {
+        return {
+          ...state,
+          userData: {
+            user: {},
+            subscription: {},
+            error: "",
+            loading: true,
+          },
+        };
+      })
+      .addCase(addShopData.fulfilled, (state, action) => {
+        return {
+          ...state,
+          userData: {
+            user: action.payload.data.userData,
+            subscription: action.payload.data.subscriptionData,
+            error: "",
+            loading: false,
+            success: true,
+          },
+        };
+      })
+      .addCase(addShopData.rejected, (state, action) => {
+        return {
+          ...state,
+          userData: {
+            user: {},
+            subscription: {},
+            error: action.payload,
+            loading: false,
+          },
+        };
+      });
+  },
+});
 
-export default userSlice.reducer
+export default userSlice.reducer;

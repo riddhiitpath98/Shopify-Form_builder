@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Icon } from "@shopify/polaris";
 import FormDrawer from "../../FormDrawer/FormDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -23,12 +22,17 @@ const ElementsProvider = ({ isEdit }) => {
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
 
+  const user = useSelector(state => state.user?.userData?.user);
+  
+  const subscription = useSelector(state => state.user.userData.subscription);
+
   const dispatch = useDispatch();
   const toggleDrawer = (id, title, attributes, inputId) => {
     setTabId({ id, title, attributes, inputId });
     setIsOpen((prev) => !prev);
   };
-
+  const isShowDrawer = formData.length >= subscription?.features?.form?.number_of_fields_per_form && tabId.id === 'add_element';
+  
   const formElements = [
     {
       id: "header",
@@ -174,7 +178,7 @@ const ElementsProvider = ({ isEdit }) => {
             );
           }
         )}
-      <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />
+     {!isShowDrawer && <FormDrawer {...{ isEdit, isOpen, toggleDrawer, tabId }} />}
     </section >
   );
 };

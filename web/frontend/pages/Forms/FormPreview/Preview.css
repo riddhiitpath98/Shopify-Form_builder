@@ -1,18 +1,18 @@
 .label1{
-    border-color: #EB1256;
-  }
-  /* textarea:focus{
-    border: 1px solid rgb(99, 224, 255);
-  } */
+  border-color: #eb1256;
+}
+/* textarea:focus{
+  border: 1px solid rgb(99, 224, 255);
+} */
 .checkbox-label {
-  border-color: aqua;
+border-color: aqua;
 }
 #rc-anchor-container{
-  position: absolute;
-    bottom: 450px;
-    left: 25px;
+position: absolute;
+  bottom: 450px;
+  left: 25px;
 }
- .rc-anchor-pt{
-  /* left: 15px !important; */
-  right: 200px !important;
+.rc-anchor-pt{
+/* left: 15px !important; */
+right: 200px !important;
 }

@@ -165,6 +165,9 @@ textarea {
   background-color: #007bff;
   color: #ffffff;
 }
+.resetButton {
+  color: #ffffff;
+}
 .classicButton {
   border: 1px solid #90c3f9;
   text-transform: none;
@@ -284,3 +287,6 @@ b {
 .rc-anchor-content{
   width: 156px;
 } */
+.elementBanner{
+  margin-top: 18px;
+}

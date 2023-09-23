@@ -95,6 +95,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("name", value)}
                           label="Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.name}
                           autoComplete="off"
                         />
@@ -108,6 +109,7 @@ const FeedbackForm = () => {
                           }
                           label="Website/Company Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.websiteName}
                           autoComplete="off"
                         />
@@ -120,6 +122,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("email", value)}
                           label="Email ID"
                           type="email"
+                          requiredIndicator
                           error={errorValues.email}
                           autoComplete="off"
                         />
@@ -133,6 +136,7 @@ const FeedbackForm = () => {
                           }
                           label="Contact Number"
                           type="text"
+                          requiredIndicator
                           error={errorValues.contactNumber}
                           autoComplete="off"
                         />
@@ -151,6 +155,7 @@ const FeedbackForm = () => {
                           label="Message"
                           type="textarea"
                           multiline={4}
+                          requiredIndicator
                           error={errorValues.message}
                           autoComplete="off"
                         />

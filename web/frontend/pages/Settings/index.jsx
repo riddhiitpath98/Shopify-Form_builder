@@ -151,6 +151,7 @@ function Settings() {
                               label="SMTP"
                               type="text"
                               autoComplete="off"
+                              requiredIndicator
                               error={errorValues.smtpName}
                             />
                           </Grid.Cell>
@@ -164,6 +165,7 @@ function Settings() {
                               label="Username/Email address"
                               type="text"
                               autoComplete="off"
+                              requiredIndicator
                               error={errorValues.email}
                             />
                           </Grid.Cell>
@@ -179,6 +181,7 @@ function Settings() {
                               label="Password/App password"
                               type="password"
                               autoComplete="off"
+                              requiredIndicator
                               error={errorValues.password}
                             />
                           </Grid.Cell>
@@ -193,6 +196,7 @@ function Settings() {
                                 handleChange("mail_encryption", value)
                               }
                               value={formValues.mail_encryption || ""}
+                              requiredIndicator
                               error={errorValues.mail_encryption}
                             />
                           </Grid.Cell>
@@ -206,6 +210,7 @@ function Settings() {
                               label="Port"
                               type="text"
                               autoComplete="off"
+                              requiredIndicator
                               error={errorValues.port}
                             />
                           </Grid.Cell>

@@ -18,7 +18,6 @@ const PORT = 3007;
 // );
 
 // `${process.cwd()}/frontend/dist`
-console.log(process.env.NODE_ENV, "+++");
 
 const STATIC_PATH = `${process.cwd()}/frontend/dist`
 // process.env.NODE_ENV === "production"

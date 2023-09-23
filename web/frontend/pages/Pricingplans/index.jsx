@@ -4,6 +4,9 @@ import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
 import styles from "./PricingPlan.module.css";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { Fullscreen } from "@shopify/app-bridge/actions";
+import { useEffect } from "react";
 
 function Pricingplans() {
   const renderStatusIcon = (status) => {
@@ -23,6 +26,12 @@ function Pricingplans() {
       return status;
     }
   };
+
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
+  useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
+  }, []);
 
   return (
     <Page fullWidth title="Pricing Plans">
@@ -98,7 +107,7 @@ function Pricingplans() {
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
                               {/* <span className={styles.dollarValue}>14.9</span> */}
-                              <span className={styles.rupees}>Coming Soon...</span>
+                              <span className={styles.rupees}>Coming Soon</span>
                             </span>
                           </span>
                         </span>
