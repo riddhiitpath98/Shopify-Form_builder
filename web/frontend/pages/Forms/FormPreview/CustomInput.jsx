@@ -37,6 +37,7 @@ export const CustomInput = ({
     hideLabel,
     allowedExtensions,
     hiddenValue,
+    dataType,
     no_of_options,
     text,
     heading,
@@ -46,7 +47,6 @@ export const CustomInput = ({
     default_value,
     htmlCode,
   } = attributes || {};
-
   const noOfOptions = parseInt(no_of_options?.[0]);
   const acceptExtensions = allowedExtensions
     ?.map((extension) => `.${extension.value}`)
@@ -350,7 +350,7 @@ export const CustomInput = ({
       return (
         <div
           className={styles.inputContainer}
-          style={{ display: "none", visibility: "hidden" }}
+          style={{ display: "none", visibility: "hidden", width: widthInput }}
         >
           <label htmlFor={inputId} className={styles.classicLabel}>
             <span data-label="Hidden">{label}</span>
@@ -358,7 +358,7 @@ export const CustomInput = ({
 
           <input
             type={type}
-            data-type="fixed"
+            data-type={dataType}
             id={inputId}
             name={`${inputId}_${id}`}
             value={hiddenValue}

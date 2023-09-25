@@ -138,8 +138,9 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           type: "hidden",
           attributes: {
             label: "Hidden",
-            data_type: "",
+            dataType: "fixed",
             hiddenValue: "",
+            column_width: "100%",
           },
         },
       ],
