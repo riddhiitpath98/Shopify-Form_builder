@@ -51,9 +51,7 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<link rel="stylesheet" href="https://custom-form-x479.onrender.com/assets/render.css"/>
-    <script src="https://custom-form-x479.onrender.com/assets/render.js"></script>
-    <div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
+    const textToCopy = `<div id="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
       }'></div>`;
     navigator.clipboard.writeText(textToCopy);
   };

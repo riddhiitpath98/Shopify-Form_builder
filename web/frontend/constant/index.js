@@ -77,42 +77,41 @@ export const pricingPlanData = [
   {
     heading: "Form",
     tableData: [
-      { title: "Number of form(s)", unpaid: "Unlimited", paid: "-" },
-      { title: "Number of fields per form", unpaid: 12, paid: "-" },
+      { title: "Number of form(s)", unpaid: "Unlimited" },
+      { title: "Number of fields per form", unpaid: 12 },
       {
         title: "Number of submissions per month",
         unpaid: "Unlimited",
-        paid: "-",
       },
-      { title: "Conditional option fields", unpaid: true, paid: "-" },
-      { title: "Registration form", unpaid: true, paid: "-" },
-      { title: "Survey Form", unpaid: true, paid: "-" },
+      { title: "Conditional option fields", unpaid: true },
+      { title: "Registration form", unpaid: true },
+      { title: "Survey Form", unpaid: true },
     ],
   },
   {
     heading: "Style",
     tableData: [
-      { title: "Customize form style", unpaid: true, paid: "-" },
-      { title: "Customize field style", unpaid: true, paid: "-" },
-      { title: "Background options", unpaid: true, paid: "-" },
+      { title: "Customize form style", unpaid: true },
+      { title: "Customize field style", unpaid: true },
+      { title: "Background options", unpaid: true },
     ],
   },
   {
     heading: "Third Party Integration",
     tableData: [
-      { title: "Google reCAPTCHA", unpaid: false, paid: "-" },
+      { title: "Google reCAPTCHA", unpaid: false },
     ],
   },
   {
     heading: "Features",
     tableData: [
-      { title: "Realtime preview", unpaid: true, paid: "-" },
-      { title: "Email notification", unpaid: true, paid: "-" },
-      { title: "File upload", unpaid: false, paid: "-" },
-      { title: "Date & Time", unpaid: false, paid: "-" },
-      { title: "HTML Field", unpaid: false, paid: "-" },
-      { title: "URL Field", unpaid: false, paid: "-" },
-      { title: "Export submissions", unpaid: false, paid: "-" },
+      { title: "Realtime preview", unpaid: true },
+      { title: "Email notification", unpaid: true },
+      { title: "File upload", unpaid: false },
+      { title: "Date & Time", unpaid: false },
+      { title: "HTML Field", unpaid: false },
+      { title: "URL Field", unpaid: false },
+      { title: "Export submissions", unpaid: false },
     ],
   },
 ];

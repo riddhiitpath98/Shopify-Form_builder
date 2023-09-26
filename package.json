@@ -8,7 +8,7 @@
     "build": "env-cmd -f .env shopify app build",
     "dev": "env-cmd -f .env shopify app dev",
     "info": "shopify app info",
-    "generate": "shopify app generate",
+    "generate": "shopify app extension generate",
     "deploy": "shopify app deploy"
   },
   "dependencies": {

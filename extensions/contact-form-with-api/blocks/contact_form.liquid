@@ -1,0 +1,23 @@
+{% assign shortcode = block.settings.shortcode %}
+{{ shortcode }}
+
+<link rel="stylesheet" href="{{ 'render.css' | asset_url }}">
+<script
+  async
+  defer
+  src="{{ 'render.js' | asset_url }}"></script>
+
+{% schema %}
+  {
+    "name": "Contact form",
+    "target": "section",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "shortcode",
+        "label": "Shortcode",
+        "default": "<div id='form-builder-ips' data-ap-key='xxxx' data-key='xxx'></div>"
+      }
+    ]
+  }
+{% endschema %}

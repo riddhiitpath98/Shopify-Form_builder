@@ -24,8 +24,6 @@ const STATIC_PATH = `${process.cwd()}/frontend/dist`
 //   ? `${process.cwd()}/frontend/dist`
 //   : `${process.cwd()}/frontend/`;
 
-console.log(STATIC_PATH, "STATIC_PATH");
-
 const app = express();
 app.use(cors());
 
