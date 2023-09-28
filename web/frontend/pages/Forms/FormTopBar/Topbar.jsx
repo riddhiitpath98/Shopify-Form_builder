@@ -73,8 +73,8 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const finalFormData = useSelector(
     (state) => state?.inputField?.finalFormData
-  );
-
+    );
+    
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );

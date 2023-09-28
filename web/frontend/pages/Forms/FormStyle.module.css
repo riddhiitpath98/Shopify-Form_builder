@@ -386,3 +386,7 @@ legend {
   text-decoration: underline;
   cursor: pointer;
 }
+.premiumPlanLink {
+  color: #088060;
+  text-decoration-line: underline;
+}

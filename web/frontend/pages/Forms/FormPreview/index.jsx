@@ -444,7 +444,7 @@ const FormPreview = () => {
     <div className={styles.formContent}>
       {isShowDrawer ?
         <BannerPremium
-          text={<p style={{fontSize: "1.125em",fontWeight: 500}}>You can only add 12 fields in a form with Free plan. Upgrade to premium to create form with more fields.</p>}
+          text={<><p style={{fontSize: "1.125em",fontWeight: 500}}>You can only add 12 fields in a form with Free plan. Upgrade to premium to create form with more fields. <Link url="/plans"><span className={styles.premiumPlanLink}>Try Premium</span></Link></p></>}
           url="/plans"
           status={"warning"}
           buttonText="Upgrade plan"
@@ -615,9 +615,10 @@ const FormPreview = () => {
                             } ${submissionData.loading && styles.loadingBtn}`}
                           style={{
                             backgroundColor:
-                              appearanceFields?.mainColor &&
-                              appearanceFields?.mainColor,
+                              appearanceFields?.mainButtonColor &&
+                              appearanceFields?.mainButtonColor,
                             border: "none",
+                            color: appearanceFields?.buttonTextColor && appearanceFields?.buttonTextColor,
                           }}
                         >
                           {submissionData.loading ? (
@@ -634,6 +635,7 @@ const FormPreview = () => {
                                 ? styles.buttonWidth
                                 : styles.classicButton
                               }`}
+                              style={{color: appearanceFields?.buttonTextColor && appearanceFields?.buttonTextColor}}
                             onClick={handleResetForm}
                           >
                             {footerFieldData.attributes.resetButtonText}

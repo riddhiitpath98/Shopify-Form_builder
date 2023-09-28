@@ -137,7 +137,7 @@ function FormList() {
       {isShowPremium ?
         <BannerPremium
           title="Current Plan"
-          text={<p style={{fontSize: "1.125em",marginTop: "0.5rem", fontWeight: 500}}>You are in Free plan.  You've created 1 form allowed in your plan. Upgrade to premium to create more forms.</p>}
+          text={<><p style={{fontSize: "1.125em",marginTop: "0.5rem", fontWeight: 500}}>You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms. <Link url="/plans"><span className={styles.premiumPlanLink}>Try Premium</span></Link></p></>}
           url="/plans"
           status="info"
           buttonText="Upgrade plan"

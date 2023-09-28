@@ -7,7 +7,7 @@ export default function BannerPremium({ title, text, url, status, buttonText }) 
     <div className={styles.premiumPlan}>
       <Banner
         title={title}
-        action={{ content: buttonText, url: url }}
+        // action={{ content: buttonText, url: url }}
         status={status}
         onDismiss={() => {}}
       >

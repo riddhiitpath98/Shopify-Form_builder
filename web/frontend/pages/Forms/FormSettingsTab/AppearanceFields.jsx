@@ -16,7 +16,6 @@ const AppearanceFields = ({ isEdit, tabId, toggleDrawer }) => {
   const updatedAppearance = useSelector(
     (state) => state.formSetting.appearanceData?.updatedAppearance
   );
-
   const appearanceFields = useSelector(
     (state) => state.formSetting?.appearanceData?.appearanceFields
   );
