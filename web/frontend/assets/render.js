@@ -239,7 +239,7 @@ const setDefaultValue = () => {
   });
 };
 
-const handleSubmit = async (event,buttonText) => {
+const handleSubmit = async (event, buttonText) => {
   event.preventDefault();
   const banner = document.getElementById("polaris-banner");
   banner.style.display = "none";
@@ -278,13 +278,13 @@ const handleSubmit = async (event,buttonText) => {
     buttonTextElement.style.display = "none";
     loader.style.display = 'block';
     loader.style.zIndex = 10000;
-   
+
     // loader.style.position = "absolute"
     try {
       const response = await createSubmission(formData);
       if (response.ok) {
         buttonTextElement.style.display = "block";
-        loader.style.display="none";
+        loader.style.display = "none";
         if (afterSubmit.submitAction === "clearForm") {
           updateFormData();
           banner.style.display = "flex";
@@ -308,7 +308,7 @@ const handleSubmit = async (event,buttonText) => {
       }
     } catch (error) {
       console.error("An error occurred:", error);
-     
+
     } finally {
       buttonElement.textContent = buttonText;
       loader.style.display = "none";
@@ -346,17 +346,16 @@ const catchFormDivAndAppendForm = (data) => {
   setTimeout(() => {
     let mainFormElement = document.getElementById("form-builder-ips");
     const divElement = document.createElement("div");
-    divElement.className = `formBuilder ${
-      selectedBackground === "image" ? "formImageBackground" : ""
-    }`;
+    divElement.className = `formBuilder ${selectedBackground === "image" ? "formImageBackground" : ""
+      }`;
 
     divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
     divElement.style.backgroundColor =
       selectedBackground === "color"
         ? appearanceFields?.formBackgroundColor
         : selectedBackground === "none"
-        ? "#fff"
-        : "#fff";
+          ? "#fff"
+          : "#fff";
     divElement.style.backgroundImage =
       selectedBackground === "image"
         ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -376,7 +375,8 @@ const catchFormDivAndAppendForm = (data) => {
     formElement.enctype = "multipart/form-data";
 
     formElement.addEventListener("submit", (event) => {
-      handleSubmit(event, footerFieldData?.attributes?.submitButton)});
+      handleSubmit(event, footerFieldData?.attributes?.submitButton)
+    });
     divElement.appendChild(formElement);
 
     if (headerFieldData) {
@@ -436,14 +436,14 @@ const catchFormDivAndAppendForm = (data) => {
           column_width === "33%"
             ? 4
             : column_width === "50%"
-            ? 6
-            : column_width === "100%" && 12,
+              ? 6
+              : column_width === "100%" && 12,
         xl:
           column_width === "33%"
             ? 4
             : column_width === "50%"
-            ? 6
-            : column_width === "100%" && 12,
+              ? 6
+              : column_width === "100%" && 12,
       };
 
       const noOfOptions = parseInt(no_of_options?.[0]);
@@ -1061,26 +1061,25 @@ const catchFormDivAndAppendForm = (data) => {
       // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${
-        footerFieldData?.attributes?.buttonWidth
+      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
           ? "buttonWidth"
           : "classicButton submitButton"
-      }`;
+        }`;
       const spanSubmit = document.createElement("span")
       spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
       spanSubmit.id = 'span_submit_button'
       buttonElement.appendChild(spanSubmit);
       buttonElement.id = "submit";
       buttonElement.style.backgroundColor = appearanceFields?.mainColor;
-      buttonElement.style.border = "none"; 
+      buttonElement.style.border = "none";
       const loaderElement = document.createElement("div");
-      loaderElement.id="loader";
+      loaderElement.id = "loader";
       loaderElement.className = "loader";
       // loaderElement.style.backgroundColor = 'red';
       const imageElement = document.createElement("img");
       imageElement.style.height = "20px"; // Change to your desired height
-       imageElement.style.width = "20px";
-  
+      imageElement.style.width = "20px";
+
       imageElement.setAttribute(
         "src",
         "/spinner_img.gif"
@@ -1088,18 +1087,17 @@ const catchFormDivAndAppendForm = (data) => {
       // imageElement.src = "";
       // loaderElement.textContent = "loading.."
       loaderElement.appendChild(imageElement);
-       buttonElement.appendChild(loaderElement);
-       loaderElement.style.display = 'none';
+      buttonElement.appendChild(loaderElement);
+      loaderElement.style.display = 'none';
       footerDivElement.appendChild(buttonElement);
       if (footerFieldData?.attributes?.resetButton) {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${
-          footerFieldData?.attributes?.buttonWidth
+        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
             ? "buttonWidth"
             : "classicButton"
-        }`;
+          }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
 
         footerDivElement.appendChild(resetButton);
