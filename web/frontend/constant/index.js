@@ -312,11 +312,18 @@ export const appearanceAttributes = [
     value: "",
   },
   {
-    id: "appearance_color_mainColor",
-    label: "Main Color",
+    id: "appearance_color_mainButtonColor",
+    label: "Main button Color",
     type: "color_panel",
-    name: "mainColor",
+    name: "mainButtonColor",
     value: "#4e5db9",
+  },
+  {
+    id: "appearance_color_buttonTextColor",
+    label: "Button text Color",
+    type: "color_panel",
+    name: "buttonTextColor",
+    value: "#ffffff",
   },
   {
     id: "appearance_color_headingColor",

@@ -457,7 +457,13 @@ const FormPreview = () => {
 
   return (
     <div className={styles.formContent}>
-      {isShowDrawer ? <div className={styles.elementBanner}><ElementListBanner title={"You can only add 12 element for a form with a Free plan."}/></div> : null}
+      {isShowDrawer ? (
+        <div className={styles.elementBanner}>
+          <ElementListBanner
+            title={"You can only add 12 element for a form with a Free plan."}
+          />
+        </div>
+      ) : null}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>
@@ -642,9 +648,12 @@ const FormPreview = () => {
                             } ${submissionData.loading && styles.loadingBtn}`}
                           style={{
                             backgroundColor:
-                              appearanceFields?.mainColor &&
-                              appearanceFields?.mainColor,
+                              appearanceFields?.mainButtonColor &&
+                              appearanceFields?.mainButtonColor,
                             border: "none",
+                            color:
+                              appearanceFields?.buttonTextColor &&
+                              appearanceFields?.buttonTextColor,
                           }}
                         >
                           {submissionData.loading ? (
@@ -664,6 +673,11 @@ const FormPreview = () => {
                                   ? styles.buttonWidth
                                   : `${styles.classicButton}${styles.resetButton}`
                               }`}
+                            style={{
+                              color:
+                                appearanceFields?.buttonTextColor &&
+                                appearanceFields?.buttonTextColor,
+                            }}
                             onClick={handleResetForm}
                           >
                             {footerFieldData.attributes.resetButtonText}
