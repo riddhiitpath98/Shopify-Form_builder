@@ -8,32 +8,24 @@ let appId;
 const server = "https://shopifyappapi.project-demo.info:3008/api";
 
 const getValidation = async () => {
-  const response = await fetch(
-    `${server}/formsettings/validation/64edc530bbdd38af05a8bf22`
-  );
+  const response = await fetch(`${server}/formsettings/validation/${formId}`);
   const data = await response.json();
   return data.data.validation;
 };
 const getApperence = async () => {
-  const response = await fetch(
-    `${server}/formsettings/appearance/64edc530bbdd38af05a8bf22`
-  );
+  const response = await fetch(`${server}/formsettings/appearance/${formId}`);
   const data = await response.json();
   return data.data.appearance;
 };
 
 const getAfterSubmit = async () => {
-  const response = await fetch(
-    `${server}/formsettings/afterSubmit/64edc530bbdd38af05a8bf22`
-  );
+  const response = await fetch(`${server}/formsettings/afterSubmit/${formId}`);
   const data = await response.json();
   return data.data.afterSubmit;
 };
 
 const getData = async () => {
-  const response = await fetch(
-    `${server}/custom_form/64edc530bbdd38af05a8bf22`
-  );
+  const response = await fetch(`${server}/custom_form/${formId}`);
   const data = await response.json();
   return data.data;
 };
@@ -47,11 +39,11 @@ const createSubmission = async (data) => {
       },
       body: JSON.stringify({
         submission: data,
-        appId: "86292426047895aea352a24a5fd7230d",
+        appId: appId,
       }), // Convert the data to JSON format
     };
     const response = await fetch(
-      `${server}/submission/64edc530bbdd38af05a8bf22`,
+      `${server}/submission/${formId}`,
       requestOptions
     );
     return response;
@@ -274,9 +266,11 @@ const handleSubmit = async (event, buttonText) => {
   if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
     const loader = document.getElementById("loader");
     const buttonElement = document.querySelector("#submit");
-    const buttonTextElement = buttonElement.querySelector("#span_submit_button");
+    const buttonTextElement = buttonElement.querySelector(
+      "#span_submit_button"
+    );
     buttonTextElement.style.display = "none";
-    loader.style.display = 'block';
+    loader.style.display = "block";
     loader.style.zIndex = 10000;
 
     // loader.style.position = "absolute"
@@ -308,7 +302,6 @@ const handleSubmit = async (event, buttonText) => {
       }
     } catch (error) {
       console.error("An error occurred:", error);
-
     } finally {
       buttonElement.textContent = buttonText;
       loader.style.display = "none";
@@ -375,7 +368,7 @@ const catchFormDivAndAppendForm = (data) => {
     formElement.enctype = "multipart/form-data";
 
     formElement.addEventListener("submit", (event) => {
-      handleSubmit(event, footerFieldData?.attributes?.submitButton)
+      handleSubmit(event, footerFieldData?.attributes?.submitButton);
     });
     divElement.appendChild(formElement);
 
@@ -1061,45 +1054,48 @@ const catchFormDivAndAppendForm = (data) => {
       // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
-          ? "buttonWidth"
+      buttonElement.className = `${
+        footerFieldData?.attributes?.buttonWidth
+          ? "buttonWidth classicButton submitButton"
           : "classicButton submitButton"
-        }`;
-      const spanSubmit = document.createElement("span")
+      }`;
+      const spanSubmit = document.createElement("span");
       spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
-      spanSubmit.id = 'span_submit_button'
+      spanSubmit.id = "span_submit_button";
       buttonElement.appendChild(spanSubmit);
       buttonElement.id = "submit";
-      buttonElement.style.backgroundColor = appearanceFields?.mainColor;
+      buttonElement.style.backgroundColor = appearanceFields?.mainButtonColor;
+      buttonElement.style.color = appearanceFields?.buttonTextColor;
       buttonElement.style.border = "none";
       const loaderElement = document.createElement("div");
       loaderElement.id = "loader";
       loaderElement.className = "loader";
       // loaderElement.style.backgroundColor = 'red';
-      const imageElement = document.createElement("img");
-      imageElement.style.height = "20px"; // Change to your desired height
-      imageElement.style.width = "20px";
+      // const imageElement = document.createElement("img");
+      // imageElement.style.height = "20px"; // Change to your desired height
+      // imageElement.style.width = "20px";
 
-      imageElement.setAttribute(
-        "src",
-        "/spinner_img.gif"
-      );
-      // imageElement.src = "";
-      // loaderElement.textContent = "loading.."
-      loaderElement.appendChild(imageElement);
+      // imageElement.setAttribute(
+      //     "src",
+      // "/thumbs-up.png"
+      // );
+      // // imageElement.src = "";
+      // // loaderElement.textContent = "loading.."
+      // loaderElement.appendChild(imageElement);
       buttonElement.appendChild(loaderElement);
-      loaderElement.style.display = 'none';
+      // loaderElement.style.display = 'none';
       footerDivElement.appendChild(buttonElement);
       if (footerFieldData?.attributes?.resetButton) {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
-            ? "buttonWidth"
-            : "classicButton"
-          }`;
+        resetButton.className = `${
+          footerFieldData?.attributes?.buttonWidth
+            ? "buttonWidth classicButton resetButton"
+            : "classicButton resetButton"
+        }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
-
+        resetButton.style.color = appearanceFields?.buttonTextColor;
         footerDivElement.appendChild(resetButton);
       }
     }
@@ -1167,8 +1163,6 @@ const catchFormDivAndAppendForm = (data) => {
 
     const close = document.getElementById("close");
     close.addEventListener("click", handleClose);
-
-
   }, 2000);
 };
 

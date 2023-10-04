@@ -35,7 +35,7 @@
   .formBuilder {
     height: auto !important;
     /* display: flex;
-    justify-content: center; */
+          justify-content: center; */
     max-width: 600px;
     width: -webkit-fill-available;
     /* background-color: #fff; */
@@ -59,10 +59,10 @@
     margin: 30px auto;
   }
   /* @media only screen and (max-width: 768px) {
-    .mainForm {
-      padding: 15px;
-    }
-  } */
+          .mainForm {
+            padding: 15px;
+          }
+        } */
   .header {
     padding: 0;
     margin-bottom: 2rem;
@@ -77,8 +77,8 @@
   }
   .myGrid {
     /* display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 10px; */
+          grid-template-columns: repeat(2, 1fr);
+          grid-gap: 10px; */
     width: 100% !important;
   }
   
@@ -173,6 +173,9 @@
     background-color: #007bff;
     color: #ffffff;
   }
+  .resetButton {
+    color: #ffffff;
+  }
   .classicButton {
     border: 1px solid #90c3f9;
     text-transform: none;
@@ -239,14 +242,14 @@
     outline: none;
   }
   /* h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: 2em;
-    font-weight: bold;
-  } */
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-size: 2em;
+          font-weight: bold;
+        } */
   b {
     font-weight: bold;
   }
@@ -270,8 +273,8 @@
     margin: 10px;
   }
   /* .inputWidth{
-    width: 100% !important;
-  } */
+          width: 100% !important;
+        } */
   .formColorBackground {
     background-color: #fff;
   }
@@ -287,12 +290,12 @@
   }
   
   /* .rc-anchor-container{
-    width: 250px;
-  }
-  .rc-anchor-content{
-    width: 156px;
-  } */
-  .divider{
+          width: 250px;
+        }
+        .rc-anchor-content{
+          width: 156px;
+        } */
+  .divider {
     margin: 1.5rem 0 !important;
   }
   .grid-container {
@@ -300,42 +303,67 @@
     gap: 0px 20px;
     grid-template-columns: auto auto auto;
   }
-
-  .polaris-banner{
+  
+  .polaris-banner {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
     border: 1px solid #95c9b4;
     background-color: #f1f8f5;
     border-radius: 10px;
-    padding: 10px;
+    /* padding: 10px; */
   }
-
-  .banner-main{
+  
+  .banner-main {
     display: flex;
-    justify-content: flex-start
+    justify-content: flex-start;
   }
-
-  .Polaris-Banner__Ribbon{
+  
+  .Polaris-Banner__Ribbon {
     margin: auto;
     margin-top: 16px;
     margin-left: 4px;
   }
-  .Polaris-Button{
+  .Polaris-Button {
     margin-top: 19px;
     margin-right: 10px;
   }
-  .heading-text{
+  .heading-text {
     font-size: medium;
     font-weight: bold;
+    color: #000000;
   }
-  .Polaris-Banner__ContentWrapper{
+  .Polaris-Banner__ContentWrapper {
     margin-left: 10px;
   }
   
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #3498db;
+    width: 25px;
+    height: 25px;
+    margin: auto;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
   }
   
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
   
