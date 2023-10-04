@@ -13,6 +13,7 @@ import {
 import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import ChartDashboard from "../../components/Chart";
+import { ToastContainer } from "react-toastify";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 import { useAppBridge } from "@shopify/app-bridge-react";
 
@@ -99,6 +100,7 @@ function Dashboard() {
             </div>
           </Layout>
         </div>
+        <ToastContainer/>
       </Page>
     </>
   );

@@ -1,12 +1,13 @@
 import { Badge, Button, Icon, LegacyCard, Page } from "@shopify/polaris";
-import { pricingPlanData } from "../../constant";
+// import { pricingPlanData } from "../../constant";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
-import styles from "./PricingPlan.module.css";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { useSelector } from "react-redux";
+import styles from "./PricingPlan.module.css";
 
 function Pricingplans() {
   const app = useAppBridge();
@@ -14,6 +15,10 @@ function Pricingplans() {
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [])
+
+  const subscriptionData = useSelector(
+    (state) => state.subscription?.subscriptionData?.data
+  );
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -21,7 +26,7 @@ function Pricingplans() {
           <Icon source={TickMinor} color="primary" />
         </span>
       );
-    } else if (status === false) {
+    } else if (status === false || status === null) {
       return (
         <span className={styles.priceValue}>
           <Icon source={MinusMinor} color="base" />
@@ -30,6 +35,13 @@ function Pricingplans() {
     } else {
       return status;
     }
+  };
+
+  const capitalizeFirstLetter = (str) => {
+    return str
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   return (
@@ -106,7 +118,7 @@ function Pricingplans() {
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
                               {/* <span className={styles.dollarValue}>14.9</span> */}
-                              <span className={styles.rupees}>Coming Soon...</span>
+                              <span className={styles.rupees}>Coming Soon</span>
                             </span>
                           </span>
                         </span>
@@ -126,33 +138,52 @@ function Pricingplans() {
                         <span>7 days trial</span>
                       </div> */}
                     </td>
-                    {pricingPlanData?.map((planData, id) => (
-                      <>
-                        <tr key={id}>
-                          <th colSpan={3}>
-                            <span className={styles.tableHeader}>
-                              <span>{planData?.heading}</span>
-                            </span>
-                          </th>
-                        </tr>
-                        {planData?.tableData?.map((data, id) => (
-                          <tr key={id}>
-                            <th scope="row" className={styles.rowData}>
-                              <div className={styles.rowTitle}>
-                                <dl className={styles.labelName}>
-                                  <dt className={styles.labelText}>
-                                    <span>{data?.title}</span>
-                                  </dt>
-                                  <dd className={styles.labelDescription}></dd>
-                                </dl>
-                              </div>
-                            </th>
-                            <td>{renderStatusIcon(data?.unpaid)}</td>
-                            <td>{renderStatusIcon(data?.paid)}</td>
-                          </tr>
-                        ))}
-                      </>
-                    ))}
+                      {subscriptionData?.length > 0 && Object.keys(subscriptionData[0]?.features).map(
+                        (featureKey) => (
+                          <React.Fragment key={featureKey}>
+                            <tr>
+                              <th colSpan={3}>
+                                <span className={styles.tableHeader}>
+                                  <span>{featureKey}</span>
+                                </span>
+                              </th>
+                            </tr>
+
+                            {Object.entries(
+                              subscriptionData[0]?.features[featureKey]
+                            ).map(([innerKey, innerValue]) => (
+                              <tr key={innerKey}>
+                                <th scope="row" className={styles.rowData}>
+                                  <div className={styles.rowTitle}>
+                                    <dl className={styles.labelName}>
+                                      <dt className={styles.labelText}>
+                                        <span>{capitalizeFirstLetter(innerKey)}</span>
+                                      </dt>
+                                      <dd
+                                        className={styles.labelDescription}
+                                      ></dd>
+                                    </dl>
+                                  </div>
+                                </th>
+                                <td>
+                                  {renderStatusIcon(
+                                    subscriptionData[0].features[featureKey][
+                                    innerKey
+                                    ]
+                                  )}
+                                </td>
+                                <td>
+                                  {renderStatusIcon(
+                                    subscriptionData[1].features[featureKey][
+                                    innerKey
+                                    ]
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        )
+                      )}
                   </tbody>
                 </table>
               </div>

@@ -12,18 +12,18 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
-// const PORT = 3007;
-const PORT = parseInt(
-  process.env.BACKEND_PORT || process.env.PORT || "3007",
-  10
-);
+const PORT = 3007;
+// const PORT = parseInt(
+//   process.env.BACKEND_PORT || process.env.PORT || "3007",
+//   10
+// );
 
-// const STATIC_PATH = `${process.cwd()}/frontend/`;
+const STATIC_PATH = `${process.cwd()}/frontend/`;
 
-const STATIC_PATH =
-  process.env.NODE_ENV === "production"
-    ? `${process.cwd()}/frontend/dist`
-    : `${process.cwd()}/frontend/`;
+// const STATIC_PATH =
+//   process.env.NODE_ENV === "production"
+//     ? `${process.cwd()}/frontend/dist`
+//     : `${process.cwd()}/frontend/`;
 
 // const STATIC_PATH = `${process.cwd()}/frontend/dist`
 // process.env.NODE_ENV === "production"

@@ -444,9 +444,10 @@ const FormPreview = () => {
     <div className={styles.formContent}>
       {isShowDrawer ?
         <BannerPremium
-          text="You can only add 12 element for a form with a free plan. Upgrade to premium to create more forms."
+          text={<p style={{fontSize: "1.125em",fontWeight: 500}}>You can only add 12 fields in a form with Free plan. Upgrade to premium to create form with more fields.</p>}
           url="/plans"
-          linkText="Try Premium"
+          status={"warning"}
+          buttonText="Upgrade plan"
         /> : null}
       {editFormData?.loading ? (
         <SkeletonPage>

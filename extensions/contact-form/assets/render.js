@@ -1082,7 +1082,7 @@ const catchFormDivAndAppendForm = (data) => {
 
             // imageElement.setAttribute(
             //     "src",
-            //     "/thumbs-up.png"
+            // "/thumbs-up.png"
             // );
             // // imageElement.src = "";
             // // loaderElement.textContent = "loading.."

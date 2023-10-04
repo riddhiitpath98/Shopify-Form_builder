@@ -1,22 +1,21 @@
+import React from "react";
 import {
   Button,
   Modal,
-  LegacyStack,
-  TextContainer,
   LegacyCard,
-  HorizontalStack,
   Badge,
   Icon,
 } from "@shopify/polaris";
-import React, { useState, useCallback, useEffect } from "react";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import { createPortal } from "react-dom";
 import { addShopData } from "../../redux/actions/allActions";
+import axios from "axios";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
+  const publishKey = "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW";
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,8 +39,9 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
       return status;
     }
   };
-
-  const handleUserNavigation = (plan) => {
+  console.log('process.env.Stripe_PK', publishKey);
+  const handleUserNavigation = async (plan) => {
+    const stripe = await loadStripe(publishKey)
     const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
     let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
     subscriptionData.filter(({ subscriptionName, _id }, index) => {
@@ -49,7 +49,17 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
         user = { ...user, subscriptionName, subscriptionId: _id }
       }
     })
-    dispatch(addShopData(user))
+    // const response = await axios.post('/create-checkout-session', user);
+
+    // const session = await response.json();
+    // const result = stripe.redirectToCheckout({
+    //   sessionId: session.id
+    // })
+    // console.log('result: ', result);
+    // user = { ...user, session };
+    // console.log('user: ', user);
+    dispatch(addShopData(user));
+
     toggleModal()
     navigate("/dashboard", { replace: true })
   }
