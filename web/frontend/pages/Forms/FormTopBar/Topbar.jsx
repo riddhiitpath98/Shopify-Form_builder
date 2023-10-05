@@ -75,6 +75,7 @@ const Topbar = ({ handleRedirectToForm }) => {
     (state) => state?.inputField?.finalFormData
   );
 
+  const isSaveOrUpdate = useSelector((state) => state.inputField?.isSaveOrUpdate);
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
@@ -144,14 +145,14 @@ const Topbar = ({ handleRedirectToForm }) => {
   };
 
   useEffect(() => {
-    if (finalFormData?.success === true) {
+    if (isSaveOrUpdate) {
       dispatch(clearForm());
       dispatch(setFormSubmitted(false));
       dispatch(setShowMessage(false));
       fullscreen.dispatch(Fullscreen.Action.EXIT);
       navigate("/form", { replace: true });
     }
-  }, [finalFormData?.success]);
+  }, [isSaveOrUpdate]);
   useEffect(() => {
     if (formTitle) {
       setTitleValue({

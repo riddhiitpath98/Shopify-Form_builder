@@ -61,7 +61,7 @@ const AppearanceFields = ({ isEdit, tabId, toggleDrawer }) => {
 
   useEffect(() => {
     setConditionalValue({
-      [appearanceFields.appearanceBackground]: true
+      [appearanceFields?.appearanceBackground]: true
     })
   }, [])
   
