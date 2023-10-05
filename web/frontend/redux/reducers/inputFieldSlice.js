@@ -18,7 +18,6 @@ const initialState = {
   formSubmissionData: {},
   googelRecaptcha: {},
   dateKeyName: "",
-  isSaveOrUpdate: false,
   finalFormData: {
     loading: false,
     error: "",
@@ -208,11 +207,9 @@ export const inputFieldsSlice = createSlice({
           finalFormData: {
             loading: false,
             success: true,
-            isSaveOrUpdate: true,
             formData: [action.payload.data],
             error: "",
           },
-          isSaveOrUpdate: true
         };
       })
       .addCase(addFormData.rejected, (state, action) => {
@@ -323,7 +320,6 @@ export const inputFieldsSlice = createSlice({
             success: true,
             formData: action.payload,
           },
-          isSaveOrUpdate: true
         };
       })
       .addCase(updateFormData.rejected, (state, action) => {
