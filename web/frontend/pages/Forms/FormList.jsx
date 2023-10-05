@@ -23,11 +23,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
 import ToggleSwitch from "../../components/ToggleSwitch";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
-import { Icons } from "../../constant";
+import { Icons, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 
@@ -51,9 +51,17 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
-      }'></div>`;
-    navigator.clipboard.writeText(textToCopy);
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${appId}' data-key='${
+      filter[0].isVisible ? id : ""
+    }'></div>`;
+    navigator.clipboard.writeText(textToCopy).then(
+      function () {
+        toast.success("Code Coiped", toastConfig);
+      },
+      function (error) {
+        toast.error(error, toastConfig);
+      }
+    );
   };
 
   const sortedItems = useMemo(() => {
@@ -191,12 +199,7 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <>
-                <ToggleSwitch items={items} />
-                <div style={{ marginTop: "16px" }}>
-                  <Text variant="headingXs" as="h6"></Text>
-                </div>
-              </>
+              <ToggleSwitch items={items} />
             )}
           </div>
 
@@ -208,12 +211,9 @@ function FormList() {
               <SkeletonThumbnail size="small" />
             ) : (
               <>
-                <Button type="button" >
-                  {" "}
-                  <Icon source={Icons.submission} />
-                </Button>
+                <Button plain icon={Icons.submission}></Button>
                 <div style={{ marginTop: "4px" }}>
-                  <Text variant="headingXs" as="h6">
+                  <Text variant="headingXs" as="h6" color="subdued">
                     View Submission
                   </Text>
                 </div>
@@ -229,12 +229,9 @@ function FormList() {
               <SkeletonThumbnail size="small" />
             ) : (
               <>
-                <Button type="button" >
-                  {" "}
-                  <Icon source={Icons.copy} />
-                </Button>
+                <Button plain icon={Icons.copy}></Button>
                 <div style={{ marginTop: "5px" }}>
-                  <Text variant="headingXs" as="h6">
+                  <Text variant="headingXs" as="h6" color="subdued">
                     Copy HTML code
                   </Text>
                 </div>
