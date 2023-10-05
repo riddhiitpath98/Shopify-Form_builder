@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "Contact form to any api"
-client_id = "763f8082fff2f80f70d9b6766f654c10"
-application_url = "https://pie-bernard-team-wednesday.trycloudflare.com"
+name = "Contact form with API"
+client_id = "43d21ded3ed874907af1c40c209c3a81"
+application_url = "https://employer-lauderdale-angel-comparisons.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://pie-bernard-team-wednesday.trycloudflare.com/auth/callback",
-  "https://pie-bernard-team-wednesday.trycloudflare.com/auth/shopify/callback",
-  "https://pie-bernard-team-wednesday.trycloudflare.com/api/auth/callback"
+  "https://employer-lauderdale-angel-comparisons.trycloudflare.com/auth/callback",
+  "https://employer-lauderdale-angel-comparisons.trycloudflare.com/auth/shopify/callback",
+  "https://employer-lauderdale-angel-comparisons.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
