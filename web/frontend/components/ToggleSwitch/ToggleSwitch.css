@@ -47,7 +47,7 @@
 }
 .inner:after {
   content: "Disable";
-  padding-right: 2px;
+  padding-right: 3px;
   background-color: #e81e1e;
   color: #fff;
   text-align: right;
