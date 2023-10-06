@@ -69,7 +69,6 @@
     display: block;
     background: none;
   }
-
   .form {
     display: flex;
     flex-wrap: wrap;
@@ -190,7 +189,7 @@
     cursor: pointer;
     position: relative;
     margin-right: 3px;
-  }
+      }
   .buttonWidth {
     border: 1px solid #90c3f9;
     width: 100%;
