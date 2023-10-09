@@ -12,7 +12,7 @@ import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import { addShopData } from "../../redux/actions/allActions";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 
 export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
   const publishKey = "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW";
@@ -39,9 +39,9 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
       return status;
     }
   };
-  console.log('process.env.Stripe_PK', publishKey);
+  // console.log('process.env.Stripe_PK', publishKey);
   const handleUserNavigation = async (plan) => {
-    const stripe = await loadStripe(publishKey)
+    // const stripe = await loadStripe(publishKey)
     const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
     let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
     subscriptionData.filter(({ subscriptionName, _id }, index) => {

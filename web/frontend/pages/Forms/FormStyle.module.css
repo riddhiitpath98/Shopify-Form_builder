@@ -390,3 +390,7 @@ legend {
   color: #088060;
   text-decoration-line: underline;
 }
+
+.elementBanner {
+  margin-top: 18px;
+}

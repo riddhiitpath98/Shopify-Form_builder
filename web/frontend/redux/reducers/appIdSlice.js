@@ -2,16 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
-    appId: "",
+    shopId: "",
     hostOrigin: ""
 }
 
 const storeAppId = createSlice({
-    name: 'appId',
+    name: 'shopId',
     initialState,
     reducers: {
-        addAppId: (state, action) => {
-            state.appId = action.payload
+        addShopId: (state, action) => {
+            console.log('action: ', action);
+            state.shopId = action.payload
         },
         getHostOrigin: (state, action) => {
             state.hostOrigin = action.payload
@@ -19,5 +20,5 @@ const storeAppId = createSlice({
     }
 })
 
-export const { addAppId,getHostOrigin } = storeAppId.actions;
+export const { addShopId, getHostOrigin } = storeAppId.actions;
 export default storeAppId.reducer;

@@ -13,7 +13,7 @@ const reducers = combineReducers({
     inputField: inputFieldSlice,
     setting: settingSlice,
     support: supportSlice,
-    appId: appIdSlice,
+    shopId: appIdSlice,
     submission: submissionSlice,
     formSetting: formSettingSlice,
     viewPort: viewPortSlice,

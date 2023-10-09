@@ -12,16 +12,15 @@ const HiddenInputFields = ({ isEdit, tabId, toggleDrawer }) => {
 
   const [hiddenInput, setHiddenInput] = useState({
     label: attributes.label,
-    data_type: attributes.data_type,
+    dataType: attributes.dataType,
     hiddenValue: attributes.hiddenValue,
   });
-
   const formData = useSelector((state) => state?.inputField?.inputFields);
 
   
   const hiddenOptions = [
-    { value: "fixedValue", label: "Fixed value" },
-    { value: "dynamicValue", label: "Dynamic value" },
+    { value: "fixed", label: "Fixed value" },
+    { value: "dynamic", label: "Dynamic value" },
   ];
 
   const handleChange = (name, value) => {
@@ -49,8 +48,8 @@ const HiddenInputFields = ({ isEdit, tabId, toggleDrawer }) => {
       id: "hidden_data_type_element",
       label: "Data type",
       type: "select",
-      name: "hidden_data_type",
-      value: hiddenInput.hidden_data_type,
+      name: "dataType",
+      value: hiddenInput.dataType,
       handleChange,
     },
     {

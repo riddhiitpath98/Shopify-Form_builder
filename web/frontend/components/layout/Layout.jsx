@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PlanModal from "../../pages/Pricingplans/PlanModal";
 import { useAppQuery } from "../../hooks";
 import { getAllSubscription, getUserByShopId } from "../../redux/actions/allActions";
+import { addShopId } from "../../redux/reducers/appIdSlice";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
@@ -24,6 +25,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
         setIsShowPlan(!user?.loading && !userData?.subscriptionName)
         if (userData?.subscriptionName) {
           setIsShowPlan(false)
+          dispatch(addShopId(shop?.data?.id))
           navigate(path, { replace: true })
         }
       });

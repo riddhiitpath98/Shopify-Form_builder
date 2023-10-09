@@ -5,7 +5,7 @@
 }
 .toggle-switch {
   position: relative;
-  width: 80px;
+  width: 86px;
   display: inline-block;
   text-align: left;
   top: 4px;
@@ -26,7 +26,7 @@
   width: 200%;
   margin-left: -100%;
   transition: margin 0.3s ease-in 0s;
-  font-size: 14px;
+  font-size: 15px;
 }
 .inner:before,
 .inner:after {
@@ -47,24 +47,24 @@
 }
 .inner:after {
   content: "Disable";
-  padding-right: 2px;
+  padding-right: 3px;
   background-color: #e81e1e;
   color: #fff;
   text-align: right;
 }
 .switch {
   display: block;
-  width: 20px;
+  width: 24px;
   margin: 6px;
   background: #fff;
   position: absolute;
   top: 0;
   bottom: 0;
-  right: 48px;
+  right: 51px;
   border: 0 solid #bbb;
   border-radius: 24px;
   transition: all 0.3s ease-in 0s;
-  height: 24px;
+  height: 25px;
 }
 .checkbox:checked + .label .inner {
   margin-left: 0;

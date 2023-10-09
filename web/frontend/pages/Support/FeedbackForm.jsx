@@ -21,6 +21,8 @@ import { validateTextField } from "../../constant";
 
 const FeedbackForm = () => {
 
+  const shopId = useSelector((state) => state.shopId.shopId)
+
   const [formValues, setFormValues] = useState({
     name: "",
     websiteName: "",
@@ -28,6 +30,7 @@ const FeedbackForm = () => {
     contactNumber: "",
     message: "",
     rating: 1,
+    shopId: shopId
   });
   const [errorValues, setErrorValues] = useState({});
   const feedbackData = useSelector((state) => state?.support?.feedbackData);
@@ -72,7 +75,7 @@ const FeedbackForm = () => {
       setErrorValues(validateTextField(formValues));
     } else {
       dispatch(addFeedback(formValues));
-      setFormValues({});
+      setFormValues({shopId: shopId});
       setErrorValues({});
     }
   };
@@ -95,6 +98,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("name", value)}
                           label="Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.name}
                           autoComplete="off"
                         />
@@ -108,6 +112,7 @@ const FeedbackForm = () => {
                           }
                           label="Website/Company Name"
                           type="text"
+                          requiredIndicator
                           error={errorValues.websiteName}
                           autoComplete="off"
                         />
@@ -120,6 +125,7 @@ const FeedbackForm = () => {
                           onChange={(value) => handleChange("email", value)}
                           label="Email ID"
                           type="email"
+                          requiredIndicator
                           error={errorValues.email}
                           autoComplete="off"
                         />
@@ -133,6 +139,7 @@ const FeedbackForm = () => {
                           }
                           label="Contact Number"
                           type="text"
+                          requiredIndicator
                           error={errorValues.contactNumber}
                           autoComplete="off"
                         />
@@ -151,6 +158,7 @@ const FeedbackForm = () => {
                           label="Message"
                           type="textarea"
                           multiline={4}
+                          requiredIndicator
                           error={errorValues.message}
                           autoComplete="off"
                         />

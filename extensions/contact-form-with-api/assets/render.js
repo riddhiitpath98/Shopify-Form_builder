@@ -1,7 +1,7 @@
 let rightIcon = `data:image/png;base64,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`;
 
 // let formId;
-let appId;
+let shopId;
 const server = "https://shopifyappapi.project-demo.info:3008/api";
 let formData = {};
 let formCounter = 1;
@@ -9,11 +9,28 @@ let submitButtonCouter = 1;
 let loaderCounter = 1;
 let bannerCounter = 1;
 const generateElementId = (type, id) => {
-  let counter = type === 'form' ? formCounter : type === 'submit' ? submitButtonCouter : type === 'loader' ? loaderCounter : type === 'banner' ? bannerCounter : "";
-  const uniqueElementId = `${id}-${counter}`
-  type === 'form' ? formCounter++ : type === 'submit' ? submitButtonCouter++ : type === 'loader' ? loaderCounter++ : type === 'banner' ? bannerCounter++ : '';
+  let counter =
+    type === "form"
+      ? formCounter
+      : type === "submit"
+      ? submitButtonCouter
+      : type === "loader"
+      ? loaderCounter
+      : type === "banner"
+      ? bannerCounter
+      : "";
+  const uniqueElementId = `${id}-${counter}`;
+  type === "form"
+    ? formCounter++
+    : type === "submit"
+    ? submitButtonCouter++
+    : type === "loader"
+    ? loaderCounter++
+    : type === "banner"
+    ? bannerCounter++
+    : "";
   return uniqueElementId;
-}
+};
 
 const getValidation = async (id) => {
   const response = await fetch(`${server}/formsettings/validation/${id}`);
@@ -39,10 +56,22 @@ const getData = async (id) => {
 };
 
 const catchFormDivAndAppendForm = (data) => {
-  const formElementId = generateElementId('form', `myForm-${data?.elementData?._id}`);
-  const submitButtonId = generateElementId('submit', `submit-${data?.elementData?._id}`);
-  const loaderElementId = generateElementId('loader', `loader-${data?.elementData?._id}`);
-  const bannerElementId = generateElementId('banner', `polaris-banner-${data.elementData?._id}`)
+  const formElementId = generateElementId(
+    "form",
+    `myForm-${data?.elementData?._id}`
+  );
+  const submitButtonId = generateElementId(
+    "submit",
+    `submit-${data?.elementData?._id}`
+  );
+  const loaderElementId = generateElementId(
+    "loader",
+    `loader-${data?.elementData?._id}`
+  );
+  const bannerElementId = generateElementId(
+    "banner",
+    `polaris-banner-${data.elementData?._id}`
+  );
 
   let formFieldData = [];
   let formElement = [];
@@ -58,7 +87,7 @@ const catchFormDivAndAppendForm = (data) => {
         },
         body: JSON.stringify({
           submission: data,
-          appId: appId,
+          shopId: shopId,
         }),
       };
       const response = await fetch(
@@ -122,7 +151,6 @@ const catchFormDivAndAppendForm = (data) => {
     }
   }
 
-
   const checkValidation = (type, value) => {
     formFieldData = formFieldData.map((item) => {
       if (item.fieldType === type && value) {
@@ -137,11 +165,11 @@ const catchFormDivAndAppendForm = (data) => {
 
   const handleChange = (renderId, event, confirmPassword) => {
     const { id, name, value, type, checked } = event.target;
-    formData[renderId][name] = value
+    formData[renderId][name] = value;
     if (type === "radio") {
       if (checked) {
         checkValidation("radio", value);
-        formData[renderId][name] = value
+        formData[renderId][name] = value;
       }
     } else {
       formFieldData = formFieldData.map((item) => {
@@ -170,13 +198,12 @@ const catchFormDivAndAppendForm = (data) => {
         } else return item;
       });
       if (name.replace(/^[a-z0-9]+_/, "") !== "confirm_password") {
-        formData[renderId][name] = type === "checkbox" ? checked : value
+        formData[renderId][name] = type === "checkbox" ? checked : value;
       }
     }
   };
 
   const updateFormData = (renderId) => {
-    console.log('renderId: ', renderId);
     formElement.map((input) => {
       let field = {};
       let index = formFieldData.findIndex(
@@ -185,8 +212,9 @@ const catchFormDivAndAppendForm = (data) => {
       if (input.type !== "editor" && input.type !== "heading") {
         formData[renderId] = {
           ...formData[renderId],
-          [`${input.inputId}_${input.id}`]: input.attributes?.default_value || "",
-        }
+          [`${input.inputId}_${input.id}`]:
+            input.attributes?.default_value || "",
+        };
         // formData = {
         //     ...formData,
         //     [`${input.inputId}_${input.id}`]: input.attributes?.default_value || "",
@@ -258,8 +286,6 @@ const catchFormDivAndAppendForm = (data) => {
   };
 
   const handleSubmit = async (event, buttonText, formId) => {
-    console.log('formData', formData[formElementId])
-
     event.preventDefault();
     const banner = document.getElementById(bannerElementId);
     banner.style.display = "none";
@@ -292,15 +318,32 @@ const catchFormDivAndAppendForm = (data) => {
     });
 
     if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
+
       const loader = document.getElementById(loaderElementId);
-      const buttonElement = document.getElementById(submitButtonId);
+      const buttonElement = document.querySelector(`#${submitButtonId}`);
       const buttonTextElement = buttonElement.querySelector(
         "#span_submit_button"
       );
+      const originalButtonHeight = buttonElement.clientHeight;
       buttonTextElement.style.display = "none";
+      buttonElement.style.height = `${originalButtonHeight}px`;
+
+      const buttonWidth = buttonElement.offsetWidth;
+      const loaderSize = 25;
+      const loaderLeftPosition = (buttonWidth - loaderSize) / 2;
+      const loaderTopPosition = (buttonElement.offsetHeight - loaderSize) / 2;
+
+      loader.style.position = "absolute";
+      loader.style.left = `${loaderLeftPosition}px`;
+      loader.style.top = `${loaderTopPosition}px`;
       loader.style.display = "block";
+      loader.style.zIndex = 10000;
+
       try {
-        const response = await createSubmission(formData[formElementId], formId);
+        const response = await createSubmission(
+          formData[formElementId],
+          formId
+        );
         if (response.ok) {
           buttonTextElement.style.display = "block";
           loader.style.display = "none";
@@ -310,13 +353,13 @@ const catchFormDivAndAppendForm = (data) => {
             form.reset();
             setTimeout(() => {
               window.location.reload();
-            }, 3000)
+            }, 3000);
           } else if (afterSubmit.submitAction === "hideForm") {
             form.style.display = "none";
             banner.style.display = "flex";
             setTimeout(() => {
               window.location.reload();
-            }, 3000)
+            }, 3000);
           } else if (afterSubmit.submitAction === "pageRedirect") {
             window.open(afterSubmit.redirectUrl, "_blank");
             banner.style.display = "flex";
@@ -391,7 +434,11 @@ const catchFormDivAndAppendForm = (data) => {
     formElement.enctype = "multipart/form-data";
 
     formElement.addEventListener("submit", (event) => {
-      handleSubmit(event, footerFieldData?.attributes?.submitButton, data?.elementData?._id);
+      handleSubmit(
+        event,
+        footerFieldData?.attributes?.submitButton,
+        data?.elementData?._id
+      );
     });
     divElement.appendChild(formElement);
 
@@ -499,7 +546,10 @@ const catchFormDivAndAppendForm = (data) => {
         const inputElement = document.createElement("input");
         inputElement.type = item.type;
         inputElement.id = item.inputId;
-        inputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`)
+        inputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
         inputElement.className = "classicInput";
 
         inputElement.name = `${item.inputId}_${item.id}`;
@@ -511,8 +561,12 @@ const catchFormDivAndAppendForm = (data) => {
         inputElement.style.width = widthInput;
         Object.assign(inputElement.style, inputStyles);
         inputContainer.appendChild(inputElement);
-        const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
-        element.addEventListener("input", (e) => handleChange(formElementId, e));
+        const element = document.querySelector(
+          `input[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
 
         const descriptionElement = document.createElement("span");
         descriptionElement.className = "description";
@@ -551,7 +605,10 @@ const catchFormDivAndAppendForm = (data) => {
         const passwordInputElement = document.createElement("input");
         passwordInputElement.type = item.type;
         passwordInputElement.id = item.inputId;
-        passwordInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`)
+        passwordInputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
         passwordInputElement.className = "classicInput";
 
         passwordInputElement.name = `${item.inputId}_${item.id}`;
@@ -564,8 +621,12 @@ const catchFormDivAndAppendForm = (data) => {
         Object.assign(passwordInputElement.style, inputStyles);
 
         inputContainer.appendChild(passwordInputElement);
-        const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
-        element.addEventListener("input", (e) => handleChange(formElementId, e));
+        const element = document.querySelector(
+          `input[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
 
         const passwordDescriptionElement = document.createElement("span");
         passwordDescriptionElement.className = "description";
@@ -605,7 +666,10 @@ const catchFormDivAndAppendForm = (data) => {
           const confirmPasswordInputElement = document.createElement("input");
           confirmPasswordInputElement.type = item.type;
           confirmPasswordInputElement.id = `confirm_${item.inputId}`;
-          confirmPasswordInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`)
+          confirmPasswordInputElement.setAttribute(
+            "data-id",
+            `${formElementId}_${item?.inputId}`
+          );
           confirmPasswordInputElement.className = "classicInput";
           confirmPasswordInputElement.name = `${item.inputId}_confirm_${item.id}`;
           confirmPasswordInputElement.placeholder = confirmPasswordPlaceholder;
@@ -616,7 +680,9 @@ const catchFormDivAndAppendForm = (data) => {
           Object.assign(confirmPasswordInputElement.style, inputStyles);
 
           inputContainer.appendChild(confirmPasswordInputElement);
-          const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
+          const element = document.querySelector(
+            `input[data-id=${formElementId}_${item?.inputId}]`
+          );
           element.addEventListener("input", (event) =>
             handleChange(formElementId, event, confirmPassword)
           );
@@ -664,7 +730,10 @@ const catchFormDivAndAppendForm = (data) => {
         const textareaInputElement = document.createElement("textarea");
         textareaInputElement.placeholder = placeholder;
         textareaInputElement.id = item.inputId;
-        textareaInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`)
+        textareaInputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
         textareaInputElement.rows = 3;
         textareaInputElement.name = `${item.inputId}_${item.id}`;
         textareaInputElement.className = "classicInput";
@@ -677,8 +746,12 @@ const catchFormDivAndAppendForm = (data) => {
         textareaInputElement.style.maxHeight = "200px";
         textareaInputElement.style.minHeight = "80px";
         inputContainer.appendChild(textareaInputElement);
-        const element = document.querySelector(`textarea[data-id=${formElementId}_${item?.inputId}]`);
-        element.addEventListener("input", (e) => handleChange(formElementId, e));
+        const element = document.querySelector(
+          `textarea[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
 
         const textareaDescriptionElement = document.createElement("span");
         textareaDescriptionElement.className = "description";
@@ -705,11 +778,18 @@ const catchFormDivAndAppendForm = (data) => {
           const checkboxInputElement = document.createElement("input");
           checkboxInputElement.className = "checkBoxInput";
           checkboxInputElement.id = item?.inputId;
-          checkboxInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`);
+          checkboxInputElement.setAttribute(
+            "data-id",
+            `${formElementId}_${item?.inputId}`
+          );
           checkboxInputElement.type = item?.type;
           checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
-          const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
-          element.addEventListener("input", (e) => handleChange(formElementId, e));
+          const element = document.querySelector(
+            `input[data-id=${formElementId}_${item?.inputId}]`
+          );
+          element.addEventListener("input", (e) =>
+            handleChange(formElementId, e)
+          );
           checkboxWrapperElement.appendChild(checkboxInputElement);
 
           const checkboxLabelElement = document.createElement("label");
@@ -791,7 +871,10 @@ const catchFormDivAndAppendForm = (data) => {
             checkBoxInputElement.type = item?.type;
             checkBoxInputElement.value = option.value;
             checkBoxInputElement.id = item?.inputId;
-            checkBoxInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`);
+            checkBoxInputElement.setAttribute(
+              "data-id",
+              `${formElementId}_${item?.inputId}`
+            );
             checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
             checkBoxLabelElement.appendChild(checkBoxInputElement);
 
@@ -799,7 +882,9 @@ const catchFormDivAndAppendForm = (data) => {
               document.createTextNode(option.label)
             );
           });
-          const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
+          const element = document.querySelector(
+            `input[data-id=${formElementId}_${item?.inputId}]`
+          );
           element.addEventListener("change", (event) => {
             const selectedCheckboxes = ulElement.querySelectorAll(
               'input[type="checkbox"]:checked'
@@ -889,7 +974,10 @@ const catchFormDivAndAppendForm = (data) => {
           checkBoxInputElement.type = item?.type;
           checkBoxInputElement.value = option.value;
           checkBoxInputElement.id = item?.inputId;
-          checkBoxInputElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`);
+          checkBoxInputElement.setAttribute(
+            "data-id",
+            `${formElementId}_${item?.inputId}`
+          );
           checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
           checkBoxInputElement.defaultChecked = default_value;
           checkBoxLabelElement.appendChild(checkBoxInputElement);
@@ -898,14 +986,16 @@ const catchFormDivAndAppendForm = (data) => {
             document.createTextNode(option.label)
           );
         });
-        const element = document.querySelector(`input[data-id=${formElementId}_${item?.inputId}]`);
+        const element = document.querySelector(
+          `input[data-id=${formElementId}_${item?.inputId}]`
+        );
         element.addEventListener("change", (event) => {
           const selectedRadio = ulElement.querySelector(
             'input[type="radio"]:checked'
           );
           if (selectedRadio) {
             const selectedValue = selectedRadio.value;
-            formData[formElementId][event.target.name] = selectedValue
+            formData[formElementId][event.target.name] = selectedValue;
             // formData[event.target.name] = selectedValue;
             checkValidation("radio", selectedValue);
           }
@@ -953,13 +1043,20 @@ const catchFormDivAndAppendForm = (data) => {
         const selectElement = document.createElement("select");
         selectElement.name = `${item?.inputId}_${item?.id}`;
         selectElement.id = item?.inputId;
-        selectElement.setAttribute('data-id', `${formElementId}_${item?.inputId}`)
+        selectElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
         selectElement.className = "classicInput";
         selectElement.style.width = widthInput;
         Object.assign(selectElement.style, inputStyles);
         selectContainer.appendChild(selectElement);
-        const element = document.querySelector(`select[data-id=${formElementId}_${item?.inputId}]`);
-        element.addEventListener("input", (e) => handleChange(formElementId, e));
+        const element = document.querySelector(
+          `select[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
 
         const defaultOptionElement = document.createElement("option");
         defaultOptionElement.value = "";
@@ -1087,10 +1184,11 @@ const catchFormDivAndAppendForm = (data) => {
       // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
-        ? "buttonWidth classicButton submitButton"
-        : "classicButton submitButton"
-        }`;
+      buttonElement.className = `${
+        footerFieldData?.attributes?.buttonWidth
+          ? "buttonWidth classicButton submitButton"
+          : "classicButton submitButton"
+      }`;
       const spanSubmit = document.createElement("span");
       spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
       spanSubmit.id = "span_submit_button";
@@ -1121,10 +1219,11 @@ const catchFormDivAndAppendForm = (data) => {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
-          ? "buttonWidth classicButton resetButton"
-          : "classicButton resetButton"
-          }`;
+        resetButton.className = `${
+          footerFieldData?.attributes?.buttonWidth
+            ? "buttonWidth classicButton resetButton"
+            : "classicButton resetButton"
+        }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
         resetButton.style.color = appearanceFields?.buttonTextColor;
         footerDivElement.appendChild(resetButton);
@@ -1195,7 +1294,6 @@ const catchFormDivAndAppendForm = (data) => {
     const close = document.getElementById("close");
     close.addEventListener("click", () => handleClose(data?.elementData?._id));
     // });
-
   }, 2000);
 };
 
@@ -1206,7 +1304,7 @@ function fetchData() {
 
     elementsArray.forEach(async (element) => {
       let formId = element.getAttribute("data-key");
-      appId = element.getAttribute("data-ap-key");
+      shopId = element.getAttribute("data-ap-key");
       try {
         const elementData = await getData(formId);
         const validationData = await getValidation(formId);
@@ -1217,14 +1315,12 @@ function fetchData() {
           validationData,
           appearanceData,
           afterSubmit,
-          element
+          element,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-
     });
-
   }, 2000);
 }
 fetchData();

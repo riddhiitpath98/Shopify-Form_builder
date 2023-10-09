@@ -25,14 +25,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
 import ToggleSwitch from "../../components/ToggleSwitch";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
-import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
-import BannerPremium from "../../components/BannerPremium";
+import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
+import ElementListBanner from "../../components/ElementListBanner";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -44,7 +44,7 @@ function FormList() {
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
 
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
   const handleSubmission = (id) => {
@@ -53,9 +53,16 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${appId}' data-key='${filter[0].isVisible ? id : ""
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${filter[0].isVisible ? id : ""
       }'></div>`;
-    navigator.clipboard.writeText(textToCopy);
+    navigator.clipboard.writeText(textToCopy).then(
+      function () {
+        toast.success("Code Coiped", toastConfig);
+      },
+      function (error) {
+        toast.error(error, toastConfig);
+      }
+    );
   };
 
   const subscription = useSelector(state => state.user.userData.subscription);
@@ -112,7 +119,7 @@ function FormList() {
     {
       content: "Delete form",
       onAction: () => {
-        dispatch(deleteFormData({ deleteFormArr, appId }));
+        dispatch(deleteFormData({ deleteFormArr, shopId }));
         setDeleteFormArr([]);
         setSelectedItems([]);
       },
@@ -125,14 +132,21 @@ function FormList() {
   };
 
   useEffect(() => {
-    dispatch(fetchFormData(appId));
+    dispatch(fetchFormData(shopId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch]);
   const isShowPremium = formData.formData.length >= subscription?.features?.form?.number_of_forms && user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   console.log('isShowPremium: ', isShowPremium);
   return (
     <>
-      {isShowPremium ?
+      {isShowPremium ? (
+        <div className={styles.elementBanner}>
+          <ElementListBanner
+            title={"You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms."}
+          />
+        </div>
+      ) : null}
+      {/* {isShowPremium ?
         <BannerPremium
           title="Current Plan"
           text={<><p style={{ fontSize: "1.125em", marginTop: "0.5rem", fontWeight: 500 }}>You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms. <Link url="/plans"><span className={styles.premiumPlanLink}>Try Premium</span></Link></p></>}
@@ -140,7 +154,7 @@ function FormList() {
           status="info"
           buttonText="Upgrade plan"
         />
-        : null}
+        : null} */}
       <Page
         fullWidth
         title="Form"
@@ -208,12 +222,7 @@ function FormList() {
             {formData?.loading ? (
               <SkeletonThumbnail size="small" />
             ) : (
-              <>
-                <ToggleSwitch items={items} />
-                <div style={{ marginTop: "16px" }}>
-                  <Text variant="headingXs" as="h6"></Text>
-                </div>
-              </>
+              <ToggleSwitch items={items} />
             )}
           </div>
 
@@ -225,12 +234,9 @@ function FormList() {
               <SkeletonThumbnail size="small" />
             ) : (
               <>
-                <Button type="button" >
-                  {" "}
-                  <Icon source={Icons.submission} />
-                </Button>
+                <Button plain icon={Icons.submission}></Button>
                 <div style={{ marginTop: "4px" }}>
-                  <Text variant="headingXs" as="h6">
+                  <Text variant="headingXs" as="h6" color="subdued">
                     View Submission
                   </Text>
                 </div>
@@ -246,12 +252,9 @@ function FormList() {
               <SkeletonThumbnail size="small" />
             ) : (
               <>
-                <Button type="button" >
-                  {" "}
-                  <Icon source={Icons.copy} />
-                </Button>
+                <Button plain icon={Icons.copy}></Button>
                 <div style={{ marginTop: "5px" }}>
-                  <Text variant="headingXs" as="h6">
+                  <Text variant="headingXs" as="h6" color="subdued">
                     Copy HTML code
                   </Text>
                 </div>

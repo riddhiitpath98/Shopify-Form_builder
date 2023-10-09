@@ -16,6 +16,9 @@
   display: flex !important;
   align-items: center !important;
 }
-.Polaris-Button--plain svg {
+/* .Polaris-Button--plain svg {
   fill: rgba(97, 106, 117, 1) !important;
+} */
+.Polaris-Text--headingXs:hover{
+  color: #1f2124;
 }

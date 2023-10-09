@@ -134,7 +134,7 @@ export const InputTypeProvider = ({
         options = timeFormatOptions;
       } else if (name === "dropdown_default_value") {
         options = selected;
-      } else if (name === "hidden_data_type") {
+      } else if (name === "dataType") {
         options = hiddenOptions;
       }
       return (

@@ -27,7 +27,7 @@ function Dashboard() {
     monthlySubmission: false,
   });
 
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissions.data
   );
@@ -40,10 +40,8 @@ function Dashboard() {
   }, [date]);
 
   useEffect(() => {
-    fullscreen.dispatch(Fullscreen.Action.EXIT);
-    dispatch(getSubmission(appId));
-    dispatch(fetchFormData(appId));
-    dispatch(getAllSubscription());
+    dispatch(getSubmission(shopId));
+    dispatch(fetchFormData(shopId));
   }, [dispatch]);
 
   return (

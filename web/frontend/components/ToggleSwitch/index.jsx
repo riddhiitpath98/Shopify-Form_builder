@@ -5,9 +5,9 @@ import { editVisibleFlag } from "../../redux/actions/allActions";
 
 const ToggleSwitch = ({ items }) => {
   const dispatch = useDispatch();
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
   const handleVisibility = (e, id) => {
-    dispatch(editVisibleFlag({ appId: appId, _id: id, isVisible: e.target.checked }))
+    dispatch(editVisibleFlag({ shopId: shopId, _id: id, isVisible: e.target.checked }))
   }
 
   return (

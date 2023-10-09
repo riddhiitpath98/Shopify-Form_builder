@@ -47,7 +47,7 @@ function Submissions() {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
@@ -165,7 +165,7 @@ function Submissions() {
           sortNFilterSubmission({
             path: sortValue,
             query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
-            appId
+            shopId
           })
         );
       setStatus(value);
@@ -182,7 +182,7 @@ function Submissions() {
           sortNFilterSubmission({
             path: sortValue,
             query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
-            appId
+            shopId
           })
         );
       setStatus(value);
@@ -202,7 +202,7 @@ function Submissions() {
         sortNFilterSubmission({
           path: sortValue,
           query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
-          appId
+          shopId
         })
       );
     setStatus([]);
@@ -242,7 +242,7 @@ function Submissions() {
               page: currentPage,
               per_page: itemPrPage
             },
-            appId
+            shopId
           })
         );
       setFormStatus(value);
@@ -282,7 +282,7 @@ function Submissions() {
             page: currentPage,
             per_page: itemPrPage
           },
-          appId
+          shopId
         })
       );
     setFormStatus([]);
@@ -324,12 +324,12 @@ function Submissions() {
     dispatch(
       location.state?.id
         ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: currentPage, per_page: itemPrPage })
-        : loadMoreSubmission({ order: sortValue, appId, page: currentPage, per_page: itemPrPage })
+        : loadMoreSubmission({ order: sortValue, shopId, page: currentPage, per_page: itemPrPage })
     );
   }, [dispatch, location?.state?.id, currentPage]);
 
   useEffect(() => {
-    dispatch(fetchFormData(appId));
+    dispatch(fetchFormData(shopId));
   }, []);
 
   const resourceName = {
@@ -361,7 +361,7 @@ function Submissions() {
                     : "",
               formId: formStatus,
             },
-            appId
+            shopId
           })
         );
         setDeleteFormArr([]);
@@ -475,7 +475,7 @@ function Submissions() {
               page: currentPage,
               per_page: itemPrPage
             },
-            appId
+            shopId
           })
         );
       setSortValue(selected);
@@ -512,7 +512,7 @@ function Submissions() {
               page: currentPage,
               per_page: itemPrPage
             },
-            appId
+            shopId
           })
         );
       setSortValue(selected);

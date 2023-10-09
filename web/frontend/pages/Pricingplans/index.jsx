@@ -9,6 +9,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { useSelector } from "react-redux";
 import styles from "./PricingPlan.module.css";
 
+
 function Pricingplans() {
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
@@ -36,13 +37,15 @@ function Pricingplans() {
       return status;
     }
   };
-
   const capitalizeFirstLetter = (str) => {
     return str
       .split('_')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
+  useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
+  }, []);
 
   return (
     <Page fullWidth title="Pricing Plans">
@@ -58,9 +61,9 @@ function Pricingplans() {
                       <th scope="col">
                         <p>FREE</p>
                       </th>
-                      <th scope="col">
+                      {/* <th scope="col">
                         <p>PREMIUM</p>
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -103,30 +106,30 @@ function Pricingplans() {
                         <span>0 days trial</span>
                       </div>
                     </td>
-                    <td>
-                      {/* <div className={styles.pmuBadge}>
+                    {/* <td> */}
+                    {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
                             <span>-33% lifetime off</span>
                           </span>
                         </Badge>
                       </div> */}
-                      <div className={styles.monthlyPrice}>
-                        {/* <span className={styles.monthlyPriceCur}>USD</span> */}
+                    {/* <div className={styles.monthlyPrice}>
+                        <span className={styles.monthlyPriceCur}>USD</span>
                         <span className={styles.priceValue}>
                           <span className={styles.price}>
                             <span>
-                              {/* <sub className={styles.dollar}>$</sub> */}
-                              {/* <span className={styles.dollarValue}>14.9</span> */}
+                              <sub className={styles.dollar}>$</sub>
+                              <span className={styles.dollarValue}>14.9</span>
                               <span className={styles.rupees}>Coming Soon</span>
                             </span>
                           </span>
                         </span>
                         <span className={styles.month}>
-                          {/* /<span>mo</span> */}
+                          /<span>mo</span>
                         </span>
-                      </div>
-                      {/* 
+                      </div> */}
+                    {/* 
                       <Button onClick={handleClick} primary fullWidth>
                         <span>
                           <span>
@@ -137,53 +140,53 @@ function Pricingplans() {
                       <div className={styles.pmuBadge}>
                         <span>7 days trial</span>
                       </div> */}
-                    </td>
-                      {subscriptionData?.length > 0 && Object.keys(subscriptionData[0]?.features).map(
-                        (featureKey) => (
-                          <React.Fragment key={featureKey}>
-                            <tr>
-                              <th colSpan={3}>
-                                <span className={styles.tableHeader}>
-                                  <span>{featureKey}</span>
-                                </span>
-                              </th>
-                            </tr>
+                    {/* </td> */}
+                    {subscriptionData?.length > 0 && Object.keys(subscriptionData[0]?.features).map(
+                      (featureKey) => (
+                        <React.Fragment key={featureKey}>
+                          <tr>
+                            <th colSpan={3}>
+                              <span className={styles.tableHeader}>
+                                <span>{featureKey}</span>
+                              </span>
+                            </th>
+                          </tr>
 
-                            {Object.entries(
-                              subscriptionData[0]?.features[featureKey]
-                            ).map(([innerKey, innerValue]) => (
-                              <tr key={innerKey}>
-                                <th scope="row" className={styles.rowData}>
-                                  <div className={styles.rowTitle}>
-                                    <dl className={styles.labelName}>
-                                      <dt className={styles.labelText}>
-                                        <span>{capitalizeFirstLetter(innerKey)}</span>
-                                      </dt>
-                                      <dd
-                                        className={styles.labelDescription}
-                                      ></dd>
-                                    </dl>
-                                  </div>
-                                </th>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[0].features[featureKey][
-                                    innerKey
-                                    ]
-                                  )}
-                                </td>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[1].features[featureKey][
-                                    innerKey
-                                    ]
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </React.Fragment>
-                        )
-                      )}
+                          {Object.entries(
+                            subscriptionData[0]?.features[featureKey]
+                          ).map(([innerKey, innerValue]) => (
+                            <tr key={innerKey}>
+                              <th scope="row" className={styles.rowData}>
+                                <div className={styles.rowTitle}>
+                                  <dl className={styles.labelName}>
+                                    <dt className={styles.labelText}>
+                                      <span>{capitalizeFirstLetter(innerKey)}</span>
+                                    </dt>
+                                    <dd
+                                      className={styles.labelDescription}
+                                    ></dd>
+                                  </dl>
+                                </div>
+                              </th>
+                              <td>
+                                {renderStatusIcon(
+                                  subscriptionData[0].features[featureKey][
+                                  innerKey
+                                  ]
+                                )}
+                              </td>
+                              <td>
+                                {renderStatusIcon(
+                                  subscriptionData[1].features[featureKey][
+                                  innerKey
+                                  ]
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </React.Fragment>
+                      )
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -192,7 +195,7 @@ function Pricingplans() {
           </LegacyCard.Section>
         </LegacyCard>
       </div>
-    </Page>
+    </Page >
   );
 }
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Icon } from "@shopify/polaris";
 import FormDrawer from "../../FormDrawer/FormDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import {
