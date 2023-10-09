@@ -63,7 +63,7 @@ const FormPreview = () => {
     (state) => state.submission.submissionData?.formSubmitted
   );
 
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
   const inputFields = useSelector((state) => state?.inputField?.inputFields);
 
   const submissionData = useSelector(
@@ -395,7 +395,7 @@ const FormPreview = () => {
       dispatch(
         createSubmissions({
           form: editFormId,
-          appId: appId,
+          shopId: shopId,
           submission: formSubmissionData,
         })
       );

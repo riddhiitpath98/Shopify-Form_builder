@@ -21,6 +21,8 @@ import { validateTextField } from "../../constant";
 
 const FeedbackForm = () => {
 
+  const shopId = useSelector((state) => state.shopId.shopId)
+
   const [formValues, setFormValues] = useState({
     name: "",
     websiteName: "",
@@ -28,6 +30,7 @@ const FeedbackForm = () => {
     contactNumber: "",
     message: "",
     rating: 1,
+    shopId: shopId
   });
   const [errorValues, setErrorValues] = useState({});
   const feedbackData = useSelector((state) => state?.support?.feedbackData);
@@ -72,7 +75,7 @@ const FeedbackForm = () => {
       setErrorValues(validateTextField(formValues));
     } else {
       dispatch(addFeedback(formValues));
-      setFormValues({});
+      setFormValues({shopId: shopId});
       setErrorValues({});
     }
   };

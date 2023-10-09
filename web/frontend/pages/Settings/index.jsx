@@ -31,7 +31,7 @@ function Settings() {
     password: "",
     mail_encryption: "",
     port: "",
-    appId: "",
+    shopId: "",
   });
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ function Settings() {
   const isEdit = useSelector(
     (state) => state?.setting?.smtpSettingData?.isEdit
   );
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
   const [showValidation, setShowValidation] = useState(false);
 
   const [errorValues, setErrorValues] = useState({});
@@ -85,8 +85,8 @@ function Settings() {
   };
 
   useEffect(() => {
-    setFormValues({ ...formValues, appId: appId });
-    dispatch(getSmtpSettingByAppId(appId));
+    setFormValues({ ...formValues, shopId: shopId });
+    dispatch(getSmtpSettingByAppId(shopId));
   }, [dispatch]);
 
   useEffect(() => {
@@ -97,7 +97,7 @@ function Settings() {
         password: smtpSettingData.password,
         mail_encryption: smtpSettingData.mail_encryption,
         port: smtpSettingData.port,
-        appId: smtpSettingData.appId,
+        shopId: smtpSettingData.shopId,
       });
     }
   }, [smtpSettingData]);

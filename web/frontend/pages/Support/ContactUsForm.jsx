@@ -17,7 +17,7 @@ import styles from "./ContactUsForm.module.css";
 import { validateTextField } from "../../constant";
 
 function ContactUsForm() {
-  const appId = useSelector((state) => state.appId.appId)
+  const shopId = useSelector((state) => state.shopId.shopId)
   const [showValidation, setShowValidation] = useState(false);
   const [formValues, setFormValues] = useState({
     firstName: "",
@@ -26,7 +26,7 @@ function ContactUsForm() {
     contactNumber: "",
     subjectLine: "",
     message: "",
-    appId: appId
+    shopId: shopId
   });
   const [errorValues, setErrorValues] = useState({});
   const contactUsData = useSelector((state) => state?.support?.contactUsData);
@@ -66,7 +66,7 @@ function ContactUsForm() {
       setShowValidation(false)
       dispatch(contactUs(formValues));
       setFormValues({
-        appId: appId
+        shopId: shopId
       })
       setErrorValues({});
     }

@@ -13,7 +13,7 @@ const ChartDashboard = (props) => {
     const [formStatus, setFormStatus] = useState([]);
     const dispatch = useDispatch();
     const formData = useSelector((state) => state.inputField.finalFormData.formData);
-    const appId = useSelector((state) => state.appId.appId);
+    const shopId = useSelector((state) => state.shopId.shopId);
     const submission = submissionData || useSelector(
         (state) => state.submission.submissionData.data
     );
@@ -25,8 +25,8 @@ const ChartDashboard = (props) => {
     };
 
     useEffect(() => {
-        dispatch(getSubmission(appId));
-        dispatch(fetchFormData(appId));
+        dispatch(getSubmission(shopId));
+        dispatch(fetchFormData(shopId));
     }, [dispatch])
 
 

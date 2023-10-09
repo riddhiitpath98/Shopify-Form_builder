@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '@shopify/app-bridge-react';
 import { Spinner } from '@shopify/polaris';
+import { addShopId } from '../../redux/reducers/appIdSlice';
 
 
 
@@ -16,12 +17,13 @@ const Auth = () => {
 
     useEffect(() => {
         if (shop.isSuccess) {
-            const { id, shop_owner, phone, name, city, customer_email, email, myshopify_domain } = shop.data;
+            const { id, shop_owner, phone, name, city, customer_email, email, myshopify_domain } = shop?.data;
             const data = {
                 id, shop_owner, phone, name, city, customer_email, email, myshopify_domain, subscriptionId: "64faf9e6c6b781df86d389b0",
                 subscriptionName: "free"
             }
             dispatch(addShopData(data));
+            dispatch(addShopId(data?.id));
         }
         if (shop.isSuccess) {
             navigate("/dashboard", { replace: true })

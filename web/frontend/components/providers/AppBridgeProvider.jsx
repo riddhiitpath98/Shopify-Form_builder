@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Provider } from "@shopify/app-bridge-react";
 import { Banner, Layout, Page } from "@shopify/polaris";
-import { addAppId } from "../../redux/reducers/appIdSlice";
+import { addShopId } from "../../redux/reducers/appIdSlice";
 import { useDispatch } from "react-redux";
 
 /**
@@ -51,7 +51,7 @@ export function AppBridgeProvider({ children }) {
     };
   });
 
-  dispatch(addAppId(appBridgeConfig.apiKey))
+  // dispatch(addShopId(appBridgeConfig.apiKey))
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {

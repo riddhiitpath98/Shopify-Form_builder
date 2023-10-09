@@ -42,7 +42,7 @@ function FormList() {
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
 
-  const appId = useSelector((state) => state.appId.appId);
+  const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
   const handleSubmission = (id) => {
@@ -51,7 +51,7 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${appId}' data-key='${
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
       filter[0].isVisible ? id : ""
     }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
@@ -115,7 +115,7 @@ function FormList() {
     {
       content: "Delete form",
       onAction: () => {
-        dispatch(deleteFormData({ deleteFormArr, appId }));
+        dispatch(deleteFormData({ deleteFormArr, shopId }));
         setDeleteFormArr([]);
         setSelectedItems([]);
       },
@@ -128,7 +128,7 @@ function FormList() {
   };
 
   useEffect(() => {
-    dispatch(fetchFormData(appId));
+    dispatch(fetchFormData(shopId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch]);
 
