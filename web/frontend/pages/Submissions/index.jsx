@@ -48,7 +48,6 @@ function Submissions() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const shopId = useSelector((state) => state.shopId.shopId);
-  console.log('shopId: ', shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
