@@ -19,8 +19,10 @@ import { createFormToAPIsettings } from "../../redux/actions/allActions";
 
 const AnyAPIIntegration = () => {
   const [showValidation, setShowValidation] = useState(false);
+  const [formElementData, setFormElementData] = useState([]);
   const [formValues, setFormValues] = useState({
     apiTitle: "",
+    formTitle: "",
     apiUrl: "",
     headerRequest: "",
     inputType: "",
@@ -32,16 +34,36 @@ const AnyAPIIntegration = () => {
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
   );
+
+  const getElementDataByFormId = (formId) => {
+    const selectedForm = formData.find((form) => form._id === formId);
+
+    if (selectedForm) {
+      const elementData = selectedForm.customForm.find((data) => data.element);
+      if (elementData) {
+        return elementData.element;
+      }
+    }
+    return null;
+  };
+
   const handleChange = (name, value) => {
     let formVal = {};
     formVal = { ...formValues, [name]: value };
+    if (name === "formTitle") {
+      const selectedFormId = value;
+      const elementData = getElementDataByFormId(selectedFormId);
+      console.log("elementData: ", elementData);
+      if (elementData) {
+        setFormElementData(elementData);
+      }
+    }
     if (showValidation) setErrorValues(validateTextField(formVal));
     setFormValues({
       ...formValues,
       [name]: value,
     });
   };
-
   const formTitle = useMemo(() => {
     const formTitleData = [];
     formData?.map((data) => {
@@ -51,44 +73,30 @@ const AnyAPIIntegration = () => {
       });
     });
     return formTitleData;
-  }, [formData.length]);
+  }, []);
 
   const formTitleOptions = [
-    { label: 'Select Form', value: '', disabled: true},
+    { label: "Select Form", value: "", disabled: true },
     ...formTitle.map((title) => ({
       label: title.title,
       value: title.id,
     })),
   ];
-
   const inputTypeOptions = [
-    { label: "Select Type", value: "" , disabled: true},
+    { label: "Select Type", value: "", disabled: true },
     { label: "json", value: "json" },
   ];
 
   const methodOptions = [
-    { label: "Select Method", value: "" , disabled: true},
+    { label: "Select Method", value: "", disabled: true },
     { label: "GET", value: "get" },
     { label: "POST", value: "post" },
   ];
-  
-  function getElementDataByFormId(formId) {
-    const selectedForm = formData.find((form) => form._id === formId);
-  
-    if (selectedForm) {
-      
-      const elementData = selectedForm.customForm.find((data) => data.element);
-  
-      if (elementData) {
-        return elementData.element;
-      }
-    }
-  
-    return null;
-  }
+
   const handleSubmit = async () => {
     if (
       !formValues.apiTitle ||
+      !formValues.formTitle ||
       !formValues.apiUrl ||
       !formValues.headerRequest ||
       !formValues.inputType ||
@@ -98,6 +106,7 @@ const AnyAPIIntegration = () => {
       setErrorValues(validateTextField(formValues));
     } else if (
       errorValues.apiTitle ||
+      errorValues.formTitle ||
       errorValues.apiUrl ||
       errorValues.headerRequest ||
       errorValues.inputType ||
@@ -107,8 +116,8 @@ const AnyAPIIntegration = () => {
       setErrorValues(validateTextField(formValues));
     } else {
       setShowValidation(false);
-        dispatch(createFormToAPIsettings(formValues));
-      
+      dispatch(createFormToAPIsettings(formValues));
+
       setErrorValues({});
     }
   };
@@ -122,14 +131,31 @@ const AnyAPIIntegration = () => {
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>
                     <Grid>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <Text variant="headingLg" as="h5">
+                          Add API Title
+                        </Text>
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <TextField
+                          value={formValues.apiTitle || ""}
+                          name="apiUrl"
+                          onChange={(value) => handleChange("apiTitle", value)}
+                          label="Add API title"
+                          type="text"
+                          requiredIndicator
+                          error={errorValues.apiTitle}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <Select
                           label="Select Contact Form"
-                          name="apiTitle"
+                          name="formTitle"
                           options={formTitleOptions}
-                          onChange={(value) => handleChange("apiTitle", value)}
-                          value={formValues.apiTitle || ""}
-                          error={errorValues.apiTitle}
+                          onChange={(value) => handleChange("formTitle", value)}
+                          value={formValues.formTitle || ""}
+                          error={errorValues.formTitle}
                         />
                       </Grid.Cell>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
@@ -185,6 +211,27 @@ const AnyAPIIntegration = () => {
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
                         <Text>Map your Fields</Text>
                       </Grid.Cell>
+
+                      {formElementData && formElementData?.length > 0
+                        ? formElementData?.map((element) => (
+                            <Grid.Cell
+                              columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                            >
+                              <TextField
+                                value={formValues[element.id] || ""}
+                                name={element.id}
+                                onChange={(value) =>
+                                  handleChange(element.id, value)
+                                }
+                                label={element.attributes.label}
+                                type={element.type}
+                                placeholder="Enter mapping key field name"
+                                requiredIndicator={element.attributes.required}
+                                autoComplete="off"
+                              />
+                            </Grid.Cell>
+                          ))
+                        : null}
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
                         <Button submit primary>
