@@ -42,7 +42,7 @@ function Dashboard() {
   useEffect(() => {
     dispatch(getSubmission(shopId));
     dispatch(fetchFormData(shopId));
-  }, [dispatch]);
+  }, [shopId,dispatch]);
 
   return (
     <>

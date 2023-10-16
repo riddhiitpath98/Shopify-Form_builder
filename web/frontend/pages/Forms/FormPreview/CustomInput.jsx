@@ -2,7 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "./FormPreview.module.css";
 import "./Preview.css";
 import { useEffect } from "react";
-import { addFormSubmission, setDateKeyName } from "../../../redux/reducers/inputFieldSlice";
+import {
+  addFormSubmission,
+  setDateKeyName,
+} from "../../../redux/reducers/inputFieldSlice";
 
 import CommonTextFeild from "./CommonTextFeild";
 import CommonFileInput from "./CommonFileInput";
@@ -64,72 +67,80 @@ export const CustomInput = ({
     inputStyles = { boxShadow: "none" };
   }
 
-  const formSubmissionData = useSelector(state => state.inputField.formSubmissionData);
+  const formSubmissionData = useSelector(
+    (state) => state.inputField.formSubmissionData
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const name = `${inputId}_${id}`
+    const name = `${inputId}_${id}`;
     if (Object.keys(formSubmissionData).includes(name)) {
-      dispatch(setDateKeyName(name))
+      dispatch(setDateKeyName(name));
     }
-  }, [dateTimeFormat])
+  }, [dateTimeFormat]);
 
   switch (type) {
     case "text":
     case "email":
     case "number":
       return (
-        <CommonTextFeild {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleChange,
-          formFeildData,
-          ...props
-        }} />
+        <CommonTextFeild
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleChange,
+            formFeildData,
+            ...props,
+          }}
+        />
       );
     case "password":
       return (
-        <CommonPassword {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleChange,
-          formFeildData,
-          ...props
-        }} />
+        <CommonPassword
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleChange,
+            formFeildData,
+            ...props,
+          }}
+        />
       );
     case "textarea":
       return (
-        <CommonTextarea {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleChange,
-          formFeildData,
-          ...props
-        }} />
+        <CommonTextarea
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleChange,
+            formFeildData,
+            ...props,
+          }}
+        />
       );
     case "checkbox":
       if (id === "accept_terms") {
@@ -165,7 +176,16 @@ export const CustomInput = ({
                 {required ? " *" : ""}
               </span>
             </div>
-            <span className={styles.description}>{description}</span>
+            <span
+              className={styles.description}
+              style={{
+                color:
+                  appearanceFields?.descriptionColor &&
+                  appearanceFields?.descriptionColor,
+              }}
+            >
+              {description}
+            </span>
             <small>
               <p className={styles.errorMessage}>
                 {required ? formFeildData[index]?.errorMessage : null}
@@ -233,7 +253,16 @@ export const CustomInput = ({
                   </li>
                 ))}
               </ul>
-              <span className={styles.description}>{description}</span>
+              <span
+                className={styles.description}
+                style={{
+                  color:
+                    appearanceFields?.descriptionColor &&
+                    appearanceFields?.descriptionColor,
+                }}
+              >
+                {description}
+              </span>
               <small>
                 <p className={styles.errorMessage}>
                   {required ? formFeildData[index]?.errorMessage : null}
@@ -279,13 +308,15 @@ export const CustomInput = ({
                           appearanceFields?.optionColor &&
                           appearanceFields?.optionColor,
                       }}
-                    ><input
+                    >
+                      <input
                         className={styles.checkBoxInput}
                         type={type}
                         id={inputId}
                         name={`${inputId}_${id}`}
                         checked={
-                          formSubmissionData[`${inputId}_${id}`] === option.value
+                          formSubmissionData[`${inputId}_${id}`] ===
+                          option.value
                         }
                         defaultChecked={default_value}
                         value={option.value}
@@ -298,7 +329,16 @@ export const CustomInput = ({
                 </li>
               ))}
             </ul>
-            <span className={styles.description}>{description}</span>
+            <span
+              className={styles.description}
+              style={{
+                color:
+                  appearanceFields?.descriptionColor &&
+                  appearanceFields?.descriptionColor,
+              }}
+            >
+              {description}
+            </span>
             <small>
               <p className={styles.errorMessage}>
                 {required ? formFeildData[index]?.errorMessage : null}
@@ -309,41 +349,45 @@ export const CustomInput = ({
       );
     case "file":
       return (
-        <CommonFileInput {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleFileChange,
-          formFeildData,
-          acceptExtensions,
-          ...props
-        }} />
+        <CommonFileInput
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleFileChange,
+            formFeildData,
+            acceptExtensions,
+            ...props,
+          }}
+        />
       );
     case "date":
       return (
-        <CommonDateInput {...{
-          id,
-          inputId,
-          type,
-          formSubmissionData,
-          appearanceFields,
-          handleDateTimeChange,
-          title,
-          index,
-          attributes,
-          inputStyles,
-          widthInput,
-          handleChange,
-          formFeildData,
-          ...props
-        }} />
+        <CommonDateInput
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            handleDateTimeChange,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleChange,
+            formFeildData,
+            ...props,
+          }}
+        />
       );
     case "select":
       return (
@@ -375,7 +419,16 @@ export const CustomInput = ({
               <option value={option.value}>{option.label}</option>
             ))}
           </select>
-          <span className={styles.description}>{description}</span>
+          <span
+            className={styles.description}
+            style={{
+              color:
+                appearanceFields?.descriptionColor &&
+                appearanceFields?.descriptionColor,
+            }}
+          >
+            {description}
+          </span>
           <small>
             <p className={styles.errorMessage}>
               {required ? formFeildData[index]?.errorMessage : null}
@@ -418,8 +471,7 @@ export const CustomInput = ({
                 appearanceFields?.paragraphBackgroundColor,
             }}
             dangerouslySetInnerHTML={{ __html: text }}
-          >
-          </div>
+          ></div>
         </div>
       );
     case "heading":

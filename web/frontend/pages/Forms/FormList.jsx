@@ -134,9 +134,8 @@ function FormList() {
   useEffect(() => {
     dispatch(fetchFormData(shopId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
-  }, [dispatch]);
+  }, [dispatch, shopId]);
   const isShowPremium = formData.formData.length >= subscription?.features?.form?.number_of_forms && user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
-  console.log('isShowPremium: ', isShowPremium);
   return (
     <>
       {isShowPremium ? (
@@ -166,7 +165,7 @@ function FormList() {
       >
 
         <LegacyCard>
-          {formData?.formData?.length > 0 ? (
+          {!shopId || formData?.formData?.length > 0 ? (
             <ResourceList
               resourceName={resourceName}
               items={sortedItems}
@@ -175,7 +174,7 @@ function FormList() {
               selectedItems={selectedItems}
               onSelectionChange={handleSelectedItems}
               promotedBulkActions={promotedBulkActions}
-              loading={formData?.loading}
+              loading={!shopId || formData?.loading}
               onSortChange={(selected) => setSortValue(selected)}
               selectable
               alternateTool={

@@ -47,7 +47,10 @@ function Submissions() {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const shopId = useSelector((state) => state.shopId.shopId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
+  console.log('shopId: ', shopId);
+  const user = useSelector(state => state.user.userData.user?.shopId);
+  console.log('user: ', user);
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
@@ -326,11 +329,11 @@ function Submissions() {
         ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: currentPage, per_page: itemPrPage })
         : loadMoreSubmission({ order: sortValue, shopId, page: currentPage, per_page: itemPrPage })
     );
-  }, [dispatch, location?.state?.id, currentPage]);
+  }, [dispatch, location?.state?.id, currentPage, shopId]);
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
-  }, []);
+  }, [shopId]);
 
   const resourceName = {
     singular: "submission",
@@ -551,7 +554,7 @@ function Submissions() {
             selectedItems={selectedItems}
             onSelectionChange={handleSelectedItems}
             promotedBulkActions={promotedBulkActions}
-            loading={submissionsLoading.loading}
+            loading={!shopId || submissionsLoading.loading}
             onSortChange={(selected) => setSortValue(selected)}
             selectable
             alternateTool={

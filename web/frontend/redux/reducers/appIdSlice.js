@@ -11,7 +11,6 @@ const storeAppId = createSlice({
     initialState,
     reducers: {
         addShopId: (state, action) => {
-            console.log('action: ', action);
             state.shopId = action.payload
         },
         getHostOrigin: (state, action) => {

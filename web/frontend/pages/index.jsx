@@ -113,6 +113,7 @@ import FeedbackForm from "./Support/FeedbackForm";
 import FormList from "./Forms/FormList";
 import FormLayout from "./Forms/FormLayout/FormLayout";
 import Auth from "./Auth";
+import AnyAPIIntegration from "./AnyAPIIntegration";
 
 export const navigation = [
   {
@@ -134,6 +135,10 @@ export const navigation = [
   {
     label: "Pricing Plans",
     destination: "/plans",
+  },
+  {
+    label: "Any API integration",
+    destination: "/contact-form-to-any-api",
   },
   {
     label: "Contact Us",
@@ -171,6 +176,12 @@ export const Tabs = [
     content: "Plans",
     icon: CashDollarMajor,
     path: "/plans",
+  },
+  {
+    id: "anyAPI",
+    content: "Any API integration",
+    icon: CashDollarMajor,
+    path: "/contact-form-to-any-api",
   },
   {
     id: "support",
@@ -242,6 +253,13 @@ const routes = [
     path: "/plans",
     exact: true,
     element: <Pricingplans />,
+  },
+  {
+    id: "anyAPI",
+    name: "Any API integration",
+    path: "/contact-form-to-any-api",
+    exact: true,
+    element: <AnyAPIIntegration />,
   },
   {
     id: "contact-us",

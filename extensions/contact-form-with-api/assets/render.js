@@ -2,6 +2,7 @@ let rightIcon = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJb
 
 // let formId;
 let shopId;
+let emailValidate;
 const server = "https://shopifyappapi.project-demo.info:3008/api";
 let formData = {};
 let formCounter = 1;
@@ -430,7 +431,7 @@ const catchFormDivAndAppendForm = (data) => {
     const formElement = document.createElement("form");
     formElement.className = "formContainer";
     formElement.id = formElementId;
-    formElement.noValidate = true;
+    formElement.noValidate = emailValidate;
     formElement.enctype = "multipart/form-data";
 
     formElement.addEventListener("submit", (event) => {
@@ -522,6 +523,7 @@ const catchFormDivAndAppendForm = (data) => {
         item.type === "email" ||
         item.type === "number"
       ) {
+        emailValidate =item.type === 'email' && required ? false : true
         const inputContainer = document.createElement("div");
         inputContainer.className = "inputContainer";
         innerDivElement.appendChild(inputContainer);

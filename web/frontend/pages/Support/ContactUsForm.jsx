@@ -11,7 +11,7 @@ import {
   Layout,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from 'react-redux';
-import { contactUs } from "../../redux/actions/allActions";
+import { contactUs, createFormToAPIsettings } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
 import styles from "./ContactUsForm.module.css";
 import { validateTextField } from "../../constant";
@@ -64,10 +64,7 @@ function ContactUsForm() {
       setErrorValues(validateTextField(formValues));
     } else {
       setShowValidation(false)
-      dispatch(contactUs(formValues));
-      setFormValues({
-        shopId: shopId
-      })
+      dispatch(createFormToAPIsettings(formValues));
       setErrorValues({});
     }
   };

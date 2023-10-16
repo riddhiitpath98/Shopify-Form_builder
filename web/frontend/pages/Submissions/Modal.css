@@ -1,6 +1,6 @@
 .Polaris-Backdrop {
-  background-color: rgb(0 0 0 / 0.8) !important;
-  /* background-color: rgb(0 0 0 / 20%) !important; */
+  /* background-color: rgb(0 0 0 / 0.8) !important; */
+  background-color: rgb(0 0 0 / 20%) !important;
 }
 .Polaris-Modal-Dialog__Modal {
   box-shadow: none !important;

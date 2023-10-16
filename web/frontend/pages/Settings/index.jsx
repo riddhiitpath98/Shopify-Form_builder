@@ -112,7 +112,7 @@ function Settings() {
     setreCaptchaValues({ ...reCaptchaValues, shopId: shopId });
     dispatch(getSmtpSettingByAppId(shopId));
     dispatch(getRecaptchaSettingsByAppId(shopId));
-  }, [dispatch]);
+  }, [shopId,dispatch]);
 
   useEffect(() => {
     if (isEdit || settingData?.isEdit) {

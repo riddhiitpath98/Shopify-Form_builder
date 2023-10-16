@@ -279,6 +279,7 @@ export const getSubmission = createAsyncThunk("submission/getSubmission", async 
 export const loadMoreSubmission = createAsyncThunk('submission/loadMoreSubmission', async (data) => {
   try {
     const response = await axios.get(`/submission/data/loadmore/${data.order}?shopId=${data.shopId}&page=${data.page}&per_page=${data.per_page}`)
+    console.log('response: ', response);
     return response?.data;
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -505,3 +506,14 @@ export const getSubscriptionById = createAsyncThunk(
     }
   }
 );
+
+//==================================================== Contact form to any API ===========================================================
+
+export const createFormToAPIsettings = createAsyncThunk("anyAPISetting/createFormToAPIsettings", async (data) =>{
+  try {
+    const response =  await axios.post("/contact-to-api",data)
+  } catch (error) {
+    toast.error(error?.response?.msg, toastConfig);
+    return rejectWithValue(error.response.data);
+  }
+} )

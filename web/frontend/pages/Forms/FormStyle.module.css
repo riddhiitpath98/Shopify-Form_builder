@@ -392,5 +392,6 @@ legend {
 }
 
 .elementBanner {
-  margin-top: 18px;
+  /* margin-top: 18px; */
+  margin: 0.7rem;
 }
