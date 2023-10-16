@@ -27,6 +27,7 @@ const AnyAPIIntegration = () => {
     headerRequest: "",
     inputType: "",
     method: "",
+    formId: ""
   });
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector((state) => state?.apiSettingData);
@@ -48,6 +49,7 @@ const AnyAPIIntegration = () => {
   };
 
   const handleChange = (name, value) => {
+    console.log('name,value', name, value);
     let formVal = {};
     formVal = { ...formValues, [name]: value };
     if (name === "formTitle") {
@@ -76,7 +78,7 @@ const AnyAPIIntegration = () => {
   }, []);
 
   const formTitleOptions = [
-    { label: "Select Form", value: "", disabled: true },
+    { label: 'Select Form', value: '', disabled: true },
     ...formTitle.map((title) => ({
       label: title.title,
       value: title.id,
@@ -94,13 +96,15 @@ const AnyAPIIntegration = () => {
   ];
 
   const handleSubmit = async () => {
+    console.log('formValues', formValues)
     if (
       !formValues.apiTitle ||
       !formValues.formTitle ||
       !formValues.apiUrl ||
       !formValues.headerRequest ||
       !formValues.inputType ||
-      !formValues.method
+      !formValues.method ||
+      !formValues.formId
     ) {
       setShowValidation(true);
       setErrorValues(validateTextField(formValues));
@@ -110,7 +114,8 @@ const AnyAPIIntegration = () => {
       errorValues.apiUrl ||
       errorValues.headerRequest ||
       errorValues.inputType ||
-      errorValues.method
+      errorValues.method ||
+      errorValues.formId
     ) {
       setShowValidation(true);
       setErrorValues(validateTextField(formValues));
@@ -214,23 +219,23 @@ const AnyAPIIntegration = () => {
 
                       {formElementData && formElementData?.length > 0
                         ? formElementData?.map((element) => (
-                            <Grid.Cell
-                              columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                            >
-                              <TextField
-                                value={formValues[element.id] || ""}
-                                name={element.id}
-                                onChange={(value) =>
-                                  handleChange(element.id, value)
-                                }
-                                label={element.attributes.label}
-                                type={element.type}
-                                placeholder="Enter mapping key field name"
-                                requiredIndicator={element.attributes.required}
-                                autoComplete="off"
-                              />
-                            </Grid.Cell>
-                          ))
+                          <Grid.Cell
+                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                          >
+                            <TextField
+                              value={formValues[element.id] || ""}
+                              name={`${element.inputId}_${element.id}`}
+                              onChange={(value) =>
+                                handleChange(`${element.inputId}_${element.id}`, value)
+                              }
+                              label={element.attributes.label}
+                              type={element.type}
+                              placeholder="Enter mapping key field name"
+                              requiredIndicator={element.attributes.required}
+                              autoComplete="off"
+                            />
+                          </Grid.Cell>
+                        ))
                         : null}
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>

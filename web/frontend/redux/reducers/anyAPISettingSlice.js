@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createFormToAPIsettings, deleteFormToAPISettings, getFormToAPISettings } from "../actions/allActions";
 
 const initialState = {
   apiSettingData: {
@@ -40,6 +41,73 @@ export const anyAPISettingSlice = createSlice({
         };
       })
       .addCase(createFormToAPIsettings.rejected, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            loading: false,
+            data: {},
+            error: action.payload,
+            success: false,
+          },
+        };
+      })
+      .addCase(deleteFormToAPISettings.pending, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            success: false,
+            loading: true,
+            data: {},
+            error: "",
+          },
+        };
+      })
+      .addCase(deleteFormToAPISettings.fulfilled, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            loading: false,
+            data: action.payload,
+            error: "",
+            success: true,
+            isEdit: true,
+          },
+        };
+      })
+      .addCase(deleteFormToAPISettings.rejected, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            loading: false,
+            data: {},
+            error: action.payload,
+            success: false,
+          },
+        };
+      }).addCase(getFormToAPISettings.pending, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            success: false,
+            loading: true,
+            data: {},
+            error: "",
+          },
+        };
+      })
+      .addCase(getFormToAPISettings.fulfilled, (state, action) => {
+        return {
+          ...state,
+          apiSettingData: {
+            loading: false,
+            data: action.payload,
+            error: "",
+            success: true,
+            isEdit: true,
+          },
+        };
+      })
+      .addCase(getFormToAPISettings.rejected, (state, action) => {
         return {
           ...state,
           apiSettingData: {

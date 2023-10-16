@@ -507,13 +507,34 @@ export const getSubscriptionById = createAsyncThunk(
   }
 );
 
-//==================================================== Contact form to any API ===========================================================
+//================================================ Contact form to any API ===================================================
 
-export const createFormToAPIsettings = createAsyncThunk("anyAPISetting/createFormToAPIsettings", async (data) =>{
+export const createFormToAPIsettings = createAsyncThunk("anyAPISetting/createFormToAPIsettings", async (data) => {
   try {
-    const response =  await axios.post("/contact-to-api",data)
+    const response = await axios.post(`/contact-to-api/${data.formId}`, data)
+    return response.data.data;
   } catch (error) {
     toast.error(error?.response?.msg, toastConfig);
     return rejectWithValue(error.response.data);
   }
-} )
+})
+
+export const getFormToAPISettings = createAsyncThunk("anyAPISettings/getFormToAPIsettings", async () => {
+  try {
+    const response = await axios.get(`/contact-to-api/`)
+    return response.data.data;
+  } catch (error) {
+    toast.error(error?.response?.msg, toastConfig);
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const deleteFormToAPISettings = createAsyncThunk("anyAPISettings/deleteFormToAPISettings", async (id) => {
+  try {
+    const response = await axios.delete(`/contact-to-api/${id}`)
+    return response.data.data;
+  } catch (error) {
+    toast.error(error?.response?.msg, toastConfig);
+    return rejectWithValue(error.response.data);
+  }
+})
