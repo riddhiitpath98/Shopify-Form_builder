@@ -9,6 +9,12 @@ const initialState = {
     success: false,
     isEdit: false,
   },
+  allApiSettingData: {
+    data: [],
+    error: "",
+    loading: false,
+    success: false,
+  },
 };
 
 export const anyAPISettingSlice = createSlice({
@@ -50,8 +56,40 @@ export const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
+      }).addCase(getFormToAPISettings.pending, (state, action) => {
+        return {
+          ...state,
+          allApiSettingData: {
+            success: false,
+            loading: true,
+            data: [],
+            error: "",
+          },
+        };
       })
-      .addCase(deleteFormToAPISettings.pending, (state, action) => {
+      .addCase(getFormToAPISettings.fulfilled, (state, action) => {
+        console.log('action: ', action);
+        return {
+          ...state,
+          allApiSettingData: {
+            loading: false,
+            data: action.payload,
+            error: "",
+            success: true,
+          },
+        };
+      })
+      .addCase(getFormToAPISettings.rejected, (state, action) => {
+        return {
+          ...state,
+          allApiSettingData: {
+            loading: false,
+            data: [],
+            error: action.payload,
+            success: false,
+          },
+        };
+      }).addCase(deleteFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           apiSettingData: {
@@ -84,39 +122,6 @@ export const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(getFormToAPISettings.pending, (state, action) => {
-        return {
-          ...state,
-          apiSettingData: {
-            success: false,
-            loading: true,
-            data: {},
-            error: "",
-          },
-        };
       })
-      .addCase(getFormToAPISettings.fulfilled, (state, action) => {
-        return {
-          ...state,
-          apiSettingData: {
-            loading: false,
-            data: action.payload,
-            error: "",
-            success: true,
-            isEdit: true,
-          },
-        };
-      })
-      .addCase(getFormToAPISettings.rejected, (state, action) => {
-        return {
-          ...state,
-          apiSettingData: {
-            loading: false,
-            data: {},
-            error: action.payload,
-            success: false,
-          },
-        };
-      });
   },
 });

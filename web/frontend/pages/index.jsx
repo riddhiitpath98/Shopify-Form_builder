@@ -108,12 +108,15 @@ import {
   ReportsMajor,
   EmailMajor,
   CircleInformationMajor,
+  ListMajor,
+  FirstOrderMajor,
 } from "@shopify/polaris-icons";
 import FeedbackForm from "./Support/FeedbackForm";
 import FormList from "./Forms/FormList";
 import FormLayout from "./Forms/FormLayout/FormLayout";
 import Auth from "./Auth";
 import AnyAPIIntegration from "./AnyAPIIntegration";
+import APISettingsList from "./AnyAPIIntegration/APISettingsList";
 
 export const navigation = [
   {
@@ -137,8 +140,12 @@ export const navigation = [
     destination: "/plans",
   },
   {
+    label: "Logs",
+    destination: "/logs",
+  },
+  {
     label: "Any API integration",
-    destination: "/contact-form-to-any-api",
+    destination: "/add-api",
   },
   {
     label: "Contact Us",
@@ -178,10 +185,16 @@ export const Tabs = [
     path: "/plans",
   },
   {
+    id: "anyAPILogs",
+    content: "Logs",
+    icon: ListMajor,
+    path: "/logs",
+  },
+  {
     id: "anyAPI",
     content: "Any API integration",
-    icon: CashDollarMajor,
-    path: "/contact-form-to-any-api",
+    icon: FirstOrderMajor,
+    path: "/add-api",
   },
   {
     id: "support",
@@ -255,9 +268,16 @@ const routes = [
     element: <Pricingplans />,
   },
   {
+    id: "anyAPILogs",
+    name: "Logs",
+    path: "/logs",
+    exact: true,
+    element: <APISettingsList />,
+  },
+  {
     id: "anyAPI",
     name: "Any API integration",
-    path: "/contact-form-to-any-api",
+    path: "/add-api",
     exact: true,
     element: <AnyAPIIntegration />,
   },

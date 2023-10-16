@@ -260,7 +260,6 @@ function Settings() {
                               primary
                               loading={settingData?.loading}
                             >
-                              {console.log('isEdit || settingData?.isEdit', isEdit || settingData?.isEdit)}
                               {`${isEdit || settingData?.isEdit
                                 ? "Update"
                                 : "Save"

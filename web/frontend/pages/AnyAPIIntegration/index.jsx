@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -15,9 +15,10 @@ import {
 import { ToastContainer } from "react-toastify";
 import { validateTextField } from "../../constant";
 import styles from "./AnyAPIIntegration.module.css";
-import { createFormToAPIsettings } from "../../redux/actions/allActions";
+import { createFormToAPIsettings, fetchFormData } from "../../redux/actions/allActions";
 
 const AnyAPIIntegration = () => {
+  const dispatch = useDispatch();
   const [showValidation, setShowValidation] = useState(false);
   const [formElementData, setFormElementData] = useState([]);
   const [formValues, setFormValues] = useState({
@@ -31,6 +32,7 @@ const AnyAPIIntegration = () => {
   });
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector((state) => state?.apiSettingData);
+  const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
@@ -47,6 +49,10 @@ const AnyAPIIntegration = () => {
     }
     return null;
   };
+
+  useEffect(()=>{
+      dispatch(fetchFormData(shopId));
+  },[dispatch,shopId])
 
   const handleChange = (name, value) => {
     console.log('name,value', name, value);
@@ -66,8 +72,8 @@ const AnyAPIIntegration = () => {
       [name]: value,
     });
   };
+  const formTitleData = [];
   const formTitle = useMemo(() => {
-    const formTitleData = [];
     formData?.map((data) => {
       data?.customForm?.forEach((formData) => {
         formData.formTitle &&
@@ -75,7 +81,7 @@ const AnyAPIIntegration = () => {
       });
     });
     return formTitleData;
-  }, []);
+  }, [formData?.length]);
 
   const formTitleOptions = [
     { label: 'Select Form', value: '', disabled: true },
@@ -96,7 +102,6 @@ const AnyAPIIntegration = () => {
   ];
 
   const handleSubmit = async () => {
-    console.log('formValues', formValues)
     if (
       !formValues.apiTitle ||
       !formValues.formTitle ||
@@ -229,9 +234,9 @@ const AnyAPIIntegration = () => {
                                 handleChange(`${element.inputId}_${element.id}`, value)
                               }
                               label={element.attributes.label}
-                              type={element.type}
+                              type="text"
                               placeholder="Enter mapping key field name"
-                              requiredIndicator={element.attributes.required}
+                              requiredIndicator
                               autoComplete="off"
                             />
                           </Grid.Cell>

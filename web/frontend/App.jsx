@@ -48,6 +48,10 @@ export default function App() {
                   destination: "/plans",
                 },
                 {
+                  label: "Logs",
+                  destination: "/logs",
+                },
+                {
                   label: "Contact Us",
                   destination: "/contact-us",
                 },

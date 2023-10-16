@@ -145,6 +145,7 @@ export const fetchFormData = createAsyncThunk(
   async (shopId) => {
     try {
       const response = await axios.get(`/custom_form?shopId=${shopId}`);
+      console.log('response: ', response);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -522,6 +523,7 @@ export const createFormToAPIsettings = createAsyncThunk("anyAPISetting/createFor
 export const getFormToAPISettings = createAsyncThunk("anyAPISettings/getFormToAPIsettings", async () => {
   try {
     const response = await axios.get(`/contact-to-api/`)
+    console.log('response: ', response);
     return response.data.data;
   } catch (error) {
     toast.error(error?.response?.msg, toastConfig);
