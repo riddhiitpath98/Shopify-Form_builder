@@ -145,7 +145,6 @@ export const fetchFormData = createAsyncThunk(
   async (shopId) => {
     try {
       const response = await axios.get(`/custom_form?shopId=${shopId}`);
-      console.log('response: ', response);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

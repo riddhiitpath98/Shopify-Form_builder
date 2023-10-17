@@ -107,7 +107,7 @@ function ContactUsForm() {
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <TextField
-                        
+
                           value={formValues.email || ""}
                           name="email"
                           onChange={(value) => handleChange("email", value)}
@@ -163,7 +163,7 @@ function ContactUsForm() {
                       </Grid.Cell>
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
-                        <Button submit primary loading={contactUsData?.loading}>
+                        <Button type={'submit'} primary loading={contactUsData?.loading}>
                           Submit
                         </Button>
                       </Grid.Cell>

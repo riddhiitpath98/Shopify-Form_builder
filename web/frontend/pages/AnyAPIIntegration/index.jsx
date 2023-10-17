@@ -21,14 +21,15 @@ const AnyAPIIntegration = () => {
   const dispatch = useDispatch();
   const [showValidation, setShowValidation] = useState(false);
   const [formElementData, setFormElementData] = useState([]);
+  const [elementsValue, setElementsValue] = useState({});
   const [formValues, setFormValues] = useState({
     apiTitle: "",
-    formTitle: "",
     apiUrl: "",
     headerRequest: "",
     inputType: "",
     method: "",
-    formId: ""
+    formId: "",
+    shopId: ""
   });
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector((state) => state?.apiSettingData);
@@ -50,28 +51,41 @@ const AnyAPIIntegration = () => {
     return null;
   };
 
-  useEffect(()=>{
-      dispatch(fetchFormData(shopId));
-  },[dispatch,shopId])
+  useEffect(() => {
+    dispatch(fetchFormData(shopId));
+  }, [dispatch, shopId])
 
-  const handleChange = (name, value) => {
-    console.log('name,value', name, value);
+  useEffect(() => {
+
+    setFormValues({
+      ...formValues,
+      shopId: shopId,
+
+      elementKey: elementsValue
+    })
+  }, [elementsValue])
+
+  const handleChange = (name, value, isExec = false) => {
     let formVal = {};
     formVal = { ...formValues, [name]: value };
-    if (name === "formTitle") {
+
+    if (name === "formId") {
       const selectedFormId = value;
       const elementData = getElementDataByFormId(selectedFormId);
-      console.log("elementData: ", elementData);
       if (elementData) {
         setFormElementData(elementData);
       }
     }
     if (showValidation) setErrorValues(validateTextField(formVal));
-    setFormValues({
+    !isExec && setFormValues({
       ...formValues,
       [name]: value,
     });
+    isExec && setElementsValue({
+      ...elementsValue, [name]: value
+    })
   };
+
   const formTitleData = [];
   const formTitle = useMemo(() => {
     formData?.map((data) => {
@@ -102,9 +116,9 @@ const AnyAPIIntegration = () => {
   ];
 
   const handleSubmit = async () => {
+
     if (
       !formValues.apiTitle ||
-      !formValues.formTitle ||
       !formValues.apiUrl ||
       !formValues.headerRequest ||
       !formValues.inputType ||
@@ -115,7 +129,6 @@ const AnyAPIIntegration = () => {
       setErrorValues(validateTextField(formValues));
     } else if (
       errorValues.apiTitle ||
-      errorValues.formTitle ||
       errorValues.apiUrl ||
       errorValues.headerRequest ||
       errorValues.inputType ||
@@ -131,6 +144,8 @@ const AnyAPIIntegration = () => {
       setErrorValues({});
     }
   };
+
+
   return (
     <Page fullWidth title="Contact Form with API settings">
       <div>
@@ -161,11 +176,11 @@ const AnyAPIIntegration = () => {
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <Select
                           label="Select Contact Form"
-                          name="formTitle"
+                          name="formId"
                           options={formTitleOptions}
-                          onChange={(value) => handleChange("formTitle", value)}
-                          value={formValues.formTitle || ""}
-                          error={errorValues.formTitle}
+                          onChange={(value) => handleChange("formId", value)}
+                          value={formValues.formId || ""}
+                          error={errorValues.formId}
                         />
                       </Grid.Cell>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
@@ -228,10 +243,10 @@ const AnyAPIIntegration = () => {
                             columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
                           >
                             <TextField
-                              value={formValues[element.id] || ""}
+                              value={elementsValue[`${element.inputId}_${element.id}`] || ""}
                               name={`${element.inputId}_${element.id}`}
                               onChange={(value) =>
-                                handleChange(`${element.inputId}_${element.id}`, value)
+                                handleChange(`${element.inputId}_${element.id}`, value, true)
                               }
                               label={element.attributes.label}
                               type="text"
@@ -244,7 +259,7 @@ const AnyAPIIntegration = () => {
                         : null}
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
-                        <Button submit primary>
+                        <Button primary submit >
                           Submit
                         </Button>
                       </Grid.Cell>
