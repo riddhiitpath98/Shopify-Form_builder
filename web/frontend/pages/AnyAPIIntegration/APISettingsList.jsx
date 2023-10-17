@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   IndexTable,
   LegacyCard,
@@ -6,14 +8,14 @@ import {
   Badge,
   Page,
 } from "@shopify/polaris";
-import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getFormToAPISettings } from "../../redux/actions/allActions";
+import { deleteFormToAPISettings, getFormToAPISettings } from "../../redux/actions/allActions";
 
 function APISettingsList() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  const apiSettingData = useSelector((state) => state);
+  const apiSettingData = useSelector((state) => state?.anyAPISetting?.allApiSettingData);
   
   const orders = [
     {
@@ -54,7 +56,7 @@ function APISettingsList() {
 
   useEffect(() => {
     dispatch(getFormToAPISettings(shopId));
-  }, [dispatch]);
+  }, [dispatch,shopId]);
 
   const handleAddAPIData = () => {
     navigate("/add-api");
@@ -87,7 +89,7 @@ function APISettingsList() {
   const promotedBulkActions = [
     {
       content: "Delete Log",
-      onAction: () => console.log("Todo: implement bulk delete"),
+      onAction: () => {dispatch(deleteFormToAPISettings(formId))},
     },
   ];
 

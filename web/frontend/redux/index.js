@@ -8,7 +8,7 @@ import formSettingSlice from "./reducers/formSettingSlice";
 import viewPortSlice from "./reducers/viewPortSlice";
 import userSlice from "./reducers/userSlice";
 import subscriptionSlice from "./reducers/subscriptionSlice";
-import { anyAPISettingSlice } from "./reducers/anyAPISettingSlice";
+import anyAPISettingSlice from "./reducers/anyAPISettingSlice";
 
 const reducers = combineReducers({
     inputField: inputFieldSlice,
@@ -20,7 +20,7 @@ const reducers = combineReducers({
     viewPort: viewPortSlice,
     user: userSlice,
     subscription: subscriptionSlice,
-    anyAPISetting: anyAPISettingSlice,
+    anyAPISetting: anyAPISettingSlice
 });
 
 export const store = configureStore({

@@ -17,7 +17,7 @@ const initialState = {
   },
 };
 
-export const anyAPISettingSlice = createSlice({
+const anyAPISettingSlice = createSlice({
   name: "anyAPISetting",
   initialState,
   reducers: {},
@@ -68,7 +68,6 @@ export const anyAPISettingSlice = createSlice({
         };
       })
       .addCase(getFormToAPISettings.fulfilled, (state, action) => {
-        console.log('action: ', action);
         return {
           ...state,
           allApiSettingData: {
@@ -125,3 +124,5 @@ export const anyAPISettingSlice = createSlice({
       })
   },
 });
+
+export default anyAPISettingSlice.reducer;

@@ -280,7 +280,6 @@ export const getSubmission = createAsyncThunk("submission/getSubmission", async 
 export const loadMoreSubmission = createAsyncThunk('submission/loadMoreSubmission', async (data) => {
   try {
     const response = await axios.get(`/submission/data/loadmore/${data.order}?shopId=${data.shopId}&page=${data.page}&per_page=${data.per_page}`)
-    console.log('response: ', response);
     return response?.data;
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -520,10 +519,9 @@ export const createFormToAPIsettings = createAsyncThunk("anyAPISetting/createFor
   }
 })
 
-export const getFormToAPISettings = createAsyncThunk("anyAPISettings/getFormToAPIsettings", async () => {
+export const getFormToAPISettings = createAsyncThunk("anyAPISettings/getFormToAPIsettings", async (shopId) => {
   try {
-    const response = await axios.get(`/contact-to-api/`)
-    console.log('response: ', response);
+    const response = await axios.get(`/contact-to-api?shopId=${shopId}`)
     return response.data.data;
   } catch (error) {
     toast.error(error?.response?.msg, toastConfig);
