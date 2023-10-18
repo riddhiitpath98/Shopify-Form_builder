@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -19,16 +19,17 @@ import { createFormToAPIsettings, fetchFormData } from "../../redux/actions/allA
 
 const AnyAPIIntegration = () => {
   const dispatch = useDispatch();
-  const [showValidation, setShowValidation] = useState(false);
   const [formElementData, setFormElementData] = useState([]);
+  const [elementsValue, setElementsValue] = useState({});
+  const [error, setError] = useState({});
   const [formValues, setFormValues] = useState({
     apiTitle: "",
-    formTitle: "",
     apiUrl: "",
     headerRequest: "",
     inputType: "",
     method: "",
-    formId: ""
+    formId: "",
+    shopId: ""
   });
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector((state) => state?.apiSettingData);
@@ -37,6 +38,7 @@ const AnyAPIIntegration = () => {
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
   );
+
 
   const getElementDataByFormId = (formId) => {
     const selectedForm = formData.find((form) => form._id === formId);
@@ -50,27 +52,59 @@ const AnyAPIIntegration = () => {
     return null;
   };
 
-  useEffect(()=>{
-      dispatch(fetchFormData(shopId));
-  },[dispatch,shopId])
+  useEffect(() => {
+    dispatch(fetchFormData(shopId));
+  }, [dispatch, shopId])
 
-  const handleChange = (name, value) => {
-    console.log('name,value', name, value);
+  useEffect(() => {
+
+    setFormValues({
+      ...formValues,
+      shopId: shopId,
+
+      elementKey: elementsValue
+    })
+  }, [elementsValue])
+
+  const chackValidation = (name, value) => {
+    if (!name || !value) {
+      return 'This field is required.'
+    } else return ''
+  }
+
+  const handleChange = (name, value, isExec = false) => {
     let formVal = {};
     formVal = { ...formValues, [name]: value };
-    if (name === "formTitle") {
+
+    if (name === "formId") {
       const selectedFormId = value;
       const elementData = getElementDataByFormId(selectedFormId);
       if (elementData) {
         setFormElementData(elementData);
+        let form_fields = {};
+        elementData.forEach(item => {
+          form_fields[`${item?.inputId}_${item.id}`] = ''
+        })
+        setElementsValue({ ...form_fields })
       }
     }
-    if (showValidation) setErrorValues(validateTextField(formVal));
-    setFormValues({
+
+    if (!isExec) {
+      setErrorValues(validateTextField(formVal))
+    }
+
+    !isExec && setFormValues({
       ...formValues,
       [name]: value,
     });
+    isExec && setElementsValue({
+      ...elementsValue, [name]: value
+    })
+    isExec && setError({
+      ...error, [name]: chackValidation(name, value)
+    })
   };
+
   const formTitleData = [];
   const formTitle = useMemo(() => {
     formData?.map((data) => {
@@ -100,36 +134,29 @@ const AnyAPIIntegration = () => {
     { label: "POST", value: "post" },
   ];
 
-  const handleSubmit = async () => {
-    if (
-      !formValues.apiTitle ||
-      !formValues.formTitle ||
-      !formValues.apiUrl ||
-      !formValues.headerRequest ||
-      !formValues.inputType ||
-      !formValues.method ||
-      !formValues.formId
-    ) {
-      setShowValidation(true);
-      setErrorValues(validateTextField(formValues));
-    } else if (
-      errorValues.apiTitle ||
-      errorValues.formTitle ||
-      errorValues.apiUrl ||
-      errorValues.headerRequest ||
-      errorValues.inputType ||
-      errorValues.method ||
-      errorValues.formId
-    ) {
-      setShowValidation(true);
-      setErrorValues(validateTextField(formValues));
-    } else {
-      setShowValidation(false);
-      dispatch(createFormToAPIsettings(formValues));
+  const handleSubmit = async (event) => {
+    let errorMessages = {}
+    let wholeData = { ...elementsValue, ...formValues }
+    Object.keys(wholeData).forEach(val => {
+      const message = chackValidation(val, wholeData[val])
+      if (message) {
+        errorMessages[val] = message
+      }
+    })
 
-      setErrorValues({});
+
+    if (Object.keys(errorMessages).length) {
+      setError({ ...errorMessages, ...error });
+      setErrorValues({ ...errorMessages })
+      return
     }
+
+    dispatch(createFormToAPIsettings(formValues));
+    setFormValues({});
+    setElementsValue({});
+    setErrorValues({});
   };
+
   return (
     <Page fullWidth title="Contact Form with API settings">
       <div>
@@ -137,7 +164,7 @@ const AnyAPIIntegration = () => {
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
               <LegacyCard sectioned>
-                <Form onSubmit={handleSubmit} noValidate>
+                <Form onSubmit={(event) => handleSubmit(event)} noValidate >
                   <FormLayout>
                     <Grid>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
@@ -160,11 +187,11 @@ const AnyAPIIntegration = () => {
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
                         <Select
                           label="Select Contact Form"
-                          name="formTitle"
+                          name="formId"
                           options={formTitleOptions}
-                          onChange={(value) => handleChange("formTitle", value)}
-                          value={formValues.formTitle || ""}
-                          error={errorValues.formTitle}
+                          onChange={(value) => handleChange("formId", value)}
+                          value={formValues.formId || ""}
+                          error={errorValues.formId}
                         />
                       </Grid.Cell>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
@@ -227,23 +254,24 @@ const AnyAPIIntegration = () => {
                             columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
                           >
                             <TextField
-                              value={formValues[element.id] || ""}
+                              value={elementsValue[`${element.inputId}_${element.id}`] || ""}
                               name={`${element.inputId}_${element.id}`}
                               onChange={(value) =>
-                                handleChange(`${element.inputId}_${element.id}`, value)
+                                handleChange(`${element.inputId}_${element.id}`, value, true)
                               }
                               label={element.attributes.label}
                               type="text"
                               placeholder="Enter mapping key field name"
                               requiredIndicator
                               autoComplete="off"
+                              error={error[`${element.inputId}_${element.id}`]}
                             />
                           </Grid.Cell>
                         ))
                         : null}
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
-                        <Button submit primary>
+                        <Button primary submit >
                           Submit
                         </Button>
                       </Grid.Cell>
