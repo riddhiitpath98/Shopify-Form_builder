@@ -145,7 +145,6 @@ export const fetchFormData = createAsyncThunk(
   async (shopId) => {
     try {
       const response = await axios.get(`/custom_form?shopId=${shopId}`);
-      console.log('response: ', response);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -529,9 +528,14 @@ export const getFormToAPISettings = createAsyncThunk("anyAPISettings/getFormToAP
   }
 })
 
-export const deleteFormToAPISettings = createAsyncThunk("anyAPISettings/deleteFormToAPISettings", async (id) => {
+export const deleteFormToAPISettings = createAsyncThunk("anyAPISettings/deleteFormToAPISettings", async (data, { rejectWithValue }) => {
   try {
-    const response = await axios.delete(`/contact-to-api/${id}`)
+    const response = await axios.delete("/contact-to-api/", {
+      data: {
+        apiIds: data.deleteLogArr,
+      },
+    })
+    toast.success(response?.data?.msg, toastConfig)
     return response.data.data;
   } catch (error) {
     toast.error(error?.response?.msg, toastConfig);

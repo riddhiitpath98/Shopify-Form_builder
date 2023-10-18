@@ -48,9 +48,7 @@ function Submissions() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  console.log('shopId: ', shopId);
-  const user = useSelector(state => state.user.userData.user?.shopId);
-  console.log('user: ', user);
+  
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
@@ -64,7 +62,7 @@ function Submissions() {
   );
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
-  );
+    );
 
   const fetchMoreData = async () => {
     setCurrentPage(currentPage + 1)

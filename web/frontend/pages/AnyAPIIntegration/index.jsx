@@ -61,7 +61,6 @@ const AnyAPIIntegration = () => {
     if (name === "formTitle") {
       const selectedFormId = value;
       const elementData = getElementDataByFormId(selectedFormId);
-      console.log("elementData: ", elementData);
       if (elementData) {
         setFormElementData(elementData);
       }

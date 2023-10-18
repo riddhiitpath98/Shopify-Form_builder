@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 import {
   IndexTable,
   LegacyCard,
@@ -9,87 +10,77 @@ import {
   Page,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteFormToAPISettings, getFormToAPISettings } from "../../redux/actions/allActions";
+import {
+  deleteFormToAPISettings,
+  fetchFormData,
+  getFormToAPISettings,
+} from "../../redux/actions/allActions";
+import { ToastContainer } from "react-toastify";
 
 function APISettingsList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  const apiSettingData = useSelector((state) => state?.anyAPISetting?.allApiSettingData);
-  
-  const orders = [
-    {
-      id: "1020",
-      order: "#1020",
-      date: "Jul 20 at 4:34pm",
-      customer: "Jaydon Stanton",
-      total: "$969.44",
-      paymentStatus: <Badge progress="complete">Paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-    {
-      id: "1019",
-      order: "#1019",
-      date: "Jul 20 at 3:46pm",
-      customer: "Ruben Westerfelt",
-      total: "$701.19",
-      paymentStatus: <Badge progress="partiallyComplete">Partially paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-    {
-      id: "1018",
-      order: "#1018",
-      date: "Jul 20 at 3.44pm",
-      customer: "Leo Carder",
-      total: "$798.24",
-      paymentStatus: <Badge progress="complete">Paid</Badge>,
-      fulfillmentStatus: <Badge progress="incomplete">Unfulfilled</Badge>,
-    },
-  ];
+  const apiSettingData = useSelector(
+    (state) => state?.anyAPISetting?.allApiSettingData
+  );
+
+  const formData = useSelector(
+    (state) => state?.inputField?.finalFormData?.formData
+  );
+
   const resourceName = {
     singular: "log",
     plural: "logs",
   };
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
-    useIndexResourceState(orders);
+  useIndexResourceState(apiSettingData?.data);
 
   useEffect(() => {
+    dispatch(fetchFormData(shopId));
     dispatch(getFormToAPISettings(shopId));
-  }, [dispatch,shopId]);
+  }, [dispatch, shopId]);
+
+  function findFormNameById(formId) {
+    const matchingForm = formData?.find((form) => form._id === formId);
+    if (matchingForm) {
+      return matchingForm?.customForm[0]?.formTitle;
+    }
+    return "Form not found";
+  }
 
   const handleAddAPIData = () => {
     navigate("/add-api");
   };
-  const rowMarkup = orders.map(
-    (
-      { id, order, date, customer, total, paymentStatus, fulfillmentStatus },
-      index
-    ) => (
-      <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
-        position={index}
-      >
-        <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {order}
-          </Text>
-        </IndexTable.Cell>
-        <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{customer}</IndexTable.Cell>
-        <IndexTable.Cell>{total}</IndexTable.Cell>
-        <IndexTable.Cell>{paymentStatus}</IndexTable.Cell>
-        <IndexTable.Cell>{fulfillmentStatus}</IndexTable.Cell>
-      </IndexTable.Row>
-    )
-  );
+  const rowMarkup =
+    apiSettingData?.data &&
+    apiSettingData?.data?.map(
+      ({ _id, apiTitle, elementKey, createdAt, form }, index) => (
+        <IndexTable.Row
+          id={_id}
+          key={_id}
+          selected={selectedResources.includes(_id)}
+          position={index}
+        >
+          <IndexTable.Cell>
+            {findFormNameById(form)}
+          </IndexTable.Cell>
+          <IndexTable.Cell>{apiTitle}</IndexTable.Cell>
+          <IndexTable.Cell>{JSON.stringify(elementKey)}</IndexTable.Cell>
+          <IndexTable.Cell>
+            {moment(createdAt).format("YYYY-MM-DD")}
+          </IndexTable.Cell>
+        </IndexTable.Row>
+      )
+    );
 
   const promotedBulkActions = [
     {
       content: "Delete Log",
-      onAction: () => {dispatch(deleteFormToAPISettings(formId))},
+      onAction: () => {
+        dispatch(deleteFormToAPISettings({ deleteLogArr: selectedResources }));
+      },
     },
   ];
 
@@ -105,7 +96,7 @@ function APISettingsList() {
       <LegacyCard>
         <IndexTable
           resourceName={resourceName}
-          itemCount={orders.length}
+          itemCount={apiSettingData?.data?.length || 0}
           selectedItemsCount={
             allResourcesSelected ? "All" : selectedResources.length
           }
@@ -114,13 +105,14 @@ function APISettingsList() {
             { title: "Form Name" },
             { title: "API Name" },
             { title: "Log" },
-            { title: "Created Date", alignment: "end" },
+            { title: "Created Date" },
           ]}
           promotedBulkActions={promotedBulkActions}
         >
           {rowMarkup}
         </IndexTable>
       </LegacyCard>
+      <ToastContainer />
     </Page>
   );
 }

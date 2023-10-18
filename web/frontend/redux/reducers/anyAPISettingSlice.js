@@ -91,10 +91,10 @@ const anyAPISettingSlice = createSlice({
       }).addCase(deleteFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiSettingData: {
             success: false,
             loading: true,
-            data: {},
+            data: [],
             error: "",
           },
         };
@@ -102,21 +102,20 @@ const anyAPISettingSlice = createSlice({
       .addCase(deleteFormToAPISettings.fulfilled, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiSettingData: {
             loading: false,
             data: action.payload,
             error: "",
             success: true,
-            isEdit: true,
           },
         };
       })
       .addCase(deleteFormToAPISettings.rejected, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiSettingData: {
             loading: false,
-            data: {},
+            data: [],
             error: action.payload,
             success: false,
           },
