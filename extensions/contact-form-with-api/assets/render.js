@@ -14,22 +14,22 @@ const generateElementId = (type, id) => {
     type === "form"
       ? formCounter
       : type === "submit"
-      ? submitButtonCouter
-      : type === "loader"
-      ? loaderCounter
-      : type === "banner"
-      ? bannerCounter
-      : "";
+        ? submitButtonCouter
+        : type === "loader"
+          ? loaderCounter
+          : type === "banner"
+            ? bannerCounter
+            : "";
   const uniqueElementId = `${id}-${counter}`;
   type === "form"
     ? formCounter++
     : type === "submit"
-    ? submitButtonCouter++
-    : type === "loader"
-    ? loaderCounter++
-    : type === "banner"
-    ? bannerCounter++
-    : "";
+      ? submitButtonCouter++
+      : type === "loader"
+        ? loaderCounter++
+        : type === "banner"
+          ? bannerCounter++
+          : "";
   return uniqueElementId;
 };
 
@@ -379,7 +379,6 @@ const catchFormDivAndAppendForm = (data) => {
   };
   const headerFieldData = data?.elementData?.customForm[1].header;
   const formElementData = data?.elementData?.customForm[2].element;
-  console.log('formElementData: ', formElementData);
   const footerFieldData = data?.elementData?.customForm[4].footer;
   const appearanceFields = handleAppereance(data?.appearanceData);
   const validationFields = handleAppereance(data?.validationData);
@@ -523,7 +522,7 @@ const catchFormDivAndAppendForm = (data) => {
         item.type === "email" ||
         item.type === "number"
       ) {
-        emailValidate =item.type === 'email' && required ? false : true
+        emailValidate = item.type === 'email' && required ? false : true
         const inputContainer = document.createElement("div");
         inputContainer.className = "inputContainer";
         innerDivElement.appendChild(inputContainer);
@@ -1186,11 +1185,10 @@ const catchFormDivAndAppendForm = (data) => {
       // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${
-        footerFieldData?.attributes?.buttonWidth
+      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
           ? "buttonWidth classicButton submitButton"
           : "classicButton submitButton"
-      }`;
+        }`;
       const spanSubmit = document.createElement("span");
       spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
       spanSubmit.id = "span_submit_button";
@@ -1221,11 +1219,10 @@ const catchFormDivAndAppendForm = (data) => {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${
-          footerFieldData?.attributes?.buttonWidth
+        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
             ? "buttonWidth classicButton resetButton"
             : "classicButton resetButton"
-        }`;
+          }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
         resetButton.style.color = appearanceFields?.buttonTextColor;
         footerDivElement.appendChild(resetButton);

@@ -52,7 +52,6 @@ function Settings() {
   const user = useSelector(state => state?.user?.userData?.user)
   const shopId = useSelector((state) => state.shopId.shopId);
   const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
-  console.log('shopId: ', shopId);
   const [showValidation, setShowValidation] = useState(false);
   const [errorValues, setErrorValues] = useState({});
   const [selectedSetting, setSelectedSetting] = useState("smtp");

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -19,9 +19,9 @@ import { createFormToAPIsettings, fetchFormData } from "../../redux/actions/allA
 
 const AnyAPIIntegration = () => {
   const dispatch = useDispatch();
-  const [showValidation, setShowValidation] = useState(false);
   const [formElementData, setFormElementData] = useState([]);
   const [elementsValue, setElementsValue] = useState({});
+  const [error, setError] = useState({});
   const [formValues, setFormValues] = useState({
     apiTitle: "",
     apiUrl: "",
@@ -38,6 +38,7 @@ const AnyAPIIntegration = () => {
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
   );
+
 
   const getElementDataByFormId = (formId) => {
     const selectedForm = formData.find((form) => form._id === formId);
@@ -65,6 +66,12 @@ const AnyAPIIntegration = () => {
     })
   }, [elementsValue])
 
+  const chackValidation = (name, value) => {
+    if (!name || !value) {
+      return 'This field is required.'
+    } else return ''
+  }
+
   const handleChange = (name, value, isExec = false) => {
     let formVal = {};
     formVal = { ...formValues, [name]: value };
@@ -74,15 +81,27 @@ const AnyAPIIntegration = () => {
       const elementData = getElementDataByFormId(selectedFormId);
       if (elementData) {
         setFormElementData(elementData);
+        let form_fields = {};
+        elementData.forEach(item => {
+          form_fields[`${item?.inputId}_${item.id}`] = ''
+        })
+        setElementsValue({ ...form_fields })
       }
     }
-    if (showValidation) setErrorValues(validateTextField(formVal));
+
+    if (!isExec) {
+      setErrorValues(validateTextField(formVal))
+    }
+
     !isExec && setFormValues({
       ...formValues,
       [name]: value,
     });
     isExec && setElementsValue({
       ...elementsValue, [name]: value
+    })
+    isExec && setError({
+      ...error, [name]: chackValidation(name, value)
     })
   };
 
@@ -115,36 +134,28 @@ const AnyAPIIntegration = () => {
     { label: "POST", value: "post" },
   ];
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    let errorMessages = {}
+    let wholeData = { ...elementsValue, ...formValues }
+    Object.keys(wholeData).forEach(val => {
+      const message = chackValidation(val, wholeData[val])
+      if (message) {
+        errorMessages[val] = message
+      }
+    })
 
-    if (
-      !formValues.apiTitle ||
-      !formValues.apiUrl ||
-      !formValues.headerRequest ||
-      !formValues.inputType ||
-      !formValues.method ||
-      !formValues.formId
-    ) {
-      setShowValidation(true);
-      setErrorValues(validateTextField(formValues));
-    } else if (
-      errorValues.apiTitle ||
-      errorValues.apiUrl ||
-      errorValues.headerRequest ||
-      errorValues.inputType ||
-      errorValues.method ||
-      errorValues.formId
-    ) {
-      setShowValidation(true);
-      setErrorValues(validateTextField(formValues));
-    } else {
-      setShowValidation(false);
-      dispatch(createFormToAPIsettings(formValues));
 
-      setErrorValues({});
+    if (Object.keys(errorMessages).length) {
+      setError({ ...errorMessages, ...error });
+      setErrorValues({ ...errorMessages })
+      return
     }
-  };
 
+    dispatch(createFormToAPIsettings(formValues));
+    setFormValues({});
+    setElementsValue({});
+    setErrorValues({});
+  };
 
   return (
     <Page fullWidth title="Contact Form with API settings">
@@ -153,7 +164,7 @@ const AnyAPIIntegration = () => {
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
               <LegacyCard sectioned>
-                <Form onSubmit={handleSubmit} noValidate>
+                <Form onSubmit={(event) => handleSubmit(event)} noValidate >
                   <FormLayout>
                     <Grid>
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
@@ -253,6 +264,7 @@ const AnyAPIIntegration = () => {
                               placeholder="Enter mapping key field name"
                               requiredIndicator
                               autoComplete="off"
+                              error={error[`${element.inputId}_${element.id}`]}
                             />
                           </Grid.Cell>
                         ))
