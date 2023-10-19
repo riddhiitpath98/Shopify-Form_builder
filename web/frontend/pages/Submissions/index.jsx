@@ -32,6 +32,7 @@ import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
 import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
+import { SUBSCRIPTION_TYPES } from "../../constant";
 
 function Submissions() {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -42,13 +43,14 @@ function Submissions() {
   const [editItem, setEditItem] = useState({});
   const [deleteFormArr, setDeleteFormArr] = useState([]);
   const [active, setActive] = useState(false);
+  const user = useSelector(state => state.user.userData.user);
 
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  
+
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
@@ -62,7 +64,7 @@ function Submissions() {
   );
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
-    );
+  );
 
   const fetchMoreData = async () => {
     setCurrentPage(currentPage + 1)
@@ -557,6 +559,9 @@ function Submissions() {
             selectable
             alternateTool={
               <>
+                {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? < CSVLink data={csvData} filename={fileName}>
+                  <Button>Export all Data</Button>
+                </CSVLink> : null}
                 <Select
                   label="Sort by"
                   labelInline

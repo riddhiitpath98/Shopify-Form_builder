@@ -34,6 +34,7 @@ const AnyAPIIntegration = () => {
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector((state) => state?.apiSettingData);
   const shopId = useSelector((state) => state.shopId.shopId);
+  const [showValidation, setShowValidation] = useState(false);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
@@ -89,7 +90,7 @@ const AnyAPIIntegration = () => {
       }
     }
 
-    if (!isExec) {
+    if (!isExec && showValidation) {
       setErrorValues(validateTextField(formVal))
     }
 
@@ -103,6 +104,7 @@ const AnyAPIIntegration = () => {
     isExec && setError({
       ...error, [name]: chackValidation(name, value)
     })
+
   };
 
   const formTitleData = [];
@@ -148,10 +150,12 @@ const AnyAPIIntegration = () => {
     if (Object.keys(errorMessages).length) {
       setError({ ...errorMessages, ...error });
       setErrorValues({ ...errorMessages })
+      setShowValidation(true);
       return
     }
 
     dispatch(createFormToAPIsettings(formValues));
+    setShowValidation(false);
     setFormValues({});
     setElementsValue({});
     setErrorValues({});
