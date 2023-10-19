@@ -57,7 +57,7 @@ export default function App() {
                 },
                 {
                   label: "Any API integration",
-                  destination: "/contact-form-to-any-api",
+                  destination: "/add-api",
                 }
               ]}
             />

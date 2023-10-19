@@ -8,6 +8,7 @@ import {
   Text,
   Badge,
   Page,
+  EmptySearchResult,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,6 +25,7 @@ function APISettingsList() {
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.allApiSettingData
   );
+  console.log('apiSettingData: ', apiSettingData);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
@@ -35,7 +37,7 @@ function APISettingsList() {
   };
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
-  useIndexResourceState(apiSettingData?.data);
+    useIndexResourceState(apiSettingData?.data);
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
@@ -83,6 +85,18 @@ function APISettingsList() {
       },
     },
   ];
+  const loading = !shopId || apiSettingData?.loading;
+  const emptyStateMarkup = (
+    <>
+      {!loading ? <EmptySearchResult
+        title={'No logs found'}
+        description={'Try changing the filters or search term'}
+        withIllustration
+      /> : null}
+    </>
+  );
+
+
 
   return (
     <Page
@@ -96,7 +110,9 @@ function APISettingsList() {
       <LegacyCard>
         <IndexTable
           resourceName={resourceName}
-          itemCount={apiSettingData?.data?.length || 0}
+          loading={loading}
+          itemCount={apiSettingData?.data?.length}
+          emptyState={emptyStateMarkup}
           selectedItemsCount={
             allResourcesSelected ? "All" : selectedResources.length
           }

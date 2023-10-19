@@ -543,3 +543,25 @@ export const deleteFormToAPISettings = createAsyncThunk("anyAPISettings/deleteFo
     return rejectWithValue(error.response.data);
   }
 })
+
+export const editFormToAPISettings = createAsyncThunk("anyAPISettings/editFormToAPISettings", async (data, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(`/contact-to-api/${data.id}?shopId=${data.shopId}`, data)
+    toast.success(response?.data?.msg, toastConfig)
+    return response.data.data;
+  } catch (error) {
+    toast.error(error?.response?.msg, toastConfig);
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const getFormToAPIById = createAsyncThunk("anyAPISettings/getFormToAPIById", async (id, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`/constact-to-api/${id}`)
+    toast.success(response?.data?.msg, toastConfig)
+    return response.data.data;
+  } catch (error) {
+    toast.error(error?.response?.msg, toastConfig);
+    return rejectWithValue(error.response.data);
+  }
+})
