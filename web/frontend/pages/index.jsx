@@ -117,6 +117,7 @@ import FormLayout from "./Forms/FormLayout/FormLayout";
 import Auth from "./Auth";
 import AnyAPIIntegration from "./AnyAPIIntegration";
 import APISettingsList from "./AnyAPIIntegration/APISettingsList";
+import { Icons } from "../constant";
 
 export const navigation = [
   {
@@ -157,67 +158,67 @@ export const Tabs = [
   {
     id: "dashboard",
     content: "Dashboard",
-    icon: AnalyticsMajor,
+    icon: Icons.dashboard,
     path: "/dashboard",
   },
   {
     id: "form",
     content: "Forms",
-    icon: FormsMajor,
+    icon: Icons.form,
     path: "/form",
   },
   {
     id: "submission",
     content: "Submissions",
-    icon: ReportsMajor,
+    icon: Icons.submission,
     path: "/submissions",
   },
   {
     id: "settings",
     content: "Settings",
-    icon: SettingsMajor,
+    icon: Icons.settings,
     path: "/settings",
   },
   {
     id: "plans",
     content: "Plans",
-    icon: CashDollarMajor,
+    icon: Icons.plans,
     path: "/plans",
   },
   {
     id: "anyAPILogs",
     content: "Logs",
-    icon: ListMajor,
+    icon: Icons.submission,
     path: "/logs",
   },
   {
     id: "anyAPI",
     content: "Any API integration",
-    icon: FirstOrderMajor,
+    icon: Icons.apiIntegrate,
     path: "/add-api",
   },
   {
     id: "support",
     content: "Support",
-    icon: QuestionMarkInverseMajor,
+    icon: Icons.support,
     children: [
       {
         id: "faq",
         content: "FAQ",
         path: "#",
-        icon: CircleInformationMajor,
+        icon: Icons.faq,
       },
       {
         id: "contact-us",
         content: "Contact Us",
         path: "/contact-us",
-        icon: EmailMajor,
+        icon: Icons.email,
       },
       {
         id: "feedback",
         content: "Feedback",
         path: "/feedback",
-        icon: CircleInformationMajor,
+        icon: Icons.faq,
       },
     ],
   },
@@ -280,6 +281,14 @@ const routes = [
     path: "/add-api",
     exact: true,
     element: <AnyAPIIntegration />,
+  },
+  {
+    id: "editAnyAPI",
+    name: "editAnyAPI",
+    path: "/add-api/:apiId",
+    exact: true,
+    isEdit: true,
+    element: <AnyAPIIntegration isEdit />,
   },
   {
     id: "contact-us",

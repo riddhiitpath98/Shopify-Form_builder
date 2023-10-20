@@ -9,6 +9,7 @@ import {
   Badge,
   Page,
   EmptySearchResult,
+  Button,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -17,6 +18,7 @@ import {
   getFormToAPISettings,
 } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
+import { Icons } from "../../constant";
 
 function APISettingsList() {
   const dispatch = useDispatch();
@@ -25,7 +27,6 @@ function APISettingsList() {
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.allApiSettingData
   );
-  console.log('apiSettingData: ', apiSettingData);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
@@ -55,6 +56,7 @@ function APISettingsList() {
   const handleAddAPIData = () => {
     navigate("/add-api");
   };
+
   const rowMarkup =
     apiSettingData?.data &&
     apiSettingData?.data?.map(
@@ -73,18 +75,19 @@ function APISettingsList() {
           <IndexTable.Cell>
             {moment(createdAt).format("YYYY-MM-DD")}
           </IndexTable.Cell>
+          <IndexTable.Cell>
+            <div style={{display: "flex",justifyContent: "center"}}>
+            <div style={{marginRight: "12px"}}>
+            <Button plain icon={Icons.delete} onClick={() => dispatch(deleteFormToAPISettings({ deleteLogArr: _id, shopId: shopId }))}></Button>
+            </div>
+            <div>
+            <Button plain icon={Icons.edit} onClick={() => navigate(`/add-api/${_id}`)}></Button></div>
+          </div>
+          </IndexTable.Cell>
         </IndexTable.Row>
       )
     );
 
-  const promotedBulkActions = [
-    {
-      content: "Delete Log",
-      onAction: () => {
-        dispatch(deleteFormToAPISettings({ deleteLogArr: selectedResources }));
-      },
-    },
-  ];
   const loading = !shopId || apiSettingData?.loading;
   const emptyStateMarkup = (
     <>
@@ -95,8 +98,6 @@ function APISettingsList() {
       /> : null}
     </>
   );
-
-
 
   return (
     <Page
@@ -117,13 +118,14 @@ function APISettingsList() {
             allResourcesSelected ? "All" : selectedResources.length
           }
           onSelectionChange={handleSelectionChange}
+          selectable={false}
           headings={[
             { title: "Form Name" },
             { title: "API Name" },
             { title: "Log" },
             { title: "Created Date" },
+            { title: "Action", alignment: "center" },
           ]}
-          promotedBulkActions={promotedBulkActions}
         >
           {rowMarkup}
         </IndexTable>

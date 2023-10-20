@@ -34,7 +34,18 @@ import {
   FormsMajor,
   DragHandleMinor,
   DuplicateMinor,
-  TickMinor
+  TickMinor,
+  DeleteMajor,
+  EditMajor,
+  AnalyticsMajor,
+  ReportsMajor,
+  SettingsMajor,
+  CashDollarMajor,
+  FirstOrderMajor,
+  QuestionMarkInverseMajor,
+  CircleInformationMajor,
+
+
 } from "@shopify/polaris-icons";
 
 export const Icons = {
@@ -68,11 +79,21 @@ export const Icons = {
   mobile: MobileMajor,
   desktop: DesktopMajor,
   settingFile: NoteMajor,
-  submission: ListMajor,
+  // submission: ListMajor,
   form: FormsMajor,
   dragElement: DragHandleMinor,
   copy: DuplicateMinor,
   tick: TickMinor,
+  delete: DeleteMajor,
+  edit: EditMajor,
+  dashboard: AnalyticsMajor,
+  submission: ReportsMajor,
+  settings: SettingsMajor,
+  plans: CashDollarMajor,
+  apiIntegrate: FirstOrderMajor,
+  support: QuestionMarkInverseMajor,
+  faq: CircleInformationMajor,
+
 };
 
 export const pricingPlanData = [

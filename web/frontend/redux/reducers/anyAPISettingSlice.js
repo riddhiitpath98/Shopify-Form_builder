@@ -7,7 +7,6 @@ const initialState = {
     error: "",
     loading: false,
     success: false,
-    isEdit: false,
   },
   allApiSettingData: {
     data: [],
@@ -42,7 +41,6 @@ const anyAPISettingSlice = createSlice({
             data: action.payload,
             error: "",
             success: true,
-            isEdit: true,
           },
         };
       })
