@@ -25,7 +25,6 @@ function APISettingsList() {
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.allApiSettingData
   );
-  console.log('apiSettingData: ', apiSettingData);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData

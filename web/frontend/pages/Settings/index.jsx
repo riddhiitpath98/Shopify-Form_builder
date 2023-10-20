@@ -27,15 +27,17 @@ import { Icons, validateTextField } from "../../constant";
 import styles from "./Settings.module.css";
 import { getRestrictionWithPlan } from "../../utils/function";
 
+const initialState = {
+  smtpName: "",
+  email: "",
+  password: "",
+  mail_encryption: "",
+  port: "",
+  shopId: "",
+}
+
 function Settings() {
-  const [formValues, setFormValues] = useState({
-    smtpName: "",
-    email: "",
-    password: "",
-    mail_encryption: "",
-    port: "",
-    shopId: "",
-  });
+  const [formValues, setFormValues] = useState(initialState);
   const [reCaptchaValues, setreCaptchaValues] = useState({
     siteKey: "",
     secretKey: "",
@@ -52,15 +54,15 @@ function Settings() {
   const user = useSelector(state => state?.user?.userData?.user)
   const shopId = useSelector((state) => state.shopId.shopId);
   const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
-  const [showValidation, setShowValidation] = useState(false);
-  const [errorValues, setErrorValues] = useState({});
+  const [errorValues, setErrorValues] = useState(initialState);
   const [selectedSetting, setSelectedSetting] = useState("smtp");
 
   const handleChange = (name, value) => {
     let formVal = {};
     formVal = { ...formValues, port: value === "ssl" ? 465 : value === "tls" ? 587 : "", [name]: value }
-    if (showValidation)
-      setErrorValues(validateTextField(formVal));
+    setErrorValues({
+      ...errorValues, [name]: validateTextField(name, value)
+    });
     setFormValues({
       ...formValues,
       [name]: value,
@@ -85,24 +87,24 @@ function Settings() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      !formValues.smtpName ||
-      !formValues.email ||
-      !formValues.password ||
-      !formValues.mail_encryption ||
-      !formValues.port
-    ) {
-      setShowValidation(true)
-      setErrorValues(validateTextField(formValues));
-    } else {
-      if (isEdit || settingData?.isEdit) {
-        setShowValidation(false)
-        dispatch(editSmtpSettings(formValues));
-      } else {
-        setShowValidation(false)
-        dispatch(createSMTPSettings(formValues));
-        setErrorValues({});
+
+    const errorMessages = {}
+    Object.keys(formValues).forEach(val => {
+      const error = validateTextField(val, formValues[val])
+      if (error) {
+        errorMessages[val] = error
       }
+    })
+
+    if (Object.keys(errorMessages).length) {
+      setErrorValues(errorMessages)
+      return
+    }
+
+    if (isEdit || settingData?.isEdit) {
+      dispatch(editSmtpSettings(formValues));
+    } else {
+      dispatch(createSMTPSettings(formValues));
     }
   };
 

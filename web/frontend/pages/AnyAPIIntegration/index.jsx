@@ -17,24 +17,25 @@ import { validateTextField } from "../../constant";
 import styles from "./AnyAPIIntegration.module.css";
 import { createFormToAPIsettings, fetchFormData } from "../../redux/actions/allActions";
 
+const initialValue = {
+  apiTitle: "",
+  apiUrl: "",
+  headerRequest: "",
+  inputType: "",
+  method: "",
+  formId: "",
+  shopId: ""
+}
+
 const AnyAPIIntegration = () => {
   const dispatch = useDispatch();
   const [formElementData, setFormElementData] = useState([]);
   const [elementsValue, setElementsValue] = useState({});
   const [error, setError] = useState({});
-  const [formValues, setFormValues] = useState({
-    apiTitle: "",
-    apiUrl: "",
-    headerRequest: "",
-    inputType: "",
-    method: "",
-    formId: "",
-    shopId: ""
-  });
-  const [errorValues, setErrorValues] = useState({});
+  const [formValues, setFormValues] = useState(initialValue);
+  const [errorValues, setErrorValues] = useState(initialValue);
   const apiSettingData = useSelector((state) => state?.apiSettingData);
   const shopId = useSelector((state) => state.shopId.shopId);
-  const [showValidation, setShowValidation] = useState(false);
 
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
@@ -62,16 +63,10 @@ const AnyAPIIntegration = () => {
     setFormValues({
       ...formValues,
       shopId: shopId,
-
       elementKey: elementsValue
     })
   }, [elementsValue])
 
-  const chackValidation = (name, value) => {
-    if (!name || !value) {
-      return 'This field is required.'
-    } else return ''
-  }
 
   const handleChange = (name, value, isExec = false) => {
     let formVal = {};
@@ -90,8 +85,10 @@ const AnyAPIIntegration = () => {
       }
     }
 
-    if (!isExec && showValidation) {
-      setErrorValues(validateTextField(formVal))
+    if (!isExec) {
+      setErrorValues({
+        ...errorValues, [name]: validateTextField(name, value)
+      })
     }
 
     !isExec && setFormValues({
@@ -102,7 +99,7 @@ const AnyAPIIntegration = () => {
       ...elementsValue, [name]: value
     })
     isExec && setError({
-      ...error, [name]: chackValidation(name, value)
+      ...error, [name]: validateTextField(name, value)
     })
 
   };
@@ -140,22 +137,19 @@ const AnyAPIIntegration = () => {
     let errorMessages = {}
     let wholeData = { ...elementsValue, ...formValues }
     Object.keys(wholeData).forEach(val => {
-      const message = chackValidation(val, wholeData[val])
+      const message = validateTextField(val, wholeData[val])
       if (message) {
         errorMessages[val] = message
       }
     })
 
-
     if (Object.keys(errorMessages).length) {
       setError({ ...errorMessages, ...error });
       setErrorValues({ ...errorMessages })
-      setShowValidation(true);
       return
     }
 
     dispatch(createFormToAPIsettings(formValues));
-    setShowValidation(false);
     setFormValues({});
     setElementsValue({});
     setErrorValues({});
