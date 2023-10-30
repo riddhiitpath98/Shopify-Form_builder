@@ -20,8 +20,9 @@ import {
   Text,
   TextField,
   Link,
+  Modal,
 } from "@shopify/polaris";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
 import ToggleSwitch from "../../components/ToggleSwitch";
@@ -33,6 +34,7 @@ import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 import ElementListBanner from "../../components/ElementListBanner";
+import CommonModal from "../../components/CommonModal";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -44,6 +46,8 @@ function FormList() {
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
 
+  const [active, setActive] = useState(false);
+
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
@@ -53,8 +57,9 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${filter[0].isVisible ? id : ""
-      }'></div>`;
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
+      filter[0].isVisible ? id : ""
+    }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
       function () {
         toast.success("Code Coiped", toastConfig);
@@ -65,8 +70,8 @@ function FormList() {
     );
   };
 
-  const subscription = useSelector(state => state.user.userData.subscription);
-  const user = useSelector(state => state.user.userData.user);
+  const subscription = useSelector((state) => state.user.userData.subscription);
+  const user = useSelector((state) => state.user.userData.user);
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -105,6 +110,21 @@ function FormList() {
     setSortValue(selected);
   };
 
+  const handleOpen = () => {
+    setActive(true);
+  };
+
+  const handleClose = useCallback(() => {
+    setActive(false);
+  }, []);
+
+  const handleDelete = () => {
+    dispatch(deleteFormData({ deleteFormArr, shopId }));
+    setDeleteFormArr([]);
+    setSelectedItems([]);
+    setActive(false);
+  };
+
   const resourceName = {
     singular: "form",
     plural: "forms",
@@ -119,9 +139,7 @@ function FormList() {
     {
       content: "Delete form",
       onAction: () => {
-        dispatch(deleteFormData({ deleteFormArr, shopId }));
-        setDeleteFormArr([]);
-        setSelectedItems([]);
+        handleOpen();
       },
     },
   ];
@@ -135,13 +153,17 @@ function FormList() {
     dispatch(fetchFormData(shopId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch, shopId]);
-  const isShowPremium = formData.formData.length >= subscription?.features?.form?.number_of_forms && user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+  const isShowPremium =
+    formData.formData.length >= subscription?.features?.form?.number_of_forms &&
+    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   return (
     <>
       {isShowPremium ? (
         <div className={styles.elementBanner}>
           <ElementListBanner
-            title={"You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms."}
+            title={
+              "You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms."
+            }
           />
         </div>
       ) : null}
@@ -160,10 +182,9 @@ function FormList() {
         primaryAction={{
           content: "Create new Form",
           onAction: () => handleCreateForm(),
-          disabled: isShowPremium ? true : false
+          disabled: isShowPremium ? true : false,
         }}
       >
-
         <LegacyCard>
           {!shopId || formData?.formData?.length > 0 ? (
             <ResourceList
@@ -193,6 +214,18 @@ function FormList() {
             <Nodatafound />
           )}
         </LegacyCard>
+        {active && (
+          <CommonModal
+            {...{ active, handleClose, handleDelete }}
+            title="Are you sure to delete selected form(s)?"
+            description="<p><strong>Note:</strong> Deleting this form will result in the removal of the following:</p>
+            <ul>
+              <li>The form and its contents.</li>
+              <li>API and Logs created for this form.</li>
+            </ul>
+            <p>Be sure to Export any important data or files related to this form.</p>"
+          />
+        )}
       </Page>
       <ToastContainer />
     </>

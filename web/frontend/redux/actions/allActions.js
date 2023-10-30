@@ -579,6 +579,7 @@ export const createFormToAPIsettings = createAsyncThunk(
 export const getFormToAPISettings = createAsyncThunk(
   "anyAPISettings/getFormToAPIsettings",
   async (shopId) => {
+    
     try {
       const response = await axios.get(`/contact-to-api?shopId=${shopId}`);
       return response.data.data;
@@ -600,7 +601,7 @@ export const deleteFormToAPISettings = createAsyncThunk(
             apiIds: data.deleteLogArr,
           },
         }
-      );
+        );
       toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
@@ -616,9 +617,9 @@ export const editFormToAPISettings = createAsyncThunk(
     const { id, formValues } = data;
     try {
       const response = await axios.put(
-        `/contact-to-api/${id}?shopId=${data?.shopId}`,
+        `/contact-to-api/${id}?shopId=${formValues?.shopId}`,
         formValues
-      );
+        );
       toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
@@ -635,7 +636,37 @@ export const getFormToAPIById = createAsyncThunk(
       const response = await axios.get(`/contact-to-api/${id}`);
       return response.data.data;
     } catch (error) {
+      toast.error(error?.response?.msg, toastConfig);  
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
+//================================================ Any API Logs ===================================================
+
+export const getAPILogsData = createAsyncThunk(
+  "anyAPISettings/getAPILogsData",
+  async (shopId) => {
+    try {
+      const response = await axios.get(`/logs?shopId=${shopId}`);
+      return response.data.data;
+    } catch (error) {
       toast.error(error?.response?.msg, toastConfig);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const loadMoreLogs = createAsyncThunk(
+  "anyAPISettings/loadMoreLogs",
+  async (data) => {
+    try {
+      const response = await axios.get(
+        `/logs?shopId=${data.shopId}&page=${data.page}&per_page=${data.per_page}`
+        );
+        return response?.data;
+    } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }

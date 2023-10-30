@@ -107,9 +107,9 @@ const FormPreview = () => {
     (state) => state.user?.userData?.subscription
   );
   const isShowDrawer =
-    inputFields.length >=
-      subscription?.features?.form?.number_of_fields_per_form &&
-    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+  inputFields.length >=
+  subscription?.features?.form?.number_of_fields_per_form &&
+  user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {

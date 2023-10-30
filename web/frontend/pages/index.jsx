@@ -118,6 +118,7 @@ import Auth from "./Auth";
 import AnyAPIIntegration from "./AnyAPIIntegration";
 import APISettingsList from "./AnyAPIIntegration/APISettingsList";
 import { Icons } from "../constant";
+import APILogs from "./AnyAPIIntegration/APILogs";
 
 export const navigation = [
   {
@@ -145,8 +146,8 @@ export const navigation = [
     destination: "/logs",
   },
   {
-    label: "Any API integration",
-    destination: "/add-api",
+    label: "All API",
+    destination: "/all-api",
   },
   {
     label: "Contact Us",
@@ -193,9 +194,9 @@ export const Tabs = [
   },
   {
     id: "anyAPI",
-    content: "Any API integration",
+    content: "All API",
     icon: Icons.apiIntegrate,
-    path: "/add-api",
+    path: "/all-api",
   },
   {
     id: "support",
@@ -273,11 +274,18 @@ const routes = [
     name: "Logs",
     path: "/logs",
     exact: true,
+    element: <APILogs />,
+  },
+  {
+    id: "allApi",
+    name: "allAPI",
+    path: "/all-api",
+    exact: true,
     element: <APISettingsList />,
   },
   {
-    id: "anyAPI",
-    name: "Any API integration",
+    id: "addAPI",
+    name: "addAPIIntegration",
     path: "/add-api",
     exact: true,
     element: <AnyAPIIntegration />,
@@ -285,7 +293,7 @@ const routes = [
   {
     id: "editAnyAPI",
     name: "editAnyAPI",
-    path: "/add-api/:apiId",
+    path: "/edit-api/:apiId",
     exact: true,
     isEdit: true,
     element: <AnyAPIIntegration isEdit />,

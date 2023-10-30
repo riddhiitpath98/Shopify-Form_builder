@@ -16,57 +16,45 @@ import { ToastContainer } from "react-toastify";
 import styles from "./ContactUsForm.module.css";
 import { validateTextField } from "../../constant";
 
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  contactNumber: "",
+  subjectLine: "",
+  message: "",
+}
+
 function ContactUsForm() {
   const shopId = useSelector((state) => state.shopId.shopId)
-  const [showValidation, setShowValidation] = useState(false);
   const [formValues, setFormValues] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    contactNumber: "",
-    subjectLine: "",
-    message: "",
+    ...initialState,
     shopId: shopId
   });
-  const [errorValues, setErrorValues] = useState({});
+  const [errorValues, setErrorValues] = useState(initialState);
   const contactUsData = useSelector((state) => state?.support?.contactUsData);
   const dispatch = useDispatch();
 
   const handleChange = (name, value) => {
-    let formVal = {};
-    formVal = { ...formValues, [name]: value }
-    if (showValidation)
-      setErrorValues(validateTextField(formVal));
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
+    setErrorValues({ ...errorValues, [name]: validateTextField(name, value) });
+    setFormValues({ ...formValues, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    if (
-      !formValues.firstName ||
-      !formValues.lastName ||
-      !formValues.email ||
-      !formValues.contactNumber ||
-      !formValues.subjectLine ||
-      !formValues.message
-    ) {
-      setShowValidation(true)
-      setErrorValues(validateTextField(formValues));
-    } else if (errorValues.firstName ||
-      errorValues.lastName ||
-      errorValues.email ||
-      errorValues.contactNumber ||
-      errorValues.subjectLine ||
-      errorValues.message) {
-      setShowValidation(true)
-      setErrorValues(validateTextField(formValues));
-    } else {
-      setShowValidation(false)
-      dispatch(createFormToAPIsettings(formValues));
-      setErrorValues({});
+  const handleSubmit = async (e) => {
+    const errorMessages = {};
+    const { shopId, ...data } = formValues
+    Object.keys(data).forEach(val => {
+      const error = validateTextField(val, data[val])
+      if (error) {
+        errorMessages[val] = error
+      }
+    })
+    if (Object.keys(errorMessages).length) {
+      setErrorValues(errorMessages)
+      return
     }
+    dispatch(createFormToAPIsettings({ ...formValues, shopId }));
+    setFormValues({ shopId: shopId });
   };
 
   return (
@@ -163,7 +151,7 @@ function ContactUsForm() {
                       </Grid.Cell>
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
-                        <Button type={'submit'} primary loading={contactUsData?.loading}>
+                        <Button submit primary loading={contactUsData?.loading}>
                           Submit
                         </Button>
                       </Grid.Cell>
