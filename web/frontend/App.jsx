@@ -52,13 +52,13 @@ export default function App() {
                   destination: "/logs",
                 },
                 {
+                  label: "Any API integration",
+                  destination: "/all-api",
+                },
+                {
                   label: "Contact Us",
                   destination: "/contact-us",
                 },
-                {
-                  label: "Any API integration",
-                  destination: "/add-api",
-                }
               ]}
             />
             <Routing />

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createFormToAPIsettings, deleteFormToAPISettings, editFormToAPISettings, getFormToAPIById, getFormToAPISettings } from "../actions/allActions";
+import { createFormToAPIsettings, deleteFormToAPISettings, editFormToAPISettings, getAPILogsData, getFormToAPIById, getFormToAPISettings, loadMoreLogs } from "../actions/allActions";
 
 const initialState = {
   apiSettingData: {
@@ -7,9 +7,20 @@ const initialState = {
     error: "",
     loading: false,
     success: false,
-    isEdit: false,
+  },
+  editAPISettingsData: {
+    data: {},
+    error: "",
+    loading: false,
+    success: false,
   },
   allApiSettingData: {
+    data: [],
+    error: "",
+    loading: false,
+    success: false,
+  },
+  allApiLogsData: {
     data: [],
     error: "",
     loading: false,
@@ -42,7 +53,6 @@ const anyAPISettingSlice = createSlice({
             data: action.payload,
             error: "",
             success: true,
-            isEdit: true,
           },
         };
       })
@@ -120,6 +130,39 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
+      })
+      .addCase(getFormToAPIById.pending, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsData: {
+            success: false,
+            loading: true,
+            data: {},
+            error: "",
+          },
+        };
+      })
+      .addCase(getFormToAPIById.fulfilled, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsData: {
+            loading: false,
+            data: action.payload,
+            error: "",
+            success: true,
+          },
+        };
+      })
+      .addCase(getFormToAPIById.rejected, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsData: {
+            loading: false,
+            data: {},
+            error: action.payload,
+            success: false,
+          },
+        };
       }).addCase(editFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
@@ -153,21 +196,21 @@ const anyAPISettingSlice = createSlice({
           },
         };
       })
-      .addCase(getFormToAPIById.pending, (state, action) => {
+      .addCase(getAPILogsData.pending, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiLogsData: {
             success: false,
             loading: true,
-            data: {},
+            data: [],
             error: "",
           },
         };
       })
-      .addCase(getFormToAPIById.fulfilled, (state, action) => {
+      .addCase(getAPILogsData.fulfilled, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiLogsData: {
             loading: false,
             data: action.payload,
             error: "",
@@ -175,14 +218,48 @@ const anyAPISettingSlice = createSlice({
           },
         };
       })
-      .addCase(getFormToAPIById.rejected, (state, action) => {
+      .addCase(getAPILogsData.rejected, (state, action) => {
         return {
           ...state,
-          apiSettingData: {
+          allApiLogsData: {
             loading: false,
-            data: {},
+            data: [],
             error: action.payload,
             success: false,
+          },
+        };
+      })
+      .addCase(loadMoreLogs.pending, (state, action) => {
+        return {
+          ...state,
+          allApiLogsData: {
+            success: false,
+            loading: true,
+            data: [],
+            error: "",
+          },
+        };
+      })
+      .addCase(loadMoreLogs.fulfilled, (state, action) => {
+        return {
+          ...state,
+          allApiLogsData: {
+            success: true,
+            loading: false,
+            data: action.payload.data,
+            total_count: action.payload.total_count,
+            error: "",
+          },
+        };
+      })
+      .addCase(loadMoreLogs.rejected, (state, action) => {
+        return {
+          ...state,
+          allApiLogsData: {
+            success: false,
+            loading: false,
+            data: [],
+            error: action.payload,
           },
         };
       })
