@@ -17,12 +17,14 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const path = location?.pathname === "/" ? "/dashboard" : location?.pathname
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
+  const subscription = useAppQuery({ url: "/api/subscriptions" });
+  console.log('subscription: ', !subscription?.data?.data?.activeSubscriptions.length);
 
   useEffect(() => {
     if (shop.isSuccess) {
       dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
         const { userData } = data.payload
-        setIsShowPlan(!user?.loading && !userData?.subscriptionName)
+        setIsShowPlan(!user?.loading && !userData?.subscriptionName && !subscription?.data?.data?.activeSubscriptions.length)
         if (userData?.subscriptionName) {
           setIsShowPlan(false)
           dispatch(addShopId(shop?.data?.id))

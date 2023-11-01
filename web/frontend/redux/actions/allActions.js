@@ -143,6 +143,7 @@ export const updateReCaptchaSettings = createAsyncThunk(
 export const fetchFormData = createAsyncThunk(
   "inputs/fetchFormData",
   async (shopId) => {
+    console.log('shopId: ', shopId);
     try {
       const response = await axios.get(`/custom_form?shopId=${shopId}`);
       return response.data.data;

@@ -10,6 +10,7 @@ import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from 'dotenv';
+import { billingConfig, createUsageRecord } from "./billing.js";
 dotenv.config();
 
 const PORT = 3007;
@@ -134,6 +135,58 @@ app.get("/api/products/create", async (_req, res) => {
     res.status(status).send({ success: status === 200, error });
 });
 
+app.get("/api/subscriptions", async (_req, res) => {
+    const subscription = await shopify.api.billing.subscriptions({
+        session: res.locals.shopify.session
+    });
+    res.status(200).json({ data: subscription })
+    // res.redirect(subscription.confirmationUrl);
+});
+
+// app.get("/api/subscribe", async (_req, res, next) => {
+//     // @ts-ignore
+//     const checkResponse = await shopify.api.billing.check({ session: res.locals.shopify.session, plans: 'Premium Subscription', isTest: true, returnObject: true })
+//     console.log('checkResponse: ', checkResponse);
+
+//     if (!checkResponse.hasActivePayment) {
+//         const requestResponse = await shopify.api.billing.request({
+//             session: res.locals.shopify.session,
+//             plan: "Premium Subscription",
+//         });
+//         console.log('requestResponse: ', requestResponse);
+//         return res.status(200).json({ confirmURL: requestResponse });
+//     }
+//     else {
+//         return res.status(200).json({ hasPlan: checkResponse, msg: "Plan is already activated" })
+//     }
+// });
+
+app.get("/api/subscribe", async (_req, res) => {
+    let status = 200;
+    let error = null;
+    let resp = null;
+    let data = {};
+
+    try {
+        resp = await createUsageRecord(res.locals.shopify.session);
+        console.log('resp: ', resp);
+        if (!Object.keys(resp.data).length) {
+            error = 'Could not create record because capacity was reached'
+            status = 400;
+            error = "error"
+        }
+    } catch (e) {
+        console.log(`Failed to process : ${e.message}`);
+        status = 500;
+        error = e.message;
+    }
+    res.status(status).send(
+        {
+            success: status === 200,
+            data: resp,
+        });
+});
+
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
@@ -146,7 +199,6 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
     } catch (error) {
         console.log('error', error)
     }
-
 });
 
 app.listen(PORT);
