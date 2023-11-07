@@ -332,9 +332,8 @@ export const sortNFilterSubmission = createAsyncThunk(
             ? `${isRead !== "" ? "&" : "?"}${queryString}`
             : "",
           shopId !== ""
-            ? `${
-                isRead !== "" || formId.length !== 0 ? "&" : "?"
-              }shopId=${shopId}`
+            ? `${isRead !== "" || formId.length !== 0 ? "&" : "?"
+            }shopId=${shopId}`
             : "",
           page ? `&page=${page}` : "",
           per_page ? `&per_page=${per_page}` : ""
@@ -580,7 +579,7 @@ export const createFormToAPIsettings = createAsyncThunk(
 export const getFormToAPISettings = createAsyncThunk(
   "anyAPISettings/getFormToAPIsettings",
   async (shopId) => {
-    
+
     try {
       const response = await axios.get(`/contact-to-api?shopId=${shopId}`);
       return response.data.data;
@@ -602,7 +601,7 @@ export const deleteFormToAPISettings = createAsyncThunk(
             apiIds: data.deleteLogArr,
           },
         }
-        );
+      );
       toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
@@ -620,7 +619,7 @@ export const editFormToAPISettings = createAsyncThunk(
       const response = await axios.put(
         `/contact-to-api/${id}?shopId=${formValues?.shopId}`,
         formValues
-        );
+      );
       toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
@@ -637,7 +636,7 @@ export const getFormToAPIById = createAsyncThunk(
       const response = await axios.get(`/contact-to-api/${id}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);  
+      toast.error(error?.response?.msg, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -648,7 +647,7 @@ export const getFormToAPIById = createAsyncThunk(
 
 export const getAPILogsData = createAsyncThunk(
   "anyAPISettings/getAPILogsData",
-  async (shopId) => {
+  async (shopId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`/logs?shopId=${shopId}`);
       return response.data.data;
@@ -661,14 +660,48 @@ export const getAPILogsData = createAsyncThunk(
 
 export const loadMoreLogs = createAsyncThunk(
   "anyAPISettings/loadMoreLogs",
-  async (data) => {
+  async (data, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `/logs?shopId=${data.shopId}&page=${data.page}&per_page=${data.per_page}`
-        );
-        return response?.data;
+      );
+      return response?.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
+
+// =================================================billing API started ========================================
+
+
+export const createApplicationCharge = createAsyncThunk("recurringCharge/createApplicationCharge", async (data, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`/billing`, data);
+    return response.data.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const getApplicationCharge = createAsyncThunk('recurringCharge/getApplicationCharge', async (recurringAuth, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`/billing?shopId=${recurringAuth.shopId}`)
+    const recurringChargeData = response?.data?.data?.map(async (item) => {
+      const options = {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${recurringAuth.session}` || ''
+        }
+      }
+      const response = await fetch(`/api/recurring-application-charge/${item.chargeId}`, options)
+      const data = await response.json();
+      return data.recurringCharge
+    })
+    const results = await Promise.all(recurringChargeData);
+    return results;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})

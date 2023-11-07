@@ -4,10 +4,11 @@ import {
 import shopify from "./shopify.js";
 export const billingConfig = {
     "Premium Subscription": {
-        amount: 5.99,
-        currencyCode: "USD",
+        amount: 0.5,
+        isTest: true,
+        currencyCode: 'USD',
         interval: BillingInterval.Every30Days,
-        trialDays: 3,
+        trialDays: 1,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
     },
 };
@@ -31,8 +32,8 @@ const variables = {
 }
 
 const CREATE_SUBSCRIPTION = `
-mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!) {
-    appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems) {
+mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!) {
+    appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {
       userErrors {
         field
         message
@@ -72,9 +73,7 @@ const HAS_PAYMENTS_QUERY = `query appSubscription {
 
 
 async function getAppSubscription(session) {
-    const client = new shopify.api.clients.Graphql({ session });
     const planName = Object.keys(billingConfig)[0];
-    const planDescription = billingConfig[planName].usageTerms;
 
     try {
         const response = await shopify.api.billing.check({ session: session, plans: 'Premium Subscription', isTest: true, returnObject: true })
@@ -103,10 +102,10 @@ async function getAppSubscription(session) {
     }
 }
 
-export async function createUsageRecord(session) {
+export async function createUsageRecord(session, data) {
     const client = new shopify.api.clients.Graphql({ session });
-    console.log('subscriptionLineItem', await getAppSubscription(session))
-    const plan = Object.keys(billingConfig)[0];
+    const subscription = await getAppSubscription(session);
+    console.log('111', subscription);
 
 
     // If the capacity has already been reached, we will not attempt to create the usage record
@@ -122,29 +121,35 @@ export async function createUsageRecord(session) {
 
     try {
         // This makes an API call to Shopify to create a usage record
-        const res = await client.query({
-            data: {
-                query: CREATE_SUBSCRIPTION,
-                variables: {
-                    "name": "Premium subscription",
-                    "returnUrl": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1/dashboard",
-                    "lineItems": [
-                        {
-                            "plan": {
-                                "appRecurringPricingDetails": {
-                                    "price": {
-                                        "amount": 5.99,
-                                        "currencyCode": "USD"
-                                    },
-                                    "interval": "EVERY_30_DAYS",
+        if (!subscription) {
+            const res = await client.query({
+                data: {
+                    query: CREATE_SUBSCRIPTION,
+                    variables: {
+                        "name": data.name,
+                        "returnUrl": data.return_url,
+                        "trialDays": data.trialDays,
+                        "test": data.isTest,
+                        "lineItems": [
+                            {
+                                "plan": {
+                                    "appRecurringPricingDetails": {
+                                        "price": {
+                                            "amount": data.amount,
+                                            "currencyCode": data.currencyCode
+                                        },
+                                        "interval": data.interval,
+
+                                    }
                                 }
                             }
-                        }
-                    ]
+                        ]
+                    }
+                    ,
                 },
-            },
-        });
-        return res?.body;
+            });
+            return res?.body;
+        }
     } catch (error) {
         if (error instanceof GraphqlQueryError) {
             throw new Error(
@@ -155,4 +160,25 @@ export async function createUsageRecord(session) {
         }
     }
 
+}
+
+
+export const createSubscription = async (session, plan) => {
+    console.log('plan: ', plan);
+    if (!session) {
+        return null
+    }
+    else {
+        const application_charge = new shopify.api.rest.RecurringApplicationCharge({ session });
+        application_charge.name = plan.name;
+        application_charge.price = plan.amount;
+        application_charge.return_url = plan.return_url
+        application_charge.test = plan.isTest;
+        application_charge.trial_days = plan.trialDays
+        application_charge.currency = plan.currencyCode
+        await application_charge.save({
+            update: true,
+        });
+        return application_charge;
+    }
 }

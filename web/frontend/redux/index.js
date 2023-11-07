@@ -9,6 +9,7 @@ import viewPortSlice from "./reducers/viewPortSlice";
 import userSlice from "./reducers/userSlice";
 import subscriptionSlice from "./reducers/subscriptionSlice";
 import anyAPISettingSlice from "./reducers/anyAPISettingSlice";
+import recurringCharge from "./reducers/recurringCharge";
 
 const reducers = combineReducers({
     inputField: inputFieldSlice,
@@ -20,7 +21,8 @@ const reducers = combineReducers({
     viewPort: viewPortSlice,
     user: userSlice,
     subscription: subscriptionSlice,
-    anyAPISetting: anyAPISettingSlice
+    anyAPISetting: anyAPISettingSlice,
+    recurringCharge: recurringCharge
 });
 
 export const store = configureStore({

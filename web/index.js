@@ -3,14 +3,21 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
-import fs from 'fs';
+import fs from "fs";
 import https from "https";
-import cors from 'cors'
+import cors from "cors";
 import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
-import dotenv from 'dotenv';
-import { billingConfig, createUsageRecord } from "./billing.js";
+import dotenv from "dotenv";
+import {
+    billingConfig,
+    createSubscription,
+    createUsageRecord,
+} from "./billing.js";
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SK);
+
 dotenv.config();
 
 const PORT = 3007;
@@ -80,14 +87,11 @@ const app = express();
 //   }
 // }
 
-
-
 // function onListening() {
 //   let addr = httpServer.address();
 //   const bind = typeof addr === "string" ? `pipe ${addr}` : `PORT ${addr.port}`;
 //   console.log(`Listening on ${bind}`);
 // }
-
 
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
@@ -109,10 +113,12 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use(express.json());
 
 app.get("/api/shop", async (_req, res) => {
-    const client = new shopify.api.clients.Rest({ session: res.locals.shopify.session })
-    const response = await client.get({ path: 'shop' })
-    res.status(200).send(response?.body?.shop)
-})
+    const client = new shopify.api.clients.Rest({
+        session: res.locals.shopify.session,
+    });
+    const response = await client.get({ path: "shop" });
+    res.status(200).send(response?.body?.shop);
+});
 
 app.get("/api/products/count", async (_req, res) => {
     const countData = await shopify.api.rest.Product.count({
@@ -136,11 +142,23 @@ app.get("/api/products/create", async (_req, res) => {
 });
 
 app.get("/api/subscriptions", async (_req, res) => {
-    const subscription = await shopify.api.billing.subscriptions({
-        session: res.locals.shopify.session
+
+    const subscription = await shopify.api.billing.check({
+        plans: "Premium Subscription",
+        isTest: true,
+        returnObject: true,
+        session: res.locals.shopify.session,
     });
-    res.status(200).json({ data: subscription })
-    // res.redirect(subscription.confirmationUrl);
+    res.status(200).json(subscription)
+
+
+    //     const recurringChargeAll = await shopify.api.rest.RecurringApplicationCharge.all({ session: res.locals.shopify.session })
+    //     const data = await shopify.api.rest.RecurringApplicationCharge.find({
+    //         session: res.locals.shopify.session,
+    //         id: _req.params.id,
+    //     });
+    //     res.status(200).json({ data, recurringChargeAll });
+    //     // res.redirect(subscription.confirmationUrl);
 });
 
 // app.get("/api/subscribe", async (_req, res, next) => {
@@ -161,30 +179,36 @@ app.get("/api/subscriptions", async (_req, res) => {
 //     }
 // });
 
-app.get("/api/subscribe", async (_req, res) => {
+app.get("/api/recurring-application-charge/:id", async (req, res) => {
+    try {
+        const data = await shopify.api.rest.RecurringApplicationCharge.find({
+            session: res.locals.shopify.session,
+            id: req.params.id,
+        });
+        res.status(200).json({ recurringCharge: data })
+    } catch (error) {
+        res.status(500).json({ err: error })
+    }
+})
+
+app.post("/api/createSubscription", async (_req, res) => {
     let status = 200;
     let error = null;
-    let resp = null;
-    let data = {};
-
     try {
-        resp = await createUsageRecord(res.locals.shopify.session);
-        console.log('resp: ', resp);
-        if (!Object.keys(resp.data).length) {
-            error = 'Could not create record because capacity was reached'
-            status = 400;
-            error = "error"
+        const response = await createUsageRecord(res.locals.shopify.session, _req.body.premium_subscription)
+        console.log('response: ', response);
+        if (response) {
+            res.status(201).json({ success: true, msg: "Recurring application created", data: response?.data })
         }
     } catch (e) {
         console.log(`Failed to process : ${e.message}`);
         status = 500;
         error = e.message;
-    }
-    res.status(status).send(
-        {
-            success: status === 200,
-            data: resp,
+        res.status(status).send({
+            success: false,
+            error: error,
         });
+    }
 });
 
 app.use(shopify.cspHeaders());
@@ -197,7 +221,7 @@ app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
             .set("Content-Type", "text/html")
             .send(readFileSync(join(STATIC_PATH, "index.html")));
     } catch (error) {
-        console.log('error', error)
+        console.log("error", error);
     }
 });
 

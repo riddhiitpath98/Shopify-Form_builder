@@ -8,9 +8,9 @@ import {
 } from "@shopify/polaris";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
+import { Icons, RECURRING_APPLICATION_CHARGE, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import { addShopData } from "../../redux/actions/allActions";
+import { addShopData, createApplicationCharge, getApplicationCharge } from "../../redux/actions/allActions";
 import axios from "axios";
 import { useAppQuery } from "../../hooks";
 import dotenv from 'dotenv'
@@ -23,10 +23,6 @@ import { Redirect } from "@shopify/app-bridge/actions";
 
 export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
   const app = useAppBridge();
-  const publishKey = "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW";
-  // const checkSub = useAppQuery("/api/subscribe");
-  // console.log('checkSub: ', checkSub);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,6 +30,9 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
+
+  const recurringCharge = useSelector(state => state.recurringCharge.recurringCharges.data)
+  console.log('recurringCharge: ', recurringCharge);
 
 
   const renderStatusIcon = (status) => {
@@ -63,19 +62,19 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
           'Authorization': `Bearer ${token}` || ''
         }
       }
-      const response = await fetch(`/api/subscriptions`, options)
+      const response = await fetch(`/api/recurring-application-charge/32137937188`, options)
       const data = await response.json();
+      console.log('data: ', data);
     } catch (error) {
       console.log('error', error)
     }
   }
 
 
-
   useEffect(() => {
     getSessionToken(app).then(response => {
       if (response) {
-        fetchSubscriptions(response)
+        dispatch(getApplicationCharge({ shopId: shopData.id, session: response }))
       }
     })
   }, [])
@@ -99,36 +98,33 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
         if (token) {
           try {
             const options = {
-              method: 'GET',
+              method: 'POST',
               headers: {
-                'Authorization': `Bearer ${token}` || ''
+                'Authorization': `Bearer ${token}` || '',
+                'Content-Type': 'application/json' // Set the content type to JSON
+              },
+              body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
+            }
+            fetch(`/api/createSubscription`, options).then(res => res.json()).then(res => {
+              if (res.success) {
+                const pathSegments = res?.data?.appSubscriptionCreate?.appSubscription?.id.split('/');
+                // The last segment contains the ID
+                const chargeId = pathSegments[pathSegments.length - 1]
+                dispatch(createApplicationCharge({ chargeId, shopId: shopData.id }))
+                const redirect = Redirect.create(app);
+                redirect.dispatch(
+                  Redirect.Action.REMOTE,
+                  res.data?.appSubscriptionCreate?.confirmationUrl
+                );
               }
-            }
-            fetch(`/api/subscribe`, options).then(res => res.json()).then(res => {
-              const redirect = Redirect.create(app);
-              redirect.dispatch(
-                Redirect.Action.REMOTE,
-                res.data.data.appSubscriptionCreate.confirmationUrl
-              );
-            }
-            );
+
+            }).catch(err => console.log('err', err));
           } catch (error) {
             console.log('error', error)
           }
         }
       })
     }
-
-    // const response = await axios.post('/create-checkout-session', user);
-
-    // const session = await response.json();
-    // const result = stripe.redirectToCheckout({
-    //   sessionId: session.id
-    // })
-    // console.log('result: ', result);
-    // user = { ...user, session };
-    // console.log('user: ', user);
-
   }
 
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
