@@ -477,3 +477,15 @@ export const SUBSCRIPTION_TYPES = {
 }
 
 
+export const RECURRING_APPLICATION_CHARGE = {
+  premium_subscription: {
+    "name": "Premium Subscription",
+    "amount": 0.5,
+    "isTest": true,
+    "currencyCode": "USD",
+    "interval": "EVERY_30_DAYS",
+    "trialDays": 1,
+    "replacementBehavior": "APPLY_IMMEDIATELY",
+    "return_url": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1/dashboard"
+  }
+}
