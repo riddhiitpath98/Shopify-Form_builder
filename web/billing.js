@@ -6,6 +6,7 @@ export const billingConfig = {
     "Premium Subscription": {
         amount: 5.99,
         currencyCode: "USD",
+        isTest : true,
         interval: BillingInterval.Every30Days,
         trialDays: 3,
         replacementBehavior: BillingReplacementBehavior.ApplyImmediately,
@@ -14,6 +15,7 @@ export const billingConfig = {
 const variables = {
     "name": "Premium Subscription",
     "returnUrl": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1",
+    "test" : "true",
     "lineItems": [
         {
             "plan": {
@@ -31,8 +33,8 @@ const variables = {
 }
 
 const CREATE_SUBSCRIPTION = `
-mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!) {
-    appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems) {
+mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test : Boolean!) {
+    appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test : $test) {
       userErrors {
         field
         message
@@ -77,7 +79,7 @@ async function getAppSubscription(session) {
     const planDescription = billingConfig[planName].usageTerms;
 
     try {
-        const response = await shopify.api.billing.check({ session: session, plans: 'Premium Subscription', isTest: true, returnObject: true })
+        const response = await shopify.api.billing.check({ session: session, plans:planName, isTest: true, returnObject: true })
         if (response.hasActivePayment) {
             response.appSubscriptions.forEach(
                 async (subscription) => {
@@ -127,7 +129,8 @@ export async function createUsageRecord(session) {
                 query: CREATE_SUBSCRIPTION,
                 variables: {
                     "name": "Premium subscription",
-                    "returnUrl": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1/dashboard",
+                    "returnUrl": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api/dashboard",
+                    "test" : true,
                     "lineItems": [
                         {
                             "plan": {
@@ -136,7 +139,7 @@ export async function createUsageRecord(session) {
                                         "amount": 5.99,
                                         "currencyCode": "USD"
                                     },
-                                    "interval": "EVERY_30_DAYS",
+                                    "interval": "EVERY_30_DAYS"
                                 }
                             }
                         }

@@ -18,7 +18,6 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
-  console.log('subscription: ', !subscription?.data?.data?.activeSubscriptions.length);
 
   useEffect(() => {
     if (shop.isSuccess) {

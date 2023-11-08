@@ -110,8 +110,18 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                 Redirect.Action.REMOTE,
                 res.data.data.appSubscriptionCreate.confirmationUrl
               );
+              const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
+              let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
+              subscriptionData.filter(({ subscriptionName, _id }, index) => {
+                if (subscriptionName === plan) {
+                  user = { ...user, subscriptionName, subscriptionId: _id }
+                }
+              })
+              dispatch(addShopData(user));
             }
+           
             );
+
           } catch (error) {
             console.log('error', error)
           }

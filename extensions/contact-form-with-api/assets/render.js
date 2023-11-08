@@ -14,22 +14,22 @@ const generateElementId = (type, id) => {
     type === "form"
       ? formCounter
       : type === "submit"
-        ? submitButtonCouter
-        : type === "loader"
-          ? loaderCounter
-          : type === "banner"
-            ? bannerCounter
-            : "";
+      ? submitButtonCouter
+      : type === "loader"
+      ? loaderCounter
+      : type === "banner"
+      ? bannerCounter
+      : "";
   const uniqueElementId = `${id}-${counter}`;
   type === "form"
     ? formCounter++
     : type === "submit"
-      ? submitButtonCouter++
-      : type === "loader"
-        ? loaderCounter++
-        : type === "banner"
-          ? bannerCounter++
-          : "";
+    ? submitButtonCouter++
+    : type === "loader"
+    ? loaderCounter++
+    : type === "banner"
+    ? bannerCounter++
+    : "";
   return uniqueElementId;
 };
 
@@ -57,6 +57,8 @@ const getData = async (id) => {
 };
 
 const catchFormDivAndAppendForm = (data) => {
+  loadRecaptchaScript();
+  loadFlatpickrScript();
   const formElementId = generateElementId(
     "form",
     `myForm-${data?.elementData?._id}`
@@ -116,12 +118,35 @@ const catchFormDivAndAppendForm = (data) => {
     return obj;
   };
 
+  function loadFlatpickrScript(callback) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css";
+    document.head.appendChild(link);
+    const script = document.createElement("script");
+    script.src =
+      "https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js";
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+
+  function loadRecaptchaScript(callback) {
+    const script = document.createElement("script");
+    script.src = "https://www.google.com/recaptcha/api.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = callback;
+    document.head.appendChild(script);
+  }
+
   function validateInput(fieldType, fieldValue, obj) {
     const value = !Array.isArray(fieldValue)
       ? typeof fieldValue !== "boolean" && fieldValue.trim()
       : fieldValue;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const contactRegex = /^[2-9]{1}[0-9]{9}$/;
+    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
     if (Array.isArray(value)) {
       if (value?.length === 0) {
@@ -147,6 +172,10 @@ const catchFormDivAndAppendForm = (data) => {
         if (!contactRegex.test(value)) return validation?.["invalidPhone"];
         else return "";
 
+      case "url":
+        if (!urlRegex.test(value)) return validation?.["invalidUrl"];
+        else return "";
+
       default:
         return "";
     }
@@ -165,7 +194,7 @@ const catchFormDivAndAppendForm = (data) => {
   };
 
   const handleChange = (renderId, event, confirmPassword) => {
-    const { id, name, value, type, checked } = event.target;
+    const { id, name, value, type, checked, files } = event.target;
     formData[renderId][name] = value;
     if (type === "radio") {
       if (checked) {
@@ -312,14 +341,15 @@ const catchFormDivAndAppendForm = (data) => {
 
       const errorMessage = validateInput(input.fieldType, input.fieldValue);
       const errorElement = document.getElementById(`${input.id}_error`);
-      if (errorMessage !== "" && input.required) {
-        hasError = true;
-        errorElement.textContent = errorMessage;
-      } else errorElement.textContent = "";
+      if (errorElement) {
+        if (errorMessage !== "" && input.required) {
+          hasError = true;
+          errorElement.textContent = errorMessage;
+        } else errorElement.textContent = "";
+      }
     });
 
     if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
-
       const loader = document.getElementById(loaderElementId);
       const buttonElement = document.querySelector(`#${submitButtonId}`);
       const buttonTextElement = buttonElement.querySelector(
@@ -406,16 +436,17 @@ const catchFormDivAndAppendForm = (data) => {
 
   setTimeout(() => {
     const divElement = document.createElement("div");
-    divElement.className = `formBuilder ${selectedBackground === "image" ? "formImageBackground" : ""
-      }`;
+    divElement.className = `formBuilder ${
+      selectedBackground === "image" ? "formImageBackground" : ""
+    }`;
 
     divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
     divElement.style.backgroundColor =
       selectedBackground === "color" && appearanceFields?.formBackgroundColor
         ? appearanceFields?.formBackgroundColor
         : selectedBackground === "none"
-          ? "#fff"
-          : "#fff";
+        ? "#fff"
+        : "#fff";
     divElement.style.backgroundImage =
       selectedBackground === "image"
         ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -480,11 +511,17 @@ const catchFormDivAndAppendForm = (data) => {
         radio_options,
         hideDivider,
         hideLabel,
+        allowedExtensions,
+        allowMultiple,
         hiddenValue,
+        htmlCode,
         no_of_options,
         text,
         heading,
         caption,
+        dateTimeFormat,
+        dateFormat,
+        timeFormat,
         dropdown_options,
         default_value,
         confirmPassword,
@@ -498,14 +535,14 @@ const catchFormDivAndAppendForm = (data) => {
           column_width === "33%"
             ? 4
             : column_width === "50%"
-              ? 6
-              : column_width === "100%" && 12,
+            ? 6
+            : column_width === "100%" && 12,
         xl:
           column_width === "33%"
             ? 4
             : column_width === "50%"
-              ? 6
-              : column_width === "100%" && 12,
+            ? 6
+            : column_width === "100%" && 12,
       };
 
       const noOfOptions = parseInt(no_of_options?.[0]);
@@ -522,7 +559,7 @@ const catchFormDivAndAppendForm = (data) => {
         item.type === "email" ||
         item.type === "number"
       ) {
-        emailValidate = item.type === 'email' && required ? false : true
+        emailValidate = item.type === "email" && required ? false : true;
         const inputContainer = document.createElement("div");
         inputContainer.className = "inputContainer";
         innerDivElement.appendChild(inputContainer);
@@ -579,6 +616,72 @@ const catchFormDivAndAppendForm = (data) => {
         errorMessageElement.className = "errorMessage";
         errorMessageElement.id = `${item.inputId}_error`;
 
+        smallElement.appendChild(errorMessageElement);
+        inputContainer.appendChild(smallElement);
+      } else if (item?.type === "file") {
+        const acceptExtensions = allowedExtensions
+          ?.map((extension) => `.${extension.value}`)
+          .join(",");
+
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "inputContainer";
+        innerDivElement.appendChild(inputContainer);
+
+        const labelElement = document.createElement("label");
+        labelElement.htmlFor = item.inputId;
+        labelElement.className = "classicLabel";
+        labelElement.style.color = appearanceFields?.labelColor
+          ? appearanceFields.labelColor
+          : "";
+        labelElement.textContent = hideLabel ? "" : item.title;
+        inputContainer.appendChild(labelElement);
+
+        const requiredElement = document.createElement("span");
+        requiredElement.className = "textRequired";
+        requiredElement.textContent = required ? " *" : "";
+        labelElement.appendChild(requiredElement);
+
+        const brElement = document.createElement("br");
+        inputContainer.appendChild(brElement);
+
+        const fileInputElement = document.createElement("input");
+        fileInputElement.type = item.type;
+        fileInputElement.id = item.inputId;
+        fileInputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
+        fileInputElement.className = "classicInput";
+        // fileInputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
+        fileInputElement.name = `${item.inputId}_${item.id}`;
+        fileInputElement.accept = acceptExtensions;
+        fileInputElement.min = 0;
+        fileInputElement.required = "";
+        fileInputElement.placeholder = placeholder;
+        fileInputElement.autocomplete = "off";
+        // fileInputElement.maxLength = limit_chars ? limit_chars_count : 20;
+        fileInputElement.style.width = widthInput;
+        Object.assign(fileInputElement.style, inputStyles);
+        fileInputElement.multiple = allowMultiple ? true : false;
+        inputContainer.appendChild(fileInputElement);
+        const element = document.querySelector(
+          `input[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
+        // const element = document.getElementById(item.inputId)
+        // element.addEventListener("input", handleChange);
+        const fileDescriptionElement = document.createElement("span");
+        fileDescriptionElement.className = "description";
+        fileDescriptionElement.textContent = description;
+        inputContainer.appendChild(fileDescriptionElement);
+
+        const smallElement = document.createElement("small");
+        const errorMessageElement = document.createElement("p");
+        errorMessageElement.className = "errorMessage";
+        errorMessageElement.id = `${item.inputId}_error`;
+        // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
         smallElement.appendChild(errorMessageElement);
         inputContainer.appendChild(smallElement);
       } else if (item?.type === "password") {
@@ -749,7 +852,7 @@ const catchFormDivAndAppendForm = (data) => {
         inputContainer.appendChild(textareaInputElement);
         const element = document.querySelector(
           `textarea[data-id=${formElementId}_${item?.inputId}]`
-        );
+          );
         element.addEventListener("input", (e) =>
           handleChange(formElementId, e)
         );
@@ -787,8 +890,8 @@ const catchFormDivAndAppendForm = (data) => {
           checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
           const element = document.querySelector(
             `input[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("input", (e) =>
+            );
+          element.addEventListener("change", (e) =>
             handleChange(formElementId, e)
           );
           checkboxWrapperElement.appendChild(checkboxInputElement);
@@ -885,7 +988,7 @@ const catchFormDivAndAppendForm = (data) => {
           });
           const element = document.querySelector(
             `input[data-id=${formElementId}_${item?.inputId}]`
-          );
+            );
           element.addEventListener("change", (event) => {
             const selectedCheckboxes = ulElement.querySelectorAll(
               'input[type="checkbox"]:checked'
@@ -1149,6 +1252,112 @@ const catchFormDivAndAppendForm = (data) => {
         headingCaption.className = "headingCaption";
         headingCaption.innerHTML = caption;
         headingContainer.appendChild(headingCaption);
+      } else if (item?.type === "HTML") {
+        const htmlContainer = document.createElement("div");
+        htmlContainer.className = "inputContainer";
+        innerDivElement.appendChild(htmlContainer);
+
+        const htmlContent = document.createElement("div");
+        htmlContent.innerHTML = htmlCode ? htmlCode : caption;
+        htmlContainer.appendChild(htmlContent);
+      } else if (item?.type === "date") {
+        const dateContainer = document.createElement("div");
+        dateContainer.className = "inputContainer";
+        innerDivElement.appendChild(dateContainer);
+        const labelElement = document.createElement("label");
+        labelElement.htmlFor = item.inputId;
+        labelElement.className = "classicLabel";
+        labelElement.style.color = appearanceFields?.labelColor
+          ? appearanceFields?.labelColor
+          : "";
+        labelElement.textContent = hideLabel ? "" : item.title;
+        dateContainer.appendChild(labelElement);
+
+        const requiredElement = document.createElement("span");
+        requiredElement.className = "textRequired";
+        requiredElement.textContent = required ? " *" : "";
+        labelElement.appendChild(requiredElement);
+
+        const brElement = document.createElement("br");
+        dateContainer.appendChild(brElement);
+
+        const inputElement = document.createElement("input");
+        inputElement.type = item.type;
+        inputElement.id = `datepicker_${item.inputId}`;
+        inputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
+        inputElement.className = "classicInput";
+        // inputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
+        inputElement.value = "";
+        inputElement.name = `${item.inputId}_${item.id}`;
+        inputElement.min = 0;
+        inputElement.required = "";
+        inputElement.placeholder = placeholder;
+        inputElement.autocomplete = "off";
+        // inputElement.maxLength = limit_chars ? limit_chars_count : undefined;
+        inputElement.style.width = widthInput;
+        Object.assign(inputElement.style, inputStyles);
+        // const element = document.querySelector(
+        //   `input[data-id=${formElementId}_${item?.inputId}]`
+        //   );
+        //   console.log('dateeee: ', element);
+        // element.addEventListener("change", (e) =>
+        //   handleChange(formElementId, e)
+        // );
+        // inputElement.addEventListener("change", (event) => handleChange(event));
+        dateContainer.appendChild(inputElement);
+
+        const descriptionElement = document.createElement("span");
+        descriptionElement.className = "description";
+        descriptionElement.textContent = description;
+        dateContainer.appendChild(descriptionElement);
+
+        const smallElement = document.createElement("small");
+        const errorMessageElement = document.createElement("p");
+        errorMessageElement.className = "errorMessage";
+        errorMessageElement.id = `${item.inputId}_error`;
+        // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
+        smallElement.appendChild(errorMessageElement);
+        dateContainer.appendChild(smallElement);
+        const datepicker = document.getElementById(
+          `datepicker_${item.inputId}`
+        );
+        datepicker.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
+        const timeFormatValue = timeFormat === "24h" ? "H:i" : "h:i K";
+        const getOptions = () => {
+          if (dateTimeFormat === "1") {
+            return {
+              noCalendar: false,
+              enableTime: true,
+              dateFormat: `${dateFormat} ${timeFormatValue}`,
+            };
+          } else if (dateTimeFormat === "2") {
+            return {
+              noCalendar: false,
+              enableTime: false,
+              dateFormat: dateFormat,
+            };
+          } else if (dateTimeFormat === "3") {
+            return {
+              noCalendar: true,
+              enableTime: true,
+              time_24hr: timeFormat === "24h" ? true : false,
+              dateFormat: timeFormatValue,
+            };
+          }
+        };
+        const options = getOptions();
+        flatpickr(datepicker, {
+          key: dateTimeFormat,
+          noCalendar: options.noCalendar,
+          enableTime: options.enableTime,
+          time_24hr: options.time_24hr,
+          dateFormat: options.dateFormat,
+        });
       }
     });
 
@@ -1185,10 +1394,11 @@ const catchFormDivAndAppendForm = (data) => {
       // footerDivElement.appendChild(buttonElement);
       const buttonElement = document.createElement("button");
       buttonElement.type = "submit";
-      buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
+      buttonElement.className = `${
+        footerFieldData?.attributes?.buttonWidth
           ? "buttonWidth classicButton submitButton"
           : "classicButton submitButton"
-        }`;
+      }`;
       const spanSubmit = document.createElement("span");
       spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
       spanSubmit.id = "span_submit_button";
@@ -1219,10 +1429,11 @@ const catchFormDivAndAppendForm = (data) => {
         const resetButton = document.createElement("button");
         resetButton.type = "button";
         resetButton.id = "resetButton";
-        resetButton.className = `${footerFieldData?.attributes?.buttonWidth
+        resetButton.className = `${
+          footerFieldData?.attributes?.buttonWidth
             ? "buttonWidth classicButton resetButton"
             : "classicButton resetButton"
-          }`;
+        }`;
         resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
         resetButton.style.color = appearanceFields?.buttonTextColor;
         footerDivElement.appendChild(resetButton);
