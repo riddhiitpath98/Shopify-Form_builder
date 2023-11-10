@@ -26,13 +26,6 @@ import { SUBSCRIPTION_TYPES } from "../../constant";
 
 function Dashboard() {
   const dispatch = useDispatch();
-  const app = useAppBridge();
-  const location = useLocation();
-  const param = new URLSearchParams(location.search)
-  const chargeId = param.get('charge_id');
-  const fullscreen = Fullscreen.create(app);
-  const shop = useAppQuery({ url: "/api/shop" });
-
   const [selected, setSelected] = useState("Select an option");
   const [popoverActive, setPopoverActive] = useState({
     dailySubmission: false,
