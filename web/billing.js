@@ -73,11 +73,54 @@ const HAS_PAYMENTS_QUERY = `query appSubscription {
       }`;
 
 
-async function getAppSubscription(session) {
-    const planName = Object.keys(billingConfig)[0];
+export const CANCEL_SUBSCRIPTION = `mutation AppSubscriptionCancel($id: ID!) {
+    appSubscriptionCancel(id: $id) {
+      userErrors {
+        field
+        message
+      }
+      appSubscription {
+        id
+        status
+      }
+    }
+  }`;
+// async function getAppSubscription(session) {
+//     const planName = Object.keys(billingConfig)[0];
 
+//     try {
+//         const response = await shopify.api.billing.check({ session: session, plans: 'Premium Subscription', isTest: true, returnObject: true })
+//         if (response.hasActivePayment) {
+//             response.appSubscriptions.forEach(
+//                 async (subscription) => {
+//                     if (subscription.name === planName) {
+//                         const response = await shopify.api.billing.subscriptions({
+//                             session
+//                         })
+
+//                         const subscriptionData = response.activeSubscriptions?.find(val => val?.id === subscription?.id)
+//                         console.log('subscriptionData: ', subscriptionData);
+//                         return subscriptionData
+//                     }
+//                 }
+//             );
+//         }
+//     } catch (error) {
+//         if (error instanceof GraphqlQueryError) {
+//             throw new Error(
+//                 `${error.message} \n${JSON.stringify(error.response, null, 2)} `
+//             );
+//         } else {
+//             throw error;
+//         }
+//     }
+// }
+
+export async function createUsageRecord(session, data) {
     try {
-        const response = await shopify.api.billing.check({ session: session, plans:planName, isTest: true, returnObject: true })
+        const client = new shopify.api.clients.Graphql({ session });
+        const planName = Object.keys(billingConfig)[0]
+        const response = await shopify.api.billing.check({ session: session, plans: planName, isTest: true, returnObject: true })
         if (response.hasActivePayment) {
             response.appSubscriptions.forEach(
                 async (subscription) => {
@@ -85,51 +128,18 @@ async function getAppSubscription(session) {
                         const response = await shopify.api.billing.subscriptions({
                             session
                         })
-
-                        const subscriptionData = response.activeSubscriptions?.find(val => val?.id === subscription?.id)
-                        return subscriptionData
                     }
                 }
             );
         }
-    } catch (error) {
-        if (error instanceof GraphqlQueryError) {
-            throw new Error(
-                `${error.message} \n${JSON.stringify(error.response, null, 2)} `
-            );
-        } else {
-            throw error;
-        }
-    }
-}
-
-export async function createUsageRecord(session, data) {
-    const client = new shopify.api.clients.Graphql({ session });
-    const subscription = await getAppSubscription(session);
-    console.log('111', subscription);
-
-
-    // If the capacity has already been reached, we will not attempt to create the usage record
-    // On production shops, if you attempt to create a usage record and the capacity and been
-    // reached Shopify will return an error. On development shops, the usage record will be created
-    // if (
-    //     subscriptionLineItem.balanceUsed + USAGE_CHARGE_INCREMENT_AMOUNT >
-    //     subscriptionLineItem.cappedAmount
-    // ) {
-    //     res.capacityReached = true;
-    //     return res;
-    // }
-
-    try {
-        // This makes an API call to Shopify to create a usage record
-        if (!subscription) {
+        else {
             const res = await client.query({
                 data: {
                     query: CREATE_SUBSCRIPTION,
                     variables: {
                         "name": data.name,
                         "returnUrl": data.return_url,
-                        "trialDays": data.trialDays,
+                        // "trialDays": data.trialDays,
                         "test": data.isTest,
                         "lineItems": [
                             {
@@ -140,13 +150,42 @@ export async function createUsageRecord(session, data) {
                                             "currencyCode": data.currencyCode
                                         },
                                         "interval": data.interval,
-
                                     }
                                 }
                             }
                         ]
                     }
                     ,
+                },
+            });
+            return res?.body;
+        }
+    }
+    catch (error) {
+        if (error instanceof GraphqlQueryError) {
+            throw new Error(
+                `${error.message} \n${JSON.stringify(error.response, null, 2)} `
+            );
+        } else {
+            throw error;
+        }
+    }
+
+}
+
+
+export const cancelSubscription = async (session) => {
+    const planName = Object.keys(billingConfig)[0];
+    const client = new shopify.api.clients.Graphql({ session });
+    try {
+        const response = await shopify.api.billing.check({ session: session, plans: planName, isTest: true, returnObject: true })
+        if (response.hasActivePayment) {
+            const res = await client.query({
+                data: {
+                    query: CANCEL_SUBSCRIPTION,
+                    "variables": {
+                        "id": response.appSubscriptions[0].id
+                    },
                 },
             });
             return res?.body;
@@ -160,7 +199,6 @@ export async function createUsageRecord(session, data) {
             throw error;
         }
     }
-
 }
 
 

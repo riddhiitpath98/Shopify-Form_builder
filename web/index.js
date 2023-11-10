@@ -12,6 +12,7 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from "dotenv";
 import {
     billingConfig,
+    cancelSubscription,
     createSubscription,
     createUsageRecord,
 } from "./billing.js";
@@ -150,34 +151,7 @@ app.get("/api/subscriptions", async (_req, res) => {
         session: res.locals.shopify.session,
     });
     res.status(200).json(subscription)
-
-
-    //     const recurringChargeAll = await shopify.api.rest.RecurringApplicationCharge.all({ session: res.locals.shopify.session })
-    //     const data = await shopify.api.rest.RecurringApplicationCharge.find({
-    //         session: res.locals.shopify.session,
-    //         id: _req.params.id,
-    //     });
-    //     res.status(200).json({ data, recurringChargeAll });
-    //     // res.redirect(subscription.confirmationUrl);
-});
-
-// app.get("/api/subscribe", async (_req, res, next) => {
-//     // @ts-ignore
-//     const checkResponse = await shopify.api.billing.check({ session: res.locals.shopify.session, plans: 'Premium Subscription', isTest: true, returnObject: true })
-//     console.log('checkResponse: ', checkResponse);
-
-//     if (!checkResponse.hasActivePayment) {
-//         const requestResponse = await shopify.api.billing.request({
-//             session: res.locals.shopify.session,
-//             plan: "Premium Subscription",
-//         });
-//         console.log('requestResponse: ', requestResponse);
-//         return res.status(200).json({ confirmURL: requestResponse });
-//     }
-//     else {
-//         return res.status(200).json({ hasPlan: checkResponse, msg: "Plan is already activated" })
-//     }
-// });
+})
 
 app.get("/api/recurring-application-charge/:id", async (req, res) => {
     try {
@@ -196,9 +170,11 @@ app.post("/api/createSubscription", async (_req, res) => {
     let error = null;
     try {
         const response = await createUsageRecord(res.locals.shopify.session, _req.body.premium_subscription)
-        console.log('response: ', response);
         if (response) {
-            res.status(201).json({ success: true, msg: "Recurring application created", data: response?.data })
+            res.status(201).send({ success: true, msg: "Subscription created", data: response?.data })
+        }
+        else {
+            res.status(404).send({ success: false, msg: "No data found" })
         }
     } catch (e) {
         console.log(`Failed to process : ${e.message}`);
@@ -210,6 +186,25 @@ app.post("/api/createSubscription", async (_req, res) => {
         });
     }
 });
+
+app.get('/api/cancelSubscription', async (_req, res) => {
+    let status = 200
+    let error = null;
+    try {
+        const response = await cancelSubscription(res.locals.shopify.session)
+        if (response) {
+            res.status(200).send({ success: true, msg: "Subscription cancelled", data: response?.data })
+        }
+    } catch (e) {
+        console.log(`Failed to process : ${e.message}`);
+        status = 500;
+        error = e.message;
+        res.status(status).send({
+            success: false,
+            error: error,
+        });
+    }
+})
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));

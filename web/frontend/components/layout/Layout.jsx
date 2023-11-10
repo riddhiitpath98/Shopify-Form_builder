@@ -21,11 +21,9 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
-  console.log('subscription: ', subscription?.data?.hasActivePayment);
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
-
 
   useEffect(() => {
     if (shop.isSuccess) {
