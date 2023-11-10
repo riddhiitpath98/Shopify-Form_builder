@@ -39,6 +39,8 @@ function Dashboard() {
     monthlySubmission: false,
   });
 
+  // const data = useAppQuery({ url: "/api/cancelSubscription" });
+  // console.log('data: ', data);
   // const fetchSubscriptions = async (token) => {
   //   try {
   //     const options = {
@@ -55,12 +57,14 @@ function Dashboard() {
   //   }
   // }
 
-  
+
   const shopId = useSelector((state) => state.shopId.shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissions.data
   );
   const [date, setDate] = useState({ startDate: "", endDate: "" });
+  const recurringCharge = useSelector(state => state.recurringCharge.recurringCharges.data)
+  console.log('recurringCharge: ', recurringCharge);
 
   useEffect(() => {
     if (date.startDate && date.endDate) {

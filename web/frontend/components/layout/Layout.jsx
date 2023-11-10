@@ -12,7 +12,7 @@ import { SUBSCRIPTION_TYPES } from "../../constant";
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
   const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
-  const [isShowPlan, setIsShowPlan] = useState(true);
+  const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user.userData);
   const path = location?.pathname === "/" ? "/dashboard" : location?.pathname
@@ -22,12 +22,11 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
-  console.log('subscription: ', subscription?.data?.hasActivePayment);
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
-
+  console.log('subscription', subscription)
   useEffect(() => {
     if (shop.isSuccess) {
       if (chargeId) {

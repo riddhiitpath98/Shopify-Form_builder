@@ -17,6 +17,7 @@ import dotenv from 'dotenv'
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Redirect } from "@shopify/app-bridge/actions";
+import { addShopId } from "../../redux/reducers/appIdSlice";
 
 
 // import { loadStripe } from "@stripe/stripe-js";
@@ -74,7 +75,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
   useEffect(() => {
     getSessionToken(app).then(response => {
       if (response) {
-        dispatch(getApplicationCharge({ shopId: shopData.id, session: response }))
+        dispatch(getApplicationCharge({ shopId: shopData?.id, session: response }))
       }
     })
   }, [])
@@ -91,6 +92,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
         }
       })
       dispatch(addShopData(user));
+      dispatch(addShopId(shopData?.id))
       toggleModal()
       navigate("/dashboard", { replace: true })
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {

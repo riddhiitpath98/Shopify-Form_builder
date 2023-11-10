@@ -12,6 +12,7 @@ import GDPRWebhookHandlers from "./gdpr.js";
 import dotenv from "dotenv";
 import {
     billingConfig,
+    cancelSubscription,
     createSubscription,
     createUsageRecord,
 } from "./billing.js";
@@ -196,9 +197,11 @@ app.post("/api/createSubscription", async (_req, res) => {
     let error = null;
     try {
         const response = await createUsageRecord(res.locals.shopify.session, _req.body.premium_subscription)
-        console.log('response: ', response);
         if (response) {
-            res.status(201).json({ success: true, msg: "Recurring application created", data: response?.data })
+            res.status(201).send({ success: true, msg: "Subscription created", data: response?.data })
+        }
+        else {
+            res.status(404).send({ success: false, msg: "No data found" })
         }
     } catch (e) {
         console.log(`Failed to process : ${e.message}`);
@@ -210,6 +213,25 @@ app.post("/api/createSubscription", async (_req, res) => {
         });
     }
 });
+
+app.get('/api/cancelSubscription', async (_req, res) => {
+    let status = 200
+    let error = null;
+    try {
+        const response = await cancelSubscription(res.locals.shopify.session)
+        if (response) {
+            res.status(200).send({ success: true, msg: "Subscription cancelled", data: response?.data })
+        }
+    } catch (e) {
+        console.log(`Failed to process : ${e.message}`);
+        status = 500;
+        error = e.message;
+        res.status(status).send({
+            success: false,
+            error: error,
+        });
+    }
+})
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));
