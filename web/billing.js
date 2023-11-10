@@ -127,7 +127,6 @@ export async function createUsageRecord(session, data) {
                         const response = await shopify.api.billing.subscriptions({
                             session
                         })
-                        return response;
                     }
                 }
             );
@@ -175,7 +174,7 @@ export async function createUsageRecord(session, data) {
 
 
 export const cancelSubscription = async (session) => {
-    const planName = Object.keys(billingConfig)[0]
+    const planName = Object.keys(billingConfig)[0];
     const client = new shopify.api.clients.Graphql({ session });
     try {
         const response = await shopify.api.billing.check({ session: session, plans: planName, isTest: true, returnObject: true })

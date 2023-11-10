@@ -39,25 +39,6 @@ function Dashboard() {
     monthlySubmission: false,
   });
 
-  // const data = useAppQuery({ url: "/api/cancelSubscription" });
-  // console.log('data: ', data);
-  // const fetchSubscriptions = async (token) => {
-  //   try {
-  //     const options = {
-  //       method: 'GET',
-  //       headers: {
-  //         'Authorization': `Bearer ${token}` || ''
-  //       }
-  //     }
-  //     const response = await fetch(`/api/recurring-application-charge/${chargeId}`, options)
-  //     const data = await response.json();
-  //     return data
-  //   } catch (error) {
-  //     console.log('error', error)
-  //   }
-  // }
-
-
   const shopId = useSelector((state) => state.shopId.shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissions.data
@@ -71,21 +52,6 @@ function Dashboard() {
       dispatch(filterSubmissionByDate({ date, filterBy: selected }));
     }
   }, [date]);
-
-  useEffect(() => {
-    // if (chargeId && shop.isSuccess) {
-    //   console.log('shop', shop)
-    //   const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shop.data;
-    //   let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone, chargeId };
-    //   subscriptionData.filter(({ subscriptionName, _id }, index) => {
-    //     if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-    //       user = { ...user, subscriptionName, subscriptionId: _id }
-    //     }
-    //   })
-    //   console.log('user', user)
-    //   dispatch(addShopData(user));
-    // }
-  }, [chargeId, shop.isSuccess])
 
   useEffect(() => {
     dispatch(getSubmission(shopId));

@@ -151,34 +151,7 @@ app.get("/api/subscriptions", async (_req, res) => {
         session: res.locals.shopify.session,
     });
     res.status(200).json(subscription)
-
-
-    //     const recurringChargeAll = await shopify.api.rest.RecurringApplicationCharge.all({ session: res.locals.shopify.session })
-    //     const data = await shopify.api.rest.RecurringApplicationCharge.find({
-    //         session: res.locals.shopify.session,
-    //         id: _req.params.id,
-    //     });
-    //     res.status(200).json({ data, recurringChargeAll });
-    //     // res.redirect(subscription.confirmationUrl);
-});
-
-// app.get("/api/subscribe", async (_req, res, next) => {
-//     // @ts-ignore
-//     const checkResponse = await shopify.api.billing.check({ session: res.locals.shopify.session, plans: 'Premium Subscription', isTest: true, returnObject: true })
-//     console.log('checkResponse: ', checkResponse);
-
-//     if (!checkResponse.hasActivePayment) {
-//         const requestResponse = await shopify.api.billing.request({
-//             session: res.locals.shopify.session,
-//             plan: "Premium Subscription",
-//         });
-//         console.log('requestResponse: ', requestResponse);
-//         return res.status(200).json({ confirmURL: requestResponse });
-//     }
-//     else {
-//         return res.status(200).json({ hasPlan: checkResponse, msg: "Plan is already activated" })
-//     }
-// });
+})
 
 app.get("/api/recurring-application-charge/:id", async (req, res) => {
     try {
