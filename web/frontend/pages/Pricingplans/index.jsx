@@ -85,13 +85,13 @@ function Pricingplans() {
                         <span className={styles.priceValue}>
                           <span className={styles.price}>
                             <span>
-                              <sub className={styles.dollar}>$</sub>
-                              <span className={styles.rupees}>0</span>
+                              {/* <sub className={styles.dollar}>$</sub> */}
+                              <span className={styles.rupees}>$0</span>
                             </span>
                           </span>
                         </span>
                         <span className={styles.month}>
-                          /<span>mo</span>
+                          /<span>month</span>
                         </span>
                       </div>
 
@@ -121,7 +121,7 @@ function Pricingplans() {
                             <span>
                               {/* <sub className={styles.dollar}>$</sub>
                               <span className={styles.dollarValue}>14.9</span> */}
-                              <span className={styles.rupees}>Coming Soon</span>
+                              <span className={styles.rupees}>Premium Plan</span>
                             </span>
                           </span>
                         </span>
@@ -129,14 +129,23 @@ function Pricingplans() {
                           /<span>mo</span>
                         </span> */}
                       </div>
-                    
-                      <Button  primary fullWidth>
+                      <Button primary fullWidth>
                         <span>
                           <span>
-                            <span>Start free trial</span>
+                            <span>Choose this plan</span>
                           </span>
                         </span>
                       </Button>
+                      
+                    <div style={{marginTop: "5px"}}>
+                      <Button fullWidth >
+                          <span>
+                            <span>
+                              <span>Cancel Plan</span>
+                            </span>
+                          </span>
+                        </Button>
+                        </div>
                       {/* <div className={styles.pmuBadge}>
                         <span>7 days trial</span>
                       </div> */}
@@ -152,7 +161,7 @@ function Pricingplans() {
                             </th>
                           </tr>
 
-                          {Object.entries(
+                          {Object.entries( 
                             subscriptionData[0]?.features[featureKey]
                           ).map(([innerKey, innerValue]) => (
                             <tr key={innerKey}>

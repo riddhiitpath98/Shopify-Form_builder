@@ -29,11 +29,12 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
-  );
+    );
 
   const recurringCharge = useSelector(state => state.recurringCharge.recurringCharges.data)
-  console.log('recurringCharge: ', recurringCharge);
 
+  const domainParts = shopData?.domain?.split('.');
+  const storeName = domainParts[0];
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -64,7 +65,6 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
       }
       const response = await fetch(`/api/recurring-application-charge/32137937188`, options)
       const data = await response.json();
-      console.log('data: ', data);
     } catch (error) {
       console.log('error', error)
     }
@@ -74,7 +74,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
   useEffect(() => {
     getSessionToken(app).then(response => {
       if (response) {
-        dispatch(getApplicationCharge({ shopId: shopData.id, session: response }))
+        dispatch(getApplicationCharge({ shopId: shopData?.id, session: response }))
       }
     })
   }, [])
@@ -103,14 +103,14 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                 'Authorization': `Bearer ${token}` || '',
                 'Content-Type': 'application/json' // Set the content type to JSON
               },
-              body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
+              // body: JSON.stringify(`https://admin.shopify.com/store/${storeName}/apps/contact-form-with-api/dashboard`),
             }
             fetch(`/api/createSubscription`, options).then(res => res.json()).then(res => {
               if (res.success) {
                 const pathSegments = res?.data?.appSubscriptionCreate?.appSubscription?.id.split('/');
                 // The last segment contains the ID
                 const chargeId = pathSegments[pathSegments.length - 1]
-                dispatch(createApplicationCharge({ chargeId, shopId: shopData.id }))
+                dispatch(createApplicationCharge({ chargeId, shopId: shopData?.id }))
                 const redirect = Redirect.create(app);
                 redirect.dispatch(
                   Redirect.Action.REMOTE,
@@ -179,13 +179,13 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                           <span className={styles.priceValue}>
                             <span className={styles.price}>
                               <span>
-                                <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>0</span>
+                                {/* <sub className={styles.dollar}>$</sub> */}
+                                <span className={styles.rupees}>$0</span>
                               </span>
                             </span>
                           </span>
                           <span className={styles.month}>
-                            /<span>mo</span>
+                            /<span>month</span>
                           </span>
                         </div>
 
@@ -196,6 +196,13 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                             </span>
                           </span>
                         </Button>
+                        {/* <Button fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.FREE)}>
+                          <span>
+                            <span>
+                              <span>Cancel Plan</span>
+                            </span>
+                          </span>
+                        </Button> */}
                         <div className={styles.badge}>
                           <span>0 days trial</span>
                         </div>
@@ -213,13 +220,13 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                           <span className={styles.priceValue}>
                             <span className={styles.price}>
                               <span>
-                                <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>5.99</span>
+                                {/* <sub className={styles.dollar}>$</sub> */}
+                                <span className={styles.rupees}>$5.99</span>
                               </span>
                             </span>
                           </span>
                           <span className={styles.month}>
-                            /<span>mo</span>
+                            /<span>month</span>
                           </span>
                         </div>
                         <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)}>

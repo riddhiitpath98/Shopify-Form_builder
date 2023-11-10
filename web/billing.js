@@ -14,7 +14,7 @@ export const billingConfig = {
 };
 const variables = {
     "name": "Premium Subscription",
-    "returnUrl": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1",
+    "returnUrl": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api",
     "test" : "true",
     "lineItems": [
         {

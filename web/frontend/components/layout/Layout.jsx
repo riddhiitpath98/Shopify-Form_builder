@@ -12,11 +12,10 @@ import { SUBSCRIPTION_TYPES } from "../../constant";
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
   const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
-  const [isShowPlan, setIsShowPlan] = useState(true);
+  const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user.userData);
   const path = location?.pathname === "/" ? "/dashboard" : location?.pathname
-  console.log('location: ', location);
   const param = new URLSearchParams(location.search)
   const chargeId = param.get('charge_id');
   const shop = useAppQuery({ url: "/api/shop" });
@@ -31,7 +30,6 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   useEffect(() => {
     if (shop.isSuccess) {
       if (chargeId) {
-        console.log('shop', shop)
         const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shop.data;
         let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone, chargeId };
         subscriptionData.filter(({ subscriptionName, _id }, index) => {

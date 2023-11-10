@@ -181,7 +181,7 @@ export const toastConfig = {
 };
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-const contactRegex = /^[2-9]{1}[0-9]{9}$/;
+const contactRegex = /^[2-9]{1}[0-9]{9}$/; 
 
 export const validateTextField = (name, value) => {
   if (!value || String(value).trim() === '') {
@@ -486,6 +486,6 @@ export const RECURRING_APPLICATION_CHARGE = {
     "interval": "EVERY_30_DAYS",
     "trialDays": 1,
     "replacementBehavior": "APPLY_IMMEDIATELY",
-    "return_url": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1/dashboard"
+    "return_url": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api/dashboard"
   }
 }

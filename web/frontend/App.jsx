@@ -56,6 +56,10 @@ export default function App() {
                   destination: "/all-api",
                 },
                 {
+                  label: "Billing History",
+                  destination: "/billing-history",
+                },
+                {
                   label: "Contact Us",
                   destination: "/contact-us",
                 },

@@ -119,6 +119,7 @@ import AnyAPIIntegration from "./AnyAPIIntegration";
 import APISettingsList from "./AnyAPIIntegration/APISettingsList";
 import { Icons } from "../constant";
 import APILogs from "./AnyAPIIntegration/APILogs";
+import BillingHistory from "./Billing/BillingHistory";
 
 export const navigation = [
   {
@@ -150,8 +151,12 @@ export const navigation = [
     destination: "/all-api",
   },
   {
+    label: "Billing History",
+    destination: "/billing-history",
+  },
+  {
     label: "Contact Us",
-    destination: "/contact-us",
+    destination: "/contact-us"
   },
 ];
 
@@ -197,6 +202,12 @@ export const Tabs = [
     content: "All API",
     icon: Icons.apiIntegrate,
     path: "/all-api",
+  },
+  {
+    id: "billing-history",
+    content: "Billing History",
+    icon: Icons.apiIntegrate,
+    path: "/billing-history",
   },
   {
     id: "support",
@@ -311,6 +322,13 @@ const routes = [
     path: "/feedback",
     exact: true,
     element: <FeedbackForm />,
+  },
+  {
+    id: "billing-history",
+    name: "Billing",
+    path: "/billing-history",
+    exact: true,
+    element: <BillingHistory />,
   },
   {
     id: "edit-form",
