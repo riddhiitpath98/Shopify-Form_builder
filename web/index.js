@@ -174,7 +174,7 @@ app.post("/api/createSubscription", async (_req, res) => {
             res.status(201).send({ success: true, msg: "Subscription created", data: response?.data })
         }
         else {
-            res.status(404).send({ success: false, msg: "No data found" })
+            res.status(200).send({ success: false, msg: "You are already in premium plan" })
         }
     } catch (e) {
         console.log(`Failed to process : ${e.message}`);

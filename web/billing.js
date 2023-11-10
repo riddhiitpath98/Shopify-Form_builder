@@ -121,18 +121,8 @@ export async function createUsageRecord(session, data) {
         const client = new shopify.api.clients.Graphql({ session });
         const planName = Object.keys(billingConfig)[0]
         const response = await shopify.api.billing.check({ session: session, plans: planName, isTest: true, returnObject: true })
-        if (response.hasActivePayment) {
-            response.appSubscriptions.forEach(
-                async (subscription) => {
-                    if (subscription.name === planName) {
-                        const response = await shopify.api.billing.subscriptions({
-                            session
-                        })
-                    }
-                }
-            );
-        }
-        else {
+        console.log('response.hasActivePayment', response.hasActivePayment)
+        if (!response.hasActivePayment) {
             const res = await client.query({
                 data: {
                     query: CREATE_SUBSCRIPTION,

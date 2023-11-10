@@ -25,6 +25,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
     (state) => state.subscription?.subscriptionData?.data
   );
 
+
   useEffect(() => {
     if (shop.isSuccess) {
       if (chargeId) {
