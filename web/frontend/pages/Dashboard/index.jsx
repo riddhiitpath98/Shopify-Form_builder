@@ -38,7 +38,6 @@ function Dashboard() {
   );
   const [date, setDate] = useState({ startDate: "", endDate: "" });
   const recurringCharge = useSelector(state => state.recurringCharge.recurringCharges.data)
-  console.log('recurringCharge: ', recurringCharge);
 
   useEffect(() => {
     if (date.startDate && date.endDate) {

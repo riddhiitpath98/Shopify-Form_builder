@@ -3,10 +3,12 @@ import React from "react";
 
 const CommonModal = ({
   active,
+  isCancelPlan,
   handleClose,
   handleDelete,
   title,
   description,
+  handleCancelSubscription
 }) => {
   return (
     <Modal
@@ -16,12 +18,12 @@ const CommonModal = ({
       title={title}
       primaryAction={{
         destructive: true,
-        content: "Yes, Delete",
-        onAction: handleDelete,
+        content: isCancelPlan ? "Agree, Cancel" : "Yes, Delete",
+        onAction: isCancelPlan ? handleCancelSubscription : handleDelete,
       }}
       secondaryActions={[
         {
-          content: `No, I won't`,
+          content: isCancelPlan ? "No, Go back" : "No, I won't",
           onAction: handleClose,
         },
       ]}

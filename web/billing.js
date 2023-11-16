@@ -14,8 +14,7 @@ export const billingConfig = {
 };
 const variables = {
     "name": "Premium Subscription",
-    "returnUrl": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api",
-    "test" : "true",
+    "returnUrl": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1",
     "lineItems": [
         {
             "plan": {
@@ -121,25 +120,24 @@ export async function createUsageRecord(session, data) {
         const client = new shopify.api.clients.Graphql({ session });
         const planName = Object.keys(billingConfig)[0]
         const response = await shopify.api.billing.check({ session: session, plans: planName, isTest: true, returnObject: true })
-        console.log('response.hasActivePayment', response.hasActivePayment)
         if (!response.hasActivePayment) {
             const res = await client.query({
                 data: {
                     query: CREATE_SUBSCRIPTION,
                     variables: {
-                        "name": data.name,
-                        "returnUrl": data.return_url,
+                        "name": data?.name,
+                        "returnUrl": data?.return_url,
                         // "trialDays": data.trialDays,
-                        "test": data.isTest,
+                        "test": data?.isTest,
                         "lineItems": [
                             {
                                 "plan": {
                                     "appRecurringPricingDetails": {
                                         "price": {
-                                            "amount": data.amount,
-                                            "currencyCode": data.currencyCode
+                                            "amount": data?.amount,
+                                            "currencyCode": data?.currencyCode
                                         },
-                                        "interval": data.interval,
+                                        "interval": data?.interval,
                                     }
                                 }
                             }
@@ -193,7 +191,6 @@ export const cancelSubscription = async (session) => {
 
 
 export const createSubscription = async (session, plan) => {
-    console.log('plan: ', plan);
     if (!session) {
         return null
     }

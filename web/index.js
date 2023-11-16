@@ -169,7 +169,7 @@ app.post("/api/createSubscription", async (_req, res) => {
     let status = 200;
     let error = null;
     try {
-        const response = await createUsageRecord(res.locals.shopify.session, _req.body.premium_subscription)
+        const response = await createUsageRecord(res.locals.shopify.session, _req.body.premium_subscription);
         if (response) {
             res.status(201).send({ success: true, msg: "Subscription created", data: response?.data })
         }
