@@ -184,9 +184,6 @@ function Pricingplans() {
                           </span>
                         </span>
                       </Button>
-                      <div className={styles.badge}>
-                        <span>0 days trial</span>
-                      </div>
                     </td>
                     <td>
                       {/* <div className={styles.pmuBadge}>

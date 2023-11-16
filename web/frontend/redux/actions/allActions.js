@@ -104,11 +104,12 @@ export const fetchFormDataById = createAsyncThunk(
 
 export const updateFormData = createAsyncThunk(
   "inputs/editFormData",
-  async (updateCustomFormData, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
+    console.log('data: ', data);
     try {
       const response = await axios.put(
-        `/custom_form/${updateCustomFormData._id}`,
-        updateCustomFormData.updatedFormData
+        `/custom_form/${data._id}`,
+        { customForm: data.customForm, isPremium: data.isPremium }
       );
       toast.success(response?.data?.msg, toastConfig);
       return response?.data?.data;

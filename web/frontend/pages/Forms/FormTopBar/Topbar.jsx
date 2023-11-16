@@ -13,7 +13,7 @@ import { Fullscreen } from "@shopify/app-bridge/actions";
 import { useNavigate, useParams } from "react-router-dom";
 import { clearForm } from "../../../redux/reducers/inputFieldSlice";
 import { formatter } from "../../../utils/function";
-import { Icons } from "../../../constant";
+import { Icons, SUBSCRIPTION_TYPES } from "../../../constant";
 import { setSelectedViewport } from "../../../redux/reducers/viewPortSlice";
 import {
   setFormSubmitted,
@@ -82,6 +82,7 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const googelRecaptcha = useSelector(state => state?.inputField?.googelRecaptcha);
   const formTitle = formatter(formDataById)?.formTitle;
+  const user = useSelector(state => state.user.userData.user);
 
   const handleChange = (name, value) => {
     setTitleValue({
@@ -96,6 +97,7 @@ const Topbar = ({ handleRedirectToForm }) => {
   const handleSubmit = () => {
     const combinedObjectArr = {
       shopId: shopId,
+      isPremium: user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? true : false,
       enableReCaptcha: googelRecaptcha?.enable || false,
       customForm: [{ formTitle: titleValue.title },
       { header: headerFieldData },
@@ -122,7 +124,7 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({ _id: editFormId, updatedFormData: updatedFormData })
+      updateFormData({ _id: editFormId, customForm: updatedFormData, isPremium: user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? true : false })
     );
     dispatch(
       createNupdateValidation({
