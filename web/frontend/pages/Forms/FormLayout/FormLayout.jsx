@@ -30,6 +30,8 @@ import { setFormSubmitted, setShowMessage } from "../../../redux/reducers/submis
 const FormLayout = ({ isEdit }) => {
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
+  const user = useSelector(state => state.user.userData.user);
+  console.log('user', user)
   const { editFormId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
