@@ -13,6 +13,10 @@ import styles from "./PricingPlan.module.css";
 function Pricingplans() {
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
+
+  const user = useSelector(state => state?.user?.userData?.user)
+  console.log('user: ', user);
+
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [])
@@ -54,6 +58,7 @@ function Pricingplans() {
           <LegacyCard.Section>
             <div className="grid">
               <div className={styles.gridItem}>
+                <div className={styles.boxHeading}><h4 className={styles.boxHeadingText}>Your current plan</h4></div>
                 <table className={styles.pricingTable} border={1}>
                   <thead>
                     <tr>

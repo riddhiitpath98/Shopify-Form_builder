@@ -145,12 +145,46 @@ tbody td {
 .rowTransparent {
   background-color: transparent;
 }
-.subscription_time_wrapper{
+.subscription_time_wrapper {
   align-items: center;
   display: flex;
   gap: 0.5rem;
 }
-.gridItem{
+.gridItem {
   overflow-x: auto;
   width: 100%;
+}
+.boxHeading {
+  position: relative;
+  /* top: -18px; */
+
+  text-align: center;
+}
+.boxHeadingText {
+  /* background: #007a5c;
+  margin-bottom: 0;
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 10px;
+  color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  font-weight: 400; */
+  background: #007a5c;
+  margin-bottom: 0;
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 10px;
+  color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  font-weight: 400;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.freeHeader {
+  top: 10px;
+}
+.premiumHeader {
+  top: 10px;
+  left: 83%;
 }

@@ -25,10 +25,10 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
     (state) => state.subscription?.subscriptionData?.data
   );
 
-
   useEffect(() => {
     if (shop.isSuccess) {
       if (chargeId) {
+        console.log("first")
         const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shop.data;
         let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone, chargeId };
         subscriptionData.filter(({ subscriptionName, _id }, index) => {
@@ -43,8 +43,9 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
       }
       else {
         dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
-          const { userData } = data.payload
+          const { userData } = data?.payload
           setIsShowPlan(!user.loading && !userData?.subscriptionName)
+          // setIsShowPlan(false)
           if (userData?.subscriptionName) {
             setIsShowPlan(false)
             dispatch(addShopId(shop?.data?.id))
