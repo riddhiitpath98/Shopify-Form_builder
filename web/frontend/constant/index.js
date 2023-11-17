@@ -476,20 +476,6 @@ export const SUBSCRIPTION_TYPES = {
   PREMIUM: "premium"
 }
 
-
-export const RECURRING_APPLICATION_CHARGE = {
-  premium_subscription: {
-    "name": "Premium Subscription",
-    "amount": 0.5,
-    "isTest": true,
-    "currencyCode": "USD",
-    "interval": "EVERY_30_DAYS",
-    "trialDays": 1,
-    "replacementBehavior": "APPLY_IMMEDIATELY",
-    "return_url": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api/dashboard"
-  }
-}
-
 export const PLAN_TEXT = {
   CHOOSE_PLAN: "Choose this Plan",
   CURRENT_PLAN: "Current Plan",

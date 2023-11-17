@@ -16,7 +16,6 @@ import {
 } from "../../redux/actions/allActions";
 import {
   PLAN_TEXT,
-  RECURRING_APPLICATION_CHARGE,
   SUBSCRIPTION_TYPES,
 } from "../../constant";
 import { addShopId } from "../../redux/reducers/appIdSlice";
@@ -28,10 +27,10 @@ function Pricingplans() {
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
+  const storeName = shopData?.data?.domain?.split(".")[0];
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
-  const storeName = shopData?.data?.domain?.split(".")[0];
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -40,6 +39,9 @@ function Pricingplans() {
   const shopId = useSelector((state) => state?.shopId?.shopId);
   const user = useSelector((state) => state.user.userData.user);
 
+  console.log('user: ', user);
+  const appName = useSelector((state) => state?.shopId?.appName);
+  console.log('appName: ', appName.split(" ").join("-").toLowerCase());
   
   const handleOpen = (data) => {
     setActive(true);
@@ -50,6 +52,18 @@ function Pricingplans() {
     setActive(false);
   }, []);
 
+  const RECURRING_APPLICATION_CHARGE = {
+    premium_subscription: {
+      "name": "Premium Subscription",
+      "amount": 0.5,
+      "isTest": true,
+      "currencyCode": "USD",
+      "interval": "EVERY_30_DAYS",
+      "trialDays": 1,
+      "replacementBehavior": "APPLY_IMMEDIATELY",
+      "return_url": `https://admin.shopify.com/store/${storeName}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
+    }
+  }
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {

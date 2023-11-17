@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Provider } from "@shopify/app-bridge-react";
 import { Banner, Layout, Page } from "@shopify/polaris";
-import { addShopId } from "../../redux/reducers/appIdSlice";
+import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
 import { useDispatch } from "react-redux";
 
+import AppBridge from "@shopify/app-bridge";
 /**
  * A component to configure App Bridge.
  * @desc A thin wrapper around AppBridgeProvider that provides the following capabilities:
@@ -31,9 +32,6 @@ export function AppBridgeProvider({ children }) {
     () => ({ history, location }),
     [history, location]
   );
-
-
-
   // The host may be present initially, but later removed by navigation.
   // By caching this in state, we ensure that the host is never lost.
   // During the lifecycle of an app, these values should never be updated anyway.
@@ -51,29 +49,45 @@ export function AppBridgeProvider({ children }) {
     };
   });
 
+  const appBridge = new AppBridge({
+    host:
+      new URLSearchParams(location.search).get("host") ||
+      window.__SHOPIFY_DEV_HOST,
+    apiKey: process.env.SHOPIFY_API_KEY,
+  });
+
+  const getStoreNameAndAppName = async () => {
+    appBridge.getState().then((response) => {
+      dispatch(getAppName(response?.titleBar?.appInfo?.name));
+    });
+  };
+
+  useEffect(()=>{
+    getStoreNameAndAppName();
+  },[]);
   // dispatch(addShopId(appBridgeConfig.apiKey))
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {
-        title: "Missing Shopify API Key",
-        children: (
-          <>
-            Your app is running without the SHOPIFY_API_KEY environment
-            variable. Please ensure that it is set when running or building
-            your React app.
-          </>
-        ),
-      }
+          title: "Missing Shopify API Key",
+          children: (
+            <>
+              Your app is running without the SHOPIFY_API_KEY environment
+              variable. Please ensure that it is set when running or building
+              your React app.
+            </>
+          ),
+        }
       : {
-        title: "Missing host query argument",
-        children: (
-          <>
-            Your app can only load if the URL has a <b>host</b> argument.
-            Please ensure that it is set, or access your app using the
-            Partners Dashboard <b>Test your app</b> feature
-          </>
-        ),
-      };
+          title: "Missing host query argument",
+          children: (
+            <>
+              Your app can only load if the URL has a <b>host</b> argument.
+              Please ensure that it is set, or access your app using the
+              Partners Dashboard <b>Test your app</b> feature
+            </>
+          ),
+        };
 
     return (
       <Page narrowWidth>

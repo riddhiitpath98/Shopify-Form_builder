@@ -56,6 +56,12 @@ const getData = async (id) => {
   return data.data;
 };
 
+const getUser = async (shopId) =>{
+  const response = await fetch(`${server}/user/${shopId}`);
+  const data = await response.json();
+  return data.data;
+}
+
 const catchFormDivAndAppendForm = (data) => {
   loadRecaptchaScript();
   loadFlatpickrScript();
@@ -80,7 +86,6 @@ const catchFormDivAndAppendForm = (data) => {
   let formElement = [];
   let validation = {};
   let afterSubmit = {};
-
   const createSubmission = async (data, formId) => {
     try {
       const requestOptions = {
@@ -1525,7 +1530,7 @@ function fetchData() {
           validationData,
           appearanceData,
           afterSubmit,
-          element,
+          element
         });
       } catch (error) {
         console.error("Error fetching data:", error);

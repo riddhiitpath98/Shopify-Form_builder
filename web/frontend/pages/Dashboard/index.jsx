@@ -15,14 +15,6 @@ import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
 import ChartDashboard from "../../components/Chart";
 import { ToastContainer } from "react-toastify";
-import { Fullscreen } from "@shopify/app-bridge/actions";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { useLocation } from "react-router-dom";
-import { useAppQuery } from "../../hooks";
-import { getSessionToken } from "@shopify/app-bridge/utilities";
-import moment from "moment";
-import axios from "axios";
-import { SUBSCRIPTION_TYPES } from "../../constant";
 
 function Dashboard() {
   const dispatch = useDispatch();
@@ -32,7 +24,7 @@ function Dashboard() {
     monthlySubmission: false,
   });
 
-  const shopId = useSelector((state) => state.shopId.shopId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
   const submissionData = useSelector(
     (state) => state.submission.submissions.data
   );

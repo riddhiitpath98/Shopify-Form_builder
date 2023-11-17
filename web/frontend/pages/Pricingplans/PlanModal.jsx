@@ -1,38 +1,45 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Modal,
-  LegacyCard,
-  Badge,
-  Icon,
-} from "@shopify/polaris";
+import { Button, Modal, LegacyCard, Badge, Icon } from "@shopify/polaris";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons, RECURRING_APPLICATION_CHARGE, SUBSCRIPTION_TYPES } from "../../constant";
+import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import { addShopData, createApplicationCharge, getApplicationCharge } from "../../redux/actions/allActions";
+import {
+  addShopData,
+  createApplicationCharge,
+  getApplicationCharge,
+} from "../../redux/actions/allActions";
 import axios from "axios";
 import { useAppQuery } from "../../hooks";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Redirect } from "@shopify/app-bridge/actions";
 import { addShopId } from "../../redux/reducers/appIdSlice";
 
-
 // import { loadStripe } from "@stripe/stripe-js";
 
-export default function PlanModal({ active, toggleModal, isSuccess, shopData }) {
+export default function PlanModal({
+  active,
+  toggleModal,
+  isSuccess,
+  shopData,
+}) {
   const app = useAppBridge();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const storeName = shopData?.data?.domain?.split(".")[0];
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
-  const recurringCharge = useSelector(state => state.recurringCharge.recurringCharges.data)
+  const recurringCharge = useSelector(
+    (state) => state.recurringCharge.recurringCharges.data
+  );
+
+  const appName = useSelector((state) => state?.shopId?.appName);
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -52,87 +59,132 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
     }
   };
 
-
+  const RECURRING_APPLICATION_CHARGE = {
+    premium_subscription: {
+      name: "Premium Subscription",
+      amount: 0.5,
+      isTest: true,
+      currencyCode: "USD",
+      interval: "EVERY_30_DAYS",
+      trialDays: 1,
+      replacementBehavior: "APPLY_IMMEDIATELY",
+      return_url: `https://admin.shopify.com/store/${storeName}/apps/${appName
+        ?.split(" ")
+        .join("-")
+        .toLowerCase()}/dashboard`,
+    },
+  };
   const fetchSubscriptions = async (token) => {
     try {
       const options = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token}` || ''
-        }
-      }
-      const response = await fetch(`/api/recurring-application-charge/32137937188`, options)
+          Authorization: `Bearer ${token}` || "",
+        },
+      };
+      const response = await fetch(
+        `/api/recurring-application-charge/32137937188`,
+        options
+      );
       const data = await response.json();
     } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
     }
-  }
-
+  };
 
   useEffect(() => {
-    getSessionToken(app).then(response => {
+    getSessionToken(app).then((response) => {
       if (response) {
-        dispatch(getApplicationCharge({ shopId: shopData?.id, session: response }))
+        dispatch(
+          getApplicationCharge({ shopId: shopData?.id, session: response })
+        );
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   // console.log('process.env.Stripe_PK', publishKey);
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
-      const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
-      let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
+      const {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      } = shopData;
+      let user = {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      };
       subscriptionData.filter(({ subscriptionName, _id }, index) => {
         if (subscriptionName === plan) {
-          user = { ...user, subscriptionName, subscriptionId: _id }
+          user = { ...user, subscriptionName, subscriptionId: _id };
         }
-      })
+      });
       dispatch(addShopData(user));
-      dispatch(addShopId(shopData?.id))
-      toggleModal()
-      navigate("/dashboard", { replace: true })
+      dispatch(addShopId(shopData?.id));
+      toggleModal();
+      navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      getSessionToken(app).then(token => {
+      getSessionToken(app).then((token) => {
         if (token) {
           try {
             const options = {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Authorization': `Bearer ${token}` || '',
-                'Content-Type': 'application/json' // Set the content type to JSON
+                Authorization: `Bearer ${token}` || "",
+                "Content-Type": "application/json", // Set the content type to JSON
               },
               body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
-            }
-            fetch(`/api/createSubscription`, options).then(res => res.json()).then(res => {
-              if (res.success) {
-                const pathSegments = res?.data?.appSubscriptionCreate?.appSubscription?.id.split('/');
-                // The last segment contains the ID
-                const chargeId = pathSegments[pathSegments.length - 1]
-                dispatch(createApplicationCharge({ chargeId, shopId: shopData.id }))
-                const redirect = Redirect.create(app);
-                redirect.dispatch(
-                  Redirect.Action.REMOTE,
-                  res.data?.appSubscriptionCreate?.confirmationUrl
-                );
-              }
-
-            }).catch(err => console.log('err', err));
+            };
+            fetch(`/api/createSubscription`, options)
+              .then((res) => res.json())
+              .then((res) => {
+                if (res.success) {
+                  const pathSegments =
+                    res?.data?.appSubscriptionCreate?.appSubscription?.id.split(
+                      "/"
+                    );
+                  // The last segment contains the ID
+                  const chargeId = pathSegments[pathSegments.length - 1];
+                  dispatch(
+                    createApplicationCharge({ chargeId, shopId: shopData.id })
+                  );
+                  const redirect = Redirect.create(app);
+                  redirect.dispatch(
+                    Redirect.Action.REMOTE,
+                    res.data?.appSubscriptionCreate?.confirmationUrl
+                  );
+                }
+              })
+              .catch((err) => console.log("err", err));
           } catch (error) {
-            console.log('error', error)
+            console.log("error", error);
           }
         }
-      })
+      });
     }
-  }
+  };
 
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
     string = string[0].toUpperCase() + string.substring(1);
     return string;
-  }
-
+  };
 
   return (
     <div style={{ height: "500px" }}>
@@ -188,7 +240,13 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                           </span>
                         </div>
 
-                        <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.FREE)}>
+                        <Button
+                          primary
+                          fullWidth
+                          onClick={() =>
+                            handleUserNavigation(SUBSCRIPTION_TYPES.FREE)
+                          }
+                        >
                           <span>
                             <span>
                               <span>Choose this plan</span>
@@ -221,7 +279,13 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                             /<span>mo</span>
                           </span>
                         </div>
-                        <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)}>
+                        <Button
+                          primary
+                          fullWidth
+                          onClick={() =>
+                            handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)
+                          }
+                        >
                           <span>
                             <span>
                               <span>Choose this plan</span>
@@ -241,52 +305,61 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                       </div> */}
                       </td>
 
-                      {subscriptionData.length > 0 && Object.keys(subscriptionData[0]?.features).map(
-                        (featureKey) => (
-                          <React.Fragment key={featureKey}>
-                            <tr>
-                              <th colSpan={3}>
-                                <span className={styles.tableHeader}>
-                                  <span>{removeUnderScoreNdSetFirstLetterCapital(featureKey)}</span>
-                                </span>
-                              </th>
-                            </tr>
-
-                            {Object.entries(
-                              subscriptionData[0].features[featureKey]
-                            ).map(([innerKey, innerValue]) => (
-                              <tr key={innerKey}>
-                                <th scope="row" className={styles.rowData}>
-                                  <div className={styles.rowTitle}>
-                                    <dl className={styles.labelName}>
-                                      <dt className={styles.labelText}>
-                                        <span>{removeUnderScoreNdSetFirstLetterCapital(innerKey)}</span>
-                                      </dt>
-                                      <dd
-                                        className={styles.labelDescription}
-                                      ></dd>
-                                    </dl>
-                                  </div>
+                      {subscriptionData.length > 0 &&
+                        Object.keys(subscriptionData[0]?.features).map(
+                          (featureKey) => (
+                            <React.Fragment key={featureKey}>
+                              <tr>
+                                <th colSpan={3}>
+                                  <span className={styles.tableHeader}>
+                                    <span>
+                                      {removeUnderScoreNdSetFirstLetterCapital(
+                                        featureKey
+                                      )}
+                                    </span>
+                                  </span>
                                 </th>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[0].features[featureKey][
-                                    innerKey
-                                    ]
-                                  )}
-                                </td>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[1].features[featureKey][
-                                    innerKey
-                                    ]
-                                  )}
-                                </td>
                               </tr>
-                            ))}
-                          </React.Fragment>
-                        )
-                      )}
+
+                              {Object.entries(
+                                subscriptionData[0].features[featureKey]
+                              ).map(([innerKey, innerValue]) => (
+                                <tr key={innerKey}>
+                                  <th scope="row" className={styles.rowData}>
+                                    <div className={styles.rowTitle}>
+                                      <dl className={styles.labelName}>
+                                        <dt className={styles.labelText}>
+                                          <span>
+                                            {removeUnderScoreNdSetFirstLetterCapital(
+                                              innerKey
+                                            )}
+                                          </span>
+                                        </dt>
+                                        <dd
+                                          className={styles.labelDescription}
+                                        ></dd>
+                                      </dl>
+                                    </div>
+                                  </th>
+                                  <td>
+                                    {renderStatusIcon(
+                                      subscriptionData[0].features[featureKey][
+                                        innerKey
+                                      ]
+                                    )}
+                                  </td>
+                                  <td>
+                                    {renderStatusIcon(
+                                      subscriptionData[1].features[featureKey][
+                                        innerKey
+                                      ]
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </React.Fragment>
+                          )
+                        )}
                     </tbody>
                   </table>
                 </div>
@@ -295,5 +368,6 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
           </LegacyCard>
         </div>
       </Modal>
-    </div>);
+    </div>
+  );
 }
