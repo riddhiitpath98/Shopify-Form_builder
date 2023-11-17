@@ -102,7 +102,6 @@ export default function PlanModal({
     });
   }, []);
 
-  // console.log('process.env.Stripe_PK', publishKey);
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
@@ -178,13 +177,13 @@ export default function PlanModal({
       });
     }
   };
-
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
     string = string[0].toUpperCase() + string.substring(1);
     return string;
   };
+
 
   return (
     <div style={{ height: "500px" }}>
@@ -249,7 +248,7 @@ export default function PlanModal({
                         >
                           <span>
                             <span>
-                              <span>Choose this plan</span>
+                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
                             </span>
                           </span>
                         </Button>
@@ -288,7 +287,7 @@ export default function PlanModal({
                         >
                           <span>
                             <span>
-                              <span>Choose this plan</span>
+                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
                             </span>
                           </span>
                         </Button>

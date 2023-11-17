@@ -33,15 +33,17 @@ import { Redirect } from "@shopify/app-bridge/actions";
 import { SUBSCRIPTION_TYPES } from "../../../constant";
 import styles from "./FormPreview.module.css";
 import ElementListBanner from "../../../components/ElementListBanner";
+import useElements from "../../../hooks/useElements";
 
 const FormPreview = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { elements } = useElements();
   const [formFeildData, setFormFeildData] = useState([]);
   const formSubmissionData = useSelector(
     (state) => state.inputField.formSubmissionData
   );
+  
   const dateKeyName = useSelector((state) => state.inputField.dateKeyName);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [verfied, setVerifed] = useState(false);
@@ -107,9 +109,9 @@ const FormPreview = () => {
     (state) => state.user?.userData?.subscription
   );
   const isShowDrawer =
-  inputFields.length >=
-  subscription?.features?.form?.number_of_fields_per_form &&
-  user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+    inputFields.length >=
+    subscription?.features?.form?.number_of_fields_per_form &&
+    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {
@@ -183,8 +185,8 @@ const FormPreview = () => {
           value = input?.attributes?.isDefaultSelected
             ? input?.attributes?.isDefaultSelected
             : input?.attributes?.default_value
-            ? input?.attributes?.default_value
-            : formSubmissionData[unique_id];
+              ? input?.attributes?.default_value
+              : formSubmissionData[unique_id];
         }
         formData = {
           ...formData,
@@ -230,10 +232,10 @@ const FormPreview = () => {
       ["feildValue"]: dateValue,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            dateValue,
-            errorFields
-          )
+          fieldArry?.[fieldIndex]?.["feildName"],
+          dateValue,
+          errorFields
+        )
         : "",
     };
     setFormFeildData([...fieldArry]);
@@ -262,14 +264,14 @@ const FormPreview = () => {
         ["confirmFeildValue"]: inputValue,
         ["confirmErrorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-              fieldArry?.[fieldIndex]?.["confirmFeildName"],
-              inputValue,
-              errorFields,
-              fieldArry?.[fieldIndex]
-            )
+            fieldArry?.[fieldIndex]?.["confirmFeildName"],
+            inputValue,
+            errorFields,
+            fieldArry?.[fieldIndex]
+          )
           : inputValue !== fieldArry?.[fieldIndex].feildValue
-          ? errorFields?.["confirmedPasswordMatch"]
-          : "",
+            ? errorFields?.["confirmedPasswordMatch"]
+            : "",
       };
     } else {
       fieldArry[fieldIndex] = {
@@ -277,10 +279,10 @@ const FormPreview = () => {
         ["feildValue"]: inputValue,
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-              fieldArry?.[fieldIndex]?.["feildName"],
-              inputValue,
-              errorFields
-            )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            inputValue,
+            errorFields
+          )
           : "",
       };
     }
@@ -304,10 +306,10 @@ const FormPreview = () => {
       ["feildValue"]: fileData,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            fileList,
-            errorFields
-          )
+          fieldArry?.[fieldIndex]?.["feildName"],
+          fileList,
+          errorFields
+        )
         : "",
     };
     setFormFeildData([...fieldArry]);
@@ -328,10 +330,10 @@ const FormPreview = () => {
         ["feildValue"]: data,
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-              fieldArry?.[fieldIndex]?.["feildName"],
-              value,
-              errorFields
-            )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            value,
+            errorFields
+          )
           : "",
       };
       setFormFeildData([...fieldArry]);
@@ -346,10 +348,10 @@ const FormPreview = () => {
         ["feildValue"]: data.filter((item) => item.value !== value),
         ["errorMessage"]: fieldArry[fieldIndex]?.required
           ? validation(
-              fieldArry?.[fieldIndex]?.["feildName"],
-              value,
-              errorFields
-            )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            value,
+            errorFields
+          )
           : "",
       };
       setFormFeildData([...fieldArry]);
@@ -487,26 +489,23 @@ const FormPreview = () => {
       ) : (
         <div className={styles.previewCard}>
           <div
-            className={`${styles.previewBox} ${
-              selectedViewPort === "mobile" ? styles.mobile : ""
-            }`}
+            className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
+              }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${styles.formBuilder} ${
-                  selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
-                } ${
-                  selectedBackground === "image" && styles.formImageBackground
-                } `}
+                className={`${styles.formBuilder} ${selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
+                  } ${selectedBackground === "image" && styles.formImageBackground
+                  } `}
                 style={{
                   maxWidth: appearanceFields?.appearanceWidth || "700px",
                   backgroundColor:
                     selectedBackground === "color"
                       ? appearanceFields?.formBackgroundColor
                       : selectedBackground === "none"
-                      ? "#fff"
-                      : "#fff",
+                        ? "#fff"
+                        : "#fff",
                   backgroundImage:
                     selectedBackground === "image"
                       ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -564,7 +563,7 @@ const FormPreview = () => {
                     )}
                   <FormLayout>
                     <Grid>
-                      {inputFields.map(
+                      {elements(user.subscriptionName, inputFields, true).map(
                         ({ id, title, type, attributes, inputId }, index) => {
                           const width = {
                             md:
@@ -572,15 +571,15 @@ const FormPreview = () => {
                               (attributes?.column_width === "33%"
                                 ? 4
                                 : attributes?.column_width === "50%"
-                                ? 6
-                                : attributes?.column_width === "100%" && 12),
+                                  ? 6
+                                  : attributes?.column_width === "100%" && 12),
                             xl:
                               (selectedViewPort === "mobile" && 12) ||
                               (attributes?.column_width === "33%"
                                 ? 4
                                 : attributes?.column_width === "50%"
-                                ? 6
-                                : attributes?.column_width === "100%" && 12),
+                                  ? 6
+                                  : attributes?.column_width === "100%" && 12),
                           };
                           return (
                             <Grid.Cell columnSpan={{ ...width }}>
@@ -641,13 +640,11 @@ const FormPreview = () => {
 
                         <button
                           type="submit"
-                          className={`${styles.classicButton} ${
-                            styles.submitButton
-                          }
-                            ${
-                              footerFieldData?.attributes?.buttonWidth
-                                ? styles.buttonWidth
-                                : `${styles.classicButton}${styles.submitButton}`
+                          className={`${styles.classicButton} ${styles.submitButton
+                            }
+                            ${footerFieldData?.attributes?.buttonWidth
+                              ? styles.buttonWidth
+                              : `${styles.classicButton}${styles.submitButton}`
                             } ${submissionData.loading && styles.loadingBtn}`}
                           style={{
                             backgroundColor:
@@ -668,13 +665,11 @@ const FormPreview = () => {
                         {footerFieldData.attributes.resetButton ? (
                           <button
                             type="button"
-                            className={`${styles.classicButton} ${
-                              styles.resetButton
-                            }
-                              ${
-                                footerFieldData?.attributes?.buttonWidth
-                                  ? styles.buttonWidth
-                                  : `${styles.classicButton}${styles.resetButton}`
+                            className={`${styles.classicButton} ${styles.resetButton
+                              }
+                              ${footerFieldData?.attributes?.buttonWidth
+                                ? styles.buttonWidth
+                                : `${styles.classicButton}${styles.resetButton}`
                               }`}
                             style={{
                               color:

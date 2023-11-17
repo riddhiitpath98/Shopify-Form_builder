@@ -11,6 +11,7 @@ import { Icons, SUBSCRIPTION_TYPES } from "../../../../constant";
 import styles from "../../FormStyle.module.css";
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ElementItem from "./ElementItem";
+import useElements from "../../../../hooks/useElements";
 
 
 const ElementsProvider = ({ isEdit }) => {
@@ -29,6 +30,7 @@ const ElementsProvider = ({ isEdit }) => {
     setTabId({ id, title, attributes, inputId });
     setIsOpen((prev) => !prev);
   };
+  const { elements } = useElements();
 
   const isShowDrawer = formData.length >= subscription?.features?.form?.number_of_fields_per_form && tabId.id === 'add_element';
   const formElements = [
@@ -124,7 +126,7 @@ const ElementsProvider = ({ isEdit }) => {
                       (<div {...provided.droppableProps} ref={provided.innerRef}>
                         {formData &&
                           key === "element" &&
-                          formData?.map(
+                          elements(user?.subscriptionName, formData, true).map(
                             ({ id, title, icon, attributes, inputId }, index) => (
                               <ElementItem key={inputId}  {...{ id, title, icon, attributes, inputId, index, toggleDrawer }} />
                             )
@@ -161,7 +163,7 @@ const ElementsProvider = ({ isEdit }) => {
                         (<div {...provided.droppableProps} ref={provided.innerRef}>
                           {element &&
                             formData &&
-                            formData.map(({ id, title, attributes, inputId }, index) => (
+                            elements(user?.subscriptionName, formData, true).map(({ id, title, attributes, inputId }, index) => (
                               <div>
                                 <ElementItem key={inputId} {...{ id, title, attributes, inputId, index, toggleDrawer }} />
                               </div>

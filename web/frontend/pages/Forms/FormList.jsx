@@ -35,6 +35,7 @@ import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 import ElementListBanner from "../../components/ElementListBanner";
 import CommonModal from "../../components/CommonModal";
+import useElements from "../../hooks/useElements";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -45,21 +46,23 @@ function FormList() {
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
+  const { elements } = useElements();
+
 
   const [active, setActive] = useState(false);
 
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
+
   const handleSubmission = (id) => {
     navigate("/submissions", { state: { id: id } });
   };
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
-      filter[0].isVisible ? id : ""
-    }'></div>`;
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${filter[0].isVisible ? id : ""
+      }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
       function () {
         toast.success("Code Coiped", toastConfig);
@@ -72,6 +75,23 @@ function FormList() {
 
   const subscription = useSelector((state) => state.user.userData.subscription);
   const user = useSelector((state) => state.user.userData.user);
+
+
+  // const filterData = useMemo(() => {
+  //   console.log('formData', formData.formData)
+  //   let dataArr = []
+  //   formData.formData?.map((formItem) => {
+  //     formItem.customForm.map((elem) => {
+  //       const data = elements(user.subscriptionName, elem?.element, true)
+  //       if (data?.length > 0)
+  //         dataArr.push(formItem)
+  //       else
+  //         return null
+  //     })
+  //   })
+  //   console.log('dataArr', dataArr)
+  // }, [formData?.formData])
+
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -89,6 +109,7 @@ function FormList() {
         return formData?.formData;
     }
   }, [formData?.formData, sortValue]);
+
 
   const handleSelectedItems = (selectedItems) => {
     let fackArray = [];
@@ -162,7 +183,7 @@ function FormList() {
         <div className={styles.elementBanner}>
           <ElementListBanner
             title={
-              "You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms."
+              "You are in Free plan. You've created 10 form allowed in your plan. Upgrade to premium to create more forms."
             }
           />
         </div>
@@ -185,6 +206,7 @@ function FormList() {
           disabled: isShowPremium ? true : false,
         }}
       >
+
         <LegacyCard>
           {!shopId || formData?.formData?.length > 0 ? (
             <ResourceList
@@ -232,8 +254,13 @@ function FormList() {
   );
 
   function renderItem(items, index) {
+    let data = [];
+    items.customForm.map((item) => {
+      if (item?.element)
+        data = elements(user.subscriptionName, item.element, true)
+    })
     return (
-      <ResourceItem id={index} name={items?._id} persistActions={true}>
+      <>{data.length > 0 ? <ResourceItem id={index} name={items?._id} persistActions={true}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div
             className={styles.resouceItemTd}
@@ -294,7 +321,8 @@ function FormList() {
             )}
           </div>
         </div>
-      </ResourceItem>
+      </ResourceItem> : null}
+      </>
     );
   }
 }
