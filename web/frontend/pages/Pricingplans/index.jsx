@@ -39,13 +39,13 @@ function Pricingplans() {
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
   const user = useSelector((state) => state.user.userData.user);
+  const subscription = useAppQuery({ url: "/api/subscriptions" });
 
-  
   const handleOpen = (data) => {
     setActive(true);
     setIsCancelPlan(true);
   };
-  
+
   const handleClose = useCallback(() => {
     setActive(false);
   }, []);
@@ -128,21 +128,22 @@ function Pricingplans() {
       });
     }
   };
+  // useAppQuery({ url: "/api/cancelSubscription" })
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getUserByShopId(shopId));
   }, [dispatch, shopId]);
 
   const handleCancelSubscription = () => {
+    const cancelSubscription = subscription?.data?.appSubscriptions.filter(item => item.name === 'Premium Subscription')
     getSessionToken(app).then((session) => {
       const options = {
-        method: "GET",
-        headers: { 
+        method: "DELETE",
+        headers: {
           Authorization: `Bearer ${session}` || "",
+          "Content-Type": "application/json",
         },
-        // body: JSON.stringify(
-        //   `https://admin.shopify.com/store/${storeName}/apps/contact-form-with-api/dashboard`
-        // ),
+        body: JSON.stringify(cancelSubscription[0]),
       };
 
       fetch(`/api/cancelSubscription`, options)
@@ -171,6 +172,8 @@ function Pricingplans() {
         });
     });
   };
+
+
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -207,11 +210,10 @@ function Pricingplans() {
               <div className={styles.gridItem}>
                 <div className={styles.boxHeading}>
                   <h4
-                    className={`${styles.boxHeadingText} ${
-                      user.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                        ? styles.freeHeader
-                        : styles.premiumHeader
-                    }`}
+                    className={`${styles.boxHeadingText} ${user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                      ? styles.freeHeader
+                      : styles.premiumHeader
+                      }`}
                   >
                     Your current plan
                   </h4>
@@ -262,8 +264,10 @@ function Pricingplans() {
                         disabled={
                           user.subscriptionName === SUBSCRIPTION_TYPES.FREE
                         }
+                        onClick={handleOpen}
                         fullWidth
                       >
+
                         <span>
                           <span>
                             <span>
@@ -311,7 +315,7 @@ function Pricingplans() {
                           <span>
                             <span>
                               {user.subscriptionName ===
-                              SUBSCRIPTION_TYPES.PREMIUM
+                                SUBSCRIPTION_TYPES.PREMIUM
                                 ? PLAN_TEXT.CURRENT_PLAN
                                 : PLAN_TEXT.CHOOSE_PLAN}
                             </span>
@@ -367,14 +371,14 @@ function Pricingplans() {
                                 <td>
                                   {renderStatusIcon(
                                     subscriptionData[0].features[featureKey][
-                                      innerKey
+                                    innerKey
                                     ]
                                   )}
                                 </td>
                                 <td>
                                   {renderStatusIcon(
                                     subscriptionData[1].features[featureKey][
-                                      innerKey
+                                    innerKey
                                     ]
                                   )}
                                 </td>
@@ -392,8 +396,8 @@ function Pricingplans() {
         </LegacyCard>
         {active && (
           <CommonModal
-            {...{ active, isCancelPlan, handleClose, handleCancelSubscription}}
-            title="Are you sure to cancel this plan?"
+            {...{ active, isCancelPlan, handleClose, handleCancelSubscription }}
+            title="Are you sure to cancel/change the current plan?"
             description="<p><strong>Note:</strong> Canceling this subscription plan will result in the following:</p>
             <ul>
               <li>The subscription will be set to the Free plan.</li>

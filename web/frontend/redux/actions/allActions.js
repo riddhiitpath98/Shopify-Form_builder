@@ -105,7 +105,6 @@ export const fetchFormDataById = createAsyncThunk(
 export const updateFormData = createAsyncThunk(
   "inputs/editFormData",
   async (data, { rejectWithValue }) => {
-    console.log('data: ', data);
     try {
       const response = await axios.put(
         `/custom_form/${data._id}`,

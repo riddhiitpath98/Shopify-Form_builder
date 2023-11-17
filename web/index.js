@@ -187,11 +187,11 @@ app.post("/api/createSubscription", async (_req, res) => {
     }
 });
 
-app.get('/api/cancelSubscription', async (_req, res) => {
+app.delete('/api/cancelSubscription', async (_req, res) => {
     let status = 200
     let error = null;
     try {
-        const response = await cancelSubscription(res.locals.shopify.session)
+        const response = await cancelSubscription(res.locals.shopify.session, _req.body)
         if (response) {
             res.status(200).send({ success: true, msg: "Subscription cancelled", data: response?.data })
         }

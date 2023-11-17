@@ -8,7 +8,7 @@ import {
 } from "@shopify/polaris";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons, RECURRING_APPLICATION_CHARGE, SUBSCRIPTION_TYPES } from "../../constant";
+import { Icons, PLAN_TEXT, RECURRING_APPLICATION_CHARGE, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import { addShopData, createApplicationCharge, getApplicationCharge } from "../../redux/actions/allActions";
 import axios from "axios";
@@ -78,60 +78,91 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
   }, [])
 
 
-  // console.log('process.env.Stripe_PK', publishKey);
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
-      const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shopData;
-      let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone };
+      const {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      } = shopData.data;
+      let user = {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      };
       subscriptionData.filter(({ subscriptionName, _id }, index) => {
         if (subscriptionName === plan) {
-          user = { ...user, subscriptionName, subscriptionId: _id }
+          user = { ...user, subscriptionName, subscriptionId: _id };
         }
-      })
+      });
       dispatch(addShopData(user));
-      dispatch(addShopId(shopData?.id))
-      toggleModal()
-      navigate("/dashboard", { replace: true })
+      dispatch(addShopId(id));
+      toggleModal();
+      navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      getSessionToken(app).then(token => {
+      getSessionToken(app).then((token) => {
         if (token) {
           try {
             const options = {
-              method: 'POST',
+              method: "POST",
               headers: {
-                'Authorization': `Bearer ${token}` || '',
-                'Content-Type': 'application/json' // Set the content type to JSON
+                Authorization: `Bearer ${token}` || "",
+                "Content-Type": "application/json", // Set the content type to JSON
               },
               body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
-            }
-            fetch(`/api/createSubscription`, options).then(res => res.json()).then(res => {
-              if (res.success) {
-                const pathSegments = res?.data?.appSubscriptionCreate?.appSubscription?.id.split('/');
-                // The last segment contains the ID
-                const chargeId = pathSegments[pathSegments.length - 1]
-                dispatch(createApplicationCharge({ chargeId, shopId: shopData.id }))
-                const redirect = Redirect.create(app);
-                redirect.dispatch(
-                  Redirect.Action.REMOTE,
-                  res.data?.appSubscriptionCreate?.confirmationUrl
-                );
-              }
-
-            }).catch(err => console.log('err', err));
+            };
+            fetch(`/api/createSubscription`, options)
+              .then((res) => res.json())
+              .then((res) => {
+                if (res.success) {
+                  const pathSegments =
+                    res?.data?.appSubscriptionCreate?.appSubscription?.id.split(
+                      "/"
+                    );
+                  // The last segment contains the ID
+                  const chargeId = pathSegments[pathSegments.length - 1];
+                  dispatch(
+                    createApplicationCharge({
+                      chargeId,
+                      shopId: shopData.id,
+                    })
+                  );
+                  const redirect = Redirect.create(app);
+                  redirect.dispatch(
+                    Redirect.Action.REMOTE,
+                    res.data?.appSubscriptionCreate?.confirmationUrl
+                  );
+                }
+              })
+              .catch((err) => console.log("err", err));
           } catch (error) {
-            console.log('error', error)
+            console.log("error", error);
           }
         }
-      })
+      });
     }
-  }
-
+  };
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
     string = string[0].toUpperCase() + string.substring(1);
     return string;
   }
+
 
 
   return (
@@ -191,7 +222,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                         <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.FREE)}>
                           <span>
                             <span>
-                              <span>Choose this plan</span>
+                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
                             </span>
                           </span>
                         </Button>
@@ -224,7 +255,7 @@ export default function PlanModal({ active, toggleModal, isSuccess, shopData }) 
                         <Button primary fullWidth onClick={() => handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)}>
                           <span>
                             <span>
-                              <span>Choose this plan</span>
+                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
                             </span>
                           </span>
                         </Button>

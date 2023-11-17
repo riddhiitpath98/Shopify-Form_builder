@@ -162,7 +162,7 @@ export async function createUsageRecord(session, data) {
 }
 
 
-export const cancelSubscription = async (session) => {
+export const cancelSubscription = async (session, cancelPlan) => {
     const planName = Object.keys(billingConfig)[0];
     const client = new shopify.api.clients.Graphql({ session });
     try {
@@ -172,7 +172,7 @@ export const cancelSubscription = async (session) => {
                 data: {
                     query: CANCEL_SUBSCRIPTION,
                     "variables": {
-                        "id": response.appSubscriptions[0].id
+                        "id": cancelPlan?.id
                     },
                 },
             });

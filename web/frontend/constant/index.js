@@ -486,7 +486,7 @@ export const RECURRING_APPLICATION_CHARGE = {
     "interval": "EVERY_30_DAYS",
     "trialDays": 1,
     "replacementBehavior": "APPLY_IMMEDIATELY",
-    "return_url": "https://admin.shopify.com/store/anavya-store/apps/contact-form-with-api/dashboard"
+    "return_url": "https://admin.shopify.com/store/it-path-dev-store/apps/contact-form-with-api-1/dashboard"
   }
 }
 

@@ -26,6 +26,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   );
 
 
+
   useEffect(() => {
     if (shop.isSuccess) {
       if (chargeId) {
