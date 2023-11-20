@@ -43,7 +43,7 @@ const FormPreview = () => {
   const formSubmissionData = useSelector(
     (state) => state.inputField.formSubmissionData
   );
-  
+
   const dateKeyName = useSelector((state) => state.inputField.dateKeyName);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [verfied, setVerifed] = useState(false);
