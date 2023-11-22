@@ -56,7 +56,7 @@ function Pricingplans() {
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       "name": "Premium Subscription",
-      "amount": 0.5,
+      "amount": 6.99,
       "isTest": true,
       "currencyCode": "USD",
       "interval": "EVERY_30_DAYS",
