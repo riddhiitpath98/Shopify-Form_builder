@@ -183,8 +183,8 @@ const catchFormDivAndAppendForm = (data) => {
 
   function validateInput(fieldType, fieldValue, obj) {
     const value = !Array.isArray(fieldValue)
-      ? typeof fieldValue !== "boolean" && fieldValue.trim()
-      : fieldValue;
+    ? typeof fieldValue !== "boolean" && fieldValue.trim() ? typeof fieldValue !== "boolean" && fieldValue.trim() : fieldValue 
+    : fieldValue;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const contactRegex = /^[2-9]{1}[0-9]{9}$/;
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
@@ -243,7 +243,7 @@ const catchFormDivAndAppendForm = (data) => {
         formData[renderId][name] = value;
       }
     } else {
-      formFieldData = formFieldData.map((item) => {
+      formFieldData = formFieldData.map((item) => { 
         let fieldData = {};
         if (item.confirmfieldId === name && confirmPassword) {
           fieldData = {
@@ -260,7 +260,11 @@ const catchFormDivAndAppendForm = (data) => {
           errorElement.textContent = error && item.required ? error : "";
         }
         if (item.fieldId === name) {
-          if (type === "checkbox") fieldData = { ...item, fieldValue: checked };
+          if (type === "checkbox"){ 
+            checkValidation("accept_terms", checked);
+            formData[renderId][name] = checked;
+          fieldData = { ...item, fieldValue: checked };
+          }
           else fieldData = { ...item, fieldValue: value };
           let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
           const errorElement = document.getElementById(`${item.id}_error`);
@@ -930,12 +934,7 @@ const catchFormDivAndAppendForm = (data) => {
             );
             checkboxInputElement.type = item?.type;
             checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
-            const element = document.querySelector(
-              `input[data-id=${formElementId}_${item?.inputId}]`
-            );
-            element.addEventListener("change", (e) =>
-              handleChange(formElementId, e)
-            );
+           
             checkboxWrapperElement.appendChild(checkboxInputElement);
 
             const checkboxLabelElement = document.createElement("label");
@@ -967,6 +966,12 @@ const catchFormDivAndAppendForm = (data) => {
             errorMessageElement.id = `${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
             checkboxContainer.appendChild(smallElement);
+            const element = document.querySelector(
+              `input[data-id=${formElementId}_${item?.inputId}]`
+              );
+            element.addEventListener("change", (e) =>
+              handleChange(formElementId, e)
+            );
           } else {
             const checkboxContainer = document.createElement("div");
             checkboxContainer.className = "inputContainer";
@@ -1016,10 +1021,11 @@ const catchFormDivAndAppendForm = (data) => {
               checkBoxInputElement.className = "checkBoxInput";
               checkBoxInputElement.type = item?.type;
               checkBoxInputElement.value = option.value;
-              checkBoxInputElement.id = item?.inputId;
+              checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
+              
               checkBoxInputElement.setAttribute(
                 "data-id",
-                `${formElementId}_${item?.inputId}`
+                `${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`
               );
               checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
               checkBoxLabelElement.appendChild(checkBoxInputElement);
@@ -1027,25 +1033,26 @@ const catchFormDivAndAppendForm = (data) => {
               checkBoxLabelElement.appendChild(
                 document.createTextNode(option.label)
               );
-            });
-            const element = document.querySelector(
-              `input[data-id=${formElementId}_${item?.inputId}]`
-            );
-            element.addEventListener("change", (event) => {
-              const selectedCheckboxes = ulElement.querySelectorAll(
-                'input[type="checkbox"]:checked'
-              );
-              const selectedValues = Array.from(selectedCheckboxes).map(
-                (checkbox) => {
-                  let checkValue = {
-                    label: checkbox.value,
-                    value: checkbox.value,
-                  };
-                  return checkValue;
-                }
-              );
-              formData[formElementId][event.target.name] = selectedValues;
-              checkValidation("checkbox", selectedValues);
+
+              const element = document.querySelector(
+                `input[data-id=${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}]`
+                );
+              element.addEventListener("change", (event) => {
+                const selectedCheckboxes = ulElement.querySelectorAll(
+                  'input[type="checkbox"]:checked'
+                  );
+                const selectedValues = Array.from(selectedCheckboxes).map(
+                  (checkbox) => {
+                    let checkValue = {
+                      label: checkbox.value,
+                      value: checkbox.value,
+                    };
+                    return checkValue;
+                  }
+                  );
+                formData[formElementId][event.target.name] = selectedValues;
+                checkValidation("checkbox", selectedValues);
+              });
             });
             const descriptionElement = document.createElement("span");
             descriptionElement.className = "description";
@@ -1071,6 +1078,7 @@ const catchFormDivAndAppendForm = (data) => {
               }
             }
           }
+          
         } else if (item?.type === "radio") {
           const radioContainer = document.createElement("div");
           radioContainer.className = "inputContainer";
@@ -1119,10 +1127,10 @@ const catchFormDivAndAppendForm = (data) => {
             checkBoxInputElement.className = "checkBoxInput";
             checkBoxInputElement.type = item?.type;
             checkBoxInputElement.value = option.value;
-            checkBoxInputElement.id = item?.inputId;
+            checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
             checkBoxInputElement.setAttribute(
               "data-id",
-              `${formElementId}_${item?.inputId}`
+              `${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`
             );
             checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
             checkBoxInputElement.defaultChecked = default_value;
@@ -1131,21 +1139,23 @@ const catchFormDivAndAppendForm = (data) => {
             checkBoxLabelElement.appendChild(
               document.createTextNode(option.label)
             );
-          });
-          const element = document.querySelector(
-            `input[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("change", (event) => {
-            const selectedRadio = ulElement.querySelector(
-              'input[type="radio"]:checked'
+
+            const element = document.querySelector(
+              `input[data-id=${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}]`
             );
-            if (selectedRadio) {
-              const selectedValue = selectedRadio.value;
-              formData[formElementId][event.target.name] = selectedValue;
-              // formData[event.target.name] = selectedValue;
-              checkValidation("radio", selectedValue);
-            }
+            element.addEventListener("change", (event) => {
+              const selectedRadio = ulElement.querySelector(
+                'input[type="radio"]:checked'
+              );
+              if (selectedRadio) {
+                const selectedValue = selectedRadio.value;
+                formData[formElementId][event.target.name] = selectedValue;
+                // formData[event.target.name] = selectedValue;
+                checkValidation("radio", selectedValue);
+              }
+            });
           });
+         
           const descriptionElement = document.createElement("span");
           descriptionElement.className = "description";
           descriptionElement.textContent = description;
@@ -1200,7 +1210,7 @@ const catchFormDivAndAppendForm = (data) => {
           const element = document.querySelector(
             `select[data-id=${formElementId}_${item?.inputId}]`
           );
-          element.addEventListener("input", (e) =>
+          element.addEventListener("change", (e) =>
             handleChange(formElementId, e)
           );
 

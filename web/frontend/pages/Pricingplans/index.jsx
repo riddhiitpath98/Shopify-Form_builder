@@ -417,7 +417,7 @@ function Pricingplans() {
               <li>You will not be able to access the features available in premium plan.</li>
               <li>You will not be able to access the form which are created in premium plan.</li>
             </ul>
-            <p>*Be sure to read above terms & conditions before cancelling the subscription.</p>"
+            <p>Be sure to read above terms & conditions before cancelling the subscription.</p>"
           />
         )}
       </div>

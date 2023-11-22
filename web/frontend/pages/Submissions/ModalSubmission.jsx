@@ -11,9 +11,9 @@ const ModalSubmission = ({
   handleIsReadStatus,
 }) => {
   const formTitle = useMemo(() => {
-    const data = formData.find(formItem => formItem?._id === item?.form)
-    return data ? data.customForm[0]?.formTitle : ""
-  }, [])
+    const data = formData.find((formItem) => formItem?._id === item?.form);
+    return data ? data.customForm[0]?.formTitle : "";
+  }, []);
 
   const fieldLabel = useMemo(() => {
     const labelMap = {};
@@ -29,7 +29,8 @@ const ModalSubmission = ({
       });
     });
     return labelMap;
-  }, [])
+  }, []);
+
   return (
     <Modal
       instant
@@ -51,14 +52,12 @@ const ModalSubmission = ({
         <div>
           <div className={styles.modalTop}>
             <ExceptionList
-              items={
-                [
-                  {
-                    icon: Icons.form,
-                    description: `Form -  ${formTitle}`,
-                  },
-                ]
-              }
+              items={[
+                {
+                  icon: Icons.form,
+                  description: `Form -  ${formTitle}`,
+                },
+              ]}
             />
           </div>
           <DescriptionList
@@ -66,15 +65,25 @@ const ModalSubmission = ({
               const term = fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
               let val = value;
 
-              if (typeof val === 'boolean') {
+              if (typeof val === "boolean") {
                 val = val.toString();
               }
 
               if (Array.isArray(val)) {
-                val = term === 'file' ? val.map(obj => obj.name).join(', ') : val.map(obj => obj.value).join(', ')
+                val =
+                  term === "File"
+                    ? val.map((obj) => obj.name).join(", ")
+                    : val.map((obj) => obj.value).join(", ");
               }
+
               return {
-                term: term?.charAt(0).toUpperCase() + term?.slice(1),
+                term: (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: term?.charAt(0).toUpperCase() + term?.slice(1),
+                    }}
+                  />
+                ),
                 description: val,
               };
             })}
@@ -118,7 +127,7 @@ const ModalSubmission = ({
 //             <ExceptionList
 //               items={
 //                 [
-//                   {   
+//                   {
 //                     icon: Icons.form,
 //                     description: `Form -  ${formTitle}`,
 //                   },
