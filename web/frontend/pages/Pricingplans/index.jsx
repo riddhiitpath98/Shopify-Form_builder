@@ -307,7 +307,7 @@ function Pricingplans() {
                           <span className={styles.price}>
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$5.99</span>
+                              <span className={styles.rupees}>$6.99</span>
                             </span>
                           </span>
                         </span>

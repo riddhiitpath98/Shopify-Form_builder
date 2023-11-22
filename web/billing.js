@@ -4,7 +4,7 @@ import {
 import shopify from "./shopify.js";
 export const billingConfig = {
     "Premium Subscription": {
-        amount: 0.5,
+        amount: 6.99,
         isTest: true,
         currencyCode: 'USD',
         interval: BillingInterval.Every30Days,

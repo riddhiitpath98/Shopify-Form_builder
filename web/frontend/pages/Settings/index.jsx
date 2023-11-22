@@ -26,6 +26,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { Icons, validateTextField } from "../../constant";
 import styles from "./Settings.module.css";
 import { getRestrictionWithPlan } from "../../utils/function";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { Fullscreen } from "@shopify/app-bridge/actions";
 
 const initialState = {
   smtpName: "",
@@ -43,6 +45,10 @@ function Settings() {
     secretKey: "",
     shopId: "",
   });
+
+  
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
   const dispatch = useDispatch();
   const settingData = useSelector((state) => state?.setting?.settingData);
   const smtpSettingData = useSelector(
@@ -109,6 +115,7 @@ function Settings() {
   };
 
   useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
     setFormValues({ ...formValues, shopId: shopId })
     setreCaptchaValues({ ...reCaptchaValues, shopId: shopId });
     dispatch(getSmtpSettingByAppId(shopId));

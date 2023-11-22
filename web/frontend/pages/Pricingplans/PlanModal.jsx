@@ -57,10 +57,7 @@ export default function PlanModal({
       return status;
     }
   };
-  console.log("object", `https://admin.shopify.com/store/${storeName}/apps/${appName
-    ?.split(" ")
-    .join("-")
-    .toLowerCase()}/dashboard`);
+  
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       name: "Premium Subscription",
@@ -266,7 +263,7 @@ export default function PlanModal({
                             <span className={styles.price}>
                               <span>
                                 <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>5.99</span>
+                                <span className={styles.rupees}>6.99</span>
                               </span>
                             </span>
                           </span>

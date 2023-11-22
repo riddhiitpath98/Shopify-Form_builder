@@ -27,7 +27,7 @@ const PORT = 3007;
 //   10
 // );
 
-const STATIC_PATH = `${process.cwd()}/frontend/`;
+const STATIC_PATH = `${process.cwd()}/frontend/dist`
 
 // const STATIC_PATH =
 //   process.env.NODE_ENV === "production"
@@ -42,17 +42,17 @@ const STATIC_PATH = `${process.cwd()}/frontend/`;
 // console.log(STATIC_PATH, "STATIC_PATH");
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 
 // //for CORS
-// app.use(function (req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
-//   res.setHeader("Access-Control-Allow-Headers", "*");
-//   req.header("Content-Type", "application/json");
-//   res.setHeader("Access-Control-Allow-Credentials", true);
-//   next();
-// });
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  req.header("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 // let httpServer;
 // const privateKey = fs.readFileSync('certy/privkey.pem', 'utf8');

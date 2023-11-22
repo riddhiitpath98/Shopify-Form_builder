@@ -223,7 +223,7 @@ const useElements = () => {
                         type: "checkbox",
                         attributes: {
                             label:
-                                "I agree <a href='/' target='_blank'>Terms and Conditions</a>",
+                                "I agree <a href='#'>Terms and Conditions</a>",
                             description: "",
                             isDefaultSelected: false,
                             required: false,
