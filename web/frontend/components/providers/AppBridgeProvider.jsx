@@ -62,32 +62,32 @@ export function AppBridgeProvider({ children }) {
     });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getStoreNameAndAppName();
-  },[]);
+  }, []);
   // dispatch(addShopId(appBridgeConfig.apiKey))
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {
-          title: "Missing Shopify API Key",
-          children: (
-            <>
-              Your app is running without the SHOPIFY_API_KEY environment
-              variable. Please ensure that it is set when running or building
-              your React app.
-            </>
-          ),
-        }
+        title: "Missing Shopify API Key",
+        children: (
+          <>
+            Your app is running without the SHOPIFY_API_KEY environment
+            variable. Please ensure that it is set when running or building
+            your React app.
+          </>
+        ),
+      }
       : {
-          title: "Missing host query argument",
-          children: (
-            <>
-              Your app can only load if the URL has a <b>host</b> argument.
-              Please ensure that it is set, or access your app using the
-              Partners Dashboard <b>Test your app</b> feature
-            </>
-          ),
-        };
+        title: "Missing host query argument",
+        children: (
+          <>
+            Your app can only load if the URL has a <b>host</b> argument.
+            Please ensure that it is set, or access your app using the
+            Partners Dashboard <b>Test your app</b> feature
+          </>
+        ),
+      };
 
     return (
       <Page narrowWidth>

@@ -28,6 +28,7 @@ function Pricingplans() {
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
   const storeName = shopData?.data?.domain?.split(".")[0];
+  console.log('storeName: ', storeName);
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
@@ -41,7 +42,8 @@ function Pricingplans() {
   const subscription = useAppQuery({ url: "/api/subscriptions" });
 
   const appName = useSelector((state) => state?.shopId?.appName);
-  
+  console.log('appName: ', appName);
+
   const handleOpen = (data) => {
     setActive(true);
     setIsCancelPlan(true);
@@ -54,7 +56,7 @@ function Pricingplans() {
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       "name": "Premium Subscription",
-      "amount": 0.5,
+      "amount": 6.99,
       "isTest": true,
       "currencyCode": "USD",
       "interval": "EVERY_30_DAYS",
@@ -185,7 +187,6 @@ function Pricingplans() {
         });
     });
   };
-
 
   const renderStatusIcon = (status) => {
     if (status === true) {

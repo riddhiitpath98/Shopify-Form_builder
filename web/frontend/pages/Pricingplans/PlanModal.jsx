@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, LegacyCard, Badge, Icon } from "@shopify/polaris";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons, SUBSCRIPTION_TYPES } from "../../constant";
+import { Icons, PLAN_TEXT, SUBSCRIPTION_TYPES } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import {
   addShopData,
   createApplicationCharge,
-  getApplicationCharge,
 } from "../../redux/actions/allActions";
 import axios from "axios";
 import { useAppQuery } from "../../hooks";
@@ -29,7 +28,7 @@ export default function PlanModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const storeName = shopData?.data?.domain?.split(".")[0];
+  const storeName = shopData?.domain?.split(".")[0];
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -58,11 +57,14 @@ export default function PlanModal({
       return status;
     }
   };
-
+  console.log("object", `https://admin.shopify.com/store/${storeName}/apps/${appName
+    ?.split(" ")
+    .join("-")
+    .toLowerCase()}/dashboard`);
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       name: "Premium Subscription",
-      amount: 0.5,
+      amount: 6.99,
       isTest: true,
       currencyCode: "USD",
       interval: "EVERY_30_DAYS",
@@ -92,15 +94,6 @@ export default function PlanModal({
     }
   };
 
-  useEffect(() => {
-    getSessionToken(app).then((response) => {
-      if (response) {
-        dispatch(
-          getApplicationCharge({ shopId: shopData?.id, session: response })
-        );
-      }
-    });
-  }, []);
 
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -115,7 +108,7 @@ export default function PlanModal({
         shop_owner,
         myshopify_domain,
         phone,
-      } = shopData;
+      } = shopData.data;
       let user = {
         id,
         name,
@@ -134,7 +127,7 @@ export default function PlanModal({
         }
       });
       dispatch(addShopData(user));
-      dispatch(addShopId(shopData?.id));
+      dispatch(addShopId(id));
       toggleModal();
       navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
@@ -160,7 +153,10 @@ export default function PlanModal({
                   // The last segment contains the ID
                   const chargeId = pathSegments[pathSegments.length - 1];
                   dispatch(
-                    createApplicationCharge({ chargeId, shopId: shopData.id })
+                    createApplicationCharge({
+                      chargeId,
+                      shopId: shopData?.id,
+                    })
                   );
                   const redirect = Redirect.create(app);
                   redirect.dispatch(
@@ -343,14 +339,14 @@ export default function PlanModal({
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[0].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[1].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>
