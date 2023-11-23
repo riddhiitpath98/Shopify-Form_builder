@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, ButtonGroup, Icon, Link, TextField } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -94,10 +94,33 @@ const Topbar = ({ handleRedirectToForm }) => {
     dispatch(setSelectedViewport(viewPort));
   };
 
+  const hasPremiumInput = useMemo(() => {
+    let fields = [];
+    inputFields.map((item) => {
+      if (item?.viewAccess?.includes(SUBSCRIPTION_TYPES.PREMIUM)) {
+        fields = [...fields, item.id]
+      }
+    })
+    return fields
+  }, [inputFields])
+
+  console.log('hasPremiumInput', hasPremiumInput)
+  const hasFreeInput = useMemo(() => {
+    let fields = [];
+    inputFields.map((item) => {
+      if (!item?.viewAccess) {
+        fields = [...fields, item.id]
+      }
+    })
+    return fields
+  }, [inputFields])
+
+  console.log('hasFreeInput', hasFreeInput)
   const handleSubmit = () => {
     const combinedObjectArr = {
       shopId: shopId,
-      isPremium: user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? true : false,
+      hasPremiumInput,
+      hasFreeInput,
       enableReCaptcha: googelRecaptcha?.enable || false,
       customForm: [{ formTitle: titleValue.title },
       { header: headerFieldData },
@@ -124,7 +147,7 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({ _id: editFormId, customForm: updatedFormData, isPremium: user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? true : false })
+      updateFormData({ _id: editFormId, customForm: updatedFormData, hasFreeInput, hasPremiumInput })
     );
     dispatch(
       createNupdateValidation({

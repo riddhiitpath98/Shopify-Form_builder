@@ -76,37 +76,31 @@ function FormList() {
   const subscription = useSelector((state) => state.user.userData.subscription);
   const user = useSelector((state) => state.user.userData.user);
 
-
-  // const filterData = useMemo(() => {
-  //   console.log('formData', formData.formData)
-  //   let dataArr = []
-  //   formData.formData?.map((formItem) => {
-  //     formItem.customForm.map((elem) => {
-  //       const data = elements(user.subscriptionName, elem?.element, true)
-  //       if (data?.length > 0)
-  //         dataArr.push(formItem)
-  //       else
-  //         return null
-  //     })
-  //   })
-  //   console.log('dataArr', dataArr)
-  // }, [formData?.formData])
-
-
   const sortedItems = useMemo(() => {
+    const data = formData?.formData?.filter((formItem) => {
+      if ((user?.subscriptionName === SUBSCRIPTION_TYPES.FREE && formItem?.hasPremiumInput?.length > 0) && formItem?.hasFreeInput?.length > 0) {
+        return formItem
+      }
+      else if (user?.subscriptionName === SUBSCRIPTION_TYPES.FREE && formItem?.hasPremiumInput?.length > 0)
+        return null
+      else if (user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+        return formItem
+      }
+      else return formItem;
+    });
     switch (sortValue) {
       case "DATE_MODIFIED_DESC":
-        return [...formData?.formData].sort(
+        return [...data].sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
       case "DATE_MODIFIED_ASC":
-        return [...formData?.formData].sort(
+        return [...data].sort(
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
       default:
-        return formData?.formData;
+        return data;
     }
   }, [formData?.formData, sortValue]);
 
@@ -260,7 +254,7 @@ function FormList() {
         data = elements(user.subscriptionName, item.element, true)
     })
     return (
-      <>{data.length > 0 ? <ResourceItem id={index} name={items?._id} persistActions={true}>
+      <ResourceItem id={index} name={items?._id} persistActions={true}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div
             className={styles.resouceItemTd}
@@ -321,8 +315,7 @@ function FormList() {
             )}
           </div>
         </div>
-      </ResourceItem> : null}
-      </>
+      </ResourceItem>
     );
   }
 }

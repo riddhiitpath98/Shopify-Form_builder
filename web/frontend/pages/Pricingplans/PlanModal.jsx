@@ -57,7 +57,7 @@ export default function PlanModal({
       return status;
     }
   };
-  
+
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       name: "Premium Subscription",

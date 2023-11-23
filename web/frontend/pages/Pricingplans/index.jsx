@@ -28,7 +28,7 @@ function Pricingplans() {
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
   const storeName = shopData?.data?.domain?.split(".")[0];
-  console.log('storeName: ', storeName);
+  console.log('storeName: ', storeName, shopData);
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
@@ -42,7 +42,6 @@ function Pricingplans() {
   const subscription = useAppQuery({ url: "/api/subscriptions" });
 
   const appName = useSelector((state) => state?.shopId?.appName);
-  console.log('appName: ', appName);
 
   const handleOpen = (data) => {
     setActive(true);
@@ -62,9 +61,10 @@ function Pricingplans() {
       "interval": "EVERY_30_DAYS",
       "trialDays": 1,
       "replacementBehavior": "APPLY_IMMEDIATELY",
-      "return_url": `https://admin.shopify.com/store/${storeName}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
+      "return_url": `https://admin.shopify.com/store/${shopData?.data?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
     }
   }
+  console.log('RECURRING_APPLICATION_CHARGE', RECURRING_APPLICATION_CHARGE)
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
@@ -125,7 +125,7 @@ function Pricingplans() {
                   dispatch(
                     createApplicationCharge({
                       chargeId,
-                      shopId: shopData?.data.id,
+                      shopId: shopData?.data?.id,
                     })
                   );
                   const redirect = Redirect.create(app);
