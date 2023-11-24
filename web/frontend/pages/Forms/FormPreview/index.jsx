@@ -291,6 +291,7 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
+    console.log('fileList: ', fileList);
 
     const fileData = fileList.map((file) => ({
       name: file.name,
@@ -366,6 +367,19 @@ const FormPreview = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    console.log('m', formSubmissionData)
+    const finalFormData = new FormData();
+    finalFormData.append("shopId", shopId)
+    for (const key in formSubmissionData) {
+      if (key.split("_").pop() === 'file') {
+        formSubmissionData[key].forEach(item => {
+          finalFormData.append(`file`, new File([], item.name, { type: item.type }));
+        })
+      }
+      else
+        finalFormData.append(key, formSubmissionData[key]);
+    }
+
     const errorObj = {};
     const cloneData = [...formFeildData];
     let formData = {};
@@ -400,10 +414,10 @@ const FormPreview = () => {
       dispatch(
         createSubmissions({
           form: editFormId,
-          shopId: shopId,
-          submission: formSubmissionData,
+          formData: finalFormData,
         })
       );
+
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {
         return {
