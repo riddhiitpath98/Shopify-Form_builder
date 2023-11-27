@@ -62,7 +62,10 @@ const ModalSubmission = ({
           </div>
           <DescriptionList
             items={Object.entries(item?.submission[0]).map(([key, value]) => {
-              const term = key === 'file' ? "File" : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
+              const term =
+                key === "file"
+                  ? "File"
+                  : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
               let val = value;
 
               if (typeof val === "boolean") {
@@ -70,10 +73,7 @@ const ModalSubmission = ({
               }
 
               if (Array.isArray(val)) {
-                val =
-                  term === "File"
-                    ? val.map((obj) => obj).join(", ") : ""
-
+                val = term === "File" ? val.map((obj) => obj).join(", ") : "";
               }
 
               return {

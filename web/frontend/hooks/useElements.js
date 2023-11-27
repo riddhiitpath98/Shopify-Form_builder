@@ -128,7 +128,7 @@ const useElements = () => {
                     },
                     {
                         id: "file",
-                        viewAccess: ["premium", "enterprise"],
+                        // viewAccess: ["premium", "enterprise"],
                         title: "File",
                         icon: Icons.file,
                         type: "file",
@@ -141,6 +141,7 @@ const useElements = () => {
                             allowedExtensions: [
                                 { label: "jpg", value: "jpg" },
                                 { label: "jpeg", value: "jpeg" },
+                                { label: "pdf", value: "pdf" },
                             ],
                             allowMultiple: false,
                         },

@@ -108,10 +108,10 @@ const FormPreview = () => {
   const subscription = useSelector(
     (state) => state.user?.userData?.subscription
   );
-  const isShowDrawer =
-    inputFields.length >=
-    subscription?.features?.form?.number_of_fields_per_form &&
-    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+  // const isShowDrawer =
+  //   inputFields.length >=
+  //   subscription?.features?.form?.number_of_fields_per_form &&
+  //   user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {
@@ -133,7 +133,7 @@ const FormPreview = () => {
           };
           if (input?.attributes?.confirmPassword) {
             fieldArry.push({
-              ...feildData,
+              ...feildData, 
               confirmPassword: input?.attributes?.confirmPassword,
               confirmFeildId: `${input?.inputId}_confirm_${input?.id}`,
             });
@@ -475,13 +475,13 @@ const FormPreview = () => {
 
   return (
     <div className={styles.formContent}>
-      {isShowDrawer ? (
+      {/* {isShowDrawer ? (
         <div className={styles.elementBanner}>
           <ElementListBanner
             title={"You can only add 12 element for a form with a Free plan."}
           />
         </div>
-      ) : null}
+      ) : null} */}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>

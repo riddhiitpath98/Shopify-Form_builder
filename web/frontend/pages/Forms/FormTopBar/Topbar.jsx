@@ -73,7 +73,7 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const finalFormData = useSelector(
     (state) => state?.inputField?.finalFormData
-  );
+    );
 
   const isSaveOrUpdate = useSelector((state) => state.inputField?.isSaveOrUpdate);
   const formDataById = useSelector(
@@ -236,6 +236,7 @@ const Topbar = ({ handleRedirectToForm }) => {
                     primary
                     onClick={handleUpdate}
                     loading={finalFormData?.loading}
+                    disabled={inputFields?.length === 0}
                   >
                     Update
                   </Button>
@@ -244,6 +245,7 @@ const Topbar = ({ handleRedirectToForm }) => {
                     primary
                     onClick={handleSubmit}
                     loading={finalFormData?.loading}
+                    disabled={inputFields?.length === 0}
                   >
                     Save
                   </Button>
