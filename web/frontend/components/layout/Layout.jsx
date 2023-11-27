@@ -6,8 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import PlanModal from "../../pages/Pricingplans/PlanModal";
 import { useAppQuery } from "../../hooks";
 import { addShopData, getAllSubscription, getUserByShopId } from "../../redux/actions/allActions";
-import { addShopId } from "../../redux/reducers/appIdSlice";
-import { SUBSCRIPTION_TYPES } from "../../constant";
+import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
+import { SUBSCRIPTION_TYPES, handleRecurringChargeVal } from "../../constant";
+import { useAppBridge } from "@shopify/app-bridge-react";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
@@ -21,13 +22,20 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
+
+  const appBridge = useAppBridge();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
-
+  const getStoreNameAndAppName = async () => {
+    appBridge.getState().then((response) => {
+      dispatch(getAppName(response?.titleBar?.appInfo?.name));
+    });
+  };
 
   useEffect(() => {
+    getStoreNameAndAppName()
     if (shop.isSuccess) {
       if (chargeId) {
         const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shop.data;

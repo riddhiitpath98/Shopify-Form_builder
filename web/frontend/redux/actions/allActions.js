@@ -12,7 +12,7 @@ export const addShopData = createAsyncThunk(
   async (shopData, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post("/user", shopData);
-      toast.success(response?.data?.message, toastConfig);
+      toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
       toast.error(error?.response?.msg, toastConfig);
@@ -238,14 +238,30 @@ export const addFeedback = createAsyncThunk(
 
 // ====================== submission API started ========================================================================
 
+// export const createSubmissions = createAsyncThunk(
+//   "submission/addSubmissions",
+//   async (submissionData, { rejectWithValue }) => {
+//     try {
+//       const response = await axios.post(`/submission/${submissionData.form}`, {
+//         shopId: submissionData.shopId,
+//         submission: submissionData.submission,
+//       });
+//       // toast.success(response?.data?.msg, toastConfig)
+//       return response.data.data;
+//     } catch (error) {
+//       // toast.error(error.message)
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
+
 export const createSubmissions = createAsyncThunk(
   "submission/addSubmissions",
   async (submissionData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/submission/${submissionData.form}`, {
-        shopId: submissionData.shopId,
-        submission: submissionData.submission,
-      });
+      const response = await axios.post(`/submission/${submissionData.form}`,
+        submissionData?.formData
+      );
       // toast.success(response?.data?.msg, toastConfig)
       return response.data.data;
     } catch (error) {

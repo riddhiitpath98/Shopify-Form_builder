@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, LegacyCard, Badge, Icon } from "@shopify/polaris";
 import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Icons, PLAN_TEXT, SUBSCRIPTION_TYPES } from "../../constant";
+import {
+  Icons,
+  PLAN_TEXT,
+  SUBSCRIPTION_TYPES,
+  handleRecurringChargeVal,
+} from "../../constant";
 import { useNavigate } from "react-router-dom";
 import {
   addShopData,
@@ -27,18 +32,20 @@ export default function PlanModal({
   const app = useAppBridge();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const storeName = shopData?.domain?.split(".")[0];
+  const [recurringCharge, setRecurringCharge] = useState();
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
-  const recurringCharge = useSelector(
-    (state) => state.recurringCharge.recurringCharges.data
-  );
-
   const appName = useSelector((state) => state?.shopId?.appName);
+
+  useEffect(() => {
+    setRecurringCharge(handleRecurringChargeVal(appName, shopData));
+  }, [dispatch, shopData?.isSuccess]);
+
+
+  const subscription = useAppQuery({ url: "/api/subscriptions" });
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -58,21 +65,6 @@ export default function PlanModal({
     }
   };
 
-  const RECURRING_APPLICATION_CHARGE = {
-    premium_subscription: {
-      name: "Premium Subscription",
-      amount: 6.99,
-      isTest: true,
-      currencyCode: "USD",
-      interval: "EVERY_30_DAYS",
-      trialDays: 1,
-      replacementBehavior: "APPLY_IMMEDIATELY",
-      return_url: `https://admin.shopify.com/store/${storeName}/apps/${appName
-        ?.split(" ")
-        .join("-")
-        .toLowerCase()}/dashboard`,
-    },
-  };
   const fetchSubscriptions = async (token) => {
     try {
       const options = {
@@ -90,7 +82,6 @@ export default function PlanModal({
       console.log("error", error);
     }
   };
-
 
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -137,7 +128,7 @@ export default function PlanModal({
                 Authorization: `Bearer ${token}` || "",
                 "Content-Type": "application/json", // Set the content type to JSON
               },
-              body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
+              body: JSON.stringify(recurringCharge),
             };
             fetch(`/api/createSubscription`, options)
               .then((res) => res.json())
@@ -176,7 +167,6 @@ export default function PlanModal({
     string = string[0].toUpperCase() + string.substring(1);
     return string;
   };
-
 
   return (
     <div style={{ height: "500px" }}>
@@ -336,14 +326,14 @@ export default function PlanModal({
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[0].features[featureKey][
-                                      innerKey
+                                        innerKey
                                       ]
                                     )}
                                   </td>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[1].features[featureKey][
-                                      innerKey
+                                        innerKey
                                       ]
                                     )}
                                   </td>

@@ -481,3 +481,20 @@ export const PLAN_TEXT = {
   CURRENT_PLAN: "Current Plan",
   CANCEL_PLAN: "Cancel Plan"
 }
+
+export const handleRecurringChargeVal = (appName , shopData)=>{
+  const RECURRING_APPLICATION_CHARGE = {
+    premium_subscription: {
+      "name": "Premium Subscription",
+      "amount": 6.99,
+      "isTest": true,
+      "currencyCode": "USD",
+      "interval": "EVERY_30_DAYS",
+      "trialDays": 1,
+      "replacementBehavior": "APPLY_IMMEDIATELY",
+      "return_url": `https://admin.shopify.com/store/${shopData?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`,
+    }
+  };
+
+return RECURRING_APPLICATION_CHARGE
+}

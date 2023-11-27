@@ -3,7 +3,7 @@ import { Badge, Button, Icon, LegacyCard, Page } from "@shopify/polaris";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,55 +17,42 @@ import {
 import {
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
+  handleRecurringChargeVal,
 } from "../../constant";
 import { addShopId } from "../../redux/reducers/appIdSlice";
 import { useAppQuery } from "../../hooks";
 import CommonModal from "../../components/CommonModal";
+import { ToastContainer } from "react-toastify";
 
 function Pricingplans() {
   const app = useAppBridge();
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
-  const storeName = shopData?.data?.domain?.split(".")[0];
-  console.log('storeName: ', storeName, shopData);
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
+  const [recurringCharge,setRecurringCharge] = useState({});
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  const user = useSelector((state) => state.user.userData.user);
+  const user = useSelector((state) => state?.user?.userData?.user);
   const subscription = useAppQuery({ url: "/api/subscriptions" });
-
   const appName = useSelector((state) => state?.shopId?.appName);
-
   const handleOpen = (data) => {
-    setActive(true);
+    setActive(true);  
     setIsCancelPlan(true);
   };
 
   const handleClose = useCallback(() => {
     setActive(false);
   }, []);
-
-  const RECURRING_APPLICATION_CHARGE = {
-    premium_subscription: {
-      "name": "Premium Subscription",
-      "amount": 6.99,
-      "isTest": true,
-      "currencyCode": "USD",
-      "interval": "EVERY_30_DAYS",
-      "trialDays": 1,
-      "replacementBehavior": "APPLY_IMMEDIATELY",
-      "return_url": `https://admin.shopify.com/store/${shopData?.data?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
-    }
-  }
-  console.log('RECURRING_APPLICATION_CHARGE', RECURRING_APPLICATION_CHARGE)
+  
   const handleUserNavigation = async (plan) => {
+    // const data = await Promise.all(recurringCharge)
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
         id,
@@ -98,8 +85,8 @@ function Pricingplans() {
       });
       dispatch(addShopData(user));
       dispatch(addShopId(id));
-      toggleModal();
-      navigate("/dashboard", { replace: true });
+      // toggleModal();
+      // navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       getSessionToken(app).then((token) => {
         if (token) {
@@ -110,7 +97,7 @@ function Pricingplans() {
                 Authorization: `Bearer ${token}` || "",
                 "Content-Type": "application/json", // Set the content type to JSON
               },
-              body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
+              body: JSON.stringify(recurringCharge),
             };
             fetch(`/api/createSubscription`, options)
               .then((res) => res.json())
@@ -147,7 +134,8 @@ function Pricingplans() {
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getUserByShopId(shopId));
-  }, [dispatch, shopId]);
+    setRecurringCharge(handleRecurringChargeVal(appName, shopData?.data));
+  }, [dispatch, shopId,shopData?.isSuccess]);
 
   const handleCancelSubscription = () => {
     const cancelSubscription = subscription?.data?.appSubscriptions.filter(item => item.name === 'Premium Subscription')
@@ -173,9 +161,9 @@ function Pricingplans() {
             );
             const data = {
               ...user,
-              id: user.shopId,
-              name: user.shopName,
-              myshopify_domain: user.domain,
+              id: user?.shopId,
+              name: user?.shopName,
+              myshopify_domain: user?.domain,
               subscriptionName: subscriptionData[index].subscriptionName,
               subscriptionId: subscriptionData[index]._id,
               chargeId: null,
@@ -224,7 +212,7 @@ function Pricingplans() {
               <div className={styles.gridItem}>
                 <div className={styles.boxHeading}>
                   <h4
-                    className={`${styles.boxHeadingText} ${user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                    className={`${styles.boxHeadingText} ${user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
                       ? styles.freeHeader
                       : styles.premiumHeader
                       }`}
@@ -276,7 +264,7 @@ function Pricingplans() {
                       <Button
                         primary
                         disabled={
-                          user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
                         }
                         onClick={handleOpen}
                         fullWidth
@@ -285,7 +273,7 @@ function Pricingplans() {
                         <span>
                           <span>
                             <span>
-                              {user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                              {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
                                 ? PLAN_TEXT.CURRENT_PLAN
                                 : PLAN_TEXT.CHOOSE_PLAN}
                             </span>
@@ -317,7 +305,7 @@ function Pricingplans() {
                       </div>
                       <Button
                         disabled={
-                          user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                          user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
                         }
                         primary
                         fullWidth
@@ -328,7 +316,7 @@ function Pricingplans() {
                         <span>
                           <span>
                             <span>
-                              {user.subscriptionName ===
+                              {user?.subscriptionName ===
                                 SUBSCRIPTION_TYPES.PREMIUM
                                 ? PLAN_TEXT.CURRENT_PLAN
                                 : PLAN_TEXT.CHOOSE_PLAN}
@@ -337,7 +325,7 @@ function Pricingplans() {
                         </span>
                       </Button>
 
-                      {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
+                      {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
                         <div style={{ marginTop: "5px" }}>
                           <Button fullWidth onClick={handleOpen}>
                             <span>
@@ -415,14 +403,16 @@ function Pricingplans() {
             description="<p><strong>Note:</strong> Canceling this subscription plan will result in the following:</p>
             <ul>
               <li>The subscription will be set to the Free plan.</li>
-              <li>You will not be able to access the features available in premium plan.</li>
-              <li>You will not be able to access the form which are created in premium plan.</li>
+              <li>You will not be able to access the features that are available in the premium plan.</li>
+              <li>You can access all forms created under the premium plan, without any restricted elements.</li>
             </ul>
             <p>Be sure to read above terms & conditions before cancelling the subscription.</p>"
           />
         )}
       </div>
+      <ToastContainer/>
     </Page>
+    
   );
 }
 

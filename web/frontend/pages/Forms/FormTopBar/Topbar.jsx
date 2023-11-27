@@ -104,7 +104,6 @@ const Topbar = ({ handleRedirectToForm }) => {
     return fields
   }, [inputFields])
 
-  console.log('hasPremiumInput', hasPremiumInput)
   const hasFreeInput = useMemo(() => {
     let fields = [];
     inputFields.map((item) => {
@@ -115,7 +114,6 @@ const Topbar = ({ handleRedirectToForm }) => {
     return fields
   }, [inputFields])
 
-  console.log('hasFreeInput', hasFreeInput)
   const handleSubmit = () => {
     const combinedObjectArr = {
       shopId: shopId,
