@@ -253,7 +253,7 @@ export default function PlanModal({
                             <span className={styles.price}>
                               <span>
                                 <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>6.99</span>
+                                <span className={styles.rupees}>6.67</span>
                               </span>
                             </span>
                           </span>
@@ -326,14 +326,14 @@ export default function PlanModal({
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[0].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[1].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>

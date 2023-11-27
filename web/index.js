@@ -146,7 +146,7 @@ app.get("/api/subscriptions", async (_req, res) => {
 
     const subscription = await shopify.api.billing.check({
         plans: "Premium Subscription",
-        isTest: true,
+        // isTest: true,
         returnObject: true,
         session: res.locals.shopify.session,
     });

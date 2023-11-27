@@ -1,0 +1,33 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "Contact Form with API"
+client_id = "57102bf72644e1b45a562609d735fc39"
+application_url = "https://1dc4-122-170-99-65.ngrok-free.app"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+use_legacy_install_flow = true
+
+[auth]
+redirect_urls = [
+  "https://1dc4-122-170-99-65.ngrok-free.app/auth/callback",
+  "https://1dc4-122-170-99-65.ngrok-free.app/auth/shopify/callback",
+  "https://1dc4-122-170-99-65.ngrok-free.app/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-07"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://custom-form-x479.onrender.com/customers/redact"
+  customer_data_request_url = "https://custom-form-x479.onrender.com/customers/data_request"
+  shop_deletion_url = "https://custom-form-x479.onrender.com/shop/redact"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "contact-form-to-any-api.myshopify.com"

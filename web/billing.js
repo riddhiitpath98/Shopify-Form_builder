@@ -4,8 +4,8 @@ import {
 import shopify from "./shopify.js";
 export const billingConfig = {
     "Premium Subscription": {
-        amount: 6.99,
-        isTest: true,
+        amount: 6.67,
+        // isTest: true,
         currencyCode: 'USD',
         interval: BillingInterval.Every30Days,
         trialDays: 1,
@@ -128,7 +128,7 @@ export async function createUsageRecord(session, data) {
                         "name": data?.name,
                         "returnUrl": data?.return_url,
                         // "trialDays": data.trialDays,
-                        "test": data?.isTest,
+                        // "test": data?.isTest,
                         "lineItems": [
                             {
                                 "plan": {

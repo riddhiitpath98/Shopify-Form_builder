@@ -482,12 +482,12 @@ export const PLAN_TEXT = {
   CANCEL_PLAN: "Cancel Plan"
 }
 
-export const handleRecurringChargeVal = (appName , shopData)=>{
+export const handleRecurringChargeVal = (appName, shopData) => {
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
       "name": "Premium Subscription",
-      "amount": 6.99,
-      "isTest": true,
+      "amount": 6.67,
+      // "isTest": true,
       "currencyCode": "USD",
       "interval": "EVERY_30_DAYS",
       "trialDays": 1,
@@ -496,5 +496,5 @@ export const handleRecurringChargeVal = (appName , shopData)=>{
     }
   };
 
-return RECURRING_APPLICATION_CHARGE
+  return RECURRING_APPLICATION_CHARGE
 }

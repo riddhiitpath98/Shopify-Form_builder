@@ -32,7 +32,7 @@ function Pricingplans() {
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
-  const [recurringCharge,setRecurringCharge] = useState({});
+  const [recurringCharge, setRecurringCharge] = useState({});
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -43,14 +43,14 @@ function Pricingplans() {
   const subscription = useAppQuery({ url: "/api/subscriptions" });
   const appName = useSelector((state) => state?.shopId?.appName);
   const handleOpen = (data) => {
-    setActive(true);  
+    setActive(true);
     setIsCancelPlan(true);
   };
 
   const handleClose = useCallback(() => {
     setActive(false);
   }, []);
-  
+
   const handleUserNavigation = async (plan) => {
     // const data = await Promise.all(recurringCharge)
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -130,12 +130,11 @@ function Pricingplans() {
       });
     }
   };
-  // useAppQuery({ url: "/api/cancelSubscription" })
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getUserByShopId(shopId));
     setRecurringCharge(handleRecurringChargeVal(appName, shopData?.data));
-  }, [dispatch, shopId,shopData?.isSuccess]);
+  }, [dispatch, shopId, shopData?.isSuccess]);
 
   const handleCancelSubscription = () => {
     const cancelSubscription = subscription?.data?.appSubscriptions.filter(item => item.name === 'Premium Subscription')
@@ -175,6 +174,7 @@ function Pricingplans() {
         });
     });
   };
+
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -295,7 +295,7 @@ function Pricingplans() {
                           <span className={styles.price}>
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$6.99</span>
+                              <span className={styles.rupees}>$6.67</span>
                             </span>
                           </span>
                         </span>
@@ -410,9 +410,9 @@ function Pricingplans() {
           />
         )}
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </Page>
-    
+
   );
 }
 
