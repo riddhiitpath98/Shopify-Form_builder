@@ -63,7 +63,7 @@ const FormPreview = () => {
     (state) => state.submission.submissionData?.formSubmitted
   );
 
-  const shopId = useSelector((state) => state.shopId.shopId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
   const inputFields = useSelector((state) => state?.inputField?.inputFields);
 
   const submissionData = useSelector(
@@ -286,29 +286,28 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
-
-    const fileData = fileList.map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-    }));
+    // const fileData = fileList.map((file) => ({
+    //   name: file.name,
+    //   size: file.size,
+    //   type: file.type,
+    //   lastModified: file.lastModified,
+    // }));
 
     let fieldArry = [...formFeildData];
     let fieldIndex = formFeildData.findIndex((item) => item.id === id);
     fieldArry[fieldIndex] = {
       ...fieldArry[fieldIndex],
-      ["feildValue"]: fileData,
+      ["feildValue"]: fileList,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-            fieldArry?.[fieldIndex]?.["feildName"],
-            fileList,
-            errorFields
-          )
+          fieldArry?.[fieldIndex]?.["feildName"],
+          fileList,
+          errorFields
+        )
         : "",
     };
     setFormFeildData([...fieldArry]);
-    const formData = { ...formSubmissionData, [name]: fileData };
+    const formData = { ...formSubmissionData, [name]: fileList };
     dispatch(addFormSubmission(formData));
   };
 
@@ -361,6 +360,22 @@ const FormPreview = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    const finalFormData = new FormData();
+    finalFormData.append("shopId", shopId)
+    if (formSubmissionData && Object.keys(formSubmissionData).length > 0) {
+      for (const key in formSubmissionData) {
+        if (formSubmissionData[key] !== "" && key.split("_").pop() === 'file') {
+          formSubmissionData[key]?.forEach(item => {
+            finalFormData.append(`file`, item);
+          })
+        }
+        else
+          finalFormData.append(key, formSubmissionData[key]);
+      }
+    }
+    console.log('formSubmissionData: ', formSubmissionData);
+    
+    console.log('finalFormData: ', finalFormData);
     const errorObj = {};
     const cloneData = [...formFeildData];
     let formData = {};
@@ -395,10 +410,10 @@ const FormPreview = () => {
       dispatch(
         createSubmissions({
           form: editFormId,
-          shopId: shopId,
-          submission: formSubmissionData,
+          formData: finalFormData,
         })
       );
+
       dispatch(setFormSubmitted(true));
       const data = cloneData.map((feild) => {
         return {
@@ -441,6 +456,7 @@ const FormPreview = () => {
       setFormFeildData(array);
     }
   };
+
 
   const handleResetForm = () => {
     let formData = {};

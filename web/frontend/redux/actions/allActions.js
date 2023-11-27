@@ -172,7 +172,9 @@ export const createSubmissions = createAsyncThunk(
   "submission/addSubmissions",
   async (submissionData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/submission/${submissionData.form}`, { shopId: submissionData.shopId, submission: submissionData.submission });
+      const response = await axios.post(`/submission/${submissionData.form}`,
+        submissionData?.formData
+      );
       // toast.success(response?.data?.msg, toastConfig)
       return response.data.data;
     } catch (error) {
