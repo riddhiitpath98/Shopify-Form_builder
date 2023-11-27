@@ -291,7 +291,6 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
-
     const fileData = fileList.map((file) => ({
       name: file.name,
       size: file.size,
