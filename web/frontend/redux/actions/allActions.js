@@ -241,7 +241,6 @@ export const addFeedback = createAsyncThunk(
 export const createSubmissions = createAsyncThunk(
   "submission/addSubmissions",
   async (submissionData, { rejectWithValue }) => {
-    console.log('submissionData: ', submissionData);
     try {
       const response = await axios.post(`/submission/${submissionData.form}`,
         submissionData?.formData

@@ -28,7 +28,6 @@ function Pricingplans() {
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
   const storeName = shopData?.data?.domain?.split(".")[0];
-  console.log('storeName: ', storeName, shopData);
 
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
@@ -64,7 +63,6 @@ function Pricingplans() {
       "return_url": `https://admin.shopify.com/store/${shopData?.data?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
     }
   }
-  console.log('RECURRING_APPLICATION_CHARGE', RECURRING_APPLICATION_CHARGE)
   const handleUserNavigation = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {

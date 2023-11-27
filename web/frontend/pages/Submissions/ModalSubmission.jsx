@@ -31,7 +31,6 @@ const ModalSubmission = ({
     return labelMap;
   }, []);
 
-  console.log('fieldLabel', fieldLabel)
   return (
     <Modal
       instant
@@ -63,7 +62,6 @@ const ModalSubmission = ({
           </div>
           <DescriptionList
             items={Object.entries(item?.submission[0]).map(([key, value]) => {
-              console.log('value', value)
               const term = key === 'file' ? "File" : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
               let val = value;
 

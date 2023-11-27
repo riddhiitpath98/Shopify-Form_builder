@@ -291,8 +291,6 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
-    console.log('fileList: ', fileList);
-
     const fileData = fileList.map((file) => ({
       name: file.name,
       size: file.size,
@@ -367,7 +365,6 @@ const FormPreview = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('m', formSubmissionData)
     const finalFormData = new FormData();
     finalFormData.append("shopId", shopId)
     for (const key in formSubmissionData) {
