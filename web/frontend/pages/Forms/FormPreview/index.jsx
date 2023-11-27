@@ -291,18 +291,18 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
-    const fileData = fileList.map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-    }));
+    // const fileData = fileList.map((file) => ({
+    //   name: file.name,
+    //   size: file.size,
+    //   type: file.type,
+    //   lastModified: file.lastModified,
+    // }));
 
     let fieldArry = [...formFeildData];
     let fieldIndex = formFeildData.findIndex((item) => item.id === id);
     fieldArry[fieldIndex] = {
       ...fieldArry[fieldIndex],
-      ["feildValue"]: fileData,
+      ["feildValue"]: fileList,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
           fieldArry?.[fieldIndex]?.["feildName"],
@@ -312,7 +312,7 @@ const FormPreview = () => {
         : "",
     };
     setFormFeildData([...fieldArry]);
-    const formData = { ...formSubmissionData, [name]: fileData };
+    const formData = { ...formSubmissionData, [name]: fileList };
     dispatch(addFormSubmission(formData));
   };
 
@@ -367,14 +367,16 @@ const FormPreview = () => {
     e.preventDefault();
     const finalFormData = new FormData();
     finalFormData.append("shopId", shopId)
-    for (const key in formSubmissionData) {
-      if (key.split("_").pop() === 'file') {
-        formSubmissionData[key].forEach(item => {
-          finalFormData.append(`file`, new File([], item.name, { type: item.type }));
-        })
+    if (formSubmissionData && Object.keys(formSubmissionData).length > 0) {
+      for (const key in formSubmissionData) {
+        if (formSubmissionData[key] !== "" && key.split("_").pop() === 'file') {
+          formSubmissionData[key]?.forEach(item => {
+            finalFormData.append(`file`, item);
+          })
+        }
+        else
+          finalFormData.append(key, formSubmissionData[key]);
       }
-      else
-        finalFormData.append(key, formSubmissionData[key]);
     }
 
     const errorObj = {};
