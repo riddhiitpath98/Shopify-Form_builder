@@ -27,7 +27,7 @@ const PORT = 3007;
 //   10
 // );
 
-const STATIC_PATH = `${process.cwd()}/frontend/`
+const STATIC_PATH = `${process.cwd()}/frontend/dist`
 
 // const STATIC_PATH =
 //   process.env.NODE_ENV === "production"
