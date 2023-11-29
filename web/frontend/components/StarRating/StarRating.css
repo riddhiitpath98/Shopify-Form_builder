@@ -4,10 +4,10 @@ button {
   outline: none;
   cursor: pointer;
 }
-.on {
+.filled {
   color: #ff0000;
   /* border: none; */
 }
-.off {
+.unfilled {
   color: #ccc;
 }

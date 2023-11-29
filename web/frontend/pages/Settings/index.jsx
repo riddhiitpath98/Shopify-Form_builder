@@ -36,7 +36,7 @@ const initialState = {
   mail_encryption: "",
   port: "",
   shopId: "",
-}
+};
 
 function Settings() {
   const [formValues, setFormValues] = useState(initialState);
@@ -46,7 +46,6 @@ function Settings() {
     shopId: "",
   });
 
-  
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const dispatch = useDispatch();
@@ -57,17 +56,27 @@ function Settings() {
   const isEdit = useSelector(
     (state) => state?.setting?.smtpSettingData?.isEdit
   );
-  const user = useSelector(state => state?.user?.userData?.user)
+  const user = useSelector((state) => state?.user?.userData?.user);
   const shopId = useSelector((state) => state.shopId.shopId);
-  const recaptchaSettings = useSelector(state => state?.setting?.reCaptchaSettingData?.data);
+  const recaptchaSettings = useSelector(
+    (state) => state?.setting?.reCaptchaSettingData?.data
+  );
+  const reCaptchaSettingData = useSelector(
+    (state) => state?.setting?.reCaptchaSettingData
+  );
   const [errorValues, setErrorValues] = useState(initialState);
   const [selectedSetting, setSelectedSetting] = useState("smtp");
 
   const handleChange = (name, value) => {
     let formVal = {};
-    formVal = { ...formValues, port: value === "ssl" ? 465 : value === "tls" ? 587 : "", [name]: value }
+    formVal = {
+      ...formValues,
+      port: value === "ssl" ? 465 : value === "tls" ? 587 : "",
+      [name]: value,
+    };
     setErrorValues({
-      ...errorValues, [name]: validateTextField(name, value)
+      ...errorValues,
+      [name]: validateTextField(name, value),
     });
     setFormValues({
       ...formValues,
@@ -75,8 +84,6 @@ function Settings() {
       port: value === "ssl" ? 465 : value === "tls" ? 587 : "",
     });
   };
-
-
 
   const handleSettingsChange = (name, value) => {
     setreCaptchaValues({
@@ -94,17 +101,17 @@ function Settings() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const errorMessages = {}
-    Object.keys(formValues).forEach(val => {
-      const error = validateTextField(val, formValues[val])
+    const errorMessages = {};
+    Object.keys(formValues).forEach((val) => {
+      const error = validateTextField(val, formValues[val]);
       if (error) {
-        errorMessages[val] = error
+        errorMessages[val] = error;
       }
-    })
+    });
 
     if (Object.keys(errorMessages).length) {
-      setErrorValues(errorMessages)
-      return
+      setErrorValues(errorMessages);
+      return;
     }
 
     if (isEdit || settingData?.isEdit) {
@@ -116,7 +123,7 @@ function Settings() {
 
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
-    setFormValues({ ...formValues, shopId: shopId })
+    setFormValues({ ...formValues, shopId: shopId });
     setreCaptchaValues({ ...reCaptchaValues, shopId: shopId });
     dispatch(getSmtpSettingByAppId(shopId));
     dispatch(getRecaptchaSettingsByAppId(shopId));
@@ -138,7 +145,7 @@ function Settings() {
         shopId: shopId,
         siteKey: recaptchaSettings?.siteKey,
         secretKey: recaptchaSettings?.secretKey,
-      })
+      });
     }
   }, [smtpSettingData, recaptchaSettings]);
 
@@ -157,8 +164,9 @@ function Settings() {
               <Layout.Section>
                 <LegacyCard sectioned>
                   <div
-                    className={`${styles.submissions} ${selectedSetting === "smtp" ? styles.active : ""
-                      }`}
+                    className={`${styles.submissions} ${
+                      selectedSetting === "smtp" ? styles.active : ""
+                    }`}
                     onClick={() => setSelectedSetting("smtp")}
                   >
                     <div style={{ marginRight: 4 }}>
@@ -167,23 +175,26 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
-                {getRestrictionWithPlan({ name: user.subscriptionName }) ? <LegacyCard sectioned>
-                  <div
-                    className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
+                {getRestrictionWithPlan({ name: user.subscriptionName }) ? (
+                  <LegacyCard sectioned>
+                    <div
+                      className={`${styles.submissions} ${
+                        selectedSetting === "recaptcha" ? styles.active : ""
                       }`}
-                    onClick={() => setSelectedSetting("recaptcha")}
-                  >
-                    <div style={{ marginRight: 4 }}>
-                      <Icon source={Icons.settingFile} />
+                      onClick={() => setSelectedSetting("recaptcha")}
+                    >
+                      <div style={{ marginRight: 4 }}>
+                        <Icon source={Icons.settingFile} />
+                      </div>
+                      <Heading>reCaptcha Settings</Heading>
                     </div>
-                    <Heading>reCaptcha Settings</Heading>
-                  </div>
-                </LegacyCard> : null}
+                  </LegacyCard>
+                ) : null}
               </Layout.Section>
             </div>
             <Layout.Section>
-              {
-                selectedSetting === 'smtp' ? <div className={styles.formLayoutContainer}>
+              {selectedSetting === "smtp" ? (
+                <div className={styles.formLayoutContainer}>
                   <LegacyCard sectioned>
                     <Form onSubmit={(e) => handleSubmit(e)} noValidate>
                       <FormLayout>
@@ -195,7 +206,6 @@ function Settings() {
                               id="smtpName"
                               name="smtpName"
                               value={formValues.smtpName || ""}
-
                               onChange={(value) =>
                                 handleChange("smtpName", value)
                               }
@@ -268,10 +278,11 @@ function Settings() {
                               primary
                               loading={settingData?.loading}
                             >
-                              {`${isEdit || settingData?.isEdit
-                                ? "Update"
-                                : "Save"
-                                }`}
+                              {`${
+                                isEdit || settingData?.isEdit
+                                  ? "Update"
+                                  : "Save"
+                              }`}
                             </Button>
                           </Grid.Cell>
                         </Grid>
@@ -279,7 +290,10 @@ function Settings() {
                     </Form>
                     <ToastContainer />
                   </LegacyCard>
-                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user.subscriptionName })) ? <div className={styles.formLayoutContainer}>
+                </div>
+              ) : selectedSetting === "recaptcha" &&
+                getRestrictionWithPlan({ name: user.subscriptionName }) ? (
+                <div className={styles.formLayoutContainer}>
                   <Card sectioned>
                     <Form onSubmit={(e) => handleSettingsSubmit(e)}>
                       <FormLayout>
@@ -291,17 +305,14 @@ function Settings() {
                             <TextField
                               id="siteKey"
                               name="siteKey"
-                              value={
-                                reCaptchaValues?.siteKey || ""
-
-                              }
+                              value={reCaptchaValues?.siteKey || ""}
                               onChange={(value) =>
                                 handleSettingsChange("siteKey", value)
                               }
                               label="Site Key"
                               type="text"
                               autoComplete="off"
-                            // error={errorValues.smtpName}
+                              // error={errorValues.smtpName}
                             />
                           </Grid.Cell>
                           <Grid.Cell
@@ -310,24 +321,25 @@ function Settings() {
                             <TextField
                               id="secretKey"
                               name="secretKey"
-                              value={
-                                reCaptchaValues?.secretKey ||
-                                ""
-                              }
+                              value={reCaptchaValues?.secretKey || ""}
                               onChange={(value) =>
                                 handleSettingsChange("secretKey", value)
                               }
                               label="Secret Key"
                               type="text"
                               autoComplete="off"
-                            // error={errorValues.smtpName}
+                              // error={errorValues.smtpName}
                             />
                           </Grid.Cell>
                           <Grid.Cell
                             columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
                           >
                             <Button submit primary>
-                              Save
+                              {`${
+                                isEdit || reCaptchaSettingData?.isEdit
+                                  ? "Update"
+                                  : "Save"
+                              }`}
                             </Button>
                           </Grid.Cell>
                         </Grid>
@@ -335,13 +347,13 @@ function Settings() {
                     </Form>
                     <ToastContainer />
                   </Card>
-                </div> : null
-              }
+                </div>
+              ) : null}
             </Layout.Section>
           </Layout>
         </div>
       </Page>
-    </Frame >
+    </Frame>
   );
 }
 

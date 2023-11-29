@@ -16,10 +16,11 @@ import { ToastContainer } from "react-toastify";
 import { validateTextField } from "../../constant";
 import styles from "./AnyAPIIntegration.module.css";
 import {
-  createFormToAPIsettings,
+  createOrUpdateFormToAPIsettings,
   editFormToAPISettings,
   fetchFormData,
   getFormToAPIById,
+  getFormToAPISettings,
 } from "../../redux/actions/allActions";
 import { useNavigate, useParams } from "react-router-dom";
 import APISettingsList from "./APISettingsList";
@@ -44,13 +45,14 @@ const AnyAPIIntegration = ({ isEdit }) => {
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.apiSettingData
-    );
+  );
   const allApiSettingData = useSelector(
-    (state) => state?.anyAPISetting?.allApiSettingData
-    );
+    (state) => state?.anyAPISetting?.allApiSettingData?.data
+  );
+
   const apiSettingDataById = useSelector(
     (state) => state?.anyAPISetting?.editAPISettingsData?.data
-    );
+  );
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector(
@@ -73,6 +75,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
+    dispatch(getFormToAPISettings(shopId));
   }, [dispatch, shopId]);
 
   useEffect(() => {
@@ -92,9 +95,9 @@ const AnyAPIIntegration = ({ isEdit }) => {
         formId: apiSettingDataById?.form,
         shopId: apiSettingDataById?.shopId,
       });
-      const elementData = getElementDataByFormId(apiSettingDataById?.form);
-      if (elementData) {
-        setFormElementData(elementData);
+      const elementDataById = getElementDataByFormId(apiSettingDataById?.form);
+      if (elementDataById) {
+        setFormElementData(elementDataById);
         setElementsValue({ ...apiSettingDataById?.elementKey });
       }
     }
@@ -121,11 +124,12 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
     if (name === "formId") {
       const selectedFormId = value;
-      const elementData = getElementDataByFormId(selectedFormId);
-      if (elementData) {
-        setFormElementData(elementData);
+      formVal = { ...formValues, [name]: value };
+      const elementDataById = getElementDataByFormId(selectedFormId);
+      if (elementDataById) {
+        setFormElementData(elementDataById);
         let form_fields = {};
-        elementData.forEach((item) => {
+        elementDataById.forEach((item) => {
           form_fields[`${item?.inputId}_${item.id}`] = "";
         });
         setElementsValue({ ...form_fields });
@@ -133,7 +137,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     }
 
     if (!isExec) {
-      setErrorValues(validateTextField(formVal)); 
+      setErrorValues(validateTextField(formVal));
     }
 
     !isExec &&
@@ -153,8 +157,12 @@ const AnyAPIIntegration = ({ isEdit }) => {
       });
   };
 
-  const formTitleData = [];
+  const uniqueFormIds = Array.from(
+    new Set(allApiSettingData?.map((item) => item.form))
+  );
+
   const formTitle = useMemo(() => {
+    const formTitleData = [];
     formData?.map((data) => {
       data?.customForm?.forEach((formData) => {
         formData.formTitle &&
@@ -166,11 +174,13 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
   const formTitleOptions = [
     { label: "Select Form", value: "", disabled: true },
-    ...formTitle.map((title) => ({
+    ...formTitle?.map((title) => ({
       label: title.title,
       value: title.id,
+      disabled: uniqueFormIds.includes(title?.id),
     })),
   ];
+
   const inputTypeOptions = [
     { label: "Select Type", value: "", disabled: true },
     { label: "json", value: "json" },
@@ -198,7 +208,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
       return;
     }
 
-    dispatch(createFormToAPIsettings(formValues));
+    dispatch(createOrUpdateFormToAPIsettings(formValues));
     setFormValues({});
     setElementsValue({});
     setErrorValues({});
@@ -226,7 +236,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setElementsValue({});
     setErrorValues({});
     setShowForm(false);
-    navigate("/all-api")
+    navigate("/all-api");
   };
 
   const viewAPIList = () => {
@@ -234,18 +244,17 @@ const AnyAPIIntegration = ({ isEdit }) => {
     navigate("/all-api");
   };
 
-  const handleForm = (event) => {
-    if(isEdit && apiId){
-      handleUpdate()
-    } else{
-      handleSubmit(event)
-    }
-  }
-  
+  // const handleForm = (event) => {
+  //   if(isEdit && apiId){
+  //     handleUpdate()
+  //   } else{
+  //     handleSubmit(event)
+  //   }
+  // }
   return (
     <Page
       fullWidth
-      title="Contact Form with any API List"
+      title="Contact Form with any API"
       primaryAction={{
         content: "View API List",
         onAction: () => viewAPIList(),
@@ -254,160 +263,154 @@ const AnyAPIIntegration = ({ isEdit }) => {
       <div>
         <Layout>
           <Layout.Section>
-              <div className={styles.formLayoutContainer}>
-                <LegacyCard sectioned>
-                  <Form onSubmit={(event) => handleForm(event)} noValidate>
-                    <FormLayout>
-                      <Grid>
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          <TextField
-                            value={formValues.apiTitle || ""}
-                            name="apiUrl"
-                            onChange={(value) =>
-                              handleChange("apiTitle", value)
-                            }
-                            label="Add API title"
-                            type="text"
-                            requiredIndicator
-                            error={errorValues.apiTitle}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <Select
-                            label="Select Contact Form"
-                            name="formId"
-                            options={formTitleOptions}
-                            onChange={(value) => handleChange("formId", value)}
-                            value={formValues.formId || ""}
-                            error={errorValues.formId}
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <TextField
-                            value={formValues.apiUrl || ""}
-                            name="apiUrl"
-                            onChange={(value) => handleChange("apiUrl", value)}
-                            label="API Url"
-                            type="text"
-                            requiredIndicator
-                            error={errorValues.apiUrl}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
+            <div className={styles.formLayoutContainer}>
+              <LegacyCard sectioned>
+                <Form onSubmit={(event) => handleSubmit(event)} noValidate>
+                  <FormLayout>
+                    <Grid>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <TextField
+                          value={formValues.apiTitle || ""}
+                          name="apiUrl"
+                          onChange={(value) => handleChange("apiTitle", value)}
+                          label="Add API title"
+                          type="text"
+                          requiredIndicator
+                          error={errorValues.apiTitle}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <Select
+                          label="Select Contact Form"
+                          name="formId"
+                          options={formTitleOptions}
+                          onChange={(value) => handleChange("formId", value)}
+                          value={formValues.formId || ""}
+                          helpText={
+                            isEdit && formValues.formId != ""
+                              ? "To modify the form, generate a new API for it."
+                              : "The form name with added APIs will be disabled in this field."
+                          }
+                          error={errorValues.formId}
+                          disabled={isEdit && formValues.formId != ""}
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <TextField
+                          value={formValues.apiUrl || ""}
+                          name="apiUrl"
+                          onChange={(value) => handleChange("apiUrl", value)}
+                          label="API Url"
+                          type="text"
+                          requiredIndicator
+                          error={errorValues.apiUrl}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <TextField
-                            value={formValues.headerRequest || ""}
-                            name="headerRequest"
-                            onChange={(value) =>
-                              handleChange("headerRequest", value)
-                            }
-                            label="Header Request"
-                            type="headerRequest"
-                            multiline={5}
-                            requiredIndicator
-                            error={errorValues.headerRequest}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <Select
-                            label="Input Type"
-                            name="inputType"
-                            options={inputTypeOptions}
-                            onChange={(value) =>
-                              handleChange("inputType", value)
-                            }
-                            value={formValues.inputType || ""}
-                            error={errorValues.inputType}
-                          />
-                        </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <TextField
+                          value={formValues.headerRequest || ""}
+                          name="headerRequest"
+                          onChange={(value) =>
+                            handleChange("headerRequest", value)
+                          }
+                          label="Header Request"
+                          type="headerRequest"
+                          multiline={5}
+                          requiredIndicator
+                          error={errorValues.headerRequest}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <Select
+                          label="Input Type"
+                          name="inputType"
+                          options={inputTypeOptions}
+                          onChange={(value) => handleChange("inputType", value)}
+                          value={formValues.inputType || ""}
+                          error={errorValues.inputType}
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          <Select
-                            label="Method"
-                            name="method"
-                            options={methodOptions}
-                            onChange={(value) => handleChange("method", value)}
-                            value={formValues.method || ""}
-                            error={errorValues.method}
-                          />
-                        </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <Select
+                          label="Method"
+                          name="method"
+                          options={methodOptions}
+                          onChange={(value) => handleChange("method", value)}
+                          value={formValues.method || ""}
+                          error={errorValues.method}
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          <Text>Map your Fields</Text>
-                        </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <Text>Map your Fields</Text>
+                      </Grid.Cell>
 
-                        {formElementData && formElementData?.length > 0
-                          ? formElementData?.map((element) => (
-                              <Grid.Cell
-                                columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                              >
-                                <TextField
-                                  value={
-                                    elementsValue[
-                                      `${element.inputId}_${element.id}`
-                                    ] || ""
-                                  }
-                                  name={`${element.inputId}_${element.id}`}
-                                  onChange={(value) =>
-                                    handleChange(
-                                      `${element.inputId}_${element.id}`,
-                                      value,
-                                      true
-                                    )
-                                  }
-                                  label={element.attributes.label}
-                                  type="text"
-                                  placeholder="Enter mapping key field name"
-                                  requiredIndicator
-                                  autoComplete="off"
-                                  error={
-                                    error[`${element.inputId}_${element.id}`]
-                                  }
-                                />
-                              </Grid.Cell>
-                            ))
-                          : null}
-
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          {apiId ? (
-                            <Button
-                              primary
-                              submit
-                              loading={allApiSettingData?.loading}
+                      {formElementData && formElementData?.length > 0
+                        ? formElementData?.map((element) => (
+                            <Grid.Cell
+                              columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
                             >
-                              Update
-                            </Button>
-                          ) : (
-                            <Button
-                              primary
-                              submit
-                              loading={apiSettingData?.loading}
-                            >
-                              Save
-                            </Button>
-                          )}
-                        </Grid.Cell>
-                      </Grid>
-                    </FormLayout>
-                    <ToastContainer />
-                  </Form>
-                </LegacyCard>
-              </div>
+                              <TextField
+                                value={
+                                  elementsValue?.[
+                                    `${element?.inputId}_${element?.id}`
+                                  ] || ""
+                                }
+                                name={`${element.inputId}_${element.id}`}
+                                onChange={(value) =>
+                                  handleChange(
+                                    `${element?.inputId}_${element?.id}`,
+                                    value,
+                                    true
+                                  )
+                                }
+                                label={element.attributes.label}
+                                type="text"
+                                placeholder="Enter mapping key field name"
+                                requiredIndicator
+                                autoComplete="off"
+                                error={
+                                  error[`${element.inputId}_${element.id}`]
+                                }
+                              />
+                            </Grid.Cell>
+                          ))
+                        : null}
+
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        {apiId ? (
+                          <Button
+                            primary
+                            submit
+                            loading={apiSettingData?.loading}
+                          >
+                            Update
+                          </Button>
+                        ) : (
+                          <Button
+                            primary
+                            submit
+                            loading={apiSettingData?.loading}
+                          >
+                            Save
+                          </Button>
+                        )}
+                      </Grid.Cell>
+                    </Grid>
+                  </FormLayout>
+                  <ToastContainer />
+                </Form>
+              </LegacyCard>
+            </div>
           </Layout.Section>
         </Layout>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </Page>
   );
 };

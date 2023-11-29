@@ -32,8 +32,8 @@ function APISettingsList() {
 
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.allApiSettingData
-  );
-
+    );
+    console.log('apiSettingData: ', apiSettingData);
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
   );
@@ -85,7 +85,7 @@ function APISettingsList() {
   const rowMarkup =
     apiSettingData?.data &&
     apiSettingData?.data?.map(
-      ({ _id, apiTitle, apiUrl, createdAt, form }, index) => (
+      ({ _id, apiTitle, apiUrl, createdAt, updatedAt, form }, index) => (
         <IndexTable.Row
           id={_id}
           key={_id}
@@ -97,6 +97,9 @@ function APISettingsList() {
           <IndexTable.Cell>{apiUrl}</IndexTable.Cell>
           <IndexTable.Cell>
             {moment(createdAt).format("YYYY-MM-DD")}
+          </IndexTable.Cell>
+          <IndexTable.Cell>
+            {moment(updatedAt).format("YYYY-MM-DD")}
           </IndexTable.Cell>
           <IndexTable.Cell>
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -159,6 +162,7 @@ function APISettingsList() {
               { title: "API Name" },
               { title: "API URL" },
               { title: "Created Date" },
+              { title: "Updated Date" },
               { title: "Action", alignment: "center" },
             ]}
           >

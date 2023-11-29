@@ -577,8 +577,8 @@ export const getSubscriptionById = createAsyncThunk(
 
 //================================================ Contact form to any API ===================================================
 
-export const createFormToAPIsettings = createAsyncThunk(
-  "anyAPISetting/createFormToAPIsettings",
+export const createOrUpdateFormToAPIsettings = createAsyncThunk(
+  "anyAPISetting/createOrUpdateFormToAPIsettings",
   async (data) => {
     try {
       const response = await axios.post(`/contact-to-api/${data.formId}`, data);
@@ -594,7 +594,6 @@ export const createFormToAPIsettings = createAsyncThunk(
 export const getFormToAPISettings = createAsyncThunk(
   "anyAPISettings/getFormToAPIsettings",
   async (shopId) => {
-
     try {
       const response = await axios.get(`/contact-to-api?shopId=${shopId}`);
       return response.data.data;
@@ -634,7 +633,7 @@ export const editFormToAPISettings = createAsyncThunk(
       const response = await axios.put(
         `/contact-to-api/${id}?shopId=${formValues?.shopId}`,
         formValues
-      );
+        );
       toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {

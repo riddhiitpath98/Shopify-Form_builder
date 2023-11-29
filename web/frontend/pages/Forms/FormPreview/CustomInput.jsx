@@ -453,6 +453,7 @@ export const CustomInput = ({
             id={inputId}
             name={`${inputId}_${id}`}
             value={hiddenValue}
+            width={widthInput}
           />
         </div>
       );

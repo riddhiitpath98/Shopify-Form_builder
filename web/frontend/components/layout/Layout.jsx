@@ -12,7 +12,7 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
-  const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
+  const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions" || location.pathname === "/logs" || location.pathname === "/billing-history" || location.pathname === "/all-api" || location.pathname === "/add-api" || location.pathname.includes("/edit-api")
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(state => state.user.userData);

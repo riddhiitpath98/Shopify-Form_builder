@@ -18,7 +18,7 @@ const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
   const navigate = useNavigate();
   const shopOrigin = sessionStorage.getItem("hostOrigin");
 
-  const appId = useSelector((state) => state?.appId?.appId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
 
   const recaptchaSettings = useSelector(
     (state) => state?.setting?.reCaptchaSettingData?.data
@@ -31,7 +31,7 @@ const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
   );
 
   useEffect(() => {
-    dispatch(getRecaptchaSettingsByAppId(appId));
+    dispatch(getRecaptchaSettingsByAppId(shopId));
     app.getState().then((state) => {
       setAppName(state.titleBar.appInfo.name)
     });

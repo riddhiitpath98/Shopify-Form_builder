@@ -13,7 +13,7 @@ const StarRating = ({ name, rating, handleRateChange }) => {
           <button
             type="button"
             key={index}
-            className={index <= rating ? "on" : "off"}
+            className={index <= rating ? "filled" : "unfilled"}
             onClick={(e) => handleRateChange(e, index)}
           >
             <FontAwesomeIcon icon={faStar} size="lg" />

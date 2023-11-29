@@ -56,7 +56,7 @@ export const settingSlice = createSlice({
             data: action.payload,
             error: "",
             success: true,
-            isEdit: true,
+            // isEdit: true,
           },
         };
       })
@@ -181,6 +181,7 @@ export const settingSlice = createSlice({
             error: "",
             loading: true,
             success: false,
+            isEdit: false,
           }
         };
       })
@@ -192,6 +193,7 @@ export const settingSlice = createSlice({
             error: "",
             loading: false,
             success: true,
+            isEdit: true,
           }
         };
       })
@@ -203,6 +205,7 @@ export const settingSlice = createSlice({
             error: action.payload,
             loading: false,
             success: false,
+            isEdit: false,
           }
         };
       });

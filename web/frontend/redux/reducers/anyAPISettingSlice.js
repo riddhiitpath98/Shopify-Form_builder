@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createFormToAPIsettings, deleteFormToAPISettings, editFormToAPISettings, getAPILogsData, getFormToAPIById, getFormToAPISettings, loadMoreLogs } from "../actions/allActions";
+import {
+  createOrUpdateFormToAPIsettings,
+  deleteFormToAPISettings,
+  editFormToAPISettings,
+  getAPILogsData,
+  getFormToAPIById,
+  getFormToAPISettings,
+  loadMoreLogs,
+} from "../actions/allActions";
 
 const initialState = {
   apiSettingData: {
@@ -34,7 +42,7 @@ const anyAPISettingSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(createFormToAPIsettings.pending, (state, action) => {
+      .addCase(createOrUpdateFormToAPIsettings.pending, (state, action) => {
         return {
           ...state,
           apiSettingData: {
@@ -45,7 +53,7 @@ const anyAPISettingSlice = createSlice({
           },
         };
       })
-      .addCase(createFormToAPIsettings.fulfilled, (state, action) => {
+      .addCase(createOrUpdateFormToAPIsettings.fulfilled, (state, action) => {
         return {
           ...state,
           apiSettingData: {
@@ -56,7 +64,7 @@ const anyAPISettingSlice = createSlice({
           },
         };
       })
-      .addCase(createFormToAPIsettings.rejected, (state, action) => {
+      .addCase(createOrUpdateFormToAPIsettings.rejected, (state, action) => {
         return {
           ...state,
           apiSettingData: {
@@ -66,7 +74,8 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(getFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(getFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -98,7 +107,8 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(deleteFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(deleteFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -163,7 +173,8 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(editFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(editFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -262,7 +273,7 @@ const anyAPISettingSlice = createSlice({
             error: action.payload,
           },
         };
-      })
+      });
   },
 });
 
