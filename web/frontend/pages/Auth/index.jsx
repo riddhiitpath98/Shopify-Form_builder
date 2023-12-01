@@ -20,7 +20,7 @@ const Auth = () => {
             const { id, shop_owner, phone, name, city, customer_email, email, myshopify_domain } = shop?.data;
             const data = {
                 id, shop_owner, phone, name, city, customer_email, email, myshopify_domain, subscriptionId: "64faf9e6c6b781df86d389b0",
-                subscriptionName: "free"
+                subscriptionName: "free", shopId: shop?.data?.id
             }
             dispatch(addShopData(data));
             dispatch(addShopId(data?.id));

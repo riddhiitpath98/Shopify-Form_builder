@@ -1,5 +1,6 @@
 import AcceptTermsFields from "../FormElementsTab/AcceptTermsFields";
 import CheckboxGroupFields from "../FormElementsTab/CheckboxGroupFields";
+import FileInputFields from "../FormElementsTab/FileInputFields";
 import FormFields from "../FormElementsTab/FormFields";
 import HeadingInputFields from "../FormElementsTab/HeadingInputFields";
 import HiddenInputFields from "../FormElementsTab/HiddenInputFields";
@@ -27,6 +28,8 @@ const FormTabsProvider = ({ isEdit, tabId, toggleDrawer }) => {
     case "number":
     case "textarea":
       return <FormFields {...{ isEdit, tabId, toggleDrawer }} />;
+    case "file":
+      return <FileInputFields {...{ isEdit, tabId, toggleDrawer }} />;
     case "checkbox":
     case "radio":
     case "dropdown":

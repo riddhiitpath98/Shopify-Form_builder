@@ -132,6 +132,26 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           },
         },
         {
+          id: "file",
+          viewAccess: ["premium", "enterprise"],
+          // viewAccess: ["premium", "enterprise"],
+          title: "File",
+          icon: Icons.file,
+          type: "file",
+          attributes: {
+            label: "File",
+            description: "",
+            hideLabel: false,
+            required: false,
+            column_width: "50%",
+            allowedExtensions: [
+              { label: "jpg", value: "jpg" },
+              { label: "jpeg", value: "jpeg" },
+            ],
+            allowMultiple: false,
+          },
+        },
+        {
           id: "hidden",
           title: "Hidden",
           icon: Icons.hidden,
@@ -173,8 +193,7 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           icon: Icons.accept_terms,
           type: "checkbox",
           attributes: {
-            label:
-              "I agree <a href='/' target='_blank'>Terms and Conditions</a>",
+            label: "I agree <a href='#'>Terms and Conditions</a>",
             description: "",
             isDefaultSelected: false,
             required: false,

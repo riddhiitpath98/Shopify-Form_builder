@@ -19,34 +19,36 @@ import StarRating from "../../components/StarRating";
 import { ToastContainer } from "react-toastify";
 import { validateTextField } from "../../constant";
 
+const initialState = {
+  name: "",
+  websiteName: "",
+  email: "",
+  contactNumber: "",
+  message: "",
+  rating: 1
+}
+
 const FeedbackForm = () => {
 
   const shopId = useSelector((state) => state.shopId.shopId)
 
-  const [formValues, setFormValues] = useState({
-    name: "",
-    websiteName: "",
-    email: "",
-    contactNumber: "",
-    message: "",
-    rating: 1,
-    shopId: shopId
-  });
-  const [errorValues, setErrorValues] = useState({});
+  const [formValues, setFormValues] = useState({ ...initialState, shopId });
+  const [errorValues, setErrorValues] = useState(initialState);
   const feedbackData = useSelector((state) => state?.support?.feedbackData);
-  const [showValidation, setShowValidation] = useState(false);
   const dispatch = useDispatch();
 
   const handleChange = (name, value) => {
     let formVal = {};
     formVal = { ...formValues, [name]: value }
-    if (showValidation)
-      setErrorValues(validateTextField(formVal));
+    setErrorValues({
+      ...errorValues, [name]: validateTextField(name, value)
+    })
     setFormValues({
       ...formValues,
       [name]: value,
     });
   };
+
   const handleRateChange = (e, rating) => {
     setFormValues({
       ...formValues,
@@ -54,30 +56,25 @@ const FeedbackForm = () => {
     });
   }
 
-  const handleSubmit = () => {
-    if (
-      !formValues.name ||
-      !formValues.websiteName ||
-      !formValues.email ||
-      !formValues.contactNumber ||
-      !formValues.message ||
-      !formValues.rating
-    ) {
-      setShowValidation(true)
-      setErrorValues(validateTextField(formValues));
-    } else if (errorValues.name ||
-      errorValues.websiteName ||
-      errorValues.email ||
-      errorValues.contactNumber ||
-      errorValues.message ||
-      errorValues.rating) {
-      setShowValidation(true);
-      setErrorValues(validateTextField(formValues));
-    } else {
-      dispatch(addFeedback(formValues));
-      setFormValues({shopId: shopId});
-      setErrorValues({});
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    const errorMessages = {};
+
+    Object.keys(formValues).forEach(val => {
+      const error = validateTextField(val, formValues[val])
+      if (error) {
+        errorMessages[val] = error
+      }
+    })
+
+    if (Object.keys(errorMessages).length) {
+      setErrorValues(errorMessages)
+      return
     }
+
+    dispatch(addFeedback(formValues));
+    setFormValues({ shopId: shopId });
   };
 
   return (

@@ -103,10 +103,10 @@ const FormPreview = () => {
   const subscription = useSelector(
     (state) => state.user?.userData?.subscription
   );
-  const isShowDrawer =
-    inputFields.length >=
-      subscription?.features?.form?.number_of_fields_per_form &&
-    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+  // const isShowDrawer =
+  //   inputFields.length >=
+  //     subscription?.features?.form?.number_of_fields_per_form &&
+  //   user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {
@@ -300,10 +300,10 @@ const FormPreview = () => {
       ["feildValue"]: fileList,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
-          fieldArry?.[fieldIndex]?.["feildName"],
-          fileList,
-          errorFields
-        )
+            fieldArry?.[fieldIndex]?.["feildName"],
+            fileList,
+            errorFields
+          )
         : "",
     };
     setFormFeildData([...fieldArry]);
@@ -361,21 +361,21 @@ const FormPreview = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const finalFormData = new FormData();
-    finalFormData.append("shopId", shopId)
+    finalFormData.append("shopId", shopId);
     if (formSubmissionData && Object.keys(formSubmissionData).length > 0) {
       for (const key in formSubmissionData) {
-        if (formSubmissionData[key] !== "" && key.split("_").pop() === 'file') {
-          formSubmissionData[key]?.forEach(item => {
-            finalFormData.append(`file`, item);
-          })
-        }
-        else
+        if (formSubmissionData[key] !== "" && key.split("_").pop() === "file") {
+          formSubmissionData[key]?.forEach((item) => {
+            finalFormData.append(key, item);
+          });
+        } else if (Array.isArray(formSubmissionData[key]))
+          finalFormData.append(key, JSON.stringify(formSubmissionData[key]));
+        else {
           finalFormData.append(key, formSubmissionData[key]);
+        }
       }
     }
-    console.log('formSubmissionData: ', formSubmissionData);
-    
-    console.log('finalFormData: ', finalFormData);
+
     const errorObj = {};
     const cloneData = [...formFeildData];
     let formData = {};
@@ -387,6 +387,7 @@ const FormPreview = () => {
         value?.["feildValue"],
         errorFields
       );
+
       let confirm = "";
       if (value?.required && value?.confirmPassword) {
         confirm = validation(
@@ -447,16 +448,16 @@ const FormPreview = () => {
                 ? errorObj[value?.["confirmFeildId"]]
                 : "",
           });
-        } else
+        } else {
           array.push({
             ...value,
             errorMessage: value?.required ? errorObj[value?.["id"]] : "",
           });
+        }
       });
       setFormFeildData(array);
     }
   };
-
 
   const handleResetForm = () => {
     let formData = {};
@@ -473,13 +474,13 @@ const FormPreview = () => {
 
   return (
     <div className={styles.formContent}>
-      {isShowDrawer ? (
+      {/* {isShowDrawer ? (
         <div className={styles.elementBanner}>
           <ElementListBanner
             title={"You can only add 12 element for a form with a Free plan."}
           />
         </div>
-      ) : null}
+      ) : null} */}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>

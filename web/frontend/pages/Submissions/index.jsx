@@ -32,6 +32,8 @@ import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
 import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
+import { SUBSCRIPTION_TYPES } from "../../constant";
+import CommonModal from "../../components/CommonModal";
 
 function Submissions() {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -42,12 +44,16 @@ function Submissions() {
   const [editItem, setEditItem] = useState({});
   const [deleteFormArr, setDeleteFormArr] = useState([]);
   const [active, setActive] = useState(false);
+  const [activeDeleteModal, setActiveDeleteModal] = useState(false);
+
+  const user = useSelector((state) => state.user.userData.user);
 
   const location = useLocation();
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const shopId = useSelector((state) => state.shopId.shopId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
+
   const submissionData = useSelector(
     (state) => state.submission.submissionData.data
   );
@@ -64,7 +70,7 @@ function Submissions() {
   );
 
   const fetchMoreData = async () => {
-    setCurrentPage(currentPage + 1)
+    setCurrentPage(currentPage + 1);
   };
 
   const fileName = `export_submission_${new Date()
@@ -77,15 +83,17 @@ function Submissions() {
       if (submission) {
         const entries = Object.entries(submission);
         for (const [key, value] of entries) {
-          if (typeof value === "string" && value?.toLowerCase().includes(queryValue?.toLowerCase())) {
+          if (
+            typeof value === "string" &&
+            value?.toLowerCase().includes(queryValue?.toLowerCase())
+          ) {
             return item;
           }
         }
       }
-    }
-    );
+    });
 
-    return data
+    return data;
   }, [submissionData, queryValue]);
 
   const formTitleById = useMemo(() => {
@@ -104,21 +112,23 @@ function Submissions() {
     if (newSubmissionData?.length) {
       let formData = {};
       newSubmissionData?.map((submissionItem, index) => {
-        let submission = submissionItem.submission[0]
+        let submission = submissionItem.submission[0];
         for (const key in submission) {
           let term = key.split("_").pop().toUpperCase();
           let val = submission[key];
           if (Array.isArray(val)) {
-            val = term === 'FILE' ? val.map(obj => obj.name).join(', ') : val.map(obj => obj.value).join(', ')
+            val =
+              term === "FILE"
+                ? val.map((obj) => obj.name).join(", ")
+                : val.map((obj) => obj.value).join(", ");
           }
-          formData = { ...formData, [term]: val }
+          formData = { ...formData, [term]: val };
         }
         data.push({
           No: index + 1,
-          ...formData
-        })
-      }
-      );
+          ...formData,
+        });
+      });
     }
     return data;
   }, [newSubmissionData]);
@@ -155,36 +165,56 @@ function Submissions() {
     if (value && value[0] === "read") {
       location?.state?.id
         ? dispatch(
-          sortNFilterSubmissionById({
-            filterFormId: location?.state?.id,
-            path: sortValue,
-            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
-          })
-        )
+            sortNFilterSubmissionById({
+              filterFormId: location?.state?.id,
+              path: sortValue,
+              query: {
+                isRead: true,
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+            })
+          )
         : dispatch(
-          sortNFilterSubmission({
-            path: sortValue,
-            query: { isRead: true, formId: formStatus, page: currentPage, per_page: itemPrPage },
-            shopId
-          })
-        );
+            sortNFilterSubmission({
+              path: sortValue,
+              query: {
+                isRead: true,
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+              shopId,
+            })
+          );
       setStatus(value);
     } else if (value && value[0] === "unread") {
       location?.state?.id
         ? dispatch(
-          sortNFilterSubmissionById({
-            filterFormId: location?.state?.id,
-            path: sortValue,
-            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
-          })
-        )
+            sortNFilterSubmissionById({
+              filterFormId: location?.state?.id,
+              path: sortValue,
+              query: {
+                isRead: false,
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+            })
+          )
         : dispatch(
-          sortNFilterSubmission({
-            path: sortValue,
-            query: { isRead: false, formId: formStatus, page: currentPage, per_page: itemPrPage },
-            shopId
-          })
-        );
+            sortNFilterSubmission({
+              path: sortValue,
+              query: {
+                isRead: false,
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+              shopId,
+            })
+          );
       setStatus(value);
     }
   };
@@ -192,19 +222,29 @@ function Submissions() {
   const handleStatusRemove = () => {
     location?.state?.id
       ? dispatch(
-        sortNFilterSubmissionById({
-          filterFormId: location?.state?.id,
-          path: sortValue,
-          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
-        })
-      )
+          sortNFilterSubmissionById({
+            filterFormId: location?.state?.id,
+            path: sortValue,
+            query: {
+              isRead: "",
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+          })
+        )
       : dispatch(
-        sortNFilterSubmission({
-          path: sortValue,
-          query: { isRead: "", formId: formStatus, page: currentPage, per_page: itemPrPage },
-          shopId
-        })
-      );
+          sortNFilterSubmission({
+            path: sortValue,
+            query: {
+              isRead: "",
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+            shopId,
+          })
+        );
     setStatus([]);
   };
 
@@ -212,6 +252,46 @@ function Submissions() {
     if (value) {
       location?.state?.id
         ? dispatch(
+            sortNFilterSubmissionById({
+              filterFormId: location?.state?.id,
+              path: sortValue,
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
+                    ? false
+                    : "",
+                formId: value,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+            })
+          )
+        : dispatch(
+            sortNFilterSubmission({
+              path: sortValue,
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
+                    ? false
+                    : "",
+                formId: value,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+              shopId,
+            })
+          );
+      setFormStatus(value);
+    }
+  };
+
+  const handleFormStatusRemove = () => {
+    location?.state?.id
+      ? dispatch(
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
@@ -220,15 +300,15 @@ function Submissions() {
                 status[0] === "read"
                   ? true
                   : status[0] === "unread"
-                    ? false
-                    : "",
-              formId: value,
+                  ? false
+                  : "",
+              formId: [],
               page: currentPage,
-              per_page: itemPrPage
+              per_page: itemPrPage,
             },
           })
         )
-        : dispatch(
+      : dispatch(
           sortNFilterSubmission({
             path: sortValue,
             query: {
@@ -236,55 +316,15 @@ function Submissions() {
                 status[0] === "read"
                   ? true
                   : status[0] === "unread"
-                    ? false
-                    : "",
-              formId: value,
+                  ? false
+                  : "",
+              formId: [],
               page: currentPage,
-              per_page: itemPrPage
+              per_page: itemPrPage,
             },
-            shopId
+            shopId,
           })
         );
-      setFormStatus(value);
-    }
-  };
-
-  const handleFormStatusRemove = () => {
-    location?.state?.id
-      ? dispatch(
-        sortNFilterSubmissionById({
-          filterFormId: location?.state?.id,
-          path: sortValue,
-          query: {
-            isRead:
-              status[0] === "read"
-                ? true
-                : status[0] === "unread"
-                  ? false
-                  : "",
-            formId: [],
-            page: currentPage,
-            per_page: itemPrPage
-          },
-        })
-      )
-      : dispatch(
-        sortNFilterSubmission({
-          path: sortValue,
-          query: {
-            isRead:
-              status[0] === "read"
-                ? true
-                : status[0] === "unread"
-                  ? false
-                  : "",
-            formId: [],
-            page: currentPage,
-            per_page: itemPrPage
-          },
-          shopId
-        })
-      );
     setFormStatus([]);
   };
 
@@ -293,10 +333,7 @@ function Submissions() {
     []
   );
 
-  const handleQueryValueRemove = useCallback(
-    () => setQueryValue(""),
-    []
-  );
+  const handleQueryValueRemove = useCallback(() => setQueryValue(""), []);
 
   const handleClearAll = useCallback(() => {
     handleStatusRemove();
@@ -323,14 +360,51 @@ function Submissions() {
   useEffect(() => {
     dispatch(
       location.state?.id
-        ? getSubmissionByFormId({ order: sortValue, id: location.state?.id, page: currentPage, per_page: itemPrPage })
-        : loadMoreSubmission({ order: sortValue, shopId, page: currentPage, per_page: itemPrPage })
+        ? getSubmissionByFormId({
+            order: sortValue,
+            id: location.state?.id,
+            page: currentPage,
+            per_page: itemPrPage,
+          })
+        : loadMoreSubmission({
+            order: sortValue,
+            shopId,
+            page: currentPage,
+            per_page: itemPrPage,
+          })
     );
-  }, [dispatch, location?.state?.id, currentPage]);
+  }, [dispatch, location?.state?.id, currentPage, shopId]);
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
+  }, [shopId]);
+
+  const handleDeleteModalOpen = () => {
+    setActiveDeleteModal(true);
+  };
+
+  const handleDeleteModalClose = useCallback(() => {
+    setActiveDeleteModal(false);
   }, []);
+
+  const handleDelete = () => {
+    dispatch(
+      deleteSubmissionData({
+        filterFormId: location?.state?.id,
+        submissionIdArr: deleteFormArr,
+        path: sortValue,
+        query: {
+          isRead:
+            status[0] === "read" ? true : status[0] === "unread" ? false : "",
+          formId: formStatus,
+        },
+        shopId,
+      })
+    );
+    setDeleteFormArr([]);
+    setSelectedItems([]);
+    setActiveDeleteModal(false);
+  };
 
   const resourceName = {
     singular: "submission",
@@ -342,30 +416,11 @@ function Submissions() {
     { label: "Oldest", value: "createdAt" },
   ];
 
-
   const promotedBulkActions = [
     {
       content: "Delete submissions",
       onAction: () => {
-        dispatch(
-          deleteSubmissionData({
-            filterFormId: location?.state?.id,
-            submissionIdArr: deleteFormArr,
-            path: sortValue,
-            query: {
-              isRead:
-                status[0] === "read"
-                  ? true
-                  : status[0] === "unread"
-                    ? false
-                    : "",
-              formId: formStatus,
-            },
-            shopId
-          })
-        );
-        setDeleteFormArr([]);
-        setSelectedItems([]);
+        handleDeleteModalOpen();
       },
     },
   ];
@@ -445,76 +500,76 @@ function Submissions() {
     if (selected === "createdAt") {
       location?.state?.id
         ? dispatch(
-          sortNFilterSubmissionById({
-            filterFormId: location?.state?.id,
-            path: "createdAt",
-            query: {
-              isRead:
-                status[0] === "read"
-                  ? true
-                  : status[0] === "unread"
+            sortNFilterSubmissionById({
+              filterFormId: location?.state?.id,
+              path: "createdAt",
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
                     ? false
                     : "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage
-            },
-          })
-        )
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+            })
+          )
         : dispatch(
-          sortNFilterSubmission({
-            path: "createdAt",
-            query: {
-              isRead:
-                status[0] === "read"
-                  ? true
-                  : status[0] === "unread"
+            sortNFilterSubmission({
+              path: "createdAt",
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
                     ? false
                     : "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage
-            },
-            shopId
-          })
-        );
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+              shopId,
+            })
+          );
       setSortValue(selected);
     } else {
       location?.state?.id
         ? dispatch(
-          sortNFilterSubmissionById({
-            filterFormId: location?.state?.id,
-            path: "-createdAt",
-            query: {
-              isRead:
-                status[0] === "read"
-                  ? true
-                  : status[0] === "unread"
+            sortNFilterSubmissionById({
+              filterFormId: location?.state?.id,
+              path: "-createdAt",
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
                     ? false
                     : "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage
-            },
-          })
-        )
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+            })
+          )
         : dispatch(
-          sortNFilterSubmission({
-            path: "-createdAt",
-            query: {
-              isRead:
-                status[0] === "read"
-                  ? true
-                  : status[0] === "unread"
+            sortNFilterSubmission({
+              path: "-createdAt",
+              query: {
+                isRead:
+                  status[0] === "read"
+                    ? true
+                    : status[0] === "unread"
                     ? false
                     : "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage
-            },
-            shopId
-          })
-        );
+                formId: formStatus,
+                page: currentPage,
+                per_page: itemPrPage,
+              },
+              shopId,
+            })
+          );
       setSortValue(selected);
     }
   };
@@ -535,27 +590,28 @@ function Submissions() {
       <Page fullWidth title="Submissions">
         {formFilter.length > 0 ? (
           <Text variant="headingSm" as="h6">
-            <div style={{ marginBottom: "6px" }}>
-              {formFilter[0]?.label}
-            </div>
+            <div style={{ marginBottom: "6px" }}>{formFilter[0]?.label}</div>
           </Text>
         ) : null}
         <LegacyCard>
           <ResourceList
             resourceName={resourceName}
-            items={
-              newSubmissionData.length > 0 ? newSubmissionData : []
-            }
+            items={newSubmissionData.length > 0 ? newSubmissionData : []}
             renderItem={renderItem}
             sortValue={sortValue}
             selectedItems={selectedItems}
             onSelectionChange={handleSelectedItems}
             promotedBulkActions={promotedBulkActions}
-            loading={submissionsLoading.loading}
+            loading={!shopId || submissionsLoading.loading}
             onSortChange={(selected) => setSortValue(selected)}
             selectable
             alternateTool={
               <>
+                {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
+                  <CSVLink data={csvData} filename={fileName}>
+                    <Button>Export all Data</Button>
+                  </CSVLink>
+                ) : null}
                 <Select
                   label="Sort by"
                   labelInline
@@ -567,12 +623,13 @@ function Submissions() {
             }
             filterControl={filterControl}
           />
-          {submissionData.length < total_count ? <div className={styles.pagination_button}>
-            <Button primary onClick={fetchMoreData}>
-              Load More
-            </Button>
-          </div> : null}
-
+          {submissionData.length < total_count ? (
+            <div className={styles.pagination_button}>
+              <Button primary onClick={fetchMoreData}>
+                Load More
+              </Button>
+            </div>
+          ) : null}
         </LegacyCard>
         <ToastContainer />
       </Page>
@@ -582,10 +639,7 @@ function Submissions() {
   function renderItem(items, index) {
     return (
       <>
-        <div
-          className={`${items?.isRead ? "" : styles.isReadElement
-            }`}
-        >
+        <div className={`${items?.isRead ? "" : styles.isReadElement}`}>
           <ResourceItem
             id={index}
             name={items?._id}
@@ -609,19 +663,25 @@ function Submissions() {
               </div>
             </div>
           </ResourceItem>
-        </div >
+        </div>
 
-        {
-          active && (
-            <ModalSubmission
-              item={editItem && editItem}
-              open={active}
-              formData={formData}
-              handleClose={handleClose}
-              handleIsReadStatus={handleIsReadStatus}
-            />
-          )
-        }
+        {active && (
+          <ModalSubmission
+            item={editItem && editItem}
+            open={active}
+            formData={formData}
+            handleClose={handleClose}
+            handleIsReadStatus={handleIsReadStatus}
+          />
+        )}
+
+        {activeDeleteModal && (
+          <CommonModal
+            {...{ active: activeDeleteModal, handleClose: handleDeleteModalClose, handleDelete }}
+            title="Are you sure to delete selected submission(s)?"
+            description="This action cannot be undone. No way to revert the deleted data."
+          />
+        )}
       </>
     );
   }

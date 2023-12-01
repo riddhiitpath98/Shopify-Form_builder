@@ -18,8 +18,11 @@ import {
   SkeletonThumbnail,
   LegacyCard,
   Text,
+  TextField,
+  Link,
+  Modal,
 } from "@shopify/polaris";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
 import ToggleSwitch from "../../components/ToggleSwitch";
@@ -27,20 +30,23 @@ import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
 import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
-import { Icons, toastConfig } from "../../constant";
+import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
+import ElementListBanner from "../../components/ElementListBanner";
+import CommonModal from "../../components/CommonModal";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
   const [selectedItems, setSelectedItems] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [deleteFormArr, setDeleteFormArr] = useState([]);
-
   const app = useAppBridge();
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
+
+  const [active, setActive] = useState(false);
 
   const shopId = useSelector((state) => state.shopId.shopId);
 
@@ -63,6 +69,9 @@ function FormList() {
       }
     );
   };
+
+  const subscription = useSelector((state) => state.user.userData.subscription);
+  const user = useSelector((state) => state.user.userData.user);
 
   const sortedItems = useMemo(() => {
     switch (sortValue) {
@@ -101,6 +110,21 @@ function FormList() {
     setSortValue(selected);
   };
 
+  const handleOpen = () => {
+    setActive(true);
+  };
+
+  const handleClose = useCallback(() => {
+    setActive(false);
+  }, []);
+
+  const handleDelete = () => {
+    dispatch(deleteFormData({ deleteFormArr, shopId }));
+    setDeleteFormArr([]);
+    setSelectedItems([]);
+    setActive(false);
+  };
+
   const resourceName = {
     singular: "form",
     plural: "forms",
@@ -115,9 +139,7 @@ function FormList() {
     {
       content: "Delete form",
       onAction: () => {
-        dispatch(deleteFormData({ deleteFormArr, shopId }));
-        setDeleteFormArr([]);
-        setSelectedItems([]);
+        handleOpen();
       },
     },
   ];
@@ -130,20 +152,49 @@ function FormList() {
   useEffect(() => {
     dispatch(fetchFormData(shopId));
     fullscreen.dispatch(Fullscreen.Action.EXIT);
-  }, [dispatch]);
+  }, [dispatch, shopId]);
+
+  const isShowPremium =
+    formData.formData.length >= subscription?.features?.form?.number_of_forms &&
+    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   return (
     <>
+      {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE ? (
+        <div className={styles.elementBanner}>
+          <ElementListBanner
+            title={
+              <>
+                You're currently on the Free plan, and you can create a maximum of 10 forms under this plan.
+                {/* Upgrade to premium to create more forms.{" "} */}
+                {/* <Link url="/plans">
+                  <span className={styles.premiumPlanLink}>Upgrade now.</span>
+                </Link> */}
+              </>
+            }
+          />
+        </div>
+      ) : null}
+      {/* {isShowPremium ?
+        <BannerPremium
+          title="Current Plan"
+          text={<><p style={{ fontSize: "1.125em", marginTop: "0.5rem", fontWeight: 500 }}>You are in Free plan. You've created 1 form allowed in your plan. Upgrade to premium to create more forms. <Link url="/plans"><span className={styles.premiumPlanLink}>Try Premium</span></Link></p></>}
+          url="/plans"
+          status="info"
+          buttonText="Upgrade plan"
+        />
+        : null} */}
       <Page
         fullWidth
-        title="Form"
+        title="Forms"
         primaryAction={{
           content: "Create new Form",
           onAction: () => handleCreateForm(),
+          disabled: isShowPremium ? true : false,
         }}
       >
         <LegacyCard>
-          {formData?.formData?.length > 0 ? (
+          {!shopId || formData?.formData?.length > 0 ? (
             <ResourceList
               resourceName={resourceName}
               items={sortedItems}
@@ -152,7 +203,7 @@ function FormList() {
               selectedItems={selectedItems}
               onSelectionChange={handleSelectedItems}
               promotedBulkActions={promotedBulkActions}
-              loading={formData?.loading}
+              loading={!shopId || formData?.loading}
               onSortChange={(selected) => setSortValue(selected)}
               selectable
               alternateTool={
@@ -171,6 +222,18 @@ function FormList() {
             <Nodatafound />
           )}
         </LegacyCard>
+        {active && (
+          <CommonModal
+            {...{ active, handleClose, handleDelete }}
+            title="Are you sure to delete selected form(s)?"
+            description="<p><strong>Note:</strong> Deleting this form will result in the removal of the following:</p>
+            <ul>
+              <li>The form and its contents.</li>
+              <li>API and Logs created for this form.</li>
+            </ul>
+            <p>Be sure to Export any important data or files related to this form.</p>"
+          />
+        )}
       </Page>
       <ToastContainer />
     </>

@@ -23,6 +23,8 @@ import { Toast, Frame } from "@shopify/polaris";
 import { ToastContainer, toast } from "react-toastify";
 import { Icons, validateTextField } from "../../constant";
 import styles from "./Settings.module.css";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { Fullscreen } from "@shopify/app-bridge/actions";
 
 function Settings() {
   const [formValues, setFormValues] = useState({
@@ -34,7 +36,8 @@ function Settings() {
     shopId: "",
   });
   const dispatch = useDispatch();
-
+  const app = useAppBridge();
+  const fullscreen = Fullscreen.create(app);
   const settingData = useSelector((state) => state?.setting?.settingData);
   const smtpSettingData = useSelector(
     (state) => state?.setting?.smtpSettingData?.data
@@ -85,6 +88,7 @@ function Settings() {
   };
 
   useEffect(() => {
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
     setFormValues({ ...formValues, shopId: shopId });
     dispatch(getSmtpSettingByAppId(shopId));
   }, [dispatch]);

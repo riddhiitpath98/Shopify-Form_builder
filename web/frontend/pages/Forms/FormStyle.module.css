@@ -386,3 +386,12 @@ legend {
   text-decoration: underline;
   cursor: pointer;
 }
+.premiumPlanLink {
+  color: #088060;
+  text-decoration-line: underline;
+}
+.elementBanner {
+  /* margin-top: 18px; */
+  margin: 0.7rem 1.4rem;
+  height: 43px;
+}

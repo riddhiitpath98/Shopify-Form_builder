@@ -131,6 +131,27 @@ export const CustomInput = ({
           ...props
         }} />
       );
+      case "file":
+      return (
+        <CommonFileInput
+          {...{
+            id,
+            inputId,
+            type,
+            formSubmissionData,
+            appearanceFields,
+            title,
+            index,
+            attributes,
+            inputStyles,
+            widthInput,
+            handleFileChange,
+            formFeildData,
+            acceptExtensions,
+            ...props,
+          }}
+        />
+      );
     case "checkbox":
       if (id === "accept_terms") {
         return (
