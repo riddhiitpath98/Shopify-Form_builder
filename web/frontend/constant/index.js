@@ -107,7 +107,7 @@ export const pricingPlanData = [
     tableData: [
       { title: "Realtime preview", unpaid: true },
       { title: "Email notification", unpaid: true },
-      { title: "File upload", unpaid: false },
+      { title: "File upload", unpaid: true },
       { title: "Date & Time", unpaid: false },
       { title: "HTML Field", unpaid: false },
       { title: "URL Field", unpaid: false },
@@ -157,22 +157,30 @@ export const toastConfig = {
   autoClose: 500,
 };
 
-export const validateTextField = (values) => {
-  let errors = {};
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-  const contactRegex = /^[2-9]{1}[0-9]{9}$/;
-  for (const key in values) {
-    if (values[key] === "") {
-      errors[key] = "This field is required."
-    }
-    else if (key === "email" && !emailRegex.test(values["email"])) {
-      errors[key] = "This is not a valid email format!"
-    }
-    else if (key === "contactNumber" && !contactRegex.test(values["contactNumber"])) {
-      errors[key] = "Please enter a valid contact number!"
-    }
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+const contactRegex = /^[2-9]{1}[0-9]{9}$/;
+
+export const validateTextField = (name, value) => {
+  if (!value || String(value).trim() === '') {
+    return 'This field is required.'
   }
-  return errors;
+
+  switch (name) {
+    case 'email':
+      if (!value || String(value).trim() === '') {
+        return 'This field is required.'
+      } else if (!emailRegex.test(value)) {
+        return 'This is not a valid email format!'
+      } else return ''
+
+    case 'contactNumber':
+      if (!value || String(value).trim() === '') {
+        return 'This field is required.'
+      } else if (!contactRegex.test(value)) {
+        return 'Please enter a valid contact number!'
+      } else return ''
+    default: return ''
+  }
 };
 
 export const validationAttributes = [
