@@ -484,6 +484,8 @@ const catchFormDivAndAppendForm = (data) => {
         radio_options,
         hideDivider,
         hideLabel,
+        allowedExtensions,
+        allowMultiple,
         hiddenValue,
         no_of_options,
         text,
@@ -582,6 +584,72 @@ const catchFormDivAndAppendForm = (data) => {
         errorMessageElement.className = "errorMessage";
         errorMessageElement.id = `${item.inputId}_error`;
 
+        smallElement.appendChild(errorMessageElement);
+        inputContainer.appendChild(smallElement);
+      } else if (item?.type === "file") {
+        const acceptExtensions = allowedExtensions
+          ?.map((extension) => `.${extension.value}`)
+          .join(",");
+
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "inputContainer";
+        innerDivElement.appendChild(inputContainer);
+
+        const labelElement = document.createElement("label");
+        labelElement.htmlFor = item.inputId;
+        labelElement.className = "classicLabel";
+        labelElement.style.color = appearanceFields?.labelColor
+          ? appearanceFields.labelColor
+          : "";
+        labelElement.textContent = hideLabel ? "" : item.title;
+        inputContainer.appendChild(labelElement);
+
+        const requiredElement = document.createElement("span");
+        requiredElement.className = "textRequired";
+        requiredElement.textContent = required ? " *" : "";
+        labelElement.appendChild(requiredElement);
+
+        const brElement = document.createElement("br");
+        inputContainer.appendChild(brElement);
+
+        const fileInputElement = document.createElement("input");
+        fileInputElement.type = item.type;
+        fileInputElement.id = item.inputId;
+        fileInputElement.setAttribute(
+          "data-id",
+          `${formElementId}_${item?.inputId}`
+        );
+        fileInputElement.className = "classicInput";
+        // fileInputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
+        fileInputElement.name = `${item.inputId}_${item.id}`;
+        fileInputElement.accept = acceptExtensions;
+        fileInputElement.min = 0;
+        fileInputElement.required = "";
+        fileInputElement.placeholder = placeholder;
+        fileInputElement.autocomplete = "off";
+        // fileInputElement.maxLength = limit_chars ? limit_chars_count : 20;
+        fileInputElement.style.width = widthInput;
+        Object.assign(fileInputElement.style, inputStyles);
+        fileInputElement.multiple = allowMultiple ? true : false;
+        inputContainer.appendChild(fileInputElement);
+        const element = document.querySelector(
+          `input[data-id=${formElementId}_${item?.inputId}]`
+        );
+        element.addEventListener("input", (e) =>
+          handleChange(formElementId, e)
+        );
+        // const element = document.getElementById(item.inputId)
+        // element.addEventListener("input", handleChange);
+        const fileDescriptionElement = document.createElement("span");
+        fileDescriptionElement.className = "description";
+        fileDescriptionElement.textContent = description;
+        inputContainer.appendChild(fileDescriptionElement);
+
+        const smallElement = document.createElement("small");
+        const errorMessageElement = document.createElement("p");
+        errorMessageElement.className = "errorMessage";
+        errorMessageElement.id = `${item.inputId}_error`;
+        // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
         smallElement.appendChild(errorMessageElement);
         inputContainer.appendChild(smallElement);
       } else if (item?.type === "password") {
@@ -823,7 +891,7 @@ const catchFormDivAndAppendForm = (data) => {
           const element = document.querySelector(
             `input[data-id=${formElementId}_${item?.inputId}]`
           );
-          element.addEventListener("input", (e) =>
+          element.addEventListener("change", (e) =>
             handleChange(formElementId, e)
           );
         } else {
