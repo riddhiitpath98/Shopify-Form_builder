@@ -4,13 +4,17 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import styles from "./CardElement.module.css";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-function CheckoutForm() {
+function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
+    console.log('priceId: ', priceId);
+    const shopId = useSelector((state) => state.shopId.shopId);
+    console.log('shopId: ', shopId);
     const user = useSelector(state => state?.user?.userData?.user)
-
+    const navigate = useNavigate();
     // collect data from the user
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const userData = useState({});
 
     // stripe items
     const stripe = useStripe();
@@ -25,34 +29,36 @@ function CheckoutForm() {
                 type: "card",
                 card: elements?.getElement(CardElement),
                 billing_details: {
-                    name: name,
-                    email: email,
+                    name: "Riddhi",
+                    email: "riddhip.itpathsolutions@gmail.com",
+                    address: { city: "Ahmedabad", line1: "Naroda road", line2: "memco", country: "US", state: "Gujrat" }
                 },
             });
-
-            console.log("object", {
+            console.log('first', {
                 paymentMethod: paymentMethod?.paymentMethod?.id,
-                name: name,
-                email: email,
-                priceId: 'price_1OJYVgSEo6lSgy9nGpTnG5Rr'
-            });
+                name: "Riddhi",
+                email: "riddhip.itpathsolutions@gmail.com",
+                priceId: priceId
+            })
             // call the backend to create subscription
-            // const response = await axios.post("/payment/create-subscription", {
-            //     paymentMethod: paymentMethod?.paymentMethod?.id,
-            //     name: user?.shop_owner,
-            //     email: user?.email,
-            //     priceId: 'price_1OJYVgSEo6lSgy9nGpTnG5Rr'
-            // })
-            // const data = await response.json();
-
+            const response = await axios.post("/payment/create-subscription", {
+                paymentMethod: paymentMethod?.paymentMethod?.id,
+                name: "Riddhi",
+                email: "riddhip.itpathsolutions@gmail.com",
+                priceId: priceId,
+                shopId
+            })
             const confirmPayment = await stripe?.confirmCardPayment(
-                "pi_3OJrjnSEo6lSgy9n1SHLZyb6_secret_vaK5oGJHEZ8fFRStiX3Ue3P43"
+                response?.data?.clientSecret
             );
-            console.log('confirmPayment', confirmPayment)
+
             if (confirmPayment?.error) {
                 alert(confirmPayment.error.message);
             } else {
-                alert("Success! Check your email for the invoice.");
+                toast("Payment Successfull")
+                navigate("/dashboard", { replace: true });
+                setShowCardElement(false);
+                toggleModal();
             }
         } catch (error) {
             console.log(error);
@@ -64,16 +70,14 @@ function CheckoutForm() {
             <input
                 placeholder="Name"
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleOnChange(e.target.value)}
                 className={styles.classicInput}
             />
             <br />
             <input
                 placeholder="Email"
                 type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => handleOnChange(e.target.value)}
                 className={styles.classicInput}
             />
 

@@ -499,3 +499,10 @@ export const handleRecurringChargeVal = (appName, shopData) => {
 
   return RECURRING_APPLICATION_CHARGE
 }
+
+
+export const PLAN_DETAILS = {
+  PREMIUM: 'price_1OJYVgSEo6lSgy9nGpTnG5Rr',
+  FREE: "price_1OJYK5SEo6lSgy9nLhwlLM9W"
+}
+

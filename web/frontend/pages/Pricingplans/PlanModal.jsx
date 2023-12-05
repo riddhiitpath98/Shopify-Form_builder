@@ -4,6 +4,7 @@ import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Icons,
+  PLAN_DETAILS,
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
   handleRecurringChargeVal,
@@ -24,6 +25,7 @@ import { addShopId } from "../../redux/reducers/appIdSlice";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
+import { ToastContainer } from "react-toastify";
 const stripePromise = loadStripe(
   "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW"
 );
@@ -38,22 +40,22 @@ export default function PlanModal({
 }) {
   const app = useAppBridge();
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const [recurringCharge, setRecurringCharge] = useState();
   const [showCardElement, setShowCardElement] = useState(false);
   const user = useSelector(state => state?.user?.userData?.user)
-  console.log('user: ', user);
+  const [priceId, setPriceId] = useState();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
   const shopId = useSelector((state) => state.shopId.shopId);
-  console.log('shopId: ', shopId);
   const appName = useSelector((state) => state?.shopId?.appName);
 
   useEffect(() => {
     setRecurringCharge(handleRecurringChargeVal(appName, shopData));
-  }, [dispatch, shopData?.isSuccess]);
+  }, [dispatch, isSuccess]);
+
+
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -73,23 +75,23 @@ export default function PlanModal({
     }
   };
 
-  const fetchSubscriptions = async (token) => {
-    try {
-      const options = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}` || "",
-        },
-      };
-      const response = await fetch(
-        `/api/recurring-application-charge/32137937188`,
-        options
-      );
-      const data = await response.json();
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  // const fetchSubscriptions = async (token) => {
+  //   try {
+  //     const options = {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${token}` || "",
+  //       },
+  //     };
+  //     const response = await fetch(
+  //       `/api/recurring-application-charge/32137937188`,
+  //       options
+  //     );
+  //     const data = await response.json();
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
 
   const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -104,7 +106,7 @@ export default function PlanModal({
         shop_owner,
         myshopify_domain,
         phone,
-      } = shopData.data;
+      } = shopData;
       let user = {
         shopId: id,
         shopName: name,
@@ -127,7 +129,38 @@ export default function PlanModal({
       toggleModal();
       navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
+      const {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      } = shopData;
+      let user = {
+        shopId: id,
+        shopName: name,
+        email,
+        domain: myshopify_domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      };
+      subscriptionData.filter(({ subscriptionName, _id }, index) => {
+        if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+          user = { ...user, subscriptionName, subscriptionId: _id };
+        }
+      });
+      dispatch(addShopData(user));
       setShowCardElement(true)
+      setPriceId(PLAN_DETAILS.PREMIUM)
     };
   }
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
@@ -147,7 +180,7 @@ export default function PlanModal({
       >
         {showCardElement ?
           <Elements stripe={stripePromise}>
-            <CheckoutForm />
+            <CheckoutForm priceId={priceId} toggleModal={toggleModal} setShowCardElement={setShowCardElement} />
           </Elements>
           : <div className="pricing-component-wrapper">
             <LegacyCard>

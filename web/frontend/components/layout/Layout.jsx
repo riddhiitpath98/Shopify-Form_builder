@@ -32,7 +32,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const dispatch = useDispatch();
   const appBridge = useAppBridge();
 
- 
+
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
@@ -45,42 +45,11 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
 
   useEffect(() => {
     if (shop.isSuccess) {
-      const {
-        id,
-        name,
-        email,
-        domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      } = shop.data;
-      let user = {
-        shopId: id,
-        shopName: name,
-        email,
-        domain: myshopify_domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      };
-      subscriptionData.filter(({ subscriptionName, _id }, index) => {
-        if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-          user = { ...user, subscriptionName, subscriptionId: _id };
-        }
-      });
-      dispatch(addShopData(user));
       dispatch(addShopId(shop?.data?.id));
       navigate(path, { replace: true });
     } else {
       dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
         const { userData } = data.payload;
-        console.log('userData: ', userData);
         setIsShowPlan(!user.loading && !userData?.subscriptionName);
         if (userData?.subscriptionName) {
           setIsShowPlan(false);
