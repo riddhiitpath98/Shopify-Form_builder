@@ -10,6 +10,7 @@ axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
 export const addShopData = createAsyncThunk(
   "shop/addShopData",
   async (shopData, { rejectWithValue, dispatch }) => {
+    console.log('shopData: ', shopData);
     try {
       const response = await axios.post("/user", shopData);
       toast.success(response?.data?.msg, toastConfig);
@@ -32,6 +33,26 @@ export const getUserByShopId = createAsyncThunk(
     }
   }
 );
+
+export const createSessionCheckout = createAsyncThunk("/shop/createSessionCheckout", async (data, { rejectWithValue, dispatch }) => {
+  try {
+    const response = await axios.post(`/payment/create-checkout-session`, data)
+    return response.data.session;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
+// export const createSubscription = createAsyncThunk('/shop/createSubscription', async (data, { rejectWithValue, dispatch }) => {
+//   console.log('data: ', data);
+//   try {
+//     const response = await axios.post(`/payment/create-payment-intent`, data)
+//     console.log('response: ', response);
+//     return response.data.clientSecret;
+//   } catch (error) {
+//     return rejectWithValue(error.response.data);
+//   }
+// })
 
 // ======================================== Custom Form API started =========================================
 export const addFormData = createAsyncThunk(

@@ -133,7 +133,7 @@ const FormPreview = () => {
           };
           if (input?.attributes?.confirmPassword) {
             fieldArry.push({
-              ...feildData, 
+              ...feildData,
               confirmPassword: input?.attributes?.confirmPassword,
               confirmFeildId: `${input?.inputId}_confirm_${input?.id}`,
             });
@@ -371,94 +371,97 @@ const FormPreview = () => {
       for (const key in formSubmissionData) {
         if (formSubmissionData[key] !== "" && key.split("_").pop() === 'file') {
           formSubmissionData[key]?.forEach(item => {
-            finalFormData.append(`file`, item);
+            finalFormData.append(key, item);
           })
         }
-        else
+        else if (Array.isArray(formSubmissionData[key]))
+          finalFormData.append(key, JSON.stringify(formSubmissionData[key]));
+        else {
           finalFormData.append(key, formSubmissionData[key]);
-      }
-    }
-
-    const errorObj = {};
-    const cloneData = [...formFeildData];
-    let formData = {};
-    formFeildData?.forEach((value) => {
-      formData = { ...formData, [value.feildId]: "" };
-
-      const error = validation(
-        value?.["feildName"],
-        value?.["feildValue"],
-        errorFields
-      );
-      let confirm = "";
-      if (value?.required && value?.confirmPassword) {
-        confirm = validation(
-          value?.["confirmFeildName"],
-          value?.["confirmFeildValue"],
-          errorFields,
-          value
-        );
-      }
-      if (value?.required && error) {
-        errorObj[value?.["id"]] = error;
-        if (value?.required && confirm) {
-          errorObj[value?.["confirmFeildId"]] = confirm;
         }
       }
-    });
 
-    const isAllFieldsRequired = allFieldsAreRequired(Object.values(errorObj));
+      const errorObj = {};
+      const cloneData = [...formFeildData];
+      let formData = {};
+      formFeildData?.forEach((value) => {
+        formData = { ...formData, [value.feildId]: "" };
 
-    if (isAllFieldsRequired) {
-      dispatch(
-        createSubmissions({
-          form: editFormId,
-          formData: finalFormData,
-        })
-      );
-
-      dispatch(setFormSubmitted(true));
-      const data = cloneData.map((feild) => {
-        return {
-          ...feild,
-          feildValue: "",
-          errorMessage: "",
-          confirmErrorMessage: "",
-        };
+        const error = validation(
+          value?.["feildName"],
+          value?.["feildValue"],
+          errorFields
+        );
+        let confirm = "";
+        if (value?.required && value?.confirmPassword) {
+          confirm = validation(
+            value?.["confirmFeildName"],
+            value?.["confirmFeildValue"],
+            errorFields,
+            value
+          );
+        }
+        if (value?.required && error) {
+          errorObj[value?.["id"]] = error;
+          if (value?.required && confirm) {
+            errorObj[value?.["confirmFeildId"]] = confirm;
+          }
+        }
       });
-      setFormFeildData(data);
-      if (selectedValue === "clearForm" || selectedValue === "hideForm") {
-        formRef.current.reset();
-        dispatch(addFormSubmission({ ...formData }));
-      } else if (selectedValue === "pageRedirect") {
-        formRef.current.reset();
-        redirect.dispatch(Redirect.Action.REMOTE, {
-          url: `${redirectUrl}`,
-          newContext: true,
+
+      const isAllFieldsRequired = allFieldsAreRequired(Object.values(errorObj));
+
+      if (isAllFieldsRequired) {
+        dispatch(
+          createSubmissions({
+            form: editFormId,
+            formData: finalFormData,
+          })
+        );
+
+        dispatch(setFormSubmitted(true));
+        const data = cloneData.map((feild) => {
+          return {
+            ...feild,
+            feildValue: "",
+            errorMessage: "",
+            confirmErrorMessage: "",
+          };
         });
-        dispatch(addFormSubmission({ ...formData }));
+        setFormFeildData(data);
+        if (selectedValue === "clearForm" || selectedValue === "hideForm") {
+          formRef.current.reset();
+          dispatch(addFormSubmission({ ...formData }));
+        } else if (selectedValue === "pageRedirect") {
+          formRef.current.reset();
+          redirect.dispatch(Redirect.Action.REMOTE, {
+            url: `${redirectUrl}`,
+            newContext: true,
+          });
+          dispatch(addFormSubmission({ ...formData }));
+        }
+      } else {
+        let array = [];
+        cloneData.forEach((value) => {
+          if (value?.confirmPassword && value?.required) {
+            array.push({
+              ...value,
+              errorMessage: value?.required ? errorObj[value?.["id"]] : "",
+              confirmErrorMessage:
+                value?.required || value?.confirmPassword
+                  ? errorObj[value?.["confirmFeildId"]]
+                  : "",
+            });
+          } else
+            array.push({
+              ...value,
+              errorMessage: value?.required ? errorObj[value?.["id"]] : "",
+            });
+        });
+        setFormFeildData(array);
       }
-    } else {
-      let array = [];
-      cloneData.forEach((value) => {
-        if (value?.confirmPassword && value?.required) {
-          array.push({
-            ...value,
-            errorMessage: value?.required ? errorObj[value?.["id"]] : "",
-            confirmErrorMessage:
-              value?.required || value?.confirmPassword
-                ? errorObj[value?.["confirmFeildId"]]
-                : "",
-          });
-        } else
-          array.push({
-            ...value,
-            errorMessage: value?.required ? errorObj[value?.["id"]] : "",
-          });
-      });
-      setFormFeildData(array);
-    }
-  };
+    };
+  }
 
   const handleResetForm = () => {
     let formData = {};

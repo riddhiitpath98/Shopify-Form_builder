@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import {
   addShopData,
   createApplicationCharge,
+  createSessionCheckout,
 } from "../../redux/actions/allActions";
 import axios from "axios";
 import { useAppQuery } from "../../hooks";
@@ -20,6 +21,12 @@ import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Redirect } from "@shopify/app-bridge/actions";
 import { addShopId } from "../../redux/reducers/appIdSlice";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../StripeCardPayment";
+const stripePromise = loadStripe(
+  "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW"
+);
 
 // import { loadStripe } from "@stripe/stripe-js";
 
@@ -31,21 +38,22 @@ export default function PlanModal({
 }) {
   const app = useAppBridge();
   const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const [recurringCharge, setRecurringCharge] = useState();
-
+  const [showCardElement, setShowCardElement] = useState(false);
+  const user = useSelector(state => state?.user?.userData?.user)
+  console.log('user: ', user);
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
-
+  const shopId = useSelector((state) => state.shopId.shopId);
+  console.log('shopId: ', shopId);
   const appName = useSelector((state) => state?.shopId?.appName);
 
   useEffect(() => {
     setRecurringCharge(handleRecurringChargeVal(appName, shopData));
   }, [dispatch, shopData?.isSuccess]);
-
-
-  const subscription = useAppQuery({ url: "/api/subscriptions" });
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -83,7 +91,7 @@ export default function PlanModal({
     }
   };
 
-  const handleUserNavigation = async (plan) => {
+  const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
         id,
@@ -98,10 +106,10 @@ export default function PlanModal({
         phone,
       } = shopData.data;
       let user = {
-        id,
-        name,
+        shopId: id,
+        shopName: name,
         email,
-        domain,
+        domain: myshopify_domain,
         city,
         country,
         customer_email,
@@ -119,48 +127,9 @@ export default function PlanModal({
       toggleModal();
       navigate("/dashboard", { replace: true });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      getSessionToken(app).then((token) => {
-        if (token) {
-          try {
-            const options = {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}` || "",
-                "Content-Type": "application/json", // Set the content type to JSON
-              },
-              body: JSON.stringify(recurringCharge),
-            };
-            fetch(`/api/createSubscription`, options)
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.success) {
-                  const pathSegments =
-                    res?.data?.appSubscriptionCreate?.appSubscription?.id.split(
-                      "/"
-                    );
-                  // The last segment contains the ID
-                  const chargeId = pathSegments[pathSegments.length - 1];
-                  dispatch(
-                    createApplicationCharge({
-                      chargeId,
-                      shopId: shopData?.id,
-                    })
-                  );
-                  const redirect = Redirect.create(app);
-                  redirect.dispatch(
-                    Redirect.Action.REMOTE,
-                    res.data?.appSubscriptionCreate?.confirmationUrl
-                  );
-                }
-              })
-              .catch((err) => console.log("err", err));
-          } catch (error) {
-            console.log("error", error);
-          }
-        }
-      });
-    }
-  };
+      setShowCardElement(true)
+    };
+  }
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
@@ -176,105 +145,109 @@ export default function PlanModal({
         title="Pricing plans"
         large
       >
-        <div className="pricing-component-wrapper">
-          <LegacyCard>
-            <LegacyCard.Section>
-              <div className="grid">
-                <div className={styles.gridItem}>
-                  <table className={styles.pricingTable} border={1}>
-                    <thead>
-                      <tr>
-                        <th scope="col"></th>
-                        <th scope="col">
-                          <p>FREE</p>
+        {showCardElement ?
+          <Elements stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+          : <div className="pricing-component-wrapper">
+            <LegacyCard>
+              <LegacyCard.Section>
+                <div className="grid">
+                  <div className={styles.gridItem}>
+                    <table className={styles.pricingTable} border={1}>
+                      <thead>
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col">
+                            <p>FREE</p>
+                          </th>
+                          <th scope="col">
+                            <p>PREMIUM</p>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <th scope="row" className={styles.rowTransparent}>
+                          <div className={styles.rowTitle}>
+                            <span>Price</span>
+                          </div>
                         </th>
-                        <th scope="col">
-                          <p>PREMIUM</p>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <th scope="row" className={styles.rowTransparent}>
-                        <div className={styles.rowTitle}>
-                          <span>Price</span>
-                        </div>
-                      </th>
-                      <td className={styles.pricingRow}>
-                        <div className={styles.badge}>
-                          <Badge status="success">
-                            <span>
-                              <span>-33% lifetime off</span>
-                            </span>
-                          </Badge>
-                        </div>
-                        <div className={styles.monthlyPrice}>
-                          <span className={styles.monthlyPriceCur}>USD</span>
-                          <span className={styles.priceValue}>
-                            <span className={styles.price}>
+                        <td className={styles.pricingRow}>
+                          <div className={styles.badge}>
+                            <Badge status="success">
                               <span>
-                                <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>0</span>
+                                <span>-33% lifetime off</span>
+                              </span>
+                            </Badge>
+                          </div>
+                          <div className={styles.monthlyPrice}>
+                            <span className={styles.monthlyPriceCur}>USD</span>
+                            <span className={styles.priceValue}>
+                              <span className={styles.price}>
+                                <span>
+                                  <sub className={styles.dollar}>$</sub>
+                                  <span className={styles.rupees}>0</span>
+                                </span>
                               </span>
                             </span>
-                          </span>
-                          <span className={styles.month}>
-                            /<span>mo</span>
-                          </span>
-                        </div>
-
-                        <Button
-                          primary
-                          fullWidth
-                          onClick={() =>
-                            handleUserNavigation(SUBSCRIPTION_TYPES.FREE)
-                          }
-                        >
-                          <span>
-                            <span>
-                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
+                            <span className={styles.month}>
+                              /<span>mo</span>
                             </span>
-                          </span>
-                        </Button>
-                        <div className={styles.badge}>
-                          <span>0 days trial</span>
-                        </div>
-                      </td>
-                      <td>
-                        {/* <div className={styles.pmuBadge}>
+                          </div>
+
+                          <Button
+                            primary
+                            fullWidth
+                            onClick={() =>
+                              handleCreateSubscription(SUBSCRIPTION_TYPES.FREE)
+                            }
+                          >
+                            <span>
+                              <span>
+                                <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
+                              </span>
+                            </span>
+                          </Button>
+                          <div className={styles.badge}>
+                            <span>0 days trial</span>
+                          </div>
+                        </td>
+                        <td>
+                          {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
                             <span>-33% lifetime off</span>
                           </span>
                         </Badge>
                       </div> */}
-                        <div className={styles.monthlyPrice}>
-                          <span className={styles.monthlyPriceCur}>USD</span>
-                          <span className={styles.priceValue}>
-                            <span className={styles.price}>
-                              <span>
-                                <sub className={styles.dollar}>$</sub>
-                                <span className={styles.rupees}>6.67</span>
+                          <div className={styles.monthlyPrice}>
+                            <span className={styles.monthlyPriceCur}>USD</span>
+                            <span className={styles.priceValue}>
+                              <span className={styles.price}>
+                                <span>
+                                  <sub className={styles.dollar}>$</sub>
+                                  <span className={styles.rupees}>0.50</span>
+                                </span>
                               </span>
                             </span>
-                          </span>
-                          <span className={styles.month}>
-                            /<span>mo</span>
-                          </span>
-                        </div>
-                        <Button
-                          primary
-                          fullWidth
-                          onClick={() =>
-                            handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)
-                          }
-                        >
-                          <span>
-                            <span>
-                              <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
+                            <span className={styles.month}>
+                              /<span>mo</span>
                             </span>
-                          </span>
-                        </Button>
-                        {/* 
+                          </div>
+                          <Button
+                            primary
+                            fullWidth
+                            onClick={() =>
+                              handleCreateSubscription(SUBSCRIPTION_TYPES.PREMIUM)
+                            }
+                          >
+                            <span>
+                              <span>
+                                <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
+                              </span>
+                            </span>
+                          </Button>
+                          {/* 
                       <Button onClick={handleClick} primary fullWidth>
                         <span>
                           <span>
@@ -285,70 +258,70 @@ export default function PlanModal({
                       <div className={styles.pmuBadge}>
                         <span>7 days trial</span>
                       </div> */}
-                      </td>
+                        </td>
 
-                      {subscriptionData.length > 0 &&
-                        Object.keys(subscriptionData[0]?.features).map(
-                          (featureKey) => (
-                            <React.Fragment key={featureKey}>
-                              <tr>
-                                <th colSpan={3}>
-                                  <span className={styles.tableHeader}>
-                                    <span>
-                                      {removeUnderScoreNdSetFirstLetterCapital(
-                                        featureKey
-                                      )}
+                        {subscriptionData.length > 0 &&
+                          Object.keys(subscriptionData[0]?.features).map(
+                            (featureKey) => (
+                              <React.Fragment key={featureKey}>
+                                <tr>
+                                  <th colSpan={3}>
+                                    <span className={styles.tableHeader}>
+                                      <span>
+                                        {removeUnderScoreNdSetFirstLetterCapital(
+                                          featureKey
+                                        )}
+                                      </span>
                                     </span>
-                                  </span>
-                                </th>
-                              </tr>
-
-                              {Object.entries(
-                                subscriptionData[0].features[featureKey]
-                              ).map(([innerKey, innerValue]) => (
-                                <tr key={innerKey}>
-                                  <th scope="row" className={styles.rowData}>
-                                    <div className={styles.rowTitle}>
-                                      <dl className={styles.labelName}>
-                                        <dt className={styles.labelText}>
-                                          <span>
-                                            {removeUnderScoreNdSetFirstLetterCapital(
-                                              innerKey
-                                            )}
-                                          </span>
-                                        </dt>
-                                        <dd
-                                          className={styles.labelDescription}
-                                        ></dd>
-                                      </dl>
-                                    </div>
                                   </th>
-                                  <td>
-                                    {renderStatusIcon(
-                                      subscriptionData[0].features[featureKey][
-                                      innerKey
-                                      ]
-                                    )}
-                                  </td>
-                                  <td>
-                                    {renderStatusIcon(
-                                      subscriptionData[1].features[featureKey][
-                                      innerKey
-                                      ]
-                                    )}
-                                  </td>
                                 </tr>
-                              ))}
-                            </React.Fragment>
-                          )
-                        )}
-                    </tbody>
-                  </table>
+
+                                {Object.entries(
+                                  subscriptionData[0].features[featureKey]
+                                ).map(([innerKey, innerValue]) => (
+                                  <tr key={innerKey}>
+                                    <th scope="row" className={styles.rowData}>
+                                      <div className={styles.rowTitle}>
+                                        <dl className={styles.labelName}>
+                                          <dt className={styles.labelText}>
+                                            <span>
+                                              {removeUnderScoreNdSetFirstLetterCapital(
+                                                innerKey
+                                              )}
+                                            </span>
+                                          </dt>
+                                          <dd
+                                            className={styles.labelDescription}
+                                          ></dd>
+                                        </dl>
+                                      </div>
+                                    </th>
+                                    <td>
+                                      {renderStatusIcon(
+                                        subscriptionData[0].features[featureKey][
+                                        innerKey
+                                        ]
+                                      )}
+                                    </td>
+                                    <td>
+                                      {renderStatusIcon(
+                                        subscriptionData[1].features[featureKey][
+                                        innerKey
+                                        ]
+                                      )}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </React.Fragment>
+                            )
+                          )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </LegacyCard.Section>
-          </LegacyCard>
-        </div>
+              </LegacyCard.Section>
+            </LegacyCard>
+          </div>}
       </Modal>
     </div>
   );

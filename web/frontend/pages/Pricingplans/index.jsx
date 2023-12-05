@@ -5,13 +5,14 @@ import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./PricingPlan.module.css";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import {
   addShopData,
   createApplicationCharge,
+
   getUserByShopId,
 } from "../../redux/actions/allActions";
 import {
@@ -23,6 +24,8 @@ import { addShopId } from "../../redux/reducers/appIdSlice";
 import { useAppQuery } from "../../hooks";
 import CommonModal from "../../components/CommonModal";
 import { ToastContainer } from "react-toastify";
+import { addClientSecret } from "../../redux/reducers/userSlice";
+
 
 function Pricingplans() {
   const app = useAppBridge();
@@ -33,6 +36,10 @@ function Pricingplans() {
   const [active, setActive] = useState(false);
   const [isCancelPlan, setIsCancelPlan] = useState(false);
   const [recurringCharge, setRecurringCharge] = useState({});
+  const [clientSecret, setClientSecret] = useState();
+  const appearance = {
+    theme: 'stripe',
+  };
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -40,6 +47,7 @@ function Pricingplans() {
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
   const user = useSelector((state) => state?.user?.userData?.user);
+  const navigate = useNavigate();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
   const appName = useSelector((state) => state?.shopId?.appName);
   const handleOpen = (data) => {
@@ -52,84 +60,64 @@ function Pricingplans() {
   }, []);
 
   const handleUserNavigation = async (plan) => {
-    // const data = await Promise.all(recurringCharge)
-    if (plan === SUBSCRIPTION_TYPES.FREE) {
-      const {
-        id,
-        name,
-        email,
-        domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      } = shopData.data;
-      let user = {
-        id,
-        name,
-        email,
-        domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      };
-      subscriptionData.filter(({ subscriptionName, _id }, index) => {
-        if (subscriptionName === plan) {
-          user = { ...user, subscriptionName, subscriptionId: _id };
-        }
-      });
-      dispatch(addShopData(user));
-      dispatch(addShopId(id));
-      // toggleModal();
-      // navigate("/dashboard", { replace: true });
-    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      getSessionToken(app).then((token) => {
-        if (token) {
-          try {
-            const options = {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}` || "",
-                "Content-Type": "application/json", // Set the content type to JSON
-              },
-              body: JSON.stringify(recurringCharge),
-            };
-            fetch(`/api/createSubscription`, options)
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.success) {
-                  const pathSegments =
-                    res?.data?.appSubscriptionCreate?.appSubscription?.id.split(
-                      "/"
-                    );
-                  // The last segment contains the ID
-                  const chargeId = pathSegments[pathSegments.length - 1];
-                  dispatch(
-                    createApplicationCharge({
-                      chargeId,
-                      shopId: shopData?.data?.id,
-                    })
-                  );
-                  const redirect = Redirect.create(app);
-                  redirect.dispatch(
-                    Redirect.Action.REMOTE,
-                    res.data?.appSubscriptionCreate?.confirmationUrl
-                  );
-                }
-              })
-              .catch((err) => console.log("err", err));
-          } catch (error) {
-            console.log("error", error);
-          }
-        }
-      });
-    }
+    // if (plan === SUBSCRIPTION_TYPES.FREE) {
+    //   console.log('plan', plan)
+    //   // const {
+    //   //   id,
+    //   //   name,
+    //   //   email,
+    //   //   domain,
+    //   //   city,
+    //   //   country,
+    //   //   customer_email,
+    //   //   shop_owner,
+    //   //   myshopify_domain,
+    //   //   phone,
+    //   // } = shopData.data;
+    //   // let user = {
+    //   //   shopId: id,
+    //   //   shopName: name,
+    //   //   email,
+    //   //   domain: myshopify_domain,
+    //   //   city,
+    //   //   country,
+    //   //   customer_email,
+    //   //   shop_owner,
+    //   //   myshopify_domain,
+    //   //   phone,
+    //   // };
+    //   // subscriptionData.filter(({ subscriptionName, _id }, index) => {
+    //   //   if (subscriptionName === plan) {
+    //   //     user = { ...user, subscriptionName, subscriptionId: _id };
+    //   //   }
+    //   // });
+    //   // dispatch(addShopData(user));
+    //   // dispatch(addShopId(id));
+    //   // toggleModal();
+    //   // navigate("/dashboard", { replace: true });
+    // } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
+    //   const data = {
+    //     plan: SUBSCRIPTION_TYPES.PREMIUM,
+    //     amount: recurringCharge?.premium_subscription?.amount,
+    //     email: user?.customer_email,
+    //     currency: recurringCharge?.premium_subscription?.currencyCode,
+    //     description: 'Software development services',
+    //     shipping: {
+    //       name: user?.shop_owner,
+    //       address: {
+    //         line1: user?.address,
+    //         postal_code: user?.zip,
+    //         city: user?.city,
+    //         state: user?.state,
+    //         country: user?.country,
+    //       },
+    //     },
+    //   };
+    //   dispatch(createSubscription(data))
+    // }
   };
+
+  console.log('user', user)
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getUserByShopId(shopId));
@@ -137,7 +125,9 @@ function Pricingplans() {
   }, [dispatch, shopId, shopData?.isSuccess]);
 
   const handleCancelSubscription = () => {
-    const cancelSubscription = subscription?.data?.appSubscriptions.filter(item => item.name === 'Premium Subscription')
+    const cancelSubscription = subscription?.data?.appSubscriptions.filter(
+      (item) => item.name === "Premium Subscription"
+    );
     getSessionToken(app).then((session) => {
       const options = {
         method: "DELETE",
@@ -160,21 +150,20 @@ function Pricingplans() {
             );
             const data = {
               ...user,
-              id: user?.shopId,
-              name: user?.shopName,
-              myshopify_domain: user?.domain,
+              shopId: user?.shopId,
+              shopName: user?.shopName,
+              domain: user?.domain,
               subscriptionName: subscriptionData[index].subscriptionName,
               subscriptionId: subscriptionData[index]._id,
-              chargeId: null,
+              subscription: null
             };
             dispatch(addShopData(data));
-            setActive(false)
-            setIsCancelPlan(false)
+            setActive(false);
+            setIsCancelPlan(false);
           }
         });
     });
   };
-
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -269,11 +258,11 @@ function Pricingplans() {
                         onClick={handleOpen}
                         fullWidth
                       >
-
                         <span>
                           <span>
                             <span>
-                              {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                              {user?.subscriptionName ===
+                                SUBSCRIPTION_TYPES.FREE
                                 ? PLAN_TEXT.CURRENT_PLAN
                                 : PLAN_TEXT.CHOOSE_PLAN}
                             </span>
@@ -295,7 +284,7 @@ function Pricingplans() {
                           <span className={styles.price}>
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$6.67</span>
+                              <span className={styles.rupees}>$0.50</span>
                             </span>
                           </span>
                         </span>
@@ -409,10 +398,10 @@ function Pricingplans() {
             <p>Be sure to read above terms & conditions before cancelling the subscription.</p>"
           />
         )}
+
       </div>
       <ToastContainer />
     </Page>
-
   );
 }
 

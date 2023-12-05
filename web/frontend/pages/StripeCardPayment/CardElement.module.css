@@ -1,0 +1,35 @@
+.classicInput {
+  display: block;
+  /* height: 41px; */
+  padding: 10px 12px;
+  color: #000;
+  background-color: #f1f1f1;
+  border-radius: 2px;
+  font-size: 14px;
+  position: relative;
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  /* width: 100%; */
+  box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.15s ease;
+  background-image: none !important;
+  border: none;
+  outline: none;
+}
+
+.classicButton {
+  border: 1px solid #90c3f9;
+  text-transform: none;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  transition: all 0.25s ease-in-out;
+  font-weight: 400;
+  border-radius: 2px;
+  padding: 11px 22px;
+  min-width: 100px;
+  cursor: pointer;
+  position: relative;
+  margin-right: 3px;
+}

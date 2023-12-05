@@ -67,15 +67,13 @@ const ModalSubmission = ({
                   ? "File"
                   : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
               let val = value;
-
               if (typeof val === "boolean") {
                 val = val.toString();
               }
 
               if (Array.isArray(val)) {
-                val = term === "File" ? val.map((obj) => obj).join(", ") : "";
+                val = term === "File" ? val.map((obj) => obj).join(",") : val.map(obj => obj.value).join(",");
               }
-
               return {
                 term: (
                   <div
