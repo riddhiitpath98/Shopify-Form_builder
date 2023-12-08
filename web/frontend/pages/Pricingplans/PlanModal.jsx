@@ -43,7 +43,7 @@ export default function PlanModal({
   const dispatch = useDispatch();
   const [recurringCharge, setRecurringCharge] = useState();
   const [showCardElement, setShowCardElement] = useState(false);
-  const user = useSelector(state => state?.user?.userData?.user)
+  const user = useSelector((state) => state?.user?.userData?.user);
   const [priceId, setPriceId] = useState();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -54,8 +54,6 @@ export default function PlanModal({
   useEffect(() => {
     setRecurringCharge(handleRecurringChargeVal(appName, shopData));
   }, [dispatch, isSuccess]);
-
-
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -159,10 +157,10 @@ export default function PlanModal({
         }
       });
       dispatch(addShopData(user));
-      setShowCardElement(true)
-      setPriceId(PLAN_DETAILS.PREMIUM)
-    };
-  }
+      setShowCardElement(true);
+      setPriceId(PLAN_DETAILS.PREMIUM);
+    }
+  };
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
@@ -178,11 +176,16 @@ export default function PlanModal({
         title="Pricing plans"
         large
       >
-        {showCardElement ?
+        {showCardElement ? (
           <Elements stripe={stripePromise}>
-            <CheckoutForm priceId={priceId} toggleModal={toggleModal} setShowCardElement={setShowCardElement} />
+            <CheckoutForm
+              priceId={priceId}
+              toggleModal={toggleModal}
+              setShowCardElement={setShowCardElement}
+            />
           </Elements>
-          : <div className="pricing-component-wrapper">
+        ) : (
+          <div className="pricing-component-wrapper">
             <LegacyCard>
               <LegacyCard.Section>
                 <div className="grid">
@@ -213,13 +216,14 @@ export default function PlanModal({
                               </span>
                             </Badge>
                           </div>
+                          <div className={styles.trialDays}></div>
                           <div className={styles.monthlyPrice}>
                             <span className={styles.monthlyPriceCur}>USD</span>
                             <span className={styles.priceValue}>
                               <span className={styles.price}>
                                 <span>
-                                  <sub className={styles.dollar}>$</sub>
-                                  <span className={styles.rupees}>0</span>
+                                  {/* <sub className={styles.dollar}>$</sub> */}
+                                  <span className={styles.rupees}>$0</span>
                                 </span>
                               </span>
                             </span>
@@ -245,7 +249,7 @@ export default function PlanModal({
                             <span>0 days trial</span>
                           </div>
                         </td>
-                        <td>
+                        <td className={styles.pricingRow}>
                           {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
@@ -253,13 +257,15 @@ export default function PlanModal({
                           </span>
                         </Badge>
                       </div> */}
+
+                          <div className={styles.trialDays}>3 days trial</div>
                           <div className={styles.monthlyPrice}>
                             <span className={styles.monthlyPriceCur}>USD</span>
                             <span className={styles.priceValue}>
                               <span className={styles.price}>
                                 <span>
-                                  <sub className={styles.dollar}>$</sub>
-                                  <span className={styles.rupees}>0.50</span>
+                                  {/* <sub className={styles.dollar}>$</sub> */}
+                                  <span className={styles.rupees}>$6.67</span>
                                 </span>
                               </span>
                             </span>
@@ -271,7 +277,9 @@ export default function PlanModal({
                             primary
                             fullWidth
                             onClick={() =>
-                              handleCreateSubscription(SUBSCRIPTION_TYPES.PREMIUM)
+                              handleCreateSubscription(
+                                SUBSCRIPTION_TYPES.PREMIUM
+                              )
                             }
                           >
                             <span>
@@ -331,16 +339,16 @@ export default function PlanModal({
                                     </th>
                                     <td>
                                       {renderStatusIcon(
-                                        subscriptionData[0].features[featureKey][
-                                        innerKey
-                                        ]
+                                        subscriptionData[0].features[
+                                          featureKey
+                                        ][innerKey]
                                       )}
                                     </td>
                                     <td>
                                       {renderStatusIcon(
-                                        subscriptionData[1].features[featureKey][
-                                        innerKey
-                                        ]
+                                        subscriptionData[1].features[
+                                          featureKey
+                                        ][innerKey]
                                       )}
                                     </td>
                                   </tr>
@@ -354,7 +362,8 @@ export default function PlanModal({
                 </div>
               </LegacyCard.Section>
             </LegacyCard>
-          </div>}
+          </div>
+        )}
       </Modal>
     </div>
   );

@@ -297,6 +297,7 @@ function Pricingplans() {
                           </span>
                         </Badge>
                       </div> */}
+                      <div className={styles.trialDays}></div>
                       <div className={styles.monthlyPrice}>
                         <span className={styles.monthlyPriceCur}>USD</span>
                         <span className={styles.priceValue}>
@@ -332,8 +333,8 @@ function Pricingplans() {
                         </span>
                       </Button>
                     </td>
-                    <td>
-                      <div className="trial-days" style={{ opacity: 1 }}>3 days trial</div>
+                    <td className={styles.pricingRow}>
+                      <div className={styles.trialDays}>3 days trial</div>
                       {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
