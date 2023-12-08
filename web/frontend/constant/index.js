@@ -184,6 +184,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const contactRegex = /^[2-9]{1}[0-9]{9}$/;
 
 export const validateTextField = (name, value) => {
+  console.log('name, value: ', name, value);
   if (!value || String(value).trim() === '') {
     return 'This field is required.'
   }

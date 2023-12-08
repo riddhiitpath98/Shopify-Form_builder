@@ -62,7 +62,9 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         clientSecret: "{{CLIENT_SECRET}}",
     };
 
-    const handleCountryChange = (selectedCountry) => {
+    const handleCountryChange = (e) => {
+        let selectedCountry = e.target.value;
+        console.log('selectedCountry: ', selectedCountry);
         // Update the selected country in the state
         setBillingAddress({
             ...billingAddress,
@@ -70,7 +72,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             state: "", // Reset state when the country changes
             city: "", // Reset city when the country changes
         });
-
+        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(e.target.name, selectedCountry) });
         // Fetch and update the list of states based on the selected country
         const countryStates = State.getStatesOfCountry(selectedCountry);
         setStates(countryStates);
@@ -79,8 +81,9 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const handleStateChange = (e) => {
         console.log('e: ', e);
         let selectedState = JSON.parse(e.target.value);
-        console.log('selectedState: ', selectedState);
-        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(JSON.parse(e.target.name), JSON.parse(e.target.value)) });
+        console.log('e.target.value', e.target.value)
+        console.log('selectedState: ', selectedState.isoCode);
+        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(e.target.name, selectedState.isoCode) });
         setBillingAddress({
             ...billingAddress,
             [e.target.name]: e.target.value.isoCode,
@@ -296,7 +299,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         name="country"
                         custom
                         value={billingAddress?.country}
-                        onChange={(e) => handleCountryChange(e.target.value)}
+                        onChange={(e) => handleCountryChange(e)}
                     >
                         <option value="" disabled selected>
                             Select Country
