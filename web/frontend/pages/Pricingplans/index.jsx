@@ -15,6 +15,7 @@ import {
   getUserByShopId,
 } from "../../redux/actions/allActions";
 import {
+  PLAN_DETAILS,
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
   handleRecurringChargeVal,
@@ -24,6 +25,7 @@ import { useAppQuery } from "../../hooks";
 import CommonModal from "../../components/CommonModal";
 import { ToastContainer } from "react-toastify";
 import { addClientSecret } from "../../redux/reducers/userSlice";
+import PaymentModal from "./paymentModal";
 
 
 function Pricingplans() {
@@ -49,6 +51,8 @@ function Pricingplans() {
   const navigate = useNavigate();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
   const appName = useSelector((state) => state?.shopId?.appName);
+  const [priceId, setPriceId] = useState();
+  const [showCardElement, setShowCardElement] = useState(false);
   const handleOpen = (data) => {
     setActive(true);
     setIsCancelPlan(true);
@@ -115,6 +119,46 @@ function Pricingplans() {
     //   dispatch(createSubscription(data))
     // }
   };
+  const handleCreateSubscription = async (plan) => {
+    if (plan === SUBSCRIPTION_TYPES.FREE) {
+      const {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      } = shopData?.data;
+      let user = {
+        shopId: id,
+        shopName: name,
+        email,
+        domain: myshopify_domain,
+        city,
+        country,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      };
+      subscriptionData.filter(({ subscriptionName, _id }, index) => {
+        if (subscriptionName === plan) {
+          user = { ...user, subscriptionName, subscriptionId: _id };
+        }
+      });
+      dispatch(addShopData(user));
+      dispatch(addShopId(id));
+      toggleModal();
+      navigate("/dashboard", { replace: true });
+    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
+      setShowCardElement(true)
+      setPriceId(PLAN_DETAILS.PREMIUM)
+    };
+  }
 
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
@@ -123,44 +167,60 @@ function Pricingplans() {
   }, [dispatch, shopId, shopData?.isSuccess]);
 
   const handleCancelSubscription = () => {
-    const cancelSubscription = subscription?.data?.appSubscriptions.filter(
-      (item) => item.name === "Premium Subscription"
+    const index = subscriptionData.findIndex(
+      (sub) => sub.subscriptionName === SUBSCRIPTION_TYPES.FREE
     );
-    getSessionToken(app).then((session) => {
-      const options = {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session}` || "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cancelSubscription[0]),
-      };
+    const data = {
+      ...user,
+      shopId: user?.shopId,
+      shopName: user?.shopName,
+      domain: user?.domain,
+      subscriptionName: subscriptionData[index].subscriptionName,
+      subscriptionId: subscriptionData[index]._id,
+      subscription: null
+    };
+    dispatch(addShopData(data));
+    setActive(false);
+    setIsCancelPlan(false);
 
-      fetch(`/api/cancelSubscription`, options)
-        .then((res) => res.json())
-        .then((res) => {
-          if (
-            res?.data?.appSubscriptionCancel?.appSubscription?.status ===
-            "CANCELLED"
-          ) {
-            const index = subscriptionData.findIndex(
-              (sub) => sub.subscriptionName === SUBSCRIPTION_TYPES.FREE
-            );
-            const data = {
-              ...user,
-              shopId: user?.shopId,
-              shopName: user?.shopName,
-              domain: user?.domain,
-              subscriptionName: subscriptionData[index].subscriptionName,
-              subscriptionId: subscriptionData[index]._id,
-              subscription: null
-            };
-            dispatch(addShopData(data));
-            setActive(false);
-            setIsCancelPlan(false);
-          }
-        });
-    });
+    // const cancelSubscription = subscription?.data?.appSubscriptions.filter(
+    //   (item) => item.name === "Premium Subscription"
+    // );
+    // getSessionToken(app).then((session) => {
+    //   const options = {
+    //     method: "DELETE",
+    //     headers: {
+    //       Authorization: `Bearer ${session}` || "",
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(cancelSubscription[0]),
+    //   };
+
+    //   fetch(`/api/cancelSubscription`, options)
+    //     .then((res) => res.json())
+    //     .then((res) => {
+    //       if (
+    //         res?.data?.appSubscriptionCancel?.appSubscription?.status ===
+    //         "CANCELLED"
+    //       ) {
+    //         const index = subscriptionData.findIndex(
+    //           (sub) => sub.subscriptionName === SUBSCRIPTION_TYPES.FREE
+    //         );
+    //         const data = {
+    //           ...user,
+    //           shopId: user?.shopId,
+    //           shopName: user?.shopName,
+    //           domain: user?.domain,
+    //           subscriptionName: subscriptionData[index].subscriptionName,
+    //           subscriptionId: subscriptionData[index]._id,
+    //           subscription: null
+    //         };
+    //         dispatch(addShopData(data));
+    //         setActive(false);
+    //         setIsCancelPlan(false);
+    //       }
+    //     });
+    // });
   };
 
   const renderStatusIcon = (status) => {
@@ -190,8 +250,12 @@ function Pricingplans() {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, []);
 
+  const toggleModal = () => {
+    setShowCardElement(false);
+  }
   return (
     <Page fullWidth title="Pricing Plans">
+      {showCardElement ? <PaymentModal active={showCardElement} priceId={priceId} toggleModal={toggleModal} setShowCardElement={setShowCardElement} /> : null}
       <div style={{ width: "70%" }}>
         <LegacyCard>
           <LegacyCard.Section>
@@ -269,7 +333,7 @@ function Pricingplans() {
                       </Button>
                     </td>
                     <td>
-                    <div class="trial-days" style="opacity: 1;">3 days trial</div>
+                      <div className="trial-days" style={{ opacity: 1 }}>3 days trial</div>
                       {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
@@ -298,7 +362,7 @@ function Pricingplans() {
                         primary
                         fullWidth
                         onClick={() =>
-                          handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)
+                          handleCreateSubscription(SUBSCRIPTION_TYPES.PREMIUM)
                         }
                       >
                         <span>

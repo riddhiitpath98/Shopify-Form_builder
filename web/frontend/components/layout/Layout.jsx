@@ -44,20 +44,15 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   };
 
   useEffect(() => {
-    if (shop.isSuccess) {
-      dispatch(addShopId(shop?.data?.id));
-      navigate(path, { replace: true });
-    } else {
-      dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
-        const { userData } = data.payload;
-        setIsShowPlan(!user.loading && !userData?.subscriptionName);
-        if (userData?.subscriptionName) {
-          setIsShowPlan(false);
-          dispatch(addShopId(shop?.data?.id));
-          navigate(path, { replace: true });
-        }
-      });
-    }
+    dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
+      const { userData } = data.payload;
+      setIsShowPlan(!user.loading && !userData?.subscriptionName);
+      if (userData?.subscriptionName) {
+        setIsShowPlan(false);
+        dispatch(addShopId(shop?.data?.id));
+        navigate(path, { replace: true });
+      }
+    });
   }, [dispatch, shop?.isSuccess])
 
 
