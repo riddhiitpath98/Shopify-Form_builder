@@ -115,4 +115,8 @@
 }
 .form-control {
   -webkit-appearance: auto;
+  font-size: 0.85rem;
+}
+.InputElement {
+  font-size: 13px !important;
 }

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
-import { SUBSCRIPTION_TYPES, validateTextField } from "../../constant";
+import { SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -29,11 +29,12 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         addressLine2: "",
         country: "",
         city: "",
-        zip: "",
         state: "",
     };
     const [billingAddress, setBillingAddress] = useState(initialState);
+    console.log('billingAddress: ', billingAddress);
     const [errorValues, setErrorValues] = useState(initialState);
+    console.log('errorValues: ', errorValues);
 
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
@@ -75,10 +76,14 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         setStates(countryStates);
         setCities([]);
     };
-    const handleStateChange = (selectedState) => {
+    const handleStateChange = (e) => {
+        console.log('e: ', e);
+        let selectedState = JSON.parse(e.target.value);
+        console.log('selectedState: ', selectedState);
+        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(JSON.parse(e.target.name), JSON.parse(e.target.value)) });
         setBillingAddress({
             ...billingAddress,
-            state: selectedState?.isoCode,
+            [e.target.name]: e.target.value.isoCode,
             city: "", // Reset city when the state changes
         });
 
@@ -117,7 +122,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         //     return;
         // }
         try {
-            console.log("object");
             // create a payment method
             const paymentMethod = await stripe?.createPaymentMethod({
                 type: "card",
@@ -156,7 +160,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             if (confirmPayment?.error) {
                 alert(confirmPayment.error.message);
             } else {
-                toast("Payment Successfull");
+                toast("Payment Successfull",toastConfig);
                 const {
                     id,
                     name,
@@ -214,7 +218,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     };
 
     return (
-        <Form className="custom-container" onSubmit={(e) => createSubscription(e)}>
+        <Form noValidate className="custom-container" onSubmit={(e) => createSubscription(e)}>
             <h1 className="formHeader">Add Card Details</h1>
             <Row className="mb-3">
                 <Form.Group as={Col} controlId="formGridEmail">
@@ -226,7 +230,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         onChange={handleInputChange}
                         // className="classicInput"
                         placeholder="Enter email"
-                        required={true}
                     />
                     <small className="text-danger">{errorValues?.email}</small>
                 </Form.Group>
@@ -312,8 +315,8 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         as="select"
                         name="state"
                         custom
-                        value={billingAddress?.state}
-                        onChange={(e) => handleStateChange(JSON.parse(e.target.value))}
+                        value={billingAddress?.state?.name}
+                        onChange={(e) => handleStateChange(e)}
                     >
                         <option value="" disabled selected>
                             Select State
