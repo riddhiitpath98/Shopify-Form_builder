@@ -12,7 +12,6 @@ import { getSessionToken } from "@shopify/app-bridge/utilities";
 import {
   addShopData,
   createApplicationCharge,
-
   getUserByShopId,
 } from "../../redux/actions/allActions";
 import {
@@ -117,7 +116,6 @@ function Pricingplans() {
     // }
   };
 
-  console.log('user', user)
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
     dispatch(getUserByShopId(shopId));
@@ -271,6 +269,7 @@ function Pricingplans() {
                       </Button>
                     </td>
                     <td>
+                    <div class="trial-days" style="opacity: 1;">3 days trial</div>
                       {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
@@ -284,7 +283,7 @@ function Pricingplans() {
                           <span className={styles.price}>
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$0.50</span>
+                              <span className={styles.rupees}>$6.67</span>
                             </span>
                           </span>
                         </span>

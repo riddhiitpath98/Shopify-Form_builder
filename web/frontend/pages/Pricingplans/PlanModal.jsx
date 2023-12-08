@@ -42,7 +42,7 @@ export default function PlanModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [recurringCharge, setRecurringCharge] = useState();
-  const [showCardElement, setShowCardElement] = useState(true);
+  const [showCardElement, setShowCardElement] = useState(false);
   const user = useSelector(state => state?.user?.userData?.user)
   const [priceId, setPriceId] = useState();
   const subscriptionData = useSelector(
@@ -171,7 +171,7 @@ export default function PlanModal({
   };
 
   return (
-    <div style={{ height: "500px" }}>
+    <div className="modalContainer" style={{ height: "500px" }}>
       <Modal
         open={active}
         // onClose={toggleModal}

@@ -10,7 +10,6 @@ axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
 export const addShopData = createAsyncThunk(
   "shop/addShopData",
   async (shopData, { rejectWithValue, dispatch }) => {
-    console.log('shopData: ', shopData);
     try {
       const response = await axios.post("/user", shopData);
       toast.success(response?.data?.msg, toastConfig);

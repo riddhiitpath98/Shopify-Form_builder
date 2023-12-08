@@ -6,6 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
 import { validateTextField } from "../../constant";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./CardElement.css";
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
@@ -21,7 +26,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
   };
   const [billingAddress, setBillingAddress] = useState(initialState);
   const [errorValues, setErrorValues] = useState(initialState);
-  console.log("errorValues: ", errorValues);
 
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -76,6 +80,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     );
     setCities(stateCities);
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setErrorValues({ ...errorValues, [name]: validateTextField(name, value) });
@@ -119,12 +124,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
           },
         },
       });
-      console.log("first", {
-        paymentMethod: paymentMethod?.paymentMethod?.id,
-        name: "Riddhi",
-        email: "riddhip.itpathsolutions@gmail.com",
-        priceId: priceId,
-      });
+
       // call the backend to create subscription
       const response = await axios.post("/payment/create-subscription", {
         paymentMethod: paymentMethod?.paymentMethod?.id,
@@ -168,135 +168,143 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
   };
 
   return (
-    <form
-      onSubmit={(e) => createSubscription(e)}
-      noValidate
-      style={{
-        display: "grid",
-        // gap: "10px",
-        maxWidth: "500px",
-        margin: "auto",
-      }}
-    >
-      <label htmlFor="email" className="">
-        Email
-      </label>
-      <input
-        type="text"
-        name="email"
-        value={billingAddress.email}
-        onChange={handleInputChange}
-        className="classicInput"
-      />
-      <p className="errorMessage">{errorValues?.email}</p>
-      <label htmlFor="cardDetails">Card details</label>
-      <CardElement
-        options={{ style: { base: { fontSize: "16px" } } }}
-        onChange={(event) => {
-          console.log("CardElement [change]", event);
-        }}
-      />
+    <Form className="custom-container">
+      <h1 className="formHeader">Add Card Details</h1>
+      <Row>
+        <Form.Group as={Col} controlId="formGridEmail">
+          <Form.Label className="labelName">Email</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            value={billingAddress?.email}
+            onChange={handleInputChange}
+            // className="classicInput"
+            placeholder="Enter email"
+            required={true}
+          />
+          <small className="text-danger">{errorValues?.email}</small>
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group as={Col} controlId="formCard">
+          <Form.Label className="labelName">Card Details:</Form.Label>
+          <CardElement
+            options={{ style: { base: { fontSize: "16px" } } }}
+            onChange={(event) => {
+              console.log("CardElement [change]", event);
+            }}
+          />
+        </Form.Group>
+      </Row>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridCardDetail">
+          <Form.Label className="labelName">Cardholder Name</Form.Label>
+          <Form.Control
+            type="text"
+            name="cardholderName"
+            value={billingAddress?.cardholderName}
+            onChange={handleInputChange}
+            // className="classicInput"
+            placeholder="Enter Name"
+          />
+          <small className="text-danger">{errorValues?.cardholderName}</small>
+        </Form.Group>
+      </Row>
+      <Row className="mb-3">
+        <Form.Group as={Col} controlId="formGridAddress1">
+          <Form.Label className="labelName">Address Line 1</Form.Label>
+          <Form.Control
+            type="text"
+            name="addressLine1"
+            value={billingAddress?.addressLine1}
+            onChange={handleInputChange}
+            // className="classicInput"
+            placeholder="Address line 1"
+          />
+          <small className="text-danger">{errorValues?.addressLine1}</small>
+        </Form.Group>
+      </Row>
+      <Row>
+        <Form.Group as={Col} controlId="formGridAddress2">
+          <Form.Label className="labelName">Address Line 2</Form.Label>
+          <Form.Control
+            type="text"
+            name="addressLine2"
+            value={billingAddress?.addressLine2}
+            onChange={handleInputChange}
+            // className="classicInput"
+            placeholder="Address line 2"
+          />
+          <small className="text-danger">{errorValues?.addressLine2}</small>
+        </Form.Group>
+      </Row>
 
-      <label htmlFor="cardholderName">Cardholder Name</label>
-      <input
-        type="text"
-        name="cardholderName"
-        value={billingAddress.cardholderName}
-        onChange={handleInputChange}
-        className="classicInput"
-      />
-      <p className="errorMessage">{errorValues?.cardholderName}</p>
-      <label htmlFor="addressLine1">Address Line 1</label>
-      <input
-        type="text"
-        name="addressLine1"
-        value={billingAddress.addressLine1}
-        onChange={handleInputChange}
-        className="classicInput"
-      />
-      <p className="errorMessage">{errorValues?.addressLine1}</p>
-      <label htmlFor="addressLine2">Address Line 2</label>
-      <input
-        type="text"
-        name="addressLine2"
-        value={billingAddress.addressLine2}
-        onChange={handleInputChange}
-        className="classicInput"
-      />
-      <p className="errorMessage">{errorValues?.addressLine2}</p>
-      <div
-        style={{
-          display: "grid",
-          //   gridTemplateColumns: "1fr 1fr 1fr",
-          //   gap: "10px",
-        }}
-      >
-        <select
-          id="country"
-          name="country"
-          value={billingAddress?.country}
-          onChange={(e) => handleCountryChange(e.target.value)}
-          className="classicInput otherInputs"
-        >
-          <option value="" disabled>
-            Select Country
-          </option>
-          {countries?.map((option) => (
-            <option key={option.isoCode} value={option.isoCode}>
-              {option.name}
+      <Row className="mb-3">
+        <Form.Group className="labelName" as={Col} controlId="formGridCountry">
+          <Form.Label className="labelName">Country</Form.Label>
+          <Form.Control
+            as="select"
+            name="country"
+            custom
+            value={billingAddress?.country}
+            onChange={(e) => handleCountryChange(e.target.value)}
+          >
+            <option value="" disabled selected>
+              Select Country
             </option>
-          ))}
-        </select>
-        <p className="errorMessage">{errorValues?.country}</p>
-        <select
-          id="state"
-          name="state"
-          value={billingAddress?.state}
-          onChange={(e) => handleStateChange(JSON.parse(e.target.value))}
-          className="classicInput otherInputs"
-        >
-          <option value="" disabled>
-            Select State
-          </option>
-          {states?.map((option) => (
-            <option key={option.isoCode} value={JSON.stringify(option)}>
-              {option.name}
+            {countries?.map((option) => (
+              <option key={option.isoCode} value={option.isoCode}>
+                {option.name}
+              </option>
+            ))}
+          </Form.Control>
+          <small className="text-danger">{errorValues?.country}</small>
+        </Form.Group>
+        <Form.Group className="labelName" as={Col} controlId="formGridState">
+          <Form.Label className="labelName">State</Form.Label>
+          <Form.Control
+            as="select"
+            name="state"
+            custom
+            value={billingAddress?.state}
+            onChange={(e) => handleStateChange(JSON.parse(e.target.value))}
+          >
+            <option value="" disabled selected>
+              Select State
             </option>
-          ))}
-        </select>
-        <p className="errorMessage">{errorValues?.state}</p>
-        <select
-          id="city"
-          name="city"
-          value={billingAddress?.city}
-          onChange={(e) => handleInputChange(e)}
-          className="classicInput otherInputs"
-        >
-          <option value="" disabled>
-            Select City
-          </option>
-          {cities?.map((option) => (
-            <option key={option.isoCode} value={option.isoCode}>
-              {option.name}
+            {states?.map((option) => (
+              <option key={option.isoCode} value={JSON.stringify(option)}>
+                {option.name}
+              </option>
+            ))}
+          </Form.Control>
+          <small className="text-danger">{errorValues?.state}</small>
+        </Form.Group>
+        <Form.Group className="labelName" as={Col} controlId="formGridCity">
+          <Form.Label className="labelName">City</Form.Label>
+          <Form.Control
+            as="select"
+            name="city"
+            custom
+            value={billingAddress?.city}
+            onChange={(e) => handleInputChange(e)}
+          >
+            <option value="" disabled selected>
+              Select City
             </option>
-          ))}
-        </select>
-        <p className="errorMessage">{errorValues?.city}</p>
-
-        <label htmlFor="zip">Zip</label>
-        <input
-          type="text"
-          name="zip"
-          value={billingAddress.zip}
-          onChange={handleInputChange}
-          className="classicInput"
-        />
-        <p className="errorMessage">{errorValues?.zip}</p>
-      </div>
-      <button type="submit" disabled={!stripe}>
-        Pay
-      </button>
-    </form>
+            {cities?.map((option) => (
+              <option key={option.isoCode} value={option.isoCode}>
+                {option.name}
+              </option>
+            ))}
+          </Form.Control>
+          <small className="text-danger">{errorValues?.city}</small>
+        </Form.Group>
+      </Row>
+      <Button type="submit" className="buttonElement">
+        Pay $6.67
+      </Button>
+    </Form>
   );
 }
 export default CheckoutForm;
