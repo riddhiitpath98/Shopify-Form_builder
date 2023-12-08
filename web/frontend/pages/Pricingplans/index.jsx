@@ -26,6 +26,7 @@ import CommonModal from "../../components/CommonModal";
 import { ToastContainer } from "react-toastify";
 import { addClientSecret } from "../../redux/reducers/userSlice";
 import PaymentModal from "./paymentModal";
+import axios from "axios";
 
 
 function Pricingplans() {
@@ -48,6 +49,7 @@ function Pricingplans() {
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
   const user = useSelector((state) => state?.user?.userData?.user);
+  console.log('user: ', user);
   const navigate = useNavigate();
   const subscription = useAppQuery({ url: "/api/subscriptions" });
   const appName = useSelector((state) => state?.shopId?.appName);
@@ -166,7 +168,8 @@ function Pricingplans() {
     setRecurringCharge(handleRecurringChargeVal(appName, shopData?.data));
   }, [dispatch, shopId, shopData?.isSuccess]);
 
-  const handleCancelSubscription = () => {
+  const handleCancelSubscription = async () => {
+    const response = await axios.delete(`/payment/delete-subscription/${user?.subscription?.subscriptionId}`)
     const index = subscriptionData.findIndex(
       (sub) => sub.subscriptionName === SUBSCRIPTION_TYPES.FREE
     );
@@ -297,6 +300,7 @@ function Pricingplans() {
                           </span>
                         </Badge>
                       </div> */}
+                      <div className={styles.trialDays}></div>
                       <div className={styles.monthlyPrice}>
                         <span className={styles.monthlyPriceCur}>USD</span>
                         <span className={styles.priceValue}>
@@ -332,8 +336,8 @@ function Pricingplans() {
                         </span>
                       </Button>
                     </td>
-                    <td>
-                      <div className="trial-days" style={{ opacity: 1 }}>3 days trial</div>
+                    <td className={styles.pricingRow}>
+                      <div className={styles.trialDays}>3 days trial</div>
                       {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>

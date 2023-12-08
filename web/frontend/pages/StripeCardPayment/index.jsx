@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
-import { SUBSCRIPTION_TYPES, validateTextField } from "../../constant";
+import { SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -29,21 +29,21 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         addressLine2: "",
         country: "",
         city: "",
-        zip: "",
         state: "",
     };
     const [billingAddress, setBillingAddress] = useState(initialState);
     const [errorValues, setErrorValues] = useState(initialState);
-
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
+    const [cardData, setCardData] = useState({});
 
     const shopId = useSelector((state) => state.shopId.shopId);
     const user = useSelector((state) => state?.user?.userData?.user);
     const navigate = useNavigate();
     // collect data from the user
     const userData = useState({});
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -61,7 +61,8 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         clientSecret: "{{CLIENT_SECRET}}",
     };
 
-    const handleCountryChange = (selectedCountry) => {
+    const handleCountryChange = (e) => {
+        let selectedCountry = e.target.value;
         // Update the selected country in the state
         setBillingAddress({
             ...billingAddress,
@@ -69,16 +70,18 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             state: "", // Reset state when the country changes
             city: "", // Reset city when the country changes
         });
-
+        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(e.target.name, selectedCountry) });
         // Fetch and update the list of states based on the selected country
         const countryStates = State.getStatesOfCountry(selectedCountry);
         setStates(countryStates);
         setCities([]);
     };
-    const handleStateChange = (selectedState) => {
+    const handleStateChange = (e) => {
+        let selectedState = JSON.parse(e.target.value);
+        setErrorValues({ ...errorValues, [e.target.name]: validateTextField(e.target.name, selectedState.isoCode) });
         setBillingAddress({
             ...billingAddress,
-            state: selectedState?.isoCode,
+            [e.target.name]: selectedState.isoCode,
             city: "", // Reset city when the state changes
         });
 
@@ -117,78 +120,81 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         //     return;
         // }
         try {
-            console.log("object");
             // create a payment method
-            const paymentMethod = await stripe?.createPaymentMethod({
-                type: "card",
-                card: elements?.getElement(CardElement),
-                billing_details: {
+            if (!Object.values(billingAddress).includes("")) {
+                const paymentMethod = await stripe?.createPaymentMethod({
+                    type: "card",
+                    card: elements?.getElement(CardElement),
+                    billing_details: {
+                        name: billingAddress?.cardholderName,
+                        email: billingAddress?.email,
+                        address: {
+                            city: billingAddress?.city,
+                            line1: billingAddress?.addressLine1,
+                            line2: billingAddress?.addressLine2,
+                            country: billingAddress?.country,
+                            state: billingAddress?.state,
+                        },
+                    },
+                });
+                console.log("first", {
+                    paymentMethod: paymentMethod?.paymentMethod?.id,
                     name: billingAddress?.cardholderName,
                     email: billingAddress?.email,
-                    address: {
-                        city: billingAddress?.city,
-                        line1: billingAddress?.addressLine1,
-                        line2: billingAddress?.addressLine2,
-                        country: billingAddress?.country,
-                        state: billingAddress?.state,
-                    },
-                },
-            });
-            console.log("first", {
-                paymentMethod: paymentMethod?.paymentMethod?.id,
-                name: billingAddress?.cardholderName,
-                email: billingAddress?.email,
-                priceId: priceId,
-                shopId: shopId
-            });
-            // call the backend to create subscription
-            const response = await axios.post("/payment/create-subscription", {
-                paymentMethod: paymentMethod?.paymentMethod?.id,
-                name: billingAddress?.cardholderName,
-                email: billingAddress?.email,
-                priceId: priceId,
-                shopId,
-            });
-            const confirmPayment = await stripe?.confirmCardPayment(
-                response?.data?.clientSecret
-            );
-
-            if (confirmPayment?.error) {
-                alert(confirmPayment.error.message);
-            } else {
-                const {
-                    id,
-                    name,
-                    email,
-                    domain,
-                    city,
-                    country,
-                    customer_email,
-                    shop_owner,
-                    myshopify_domain,
-                    phone,
-                } = shopData.data;
-                let user = {
-                    shopId: id,
-                    shopName: name,
-                    email,
-                    domain: myshopify_domain,
-                    city,
-                    country,
-                    customer_email,
-                    shop_owner,
-                    myshopify_domain,
-                    phone,
-                };
-                subscriptionData.filter(({ subscriptionName, _id }, index) => {
-                    if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-                        user = { ...user, subscriptionName, subscriptionId: _id };
-                    }
+                    priceId: priceId,
+                    shopId: shopId
                 });
-                dispatch(addShopData(user));
-                setShowCardElement(false);
-                toggleModal();
-                navigate("/dashboard", { replace: true });
+                // call the backend to create subscription
+                const response = await axios.post("/payment/create-subscription", {
+                    paymentMethod: paymentMethod?.paymentMethod?.id,
+                    name: billingAddress?.cardholderName,
+                    email: billingAddress?.email,
+                    priceId: priceId,
+                    shopId,
+                });
+                const confirmPayment = await stripe?.confirmCardPayment(
+                    response?.data?.clientSecret
+                );
+
+                if (confirmPayment?.error) {
+                    toast.success(confirmPayment.error.message, toastConfig);
+                } else {
+                    const {
+                        id,
+                        name,
+                        email,
+                        domain,
+                        city,
+                        country,
+                        customer_email,
+                        shop_owner,
+                        myshopify_domain,
+                        phone,
+                    } = shopData.data;
+                    let user = {
+                        shopId: id,
+                        shopName: name,
+                        email,
+                        domain: myshopify_domain,
+                        city,
+                        country,
+                        customer_email,
+                        shop_owner,
+                        myshopify_domain,
+                        phone,
+                    };
+                    subscriptionData.filter(({ subscriptionName, _id }, index) => {
+                        if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+                            user = { ...user, subscriptionName, subscriptionId: _id };
+                        }
+                    });
+                    dispatch(addShopData(user));
+                    setShowCardElement(false);
+                    toggleModal();
+                    setBillingAddress({})
+                    setErrorValues({});
+                    navigate("/dashboard", { replace: true });
+                }
             }
         } catch (error) {
             console.log(error);
@@ -211,9 +217,8 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             },
         },
     };
-
     return (
-        <Form className="custom-container" onSubmit={(e) => createSubscription(e)}>
+        <Form noValidate className="custom-container" onSubmit={(e) => createSubscription(e)}>
             <h1 className="formHeader">Add Card Details</h1>
             <Row className="mb-3">
                 <Form.Group as={Col} controlId="formGridEmail">
@@ -225,7 +230,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         onChange={handleInputChange}
                         // className="classicInput"
                         placeholder="Enter email"
-                        required={true}
                     />
                     <small className="text-danger">{errorValues?.email}</small>
                 </Form.Group>
@@ -236,9 +240,10 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     <CardElement
                         options={{ style: { base: { fontSize: "16px" } } }}
                         onChange={(event) => {
-                            console.log("CardElement [change]", event);
+                            setCardData(event);
                         }}
                     />
+                    <small className="text-danger">{cardData?.error?.message}</small>
                 </Form.Group>
             </Row>
             <Row className="mb-3">
@@ -292,7 +297,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         name="country"
                         custom
                         value={billingAddress?.country}
-                        onChange={(e) => handleCountryChange(e.target.value)}
+                        onChange={(e) => handleCountryChange(e)}
                     >
                         <option value="" disabled selected>
                             Select Country
@@ -311,8 +316,8 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         as="select"
                         name="state"
                         custom
-                        value={billingAddress?.state}
-                        onChange={(e) => handleStateChange(JSON.parse(e.target.value))}
+                        value={billingAddress?.state?.name}
+                        onChange={(e) => handleStateChange(e)}
                     >
                         <option value="" disabled selected>
                             Select State
@@ -346,7 +351,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     <small className="text-danger">{errorValues?.city}</small>
                 </Form.Group>
             </Row>
-            <Button type="submit" className="buttonElement">
+            <Button type="submit" disabled={(cardData?.complete === undefined || cardData?.complete === false) && Object.values(billingAddress).includes("")} className="buttonElement">
                 Pay $6.67
             </Button>
         </Form>
