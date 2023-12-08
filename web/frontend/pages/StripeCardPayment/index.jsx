@@ -156,7 +156,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             if (confirmPayment?.error) {
                 alert(confirmPayment.error.message);
             } else {
-                toast("Payment Successfull");
                 const {
                     id,
                     name,
