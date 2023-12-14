@@ -579,7 +579,7 @@ const FormPreview = () => {
                     )}
                   <FormLayout>
                     <Grid>
-                      {elements(user.subscriptionName, inputFields, true).map(
+                      {inputFields.map(
                         ({ id, title, type, attributes, inputId }, index) => {
                           const width = {
                             md:

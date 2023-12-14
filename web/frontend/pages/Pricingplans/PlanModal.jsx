@@ -12,25 +12,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import {
   addShopData,
-  createApplicationCharge,
-  createSessionCheckout,
 } from "../../redux/actions/allActions";
-import axios from "axios";
-import { useAppQuery } from "../../hooks";
-import dotenv from "dotenv";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { getSessionToken } from "@shopify/app-bridge/utilities";
-import { Redirect } from "@shopify/app-bridge/actions";
 import { addShopId } from "../../redux/reducers/appIdSlice";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
-import { ToastContainer } from "react-toastify";
 const stripePromise = loadStripe(
   "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW"
 );
 
-// import { loadStripe } from "@stripe/stripe-js";
 
 export default function PlanModal({
   active,
@@ -41,20 +32,13 @@ export default function PlanModal({
   const app = useAppBridge();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [recurringCharge, setRecurringCharge] = useState();
   const [showCardElement, setShowCardElement] = useState(false);
-  const user = useSelector((state) => state?.user?.userData?.user);
   const [priceId, setPriceId] = useState();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
-  const shopId = useSelector((state) => state.shopId.shopId);
   const appName = useSelector((state) => state?.shopId?.appName);
-
-  useEffect(() => {
-    setRecurringCharge(handleRecurringChargeVal(appName, shopData));
-  }, [dispatch, isSuccess]);
-
+  const user = useSelector(state => state?.user?.userData?.user);
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -72,24 +56,6 @@ export default function PlanModal({
       return status;
     }
   };
-
-  // const fetchSubscriptions = async (token) => {
-  //   try {
-  //     const options = {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${token}` || "",
-  //       },
-  //     };
-  //     const response = await fetch(
-  //       `/api/recurring-application-charge/32137937188`,
-  //       options
-  //     );
-  //     const data = await response.json();
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   }
-  // };
 
   const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -122,41 +88,15 @@ export default function PlanModal({
           user = { ...user, subscriptionName, subscriptionId: _id };
         }
       });
-      dispatch(addShopData(user));
-      dispatch(addShopId(id));
-      toggleModal();
-      navigate("/dashboard", { replace: true });
-    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      const {
-        id,
-        name,
-        email,
-        domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      } = shopData;
-      let user = {
-        shopId: id,
-        shopName: name,
-        email,
-        domain: myshopify_domain,
-        city,
-        country,
-        customer_email,
-        shop_owner,
-        myshopify_domain,
-        phone,
-      };
-      subscriptionData.filter(({ subscriptionName, _id }, index) => {
-        if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-          user = { ...user, subscriptionName, subscriptionId: _id };
+      dispatch(addShopData(user)).then((data) => {
+        if (data?.payload) {
+          dispatch(addShopId(id));
+          toggleModal();
+          navigate("/dashboard", { replace: true });
         }
       });
-      dispatch(addShopData(user));
+
+    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       setShowCardElement(true);
       setPriceId(PLAN_DETAILS.PREMIUM);
     }
@@ -172,7 +112,6 @@ export default function PlanModal({
     <div className="modalContainer" style={{ height: "500px" }}>
       <Modal
         open={active}
-        // onClose={toggleModal}
         title="Pricing plans"
         large
       >
@@ -190,6 +129,16 @@ export default function PlanModal({
               <LegacyCard.Section>
                 <div className="grid">
                   <div className={styles.gridItem}>
+                    <div className={styles.boxHeading}>
+                      <h4
+                        className={`${styles.boxHeadingText} ${!Object?.keys(user).length && user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM || user === undefined
+                          ? styles.freeHeader
+                          : styles.premiumHeader
+                          }`}
+                      >
+                        {PLAN_TEXT.CURRENT_PLAN}
+                      </h4>
+                    </div>
                     <table className={styles.pricingTable} border={1}>
                       <thead>
                         <tr>
@@ -216,7 +165,7 @@ export default function PlanModal({
                               </span>
                             </Badge>
                           </div>
-                          <div className={styles.trialDays}></div>
+                          {/* <div className={styles.trialDays}></div> */}
                           <div className={styles.monthlyPrice}>
                             <span className={styles.monthlyPriceCur}>USD</span>
                             <span className={styles.priceValue}>
@@ -233,7 +182,7 @@ export default function PlanModal({
                           </div>
 
                           <Button
-                            primary
+
                             fullWidth
                             onClick={() =>
                               handleCreateSubscription(SUBSCRIPTION_TYPES.FREE)
@@ -241,7 +190,7 @@ export default function PlanModal({
                           >
                             <span>
                               <span>
-                                <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
+                                <span>{PLAN_TEXT.START_FREE_PLAN}</span>
                               </span>
                             </span>
                           </Button>
@@ -258,7 +207,7 @@ export default function PlanModal({
                         </Badge>
                       </div> */}
 
-                          <div className={styles.trialDays}>3 days trial</div>
+                          {/* <div className={styles.trialDays}>3 days trial</div> */}
                           <div className={styles.monthlyPrice}>
                             <span className={styles.monthlyPriceCur}>USD</span>
                             <span className={styles.priceValue}>
@@ -340,14 +289,14 @@ export default function PlanModal({
                                     <td>
                                       {renderStatusIcon(
                                         subscriptionData[0].features[
-                                          featureKey
+                                        featureKey
                                         ][innerKey]
                                       )}
                                     </td>
                                     <td>
                                       {renderStatusIcon(
                                         subscriptionData[1].features[
-                                          featureKey
+                                        featureKey
                                         ][innerKey]
                                       )}
                                     </td>
@@ -363,8 +312,9 @@ export default function PlanModal({
               </LegacyCard.Section>
             </LegacyCard>
           </div>
-        )}
-      </Modal>
-    </div>
+        )
+        }
+      </Modal >
+    </div >
   );
 }

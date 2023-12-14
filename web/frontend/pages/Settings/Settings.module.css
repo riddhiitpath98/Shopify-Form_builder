@@ -29,3 +29,14 @@
   color: #008060 !important;
   fill: var(--p-action-primary) !important;
 }
+
+.recaptchaHeadingContainer {
+  display: flex;
+  align-items: center;
+}
+
+.supportIcon {
+  width: 15px;
+  height: 15px;
+  margin-left: 3px !important;
+}

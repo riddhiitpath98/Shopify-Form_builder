@@ -73,7 +73,7 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const finalFormData = useSelector(
     (state) => state?.inputField?.finalFormData
-    );
+  );
 
   const isSaveOrUpdate = useSelector((state) => state.inputField?.isSaveOrUpdate);
   const formDataById = useSelector(
@@ -103,6 +103,7 @@ const Topbar = ({ handleRedirectToForm }) => {
     })
     return fields
   }, [inputFields])
+
 
   const hasFreeInput = useMemo(() => {
     let fields = [];
@@ -145,7 +146,7 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({ _id: editFormId, customForm: updatedFormData, hasFreeInput, hasPremiumInput })
+      updateFormData({ _id: editFormId, combinedObjectArr: { customForm: updatedFormData, hasFreeInput, hasPremiumInput } })
     );
     dispatch(
       createNupdateValidation({

@@ -20,24 +20,22 @@ function NavigationMenubar() {
             <li key={id} className={`${styles.menuItems} ${children && isOpenMenu && styles.active}`} onClick={closeDropdown}>
               <Link
                 to={path}
-                className={`${styles.menuLink} ${
-                  location?.pathname?.includes(path) ? styles.active : ""
-                }`}
+                className={`${styles.menuLink} ${location?.pathname?.includes(path) ? styles.active : ""
+                  }`}
                 onClick={() => {
                   children && setIsOpenMenu((prev) => !prev);
                 }}
               >
                 <Icon
                   source={icon}
-                  className={`${styles.navIcons} ${
-                    location.pathname?.includes(path) ? styles.active : ""
-                  }`}
+                  className={`${styles.navIcons} ${location.pathname?.includes(path) ? styles.active : ""
+                    }`}
                 />
                 <span className={styles.navTitle}>{content}</span>
               </Link>
               {children && (
                 <>
-                  <SubMenuList submenus={children} isOpenMenu={isOpenMenu} setIsOpenMenu={setIsOpenMenu}/>
+                  <SubMenuList submenus={children} isOpenMenu={isOpenMenu} setIsOpenMenu={setIsOpenMenu} />
                   <div
                     style={{ margin: "auto" }}
                     onClick={() => {

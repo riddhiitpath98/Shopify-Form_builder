@@ -53,6 +53,7 @@ function FormList() {
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
+  console.log('formData: ', formData?.formData);
 
   const handleSubmission = (id) => {
     navigate("/submissions", { state: { id: id } });
@@ -60,9 +61,8 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
-      filter[0].isVisible ? id : ""
-    }'></div>`;
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${filter[0].isVisible ? id : ""
+      }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
       function () {
         toast.success("Code Coiped", toastConfig);
@@ -78,13 +78,14 @@ function FormList() {
 
   const sortedItems = useMemo(() => {
     const data = formData?.formData?.filter((formItem) => {
+      // if (
+      //   user?.subscriptionName === SUBSCRIPTION_TYPES.FREE &&
+      //   formItem?.hasPremiumInput?.length > 0 &&
+      //   formItem?.hasFreeInput?.length > 0
+      // ) {
+      //   return formItem;
+      // }
       if (
-        user?.subscriptionName === SUBSCRIPTION_TYPES.FREE &&
-        formItem?.hasPremiumInput?.length > 0 &&
-        formItem?.hasFreeInput?.length > 0
-      ) {
-        return formItem;
-      } else if (
         user?.subscriptionName === SUBSCRIPTION_TYPES.FREE &&
         formItem?.hasPremiumInput?.length > 0
       )
@@ -173,8 +174,8 @@ function FormList() {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch, shopId]);
   const isShowPremium =
-  sortedItems?.length >= subscription?.features?.form?.number_of_forms &&
-  user?.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+    sortedItems?.length >= subscription?.features?.form?.number_of_forms &&
+    user?.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   return (
     <>
       {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE ? (

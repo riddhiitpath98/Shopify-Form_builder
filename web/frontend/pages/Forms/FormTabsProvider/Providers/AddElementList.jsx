@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Icon } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
@@ -20,6 +20,21 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
     dispatch(addElement({ ...data, inputId, isEdit }));
     toggleDrawer();
   };
+  const elementList = useMemo(() => {
+    const data = elements(user?.subscriptionName).filter(item => {
+      if (!item?.viewAccess) {
+        return item
+      }
+      else if (item?.viewAccess === user?.subscriptionName) {
+        return item
+      }
+      else {
+        return null
+      }
+    });
+    return data
+
+  }, [user])
 
   return (
     <>
@@ -34,17 +49,18 @@ const AddElementList = ({ isEdit, tabId, toggleDrawer }) => {
           <div className={styles.nestedContent}>
             <div>
               <div>
-                {elements(user?.subscriptionName)?.map(({ label, fields }, index) => (
+                {elementList?.map(({ label, fields }, index) => (
                   <div className={styles.contentWrapper} key={index}>
                     <div>
                       <div className={styles.subHeading}>{label}</div>
                       <div>
                         {fields?.map((data, index) => (
                           <div className={styles.contentWrapper} key={index}>
-                            <div className={styles.listItem}>
+                            <div className={`${styles.listItem} ${data?.premiumOnly ? styles.disabled : ''}`}>
                               <div
                                 className={styles.row}
-                                onClick={() => handleRedirectToFields(data)}
+                                onClick={() => !data.premiumOnly && handleRedirectToFields(data)}
+                                title={data.premiumOnly ? "Available only in premium plan" : null}
                               >
                                 <div className={styles.elementIcon}>
                                   <Icon source={data?.icon} />

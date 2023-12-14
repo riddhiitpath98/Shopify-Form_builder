@@ -123,16 +123,26 @@ const catchFormDivAndAppendForm = (data) => {
   let validation = {};
   let afterSubmit = {};
   const createSubmission = async (data, formId) => {
+    const finalFormData = new FormData();
+    finalFormData.append("shopId", shopId);
+    if (data && Object.keys(data).length > 0) {
+      for (const key in data) {
+        if (data[key] !== "" && key.split("_").pop() === 'file') {
+          data[key]?.forEach(item => {
+            finalFormData.append(key, item);
+          })
+        }
+        else if (Array.isArray(data[key]))
+          finalFormData.append(key, JSON.stringify(data[key]));
+        else {
+          finalFormData.append(key, data[key]);
+        }
+      }
+    }
     try {
       const requestOptions = {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          submission: data,
-          shopId: shopId,
-        }),
+        body: finalFormData
       };
       const response = await fetch(
         `${server}/submission/${formId}`,
@@ -183,8 +193,8 @@ const catchFormDivAndAppendForm = (data) => {
 
   function validateInput(fieldType, fieldValue, obj) {
     const value = !Array.isArray(fieldValue)
-    ? typeof fieldValue !== "boolean" && fieldValue.trim() ? typeof fieldValue !== "boolean" && fieldValue.trim() : fieldValue 
-    : fieldValue;
+      ? typeof fieldValue !== "boolean" && fieldValue.trim() ? typeof fieldValue !== "boolean" && fieldValue.trim() : fieldValue
+      : fieldValue;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const contactRegex = /^[2-9]{1}[0-9]{9}$/;
     const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
@@ -243,7 +253,7 @@ const catchFormDivAndAppendForm = (data) => {
         formData[renderId][name] = value;
       }
     } else {
-      formFieldData = formFieldData.map((item) => { 
+      formFieldData = formFieldData.map((item) => {
         let fieldData = {};
         if (item.confirmfieldId === name && confirmPassword) {
           fieldData = {
@@ -260,10 +270,10 @@ const catchFormDivAndAppendForm = (data) => {
           errorElement.textContent = error && item.required ? error : "";
         }
         if (item.fieldId === name) {
-          if (type === "checkbox"){ 
+          if (type === "checkbox") {
             checkValidation("accept_terms", checked);
             formData[renderId][name] = checked;
-          fieldData = { ...item, fieldValue: checked };
+            fieldData = { ...item, fieldValue: checked };
           }
           else fieldData = { ...item, fieldValue: value };
           let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
@@ -934,7 +944,7 @@ const catchFormDivAndAppendForm = (data) => {
             );
             checkboxInputElement.type = item?.type;
             checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
-           
+
             checkboxWrapperElement.appendChild(checkboxInputElement);
 
             const checkboxLabelElement = document.createElement("label");
@@ -968,7 +978,7 @@ const catchFormDivAndAppendForm = (data) => {
             checkboxContainer.appendChild(smallElement);
             const element = document.querySelector(
               `input[data-id=${formElementId}_${item?.inputId}]`
-              );
+            );
             element.addEventListener("change", (e) =>
               handleChange(formElementId, e)
             );
@@ -1022,7 +1032,7 @@ const catchFormDivAndAppendForm = (data) => {
               checkBoxInputElement.type = item?.type;
               checkBoxInputElement.value = option.value;
               checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
-              
+
               checkBoxInputElement.setAttribute(
                 "data-id",
                 `${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`
@@ -1036,11 +1046,11 @@ const catchFormDivAndAppendForm = (data) => {
 
               const element = document.querySelector(
                 `input[data-id=${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}]`
-                );
+              );
               element.addEventListener("change", (event) => {
                 const selectedCheckboxes = ulElement.querySelectorAll(
                   'input[type="checkbox"]:checked'
-                  );
+                );
                 const selectedValues = Array.from(selectedCheckboxes).map(
                   (checkbox) => {
                     let checkValue = {
@@ -1049,7 +1059,7 @@ const catchFormDivAndAppendForm = (data) => {
                     };
                     return checkValue;
                   }
-                  );
+                );
                 formData[formElementId][event.target.name] = selectedValues;
                 checkValidation("checkbox", selectedValues);
               });
@@ -1078,7 +1088,7 @@ const catchFormDivAndAppendForm = (data) => {
               }
             }
           }
-          
+
         } else if (item?.type === "radio") {
           const radioContainer = document.createElement("div");
           radioContainer.className = "inputContainer";
@@ -1155,7 +1165,7 @@ const catchFormDivAndAppendForm = (data) => {
               }
             });
           });
-         
+
           const descriptionElement = document.createElement("span");
           descriptionElement.className = "description";
           descriptionElement.textContent = description;

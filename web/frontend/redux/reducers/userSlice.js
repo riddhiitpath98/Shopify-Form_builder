@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   addShopData,
-  createSessionCheckout,
+  cancelSubscription,
+  getInvoice,
   getUserByShopId,
 } from "../actions/allActions";
 
@@ -15,7 +16,12 @@ const initialState = {
     loading: false,
     success: false,
   },
-  clientSecret: null,
+  invoiceData: {
+    data: [],
+    loading: false,
+    error: "",
+    success: false
+  },
 };
 
 const userSlice = createSlice({
@@ -66,8 +72,6 @@ const userSlice = createSlice({
         return {
           ...state,
           userData: {
-            user: {},
-            subscription: {},
             error: "",
             loading: true,
           },
@@ -96,32 +100,58 @@ const userSlice = createSlice({
           },
         };
       })
-      .addCase(createSessionCheckout.pending, (state, action) => {
+      .addCase(getInvoice.pending, (state, action) => {
         return {
           ...state,
-          userData: {
-            session: {},
+          invoiceData: {
             error: "",
             loading: true,
           },
         };
       })
-      .addCase(createSessionCheckout.fulfilled, (state, action) => {
+      .addCase(getInvoice.fulfilled, (state, action) => {
+        return {
+          ...state,
+          invoiceData: {
+            data: action.payload,
+            loading: false,
+            success: true,
+          },
+        };
+      })
+      .addCase(getInvoice.rejected, (state, action) => {
+        return {
+          ...state,
+          invoiceData: {
+            error: action.payload,
+            loading: false,
+          },
+        };
+      }).addCase(cancelSubscription.pending, (state, action) => {
         return {
           ...state,
           userData: {
-            session: action.payload,
+            error: "",
+            loading: true,
+          },
+        };
+      })
+      .addCase(cancelSubscription.fulfilled, (state, action) => {
+        return {
+          ...state,
+          userData: {
+            user: action.payload,
             error: "",
             loading: false,
             success: true,
           },
         };
       })
-      .addCase(createSessionCheckout.rejected, (state, action) => {
+      .addCase(cancelSubscription.rejected, (state, action) => {
         return {
           ...state,
           userData: {
-            session: {},
+            user: {},
             error: action.payload,
             loading: false,
           },

@@ -12,10 +12,9 @@ export const addShopData = createAsyncThunk(
   async (shopData, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post("/user", shopData);
-      toast.success(response?.data?.msg, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -33,25 +32,41 @@ export const getUserByShopId = createAsyncThunk(
   }
 );
 
-export const createSessionCheckout = createAsyncThunk("/shop/createSessionCheckout", async (data, { rejectWithValue, dispatch }) => {
-  try {
-    const response = await axios.post(`/payment/create-checkout-session`, data)
-    return response.data.session;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const cancelSubscription = createAsyncThunk(
+  "shop/cancelSubscription",
+  async (data, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.delete(`/payment/delete-subscription/${data?.id}?shopId=${data.shopId}`);
+      toast.success(response.data?.message, toastConfig);
+      return response?.data?.user;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
-
-// export const createSubscription = createAsyncThunk('/shop/createSubscription', async (data, { rejectWithValue, dispatch }) => {
-//   console.log('data: ', data);
+);
+// export const cancelSubscription = async (id) => {
 //   try {
-//     const response = await axios.post(`/payment/create-payment-intent`, data)
-//     console.log('response: ', response);
-//     return response.data.clientSecret;
+//     const response = await axios.delete(`/payment/delete-subscription/${id}`);
+//     toast.success(response.data?.message, toastConfig);
+//     return response?.data?.cancelSubscription?.cancel_at_period_end;
 //   } catch (error) {
 //     return rejectWithValue(error.response.data);
 //   }
-// })
+// };
+
+export const getInvoice = createAsyncThunk(
+  "/shop/getInvoice",
+  async (data, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.get(
+        `/payment/get-invoice/${data?.id}?priceId=${data?.priceId}&shopId=${data.shopId}`
+      );
+      return response?.data?.invoice;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 // ======================================== Custom Form API started =========================================
 export const addFormData = createAsyncThunk(
@@ -80,10 +95,10 @@ export const addFormData = createAsyncThunk(
           afterSubmitData: formData.updatedAfterSubmit,
         })
       );
-      toast.success(response?.msg);
+      toast.success(response?.message);
       return response.data;
     } catch (error) {
-      toast.error(error?.response?.msg);
+      toast.error(error?.response?.message);
       return rejectWithValue(error.response.data);
     }
   }
@@ -101,10 +116,10 @@ export const deleteFormData = createAsyncThunk(
           },
         }
       );
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -126,14 +141,13 @@ export const updateFormData = createAsyncThunk(
   "inputs/editFormData",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        `/custom_form/${data._id}`,
-        { customForm: data.customForm, isPremium: data.isPremium }
+      const response = await axios.put(`/custom_form/${data._id}`,
+        data.combinedObjectArr,
       );
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response?.data?.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -200,7 +214,7 @@ export const createSMTPSettings = createAsyncThunk(
   async (smtpsettingsData, { rejectWithValue }) => {
     try {
       const response = await axios.post("/setting", smtpsettingsData);
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data;
     } catch (error) {
       toast.error(error.message, toastConfig);
@@ -217,10 +231,10 @@ export const editSmtpSettings = createAsyncThunk(
         `/setting/${smtpSettingData.shopId}`,
         smtpSettingData
       );
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response?.data?.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -233,10 +247,10 @@ export const contactUs = createAsyncThunk(
   async (contactData, { rejectWithValue }) => {
     try {
       const response = await axios.post("/contact_us", contactData);
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data;
     } catch (error) {
-      toast.error(error?.response?.msg);
+      toast.error(error?.response?.message);
       return rejectWithValue(error.response.data);
     }
   }
@@ -247,10 +261,10 @@ export const addFeedback = createAsyncThunk(
   async (feedbackData, { rejectWithValue }) => {
     try {
       const response = await axios.post("/feedback", feedbackData);
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data;
     } catch (error) {
-      toast.error(error?.response?.msg);
+      toast.error(error?.response?.message);
       return rejectWithValue(error.response.data);
     }
   }
@@ -266,7 +280,7 @@ export const addFeedback = createAsyncThunk(
 //         shopId: submissionData.shopId,
 //         submission: submissionData.submission,
 //       });
-//       // toast.success(response?.data?.msg, toastConfig)
+//       // toast.success(response?.data?.message, toastConfig)
 //       return response.data.data;
 //     } catch (error) {
 //       // toast.error(error.message)
@@ -279,10 +293,11 @@ export const createSubmissions = createAsyncThunk(
   "submission/addSubmissions",
   async (submissionData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`/submission/${submissionData.form}`,
+      const response = await axios.post(
+        `/submission/${submissionData.form}`,
         submissionData?.formData
       );
-      // toast.success(response?.data?.msg, toastConfig)
+      // toast.success(response?.data?.message, toastConfig)
       return response.data.data;
     } catch (error) {
       // toast.error(error.message)
@@ -428,9 +443,9 @@ export const deleteSubmissionData = createAsyncThunk(
       filterFormId
         ? dispatch(sortNFilterSubmissionById({ filterFormId, path, query }))
         : dispatch(sortNFilterSubmission({ path, query, shopId }));
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -462,7 +477,7 @@ export const getValidationByFormId = createAsyncThunk(
       const response = await axios.get(`/formsettings/validation/${id}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -478,7 +493,7 @@ export const createNupdateValidation = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -491,7 +506,7 @@ export const getAppearanceByFormId = createAsyncThunk(
       const response = await axios.get(`/formsettings/appearance/${id}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -507,7 +522,7 @@ export const createNupdateAppearance = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -520,7 +535,7 @@ export const getAfterSubmitByFormId = createAsyncThunk(
       const response = await axios.get(`/formsettings/afterSubmit/${id}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -536,7 +551,7 @@ export const createNupdateAfterSubmit = createAsyncThunk(
       );
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -561,10 +576,10 @@ export const createRecaptchaSettings = createAsyncThunk(
   async (data) => {
     try {
       const response = await axios.post("/setting/rechaptcha", data);
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.data?.msg, toastConfig);
+      toast.error(error?.response?.data?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -573,9 +588,9 @@ export const createRecaptchaSettings = createAsyncThunk(
 // =====================subscription api ===========================
 export const getAllSubscription = createAsyncThunk(
   "subscription/getAllSubscription",
-  async () => {
+  async (shopId) => {
     try {
-      const response = await axios.get("/subscriptions");
+      const response = await axios.get(`/subscriptions`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -602,10 +617,10 @@ export const createFormToAPIsettings = createAsyncThunk(
   async (data) => {
     try {
       const response = await axios.post(`/contact-to-api/${data.formId}`, data);
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -614,12 +629,11 @@ export const createFormToAPIsettings = createAsyncThunk(
 export const getFormToAPISettings = createAsyncThunk(
   "anyAPISettings/getFormToAPIsettings",
   async (shopId) => {
-
     try {
       const response = await axios.get(`/contact-to-api?shopId=${shopId}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -637,10 +651,10 @@ export const deleteFormToAPISettings = createAsyncThunk(
           },
         }
       );
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -655,10 +669,10 @@ export const editFormToAPISettings = createAsyncThunk(
         `/contact-to-api/${id}?shopId=${formValues?.shopId}`,
         formValues
       );
-      toast.success(response?.data?.msg, toastConfig);
+      toast.success(response?.data?.message, toastConfig);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -671,12 +685,11 @@ export const getFormToAPIById = createAsyncThunk(
       const response = await axios.get(`/contact-to-api/${id}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 //================================================ Any API Logs ===================================================
 
@@ -687,7 +700,7 @@ export const getAPILogsData = createAsyncThunk(
       const response = await axios.get(`/logs?shopId=${shopId}`);
       return response.data.data;
     } catch (error) {
-      toast.error(error?.response?.msg, toastConfig);
+      toast.error(error?.response?.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }
@@ -707,36 +720,45 @@ export const loadMoreLogs = createAsyncThunk(
   }
 );
 
-
 // =================================================billing API started ========================================
 
-
-export const createApplicationCharge = createAsyncThunk("recurringCharge/createApplicationCharge", async (data, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(`/billing`, data);
-    return response.data.data;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const createApplicationCharge = createAsyncThunk(
+  "recurringCharge/createApplicationCharge",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/billing`, data);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
 
-export const getApplicationCharge = createAsyncThunk('recurringCharge/getApplicationCharge', async (recurringAuth, { rejectWithValue }) => {
-  try {
-    const response = await axios.get(`/billing?shopId=${recurringAuth.shopId}`)
-    const recurringChargeData = response?.data?.data?.map(async (item) => {
-      const options = {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${recurringAuth.session}` || ''
-        }
-      }
-      const response = await fetch(`/api/recurring-application-charge/${item.chargeId}`, options)
-      const data = await response.json();
-      return data.recurringCharge
-    })
-    const results = await Promise.all(recurringChargeData);
-    return results;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const getApplicationCharge = createAsyncThunk(
+  "recurringCharge/getApplicationCharge",
+  async (recurringAuth, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `/billing?shopId=${recurringAuth.shopId}`
+      );
+      const recurringChargeData = response?.data?.data?.map(async (item) => {
+        const options = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${recurringAuth.session}` || "",
+          },
+        };
+        const response = await fetch(
+          `/api/recurring-application-charge/${item.chargeId}`,
+          options
+        );
+        const data = await response.json();
+        return data.recurringCharge;
+      });
+      const results = await Promise.all(recurringChargeData);
+      return results;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);

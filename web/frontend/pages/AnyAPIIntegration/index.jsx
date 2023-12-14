@@ -5,6 +5,7 @@ import {
   Form,
   FormLayout,
   Grid,
+  Icon,
   Layout,
   LegacyCard,
   Page,
@@ -13,7 +14,7 @@ import {
   TextField,
 } from "@shopify/polaris";
 import { ToastContainer } from "react-toastify";
-import { validateTextField } from "../../constant";
+import { Icons, validateTextField } from "../../constant";
 import styles from "./AnyAPIIntegration.module.css";
 import {
   createFormToAPIsettings,
@@ -24,12 +25,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import APISettingsList from "./APISettingsList";
 import { replace } from "@shopify/app-bridge/actions/Navigation/History";
+import IFrameLoader from "../../components/IFrameLoader";
 
 const AnyAPIIntegration = ({ isEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formElementData, setFormElementData] = useState([]);
   const [elementsValue, setElementsValue] = useState({});
+  const [iframeVisible, setIFrameVisible] = useState(false);
   const [error, setError] = useState({});
   const { apiId } = useParams();
   const [formValues, setFormValues] = useState({
@@ -41,6 +44,13 @@ const AnyAPIIntegration = ({ isEdit }) => {
     formId: "",
     shopId: "",
   });
+
+  const handleIFrameOpen = () => {
+    setIFrameVisible(true);
+  };
+  const handleIframeClose = () => {
+    setIFrameVisible(false);
+  };
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.apiSettingData
@@ -226,7 +236,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setElementsValue({});
     setErrorValues({});
     setShowForm(false);
-    navigate("/all-api")
+    navigate("/all-api");
   };
 
   const viewAPIList = () => {
@@ -236,11 +246,11 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
   const handleForm = (event) => {
     if (isEdit && apiId) {
-      handleUpdate()
+      handleUpdate();
     } else {
-      handleSubmit(event)
+      handleSubmit(event);
     }
-  }
+  };
 
   return (
     <Page
@@ -259,15 +269,11 @@ const AnyAPIIntegration = ({ isEdit }) => {
                 <Form onSubmit={(event) => handleForm(event)} noValidate>
                   <FormLayout>
                     <Grid>
-                      <Grid.Cell
-                        columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                      >
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
                         <TextField
                           value={formValues.apiTitle || ""}
                           name="apiUrl"
-                          onChange={(value) =>
-                            handleChange("apiTitle", value)
-                          }
+                          onChange={(value) => handleChange("apiTitle", value)}
                           label="Add API title"
                           type="text"
                           requiredIndicator
@@ -318,17 +324,13 @@ const AnyAPIIntegration = ({ isEdit }) => {
                           label="Input Type"
                           name="inputType"
                           options={inputTypeOptions}
-                          onChange={(value) =>
-                            handleChange("inputType", value)
-                          }
+                          onChange={(value) => handleChange("inputType", value)}
                           value={formValues.inputType || ""}
                           error={errorValues.inputType}
                         />
                       </Grid.Cell>
 
-                      <Grid.Cell
-                        columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                      >
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
                         <Select
                           label="Method"
                           name="method"
@@ -339,10 +341,16 @@ const AnyAPIIntegration = ({ isEdit }) => {
                         />
                       </Grid.Cell>
 
-                      <Grid.Cell
-                        columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                      >
-                        <Text>Map your Fields</Text>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <div className={styles.mapFeildContainer}>
+                          <Text>Map your Fields</Text>
+                          <div
+                            className={styles.supportIcon}
+                            onClick={handleIFrameOpen}
+                          >
+                            <Icon source={Icons.support} color="base" />
+                          </div>
+                        </div>
                       </Grid.Cell>
 
                       {formElementData && formElementData?.length > 0
@@ -377,9 +385,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
                         ))
                         : null}
 
-                      <Grid.Cell
-                        columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                      >
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
                         {apiId ? (
                           <Button
                             primary
@@ -407,6 +413,16 @@ const AnyAPIIntegration = ({ isEdit }) => {
           </Layout.Section>
         </Layout>
       </div>
+      {iframeVisible && (
+        <IFrameLoader
+          open={iframeVisible}
+          handleClose={handleIframeClose}
+          src="https://www.google.com?igu=1"
+          title="Example Iframe"
+          width="1000"
+          height="1000"
+        />
+      )}
       <ToastContainer />
     </Page>
   );

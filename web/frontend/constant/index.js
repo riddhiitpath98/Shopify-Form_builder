@@ -184,6 +184,13 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const contactRegex = /^[2-9]{1}[0-9]{9}$/;
 
 export const validateTextField = (name, value) => {
+  if (name === 'accept_TNC') {
+    if (!value) {
+      return 'This checkbox must be checked.';
+    } else {
+      return '';
+    }
+  }
   if (!value || String(value).trim() === '') {
     return 'This field is required.'
   }
@@ -478,8 +485,12 @@ export const SUBSCRIPTION_TYPES = {
 
 export const PLAN_TEXT = {
   CHOOSE_PLAN: "Choose this Plan",
-  CURRENT_PLAN: "Current Plan",
-  CANCEL_PLAN: "Cancel Plan"
+  CURRENT_PLAN: "Your Current Plan",
+  CANCEL_PLAN: "Cancel Subscription",
+  START_FREE_PLAN: "Start with Free plan",
+  ACTIVE_PLAN: "Your Active plan",
+  UPGRADE_PLAN: "Upgrade your plan"
+
 }
 
 export const handleRecurringChargeVal = (appName, shopData) => {
@@ -502,7 +513,8 @@ export const handleRecurringChargeVal = (appName, shopData) => {
 
 
 export const PLAN_DETAILS = {
-  PREMIUM: 'price_1OKeFYSEo6lSgy9nkyHDvhD7',
+  PREMIUM: 'price_1OMTHaSEo6lSgy9num51RO2M',
   FREE: "price_1OJYK5SEo6lSgy9nLhwlLM9W"
 }
+
 

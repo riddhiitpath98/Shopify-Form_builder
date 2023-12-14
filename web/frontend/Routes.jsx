@@ -4,13 +4,14 @@ import { withNavbarRoute, withoutNavbarRoute } from "./pages";
 import NotFound from "./pages/NotFound";
 import ExitIframe from "./pages/ExitIframe";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllSubscription } from "./redux/actions/allActions";
 
 export default function Routing({ ...props }) {
+  const shopId = useSelector((state) => state.shopId.shopId);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllSubscription())
+    dispatch(getAllSubscription(shopId))
   }, [dispatch])
 
   return (

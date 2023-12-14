@@ -28,6 +28,7 @@ import styles from "./Settings.module.css";
 import { getRestrictionWithPlan } from "../../utils/function";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
+import IFrameLoader from "../../components/IFrameLoader";
 
 const initialState = {
   smtpName: "",
@@ -40,13 +41,20 @@ const initialState = {
 
 function Settings() {
   const [formValues, setFormValues] = useState(initialState);
+  const [iframeVisible, setIFrameVisible] = useState(false);
   const [reCaptchaValues, setreCaptchaValues] = useState({
     siteKey: "",
     secretKey: "",
     shopId: "",
   });
 
-  
+  const handleIFrameOpen = () => {
+    setIFrameVisible(true);
+  };
+  const handleIframeClose = () => {
+    setIFrameVisible(false);
+  };
+
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const dispatch = useDispatch();
@@ -167,7 +175,7 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
-                {getRestrictionWithPlan({ name: user.subscriptionName }) ? <LegacyCard sectioned>
+                {getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName }) ? <LegacyCard sectioned>
                   <div
                     className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
                       }`}
@@ -279,11 +287,11 @@ function Settings() {
                     </Form>
                     <ToastContainer />
                   </LegacyCard>
-                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user.subscriptionName })) ? <div className={styles.formLayoutContainer}>
+                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName })) ? <div className={styles.formLayoutContainer}>
                   <Card sectioned>
                     <Form onSubmit={(e) => handleSettingsSubmit(e)}>
                       <FormLayout>
-                        <Heading>Google reCaptcha type v2</Heading>
+                        <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onClick={handleIFrameOpen} className={styles.supportIcon}><Icon source={Icons.support} color="base" /></div></div>
                         <Grid>
                           <Grid.Cell
                             columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
@@ -341,6 +349,16 @@ function Settings() {
           </Layout>
         </div>
       </Page>
+      {iframeVisible && (
+        <IFrameLoader
+          open={iframeVisible}
+          handleClose={handleIframeClose}
+          src="https://www.google.com?igu=1"
+          title="Example Iframe"
+          width="1000"
+          height="1000"
+        />
+      )}
     </Frame >
   );
 }

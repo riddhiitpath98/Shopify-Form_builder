@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
@@ -10,17 +10,28 @@ import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import Spinner from 'react-bootstrap/Spinner'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./CardElement.css";
 import { useAppQuery } from "../../hooks";
 import { addShopData } from "../../redux/actions/allActions";
+import IFrameLoader from "../../components/IFrameLoader";
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const shopData = useAppQuery({ url: "/api/shop" });
     const subscriptionData = useSelector(
         (state) => state.subscription?.subscriptionData?.data
     );
+    const [iframeVisible, setIFrameVisible] = useState(false);
+
+    const handleIFrameOpen = () => {
+        setIFrameVisible(true);
+    };
+    const handleIframeClose = () => {
+        setIFrameVisible(false);
+    };
+
 
     const initialState = {
         email: "",
@@ -30,20 +41,23 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         country: "",
         city: "",
         state: "",
+        accept_TNC: ""
     };
-    const [billingAddress, setBillingAddress] = useState(initialState);
+    const [billingAddress, setBillingAddress] = useState({
+        ...initialState, accept_TNC: false
+    });
     const [errorValues, setErrorValues] = useState(initialState);
     const [countries, setCountries] = useState([]);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [cardData, setCardData] = useState({});
+    const [paymentLoading, setPaymentLoading] = useState(false);
 
     const shopId = useSelector((state) => state.shopId.shopId);
     const user = useSelector((state) => state?.user?.userData?.user);
     const navigate = useNavigate();
     // collect data from the user
     const userData = useState({});
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -60,6 +74,20 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         // passing the client secret obtained from the server
         clientSecret: "{{CLIENT_SECRET}}",
     };
+
+    const enabledSubmitButton = useMemo(() => {
+        let isValid = true;
+        for (let i = 0; i < Object.keys(billingAddress).length; i++) {
+            if (validateTextField(Object.keys(billingAddress)[i], billingAddress[Object.keys(billingAddress)[i]]) !== "") {
+                isValid = false;
+                break;
+            }
+        }
+        if (Object.keys(cardData).length === 0 || !cardData.complete) {
+            isValid = false;
+        }
+        return !isValid
+    }, [billingAddress, cardData])
 
     const handleCountryChange = (e) => {
         let selectedCountry = e.target.value;
@@ -94,15 +122,25 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     };
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setErrorValues({ ...errorValues, [name]: validateTextField(name, value) });
-        setBillingAddress({
-            ...billingAddress,
-            [e.target.name]: e.target.value,
-        });
+        const { type, name, value, checked } = e.target;
+        if (type === 'checkbox') {
+            setErrorValues({ ...errorValues, [name]: validateTextField(name, checked) });
+            setBillingAddress({
+                ...billingAddress,
+                [name]: checked,
+            });
+        }
+        else {
+            setErrorValues({ ...errorValues, [name]: validateTextField(name, value) });
+            setBillingAddress({
+                ...billingAddress,
+                [name]: value,
+            });
+        }
+
     };
     // main function
-    const createSubscription = async (e) => {
+    const handleSubmitSubscription = async (e) => {
         e.preventDefault();
         const errorMessages = {};
         const { ...data } = billingAddress;
@@ -122,6 +160,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         try {
             // create a payment method
             if (!Object.values(billingAddress).includes("")) {
+                setPaymentLoading(true);
                 const paymentMethod = await stripe?.createPaymentMethod({
                     type: "card",
                     card: elements?.getElement(CardElement),
@@ -137,13 +176,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         },
                     },
                 });
-                console.log("first", {
-                    paymentMethod: paymentMethod?.paymentMethod?.id,
-                    name: billingAddress?.cardholderName,
-                    email: billingAddress?.email,
-                    priceId: priceId,
-                    shopId: shopId
-                });
+
                 // call the backend to create subscription
                 const response = await axios.post("/payment/create-subscription", {
                     paymentMethod: paymentMethod?.paymentMethod?.id,
@@ -151,50 +184,59 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     email: billingAddress?.email,
                     priceId: priceId,
                     shopId,
+                    customerId: user?.subscription?.customerId || null,
                 });
-                const confirmPayment = await stripe?.confirmCardPayment(
-                    response?.data?.clientSecret
-                );
 
-                if (confirmPayment?.error) {
-                    toast.success(confirmPayment.error.message, toastConfig);
-                } else {
-                    const {
-                        id,
-                        name,
-                        email,
-                        domain,
-                        city,
-                        country,
-                        customer_email,
-                        shop_owner,
-                        myshopify_domain,
-                        phone,
-                    } = shopData.data;
-                    let user = {
-                        shopId: id,
-                        shopName: name,
-                        email,
-                        domain: myshopify_domain,
-                        city,
-                        country,
-                        customer_email,
-                        shop_owner,
-                        myshopify_domain,
-                        phone,
-                    };
-                    subscriptionData.filter(({ subscriptionName, _id }, index) => {
-                        if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-                            user = { ...user, subscriptionName, subscriptionId: _id };
-                        }
-                    });
-                    dispatch(addShopData(user));
-                    setShowCardElement(false);
-                    toggleModal();
-                    setBillingAddress({})
-                    setErrorValues({});
-                    navigate("/dashboard", { replace: true });
-                }
+                await stripe?.confirmCardPayment(
+                    response?.data?.clientSecret
+                ).then(res => {
+                    if (res?.paymentIntent?.status === 'succeeded') {
+                        const {
+                            id,
+                            name,
+                            email,
+                            domain,
+                            city,
+                            country,
+                            customer_email,
+                            shop_owner,
+                            myshopify_domain,
+                            phone,
+                        } = shopData.data;
+                        let user = {
+                            shopId: id,
+                            shopName: name,
+                            email,
+                            domain: myshopify_domain,
+                            city,
+                            country,
+                            customer_email,
+                            shop_owner,
+                            myshopify_domain,
+                            phone,
+                            acceptTermCondition: billingAddress?.accept_TNC
+                        };
+                        subscriptionData.filter(({ subscriptionName, _id }, index) => {
+                            if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+                                user = { ...user, subscriptionName, subscriptionId: _id };
+                            }
+                        });
+                        dispatch(addShopData(user)).then((data) => {
+                            if (data?.payload) {
+                                setShowCardElement(false);
+                                toggleModal();
+                                setBillingAddress({})
+                                setErrorValues({});
+                                setPaymentLoading(false)
+                                toast.success("premium subscription Added", toastConfig);
+                                navigate("/dashboard", { replace: true });
+                            }
+                        });
+                    }
+                    if (res?.error) {
+                        toast.error(res.error.message, toastConfig);
+                    }
+                });
             }
         } catch (error) {
             console.log(error);
@@ -218,7 +260,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         },
     };
     return (
-        <Form noValidate className="custom-container" onSubmit={(e) => createSubscription(e)}>
+        <Form noValidate className="custom-container" onSubmit={(e) => handleSubmitSubscription(e)}>
             <h1 className="formHeader">Add Card Details</h1>
             <Row className="mb-3">
                 <Form.Group as={Col} controlId="formGridEmail">
@@ -351,9 +393,42 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     <small className="text-danger">{errorValues?.city}</small>
                 </Form.Group>
             </Row>
-            <Button type="submit" disabled={(cardData?.complete === undefined || cardData?.complete === false) && Object.values(billingAddress).includes("")} className="buttonElement">
-                Pay $6.67
+            <Row>
+                <Form.Group as={Col} controlId="formGridCheckbox">
+                    <Form.Check
+                        type="checkbox"
+                        id="myCheckbox"
+                        name="accept_TNC"
+                        value={billingAddress.accept_TNC}
+                        label={<span>
+                            I agree{' '}
+                            <a onClick={handleIFrameOpen} rel="noopener noreferrer">
+                                Terms and Conditions
+                            </a>
+                        </span>}
+                        onChange={handleInputChange}
+                    />
+                    <small className="text-danger">{errorValues?.accept_TNC}</small>
+                </Form.Group>
+            </Row>
+            <Button type="submit" disabled={enabledSubmitButton} className="buttonElement">
+                {paymentLoading ? (
+                    <Spinner animation="border" size="sm" />
+                ) : (
+                    <span>Pay $6.67</span>
+                )}
+
             </Button>
+            {iframeVisible && (
+                <IFrameLoader
+                    open={iframeVisible}
+                    handleClose={handleIframeClose}
+                    src="https://www.google.com?igu=1"
+                    title="Example Iframe"
+                    width="1000"
+                    height="1000"
+                />
+            )}
         </Form>
     );
 }

@@ -4,6 +4,7 @@ import FormTabsProvider from "../FormTabsProvider/FormTabsProvider";
 import "./drawer.css";
 
 const FormDrawer = ({ isEdit, isOpen, toggleDrawer, tabId }) => {
+
   return (
     <Drawer
       open={isOpen}
