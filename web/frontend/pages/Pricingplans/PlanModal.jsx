@@ -19,7 +19,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
 const stripePromise = loadStripe(
-  "pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW"
+  "pk_live_IGCZ91wblgKajj7dxA8xci0E"
 );
 
 

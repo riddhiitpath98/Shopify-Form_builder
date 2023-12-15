@@ -21,7 +21,6 @@ const ModalSubmission = ({
       obj.customForm.forEach((section) => {
         if (section.element) {
           section.element.forEach((element) => {
-            console.log('element: ', element);
             if (obj._id === item?.form) {
               labelMap[element.inputId] = element.attributes.label || element?.title;
             }
@@ -32,7 +31,6 @@ const ModalSubmission = ({
     return labelMap;
   }, []);
 
-  console.log('fieldLabel', fieldLabel)
   return (
     <Modal
       instant
@@ -63,31 +61,62 @@ const ModalSubmission = ({
             />
           </div>
           <DescriptionList
-            items={Object.entries(item?.submission[0]).map(([key, value]) => {
-              console.log('key', key, fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]])
-              const term =
-                key === "file"
-                  ? "File"
-                  : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
-              let val = value;
-              if (typeof val === "boolean") {
-                val = val.toString();
-              }
+            items={Object.entries(item?.submission[0])
+              .filter(([key, value]) => {
+                const excludedKey = key.split("_").pop();
+                return !["hidden", "paragraph", "heading", "html"].includes(
+                  excludedKey
+                );
+              })
+              .map(([key, value]) => {
+                const term =
+                  key === "file"
+                    ? "File"
+                    : fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]];
+                let val = value;
 
-              if (Array.isArray(val)) {
-                val = term === "File" ? val.map((obj) => obj).join(",") : val.map(obj => obj.value).join(",");
-              }
-              return {
-                term: (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: term?.charAt(0).toUpperCase() + term?.slice(1),
-                    }}
-                  />
-                ),
-                description: val,
-              };
-            })}
+                if (typeof val === "boolean") {
+                  val = val.toString();
+                }
+
+                if (val === "") {
+                  val = "-";
+                }
+
+                if (term === "Checkboxes") {
+                  val = JSON.parse(val)?.map(obj => obj.value).join(",");
+                }
+                if (Array.isArray(val)) {
+                  val =
+                    val?.length > 0
+                      ? val?.map((obj, index) => (
+                        <div key={index}>
+                          {term === "File" ? (
+                            <a
+                              href={`https://shopifyappapi.project-demo.info:3008${obj}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {obj}
+                            </a>
+                          ) : (
+                            obj.value
+                          )}
+                        </div>
+                      ))
+                      : " - ";
+                }
+                return {
+                  term: (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: term?.charAt(0).toUpperCase() + term?.slice(1),
+                      }}
+                    />
+                  ),
+                  description: val,
+                };
+              })}
           />
         </div>
       </Modal.Section>

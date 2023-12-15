@@ -53,7 +53,6 @@ function FormList() {
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector((state) => state?.inputField?.finalFormData);
-  console.log('formData: ', formData?.formData);
 
   const handleSubmission = (id) => {
     navigate("/submissions", { state: { id: id } });

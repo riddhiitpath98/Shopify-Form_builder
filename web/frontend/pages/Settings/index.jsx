@@ -291,7 +291,7 @@ function Settings() {
                   <Card sectioned>
                     <Form onSubmit={(e) => handleSettingsSubmit(e)}>
                       <FormLayout>
-                        <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onClick={handleIFrameOpen} className={styles.supportIcon}><Icon source={Icons.support} color="base" /></div></div>
+                        <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onMouseEnter={handleIFrameOpen} className={styles.supportIcon}><Icon source={Icons.support} color="base" /></div></div>
                         <Grid>
                           <Grid.Cell
                             columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}

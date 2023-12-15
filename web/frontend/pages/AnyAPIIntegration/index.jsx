@@ -346,7 +346,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
                           <Text>Map your Fields</Text>
                           <div
                             className={styles.supportIcon}
-                            onClick={handleIFrameOpen}
+                            onMouseEnter={handleIFrameOpen}
                           >
                             <Icon source={Icons.support} color="base" />
                           </div>

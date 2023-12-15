@@ -29,7 +29,7 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
     location.pathname === "/submissions";
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
-  const path = location?.pathname === "/" ? "/dashboard" : location?.pathname;
+  const path = location?.pathname === "/" ? "/" : location?.pathname;
   const user = useSelector(state => state.user.userData?.user)
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
