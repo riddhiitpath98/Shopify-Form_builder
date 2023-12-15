@@ -22,6 +22,7 @@ import axios from "axios";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
+  const [showCardElement, setShowCardElement] = useState(false);
   const hideFooter =
     location.pathname === "/form" ||
     location.pathname === "/plans" ||
@@ -40,7 +41,8 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
           const { userData } = data.payload;
           setIsShowPlan(!user?.loading && !userData?.subscriptionName);
           dispatch(addShopId(shop?.data?.id));
-          navigate(path, { replace: true });
+          if (!showCardElement && !isShowPlan)
+            navigate(path, { replace: true });
         }
         else {
           setIsShowPlan(true);
@@ -60,21 +62,21 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
             active={isShowPlan}
             toggleModal={toggleModal}
             shopData={shop?.data}
+            {...{ showCardElement, setShowCardElement }}
           />
-        ) : (
-
-          <div {...props}>
-            {!isHideNavbar ? <NavigationMenubar /> : null}<br />
-            <>
-              {user?.subscription?.isPlanExpiredIn3Days ? <ElementListBanner
-                title={user?.subscription?.planStatusForExpriation}
-              /> : null}
-              <Outlet />
-            </>
-            {isShowFooter && !hideFooter ? <Footer /> : null}
-          </div>
-        )}
-      </div>
+        ) : null
+        }
+        {!isShowPlan && !showCardElement ? <div {...props}>
+          {!isHideNavbar ? <NavigationMenubar /> : null}<br />
+          <>
+            {user?.subscription?.isPlanExpiredIn3Days ? <ElementListBanner
+              title={user?.subscription?.planStatusForExpriation}
+            /> : null}
+            <Outlet />
+          </>
+          {isShowFooter && !hideFooter ? <Footer /> : null}
+        </div> : null}
+      </div >
     </>
   );
 };

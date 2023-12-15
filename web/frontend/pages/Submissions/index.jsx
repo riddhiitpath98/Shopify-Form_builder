@@ -607,7 +607,7 @@ function Submissions() {
             selectable
             alternateTool={
               <>
-                {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
+                {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
                   <CSVLink style={{ marginRight: "5px" }} data={csvData} filename={fileName}>
                     <Button primary >Export all Data</Button>
                   </CSVLink>

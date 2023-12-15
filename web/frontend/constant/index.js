@@ -186,7 +186,7 @@ const contactRegex = /^[2-9]{1}[0-9]{9}$/;
 export const validateTextField = (name, value) => {
   if (name === 'accept_TNC') {
     if (!value) {
-      return 'This checkbox must be checked.';
+      return 'Please accept terms and condition to continue payment';
     } else {
       return '';
     }

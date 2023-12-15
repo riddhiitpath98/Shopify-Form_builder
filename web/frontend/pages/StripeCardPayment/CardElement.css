@@ -120,3 +120,8 @@
 .InputElement {
   font-size: 13px !important;
 }
+
+.terms-condition-container {
+  color: blue !important;
+  text-decoration: underline !important;
+}

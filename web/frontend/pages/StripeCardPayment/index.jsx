@@ -139,7 +139,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         }
 
     };
-    // main function
     const handleSubmitSubscription = async (e) => {
         e.preventDefault();
         const errorMessages = {};
@@ -154,9 +153,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             setErrorValues(errorMessages);
             // return;
         }
-        // if (!stripe || !elements) {
-        //     return;
-        // }
+
         try {
             // create a payment method
             if (!Object.values(billingAddress).includes("")) {
@@ -242,6 +239,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
             console.log(error);
         }
     };
+
 
     const styleOptions = {
         style: {
@@ -400,25 +398,22 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         id="myCheckbox"
                         name="accept_TNC"
                         value={billingAddress.accept_TNC}
-                        label={<span>
-                            I agree{' '}
-                            <a onClick={handleIFrameOpen} rel="noopener noreferrer">
-                                Terms and Conditions
-                            </a>
-                        </span>}
+                        label={<span>I agree{' '}<span className="terms-condition-container" onClick={handleIFrameOpen}>Terms and Conditions</span></span>}
                         onChange={handleInputChange}
                     />
                     <small className="text-danger">{errorValues?.accept_TNC}</small>
                 </Form.Group>
             </Row>
-            <Button type="submit" disabled={enabledSubmitButton} className="buttonElement">
-                {paymentLoading ? (
-                    <Spinner animation="border" size="sm" />
-                ) : (
-                    <span>Pay $6.67</span>
-                )}
+            <Row>
+                <Button type="submit" disabled={enabledSubmitButton} className="buttonElement">
+                    {paymentLoading ? (
+                        <Spinner animation="border" size="sm" />
+                    ) : (
+                        <span>Pay $6.67</span>
+                    )}
 
-            </Button>
+                </Button>
+            </Row>
             {iframeVisible && (
                 <IFrameLoader
                     open={iframeVisible}

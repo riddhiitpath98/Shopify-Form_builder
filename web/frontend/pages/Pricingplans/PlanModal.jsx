@@ -28,11 +28,12 @@ export default function PlanModal({
   toggleModal,
   isSuccess,
   shopData,
+  showCardElement,
+  setShowCardElement
 }) {
   const app = useAppBridge();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [showCardElement, setShowCardElement] = useState(false);
   const [priceId, setPriceId] = useState();
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
@@ -112,7 +113,8 @@ export default function PlanModal({
     <div className="modalContainer" style={{ height: "500px" }}>
       <Modal
         open={active}
-        title="Pricing plans"
+        onClose={() => setShowCardElement(false)}
+        title={!showCardElement ? "Pricing Plans" : "Make Payment"}
         large
       >
         {showCardElement ? (

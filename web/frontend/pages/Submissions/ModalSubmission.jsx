@@ -21,8 +21,9 @@ const ModalSubmission = ({
       obj.customForm.forEach((section) => {
         if (section.element) {
           section.element.forEach((element) => {
+            console.log('element: ', element);
             if (obj._id === item?.form) {
-              labelMap[element.inputId] = element.attributes.label;
+              labelMap[element.inputId] = element.attributes.label || element?.title;
             }
           });
         }
@@ -31,12 +32,13 @@ const ModalSubmission = ({
     return labelMap;
   }, []);
 
+  console.log('fieldLabel', fieldLabel)
   return (
     <Modal
       instant
       open={open}
       onClose={handleClose}
-      title="Detail"
+      title="Submission Details"
       secondaryActions={[
         {
           content: "Close",
@@ -62,6 +64,7 @@ const ModalSubmission = ({
           </div>
           <DescriptionList
             items={Object.entries(item?.submission[0]).map(([key, value]) => {
+              console.log('key', key, fieldLabel[key.match(/[a-zA-Z0-9]+/)[0]])
               const term =
                 key === "file"
                   ? "File"
@@ -91,62 +94,4 @@ const ModalSubmission = ({
     </Modal>
   );
 };
-// const ModalSubmission = ({
-//   open,
-//   handleClose,
-//   item,
-//   formData,
-//   handleIsReadStatus,
-// }) => {
-//   const formTitle = useMemo(() => {
-//     const data = formData.find(formItem => formItem?._id === item?.form)
-//     return data ? data.customForm[0]?.formTitle : ""
-//   }, [])
-//   return (
-//     <Modal
-//       instant
-//       open={open}
-//       onClose={handleClose}
-//       title="Detail"
-//       secondaryActions={[
-//         {
-//           content: "Close",
-//           onAction: handleClose,
-//         },
-//         {
-//           content: "Mark as unread",
-//           onAction: () => handleIsReadStatus(item._id),
-//         },
-//       ]}
-//     >
-//       <Modal.Section>
-//         <div>
-//           <div className={styles.modalTop}>
-//             <ExceptionList
-//               items={
-//                 [
-//                   {
-//                     icon: Icons.form,
-//                     description: `Form -  ${formTitle}`,
-//                   },
-//                 ]
-//               }
-//             />
-//           </div>
-//           <DescriptionList
-//             items={Object.keys(item?.submission).map((key) => {
-//               const value = item?.submission[key] || " - ";
-
-//               return {
-//                 term: key.charAt(0).toUpperCase() + key.slice(1),
-//                 description: value,
-//               };
-//             })}
-//           />
-//         </div>
-//       </Modal.Section>
-//     </Modal>
-//   );
-// };
-
 export default ModalSubmission;
