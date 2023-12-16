@@ -559,8 +559,8 @@ export const createNupdateAfterSubmit = createAsyncThunk(
 
 // ======================================================== recaptcha actions started ===========================================================
 
-export const getRecaptchaSettingsByAppId = createAsyncThunk(
-  "/recaptchaSettings/getRecaptchaSettingsByAppId",
+export const getRecaptchaSettingsByShopId = createAsyncThunk(
+  "/recaptchaSettings/getRecaptchaSettingsByShopId",
   async (shopId) => {
     try {
       const response = await axios.get(`/setting/rechaptcha/${shopId}`);

@@ -1,4 +1,4 @@
-import { Button, Card, Heading, Icon, OptionList, Popover } from '@shopify/polaris'
+import { Button, Card, Heading, Icon, LegacyCard, OptionList, Popover } from '@shopify/polaris'
 import React, { useEffect, useMemo, useState } from 'react'
 import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ const ChartDashboard = (props) => {
             Forms
         </Button>
     );
-  
+
     const formTitleOption = useMemo(() => {
         const title = [];
         formData.map(formItem =>
@@ -112,7 +112,7 @@ const ChartDashboard = (props) => {
 
 
     return (
-        <Card sectioned>
+        <LegacyCard sectioned>
             <div className={styles.submissions}>
                 <div className={styles.submissionHeading}>
                     <Icon source={NoteMajor} color="base" />
@@ -138,7 +138,7 @@ const ChartDashboard = (props) => {
                 width={500}
                 height={400}
             />
-        </Card>
+        </LegacyCard>
     )
 }
 

@@ -418,7 +418,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                 <IFrameLoader
                     open={iframeVisible}
                     handleClose={handleIframeClose}
-                    src="https://www.google.com?igu=1"
+                    src="https://www.contactformtoapi.com/terms-of-service/"
                     title="Example Iframe"
                     width="1000"
                     height="1000"

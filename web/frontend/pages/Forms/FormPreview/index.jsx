@@ -7,6 +7,7 @@ import {
   Grid,
   Heading,
   Layout,
+  LegacyCard,
   Link,
   Page,
   SkeletonBodyText,
@@ -16,7 +17,7 @@ import {
 import { CustomInput } from "./CustomInput";
 import {
   createSubmissions,
-  getRecaptchaSettingsByAppId,
+  getRecaptchaSettingsByShopId,
 } from "../../../redux/actions/allActions";
 import BannerCard from "./BannerCard";
 import { allFieldsAreRequired, validation } from "../../../utils/validation";
@@ -489,7 +490,7 @@ const FormPreview = () => {
         <SkeletonPage>
           <Layout>
             <Layout.Section>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <div className={styles.previewCard}>
                   <div className={styles.previewBox}>
                     <SkeletonBodyText />
@@ -498,7 +499,7 @@ const FormPreview = () => {
                     <SkeletonBodyText />
                   </div>
                 </div>
-              </Card>
+              </LegacyCard>
             </Layout.Section>
           </Layout>
         </SkeletonPage>

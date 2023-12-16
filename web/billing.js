@@ -4,7 +4,6 @@ import {
 export const billingConfig = {
     "Premium Subscription": {
         amount: 0.50,
-        isTest: true,
         currencyCode: 'USD',
         interval: BillingInterval.Every30Days,
         trialDays: 1,

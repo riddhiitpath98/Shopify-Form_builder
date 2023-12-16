@@ -191,6 +191,7 @@ const useElements = () => {
                             label: "Hidden",
                             data_type: "",
                             hiddenValue: "",
+                            column_width: "100%",
                         },
                     },
                 ],

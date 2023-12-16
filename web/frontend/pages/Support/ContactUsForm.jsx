@@ -4,11 +4,11 @@ import {
   FormLayout,
   TextField,
   Button,
-  Card,
   Page,
   Grid,
   Heading,
   Layout,
+  LegacyCard,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from 'react-redux';
 import { contactUs, createFormToAPIsettings } from "../../redux/actions/allActions";
@@ -63,7 +63,7 @@ function ContactUsForm() {
         <Layout>
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>
                     <Grid>
@@ -159,7 +159,7 @@ function ContactUsForm() {
                   </FormLayout>
                   <ToastContainer />
                 </Form>
-              </Card>
+              </LegacyCard>
             </div>
           </Layout.Section>
         </Layout>

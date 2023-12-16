@@ -3,7 +3,7 @@ import {
   getSmtpSettingByAppId,
   createSMTPSettings,
   editSmtpSettings,
-  getRecaptchaSettingsByAppId,
+  getRecaptchaSettingsByShopId,
   createRecaptchaSettings
 } from "../actions/allActions";
 
@@ -140,7 +140,7 @@ export const settingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(getRecaptchaSettingsByAppId.pending, (state, action) => {
+      }).addCase(getRecaptchaSettingsByShopId.pending, (state, action) => {
         return {
           ...state,
           reCaptchaSettingData: {
@@ -151,7 +151,7 @@ export const settingSlice = createSlice({
           }
         };
       })
-      .addCase(getRecaptchaSettingsByAppId.fulfilled, (state, action) => {
+      .addCase(getRecaptchaSettingsByShopId.fulfilled, (state, action) => {
         return {
           ...state,
           reCaptchaSettingData: {
@@ -162,7 +162,7 @@ export const settingSlice = createSlice({
           }
         };
       })
-      .addCase(getRecaptchaSettingsByAppId.rejected, (state, action) => {
+      .addCase(getRecaptchaSettingsByShopId.rejected, (state, action) => {
         return {
           ...state,
           reCaptchaSettingData: {

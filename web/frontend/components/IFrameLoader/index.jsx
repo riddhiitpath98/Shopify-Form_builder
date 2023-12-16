@@ -9,12 +9,6 @@ const IFrameLoader = ({ open, handleClose, src, title, height, width }) => {
             onClose={handleClose}
             title={title}
             large
-            primaryAction={[
-                {
-                    content: "Close",
-                    onAction: handleClose,
-                },
-            ]}
         >
             <div className={styles.iframeContainer}>
                 <Modal.Section>

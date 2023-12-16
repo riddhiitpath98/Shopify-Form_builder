@@ -14,12 +14,11 @@ import {
     billingConfig,
 } from "./billing.js";
 import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SK);
 
 dotenv.config();
 
 const PORT = 3007;
-const STATIC_PATH = `${process.cwd()}/frontend/dist`;
+const STATIC_PATH = `${process.cwd()}/frontend`;
 
 const app = express();
 app.use(cors());
@@ -84,7 +83,6 @@ app.get("/api/products/create", async (_req, res) => {
 app.get("/api/subscriptions", async (_req, res) => {
     const subscription = await shopify.api.billing.check({
         plans: "Premium Subscription",
-        isTest: true,
         returnObject: true,
         session: res.locals.shopify.session,
     });
