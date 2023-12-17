@@ -3,7 +3,7 @@ import {
   FormLayout,
   TextField,
   Button,
-  Card,
+  LegacyCard,
   Page,
   RadioButton,
   Stack,
@@ -39,7 +39,7 @@ export default function UserForm() {
 
   return (
     <Page>
-      <Card sectioned title="Form">
+      <LegacyCard sectioned title="Form">
         <Form onSubmit={handleSubmit}>
           <FormLayout>
             <TextField
@@ -81,7 +81,7 @@ export default function UserForm() {
             <Button submit>Submit</Button>
           </FormLayout>
         </Form>
-      </Card>
+      </LegacyCard>
     </Page>
   );
 }

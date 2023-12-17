@@ -5,6 +5,7 @@ import {
   Form,
   FormLayout,
   Grid,
+  Icon,
   Layout,
   LegacyCard,
   Page,
@@ -13,7 +14,7 @@ import {
   TextField,
 } from "@shopify/polaris";
 import { ToastContainer } from "react-toastify";
-import { validateTextField } from "../../constant";
+import { Icons, validateTextField } from "../../constant";
 import styles from "./AnyAPIIntegration.module.css";
 import {
   createFormToAPIsettings,
@@ -24,12 +25,14 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import APISettingsList from "./APISettingsList";
 import { replace } from "@shopify/app-bridge/actions/Navigation/History";
+import IFrameLoader from "../../components/IFrameLoader";
 
 const AnyAPIIntegration = ({ isEdit }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formElementData, setFormElementData] = useState([]);
   const [elementsValue, setElementsValue] = useState({});
+  const [iframeVisible, setIFrameVisible] = useState(false);
   const [error, setError] = useState({});
   const { apiId } = useParams();
   const [formValues, setFormValues] = useState({
@@ -41,16 +44,23 @@ const AnyAPIIntegration = ({ isEdit }) => {
     formId: "",
     shopId: "",
   });
+
+  const handleIFrameOpen = () => {
+    setIFrameVisible(true);
+  };
+  const handleIframeClose = () => {
+    setIFrameVisible(false);
+  };
   const [errorValues, setErrorValues] = useState({});
   const apiSettingData = useSelector(
     (state) => state?.anyAPISetting?.apiSettingData
-    );
+  );
   const allApiSettingData = useSelector(
     (state) => state?.anyAPISetting?.allApiSettingData
-    );
+  );
   const apiSettingDataById = useSelector(
     (state) => state?.anyAPISetting?.editAPISettingsData?.data
-    );
+  );
   const shopId = useSelector((state) => state.shopId.shopId);
 
   const formData = useSelector(
@@ -133,7 +143,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     }
 
     if (!isExec) {
-      setErrorValues(validateTextField(formVal)); 
+      setErrorValues(validateTextField(formVal));
     }
 
     !isExec &&
@@ -226,7 +236,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setElementsValue({});
     setErrorValues({});
     setShowForm(false);
-    navigate("/all-api")
+    navigate("/all-api");
   };
 
   const viewAPIList = () => {
@@ -235,13 +245,13 @@ const AnyAPIIntegration = ({ isEdit }) => {
   };
 
   const handleForm = (event) => {
-    if(isEdit && apiId){
-      handleUpdate()
-    } else{
-      handleSubmit(event)
+    if (isEdit && apiId) {
+      handleUpdate();
+    } else {
+      handleSubmit(event);
     }
-  }
-  
+  };
+
   return (
     <Page
       fullWidth
@@ -254,160 +264,166 @@ const AnyAPIIntegration = ({ isEdit }) => {
       <div>
         <Layout>
           <Layout.Section>
-              <div className={styles.formLayoutContainer}>
-                <LegacyCard sectioned>
-                  <Form onSubmit={(event) => handleForm(event)} noValidate>
-                    <FormLayout>
-                      <Grid>
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          <TextField
-                            value={formValues.apiTitle || ""}
-                            name="apiUrl"
-                            onChange={(value) =>
-                              handleChange("apiTitle", value)
-                            }
-                            label="Add API title"
-                            type="text"
-                            requiredIndicator
-                            error={errorValues.apiTitle}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <Select
-                            label="Select Contact Form"
-                            name="formId"
-                            options={formTitleOptions}
-                            onChange={(value) => handleChange("formId", value)}
-                            value={formValues.formId || ""}
-                            error={errorValues.formId}
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <TextField
-                            value={formValues.apiUrl || ""}
-                            name="apiUrl"
-                            onChange={(value) => handleChange("apiUrl", value)}
-                            label="API Url"
-                            type="text"
-                            requiredIndicator
-                            error={errorValues.apiUrl}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
+            <div className={styles.formLayoutContainer}>
+              <LegacyCard sectioned>
+                <Form onSubmit={(event) => handleForm(event)} noValidate>
+                  <FormLayout>
+                    <Grid>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <TextField
+                          value={formValues.apiTitle || ""}
+                          name="apiUrl"
+                          onChange={(value) => handleChange("apiTitle", value)}
+                          label="Add API title"
+                          type="text"
+                          requiredIndicator
+                          error={errorValues.apiTitle}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <Select
+                          label="Select Contact Form"
+                          name="formId"
+                          options={formTitleOptions}
+                          onChange={(value) => handleChange("formId", value)}
+                          value={formValues.formId || ""}
+                          error={errorValues.formId}
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <TextField
+                          value={formValues.apiUrl || ""}
+                          name="apiUrl"
+                          onChange={(value) => handleChange("apiUrl", value)}
+                          label="API Url"
+                          type="text"
+                          requiredIndicator
+                          error={errorValues.apiUrl}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <TextField
-                            value={formValues.headerRequest || ""}
-                            name="headerRequest"
-                            onChange={(value) =>
-                              handleChange("headerRequest", value)
-                            }
-                            label="Header Request"
-                            type="headerRequest"
-                            multiline={5}
-                            requiredIndicator
-                            error={errorValues.headerRequest}
-                            autoComplete="off"
-                          />
-                        </Grid.Cell>
-                        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
-                          <Select
-                            label="Input Type"
-                            name="inputType"
-                            options={inputTypeOptions}
-                            onChange={(value) =>
-                              handleChange("inputType", value)
-                            }
-                            value={formValues.inputType || ""}
-                            error={errorValues.inputType}
-                          />
-                        </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <TextField
+                          value={formValues.headerRequest || ""}
+                          name="headerRequest"
+                          onChange={(value) =>
+                            handleChange("headerRequest", value)
+                          }
+                          label="Header Request"
+                          type="headerRequest"
+                          multiline={5}
+                          requiredIndicator
+                          error={errorValues.headerRequest}
+                          autoComplete="off"
+                        />
+                      </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}>
+                        <Select
+                          label="Input Type"
+                          name="inputType"
+                          options={inputTypeOptions}
+                          onChange={(value) => handleChange("inputType", value)}
+                          value={formValues.inputType || ""}
+                          error={errorValues.inputType}
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          <Select
-                            label="Method"
-                            name="method"
-                            options={methodOptions}
-                            onChange={(value) => handleChange("method", value)}
-                            value={formValues.method || ""}
-                            error={errorValues.method}
-                          />
-                        </Grid.Cell>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <Select
+                          label="Method"
+                          name="method"
+                          options={methodOptions}
+                          onChange={(value) => handleChange("method", value)}
+                          value={formValues.method || ""}
+                          error={errorValues.method}
+                        />
+                      </Grid.Cell>
 
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        <div className={styles.mapFeildContainer}>
                           <Text>Map your Fields</Text>
-                        </Grid.Cell>
+                          <div
+                            className={styles.supportIcon}
+                            onMouseEnter={handleIFrameOpen}
+                          >
+                            <Icon source={Icons.support} color="base" />
+                          </div>
+                        </div>
+                      </Grid.Cell>
 
-                        {formElementData && formElementData?.length > 0
-                          ? formElementData?.map((element) => (
-                              <Grid.Cell
-                                columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                              >
-                                <TextField
-                                  value={
-                                    elementsValue[
-                                      `${element.inputId}_${element.id}`
-                                    ] || ""
-                                  }
-                                  name={`${element.inputId}_${element.id}`}
-                                  onChange={(value) =>
-                                    handleChange(
-                                      `${element.inputId}_${element.id}`,
-                                      value,
-                                      true
-                                    )
-                                  }
-                                  label={element.attributes.label}
-                                  type="text"
-                                  placeholder="Enter mapping key field name"
-                                  requiredIndicator
-                                  autoComplete="off"
-                                  error={
-                                    error[`${element.inputId}_${element.id}`]
-                                  }
-                                />
-                              </Grid.Cell>
-                            ))
-                          : null}
+                      {formElementData && formElementData?.length > 0
+                        ? formElementData?.map((element) => (
+                          <Grid.Cell
+                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                          >
+                            <TextField
+                              value={
+                                elementsValue[
+                                `${element.inputId}_${element.id}`
+                                ] || ""
+                              }
+                              name={`${element.inputId}_${element.id}`}
+                              onChange={(value) =>
+                                handleChange(
+                                  `${element.inputId}_${element.id}`,
+                                  value,
+                                  true
+                                )
+                              }
+                              label={element.attributes.label}
+                              type="text"
+                              placeholder="Enter mapping key field name"
+                              requiredIndicator
+                              autoComplete="off"
+                              error={
+                                error[`${element.inputId}_${element.id}`]
+                              }
+                            />
+                          </Grid.Cell>
+                        ))
+                        : null}
 
-                        <Grid.Cell
-                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                        >
-                          {apiId ? (
-                            <Button
-                              primary
-                              submit
-                              loading={allApiSettingData?.loading}
-                            >
-                              Update
-                            </Button>
-                          ) : (
-                            <Button
-                              primary
-                              submit
-                              loading={apiSettingData?.loading}
-                            >
-                              Save
-                            </Button>
-                          )}
-                        </Grid.Cell>
-                      </Grid>
-                    </FormLayout>
-                    <ToastContainer />
-                  </Form>
-                </LegacyCard>
-              </div>
+                      <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
+                        {apiId ? (
+                          <Button
+                            primary
+                            submit
+                            loading={allApiSettingData?.loading}
+                          >
+                            Update
+                          </Button>
+                        ) : (
+                          <Button
+                            primary
+                            submit
+                            loading={apiSettingData?.loading}
+                          >
+                            Save
+                          </Button>
+                        )}
+                      </Grid.Cell>
+                    </Grid>
+                  </FormLayout>
+                  <ToastContainer />
+                </Form>
+              </LegacyCard>
+            </div>
           </Layout.Section>
         </Layout>
       </div>
-      <ToastContainer/>
+      {iframeVisible && (
+        <IFrameLoader
+          open={iframeVisible}
+          handleClose={handleIframeClose}
+          src="https://www.google.com?igu=1"
+          title="Example Iframe"
+          width="1000"
+          height="1000"
+        />
+      )}
+      <ToastContainer />
     </Page>
   );
 };

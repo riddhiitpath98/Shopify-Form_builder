@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { Icons, SUBSCRIPTION_TYPES } from "../constant";
 
-const elemType = ["Inputs", "Select", "Static Text"];
+const elemType = ["Inputs", "Select", "Static Text", "premium only"];
 
 const useElements = () => {
     const customElements = useMemo(
@@ -128,7 +128,7 @@ const useElements = () => {
                     },
                     {
                         id: "file",
-                        viewAccess: ["premium", "enterprise"],
+                        // viewAccess: ["premium", "enterprise"],
                         title: "File",
                         icon: Icons.file,
                         type: "file",
@@ -141,6 +141,7 @@ const useElements = () => {
                             allowedExtensions: [
                                 { label: "jpg", value: "jpg" },
                                 { label: "jpeg", value: "jpeg" },
+                                { label: "pdf", value: "pdf" },
                             ],
                             allowMultiple: false,
                         },
@@ -190,6 +191,7 @@ const useElements = () => {
                             label: "Hidden",
                             data_type: "",
                             hiddenValue: "",
+                            column_width: "100%",
                         },
                     },
                 ],
@@ -312,6 +314,60 @@ const useElements = () => {
                     },
                 ],
             },
+            {
+                label: "premium only",
+                viewAccess: "free",
+                fields: [
+                    {
+                        id: "url",
+                        premiumOnly: true,
+                        title: "Url",
+                        icon: Icons.url,
+                        type: "text",
+                        attributes: {
+                            label: "Url",
+                            placeholder: "",
+                            description: "",
+                            hideLabel: false,
+                            limit_chars: false,
+                            limit_chars_count: "20",
+                            required: false,
+                            column_width: "50%",
+                        },
+                    },
+                    {
+                        id: "date_time",
+                        premiumOnly: true,
+                        title: "Date Time",
+                        icon: Icons.date_time,
+                        type: "date",
+                        attributes: {
+                            label: "Date Time",
+                            placeholder: "",
+                            description: "",
+                            hideLabel: false,
+                            limit_chars: false,
+                            required: false,
+                            dateTimeFormat: "2",
+                            dateFormat: "d-m-Y",
+                            timeFormat: "12h",
+                            column_width: "50%",
+                        },
+                    },
+                    {
+                        id: "html",
+                        premiumOnly: true,
+                        title: "HTML",
+                        icon: Icons.html,
+                        type: "HTML",
+                        attributes: {
+                            htmlCode: "<div>Enter your code</div>",
+                            column_width: "50%",
+                        },
+                    },
+
+                ],
+            }
         ],
         [Icons]
     );

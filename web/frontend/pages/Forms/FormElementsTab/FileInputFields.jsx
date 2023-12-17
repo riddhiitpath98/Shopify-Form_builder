@@ -27,6 +27,7 @@ const FileInputFields = ({ isEdit, tabId, toggleDrawer }) => {
     { label: "jpg", value: "jpg" },
     { label: "jpeg", value: "jpeg" },
     { label: "png", value: "png" },
+    { label: "pdf", value: "pdf" },
   ];
   const handleOptionSelect = (selectedOptions) => {
     setSelectedOptions(selectedOptions);

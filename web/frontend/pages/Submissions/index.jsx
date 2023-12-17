@@ -165,56 +165,56 @@ function Submissions() {
     if (value && value[0] === "read") {
       location?.state?.id
         ? dispatch(
-            sortNFilterSubmissionById({
-              filterFormId: location?.state?.id,
-              path: sortValue,
-              query: {
-                isRead: true,
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-            })
-          )
+          sortNFilterSubmissionById({
+            filterFormId: location?.state?.id,
+            path: sortValue,
+            query: {
+              isRead: true,
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+          })
+        )
         : dispatch(
-            sortNFilterSubmission({
-              path: sortValue,
-              query: {
-                isRead: true,
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-              shopId,
-            })
-          );
+          sortNFilterSubmission({
+            path: sortValue,
+            query: {
+              isRead: true,
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+            shopId,
+          })
+        );
       setStatus(value);
     } else if (value && value[0] === "unread") {
       location?.state?.id
         ? dispatch(
-            sortNFilterSubmissionById({
-              filterFormId: location?.state?.id,
-              path: sortValue,
-              query: {
-                isRead: false,
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-            })
-          )
+          sortNFilterSubmissionById({
+            filterFormId: location?.state?.id,
+            path: sortValue,
+            query: {
+              isRead: false,
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+          })
+        )
         : dispatch(
-            sortNFilterSubmission({
-              path: sortValue,
-              query: {
-                isRead: false,
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-              shopId,
-            })
-          );
+          sortNFilterSubmission({
+            path: sortValue,
+            query: {
+              isRead: false,
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+            shopId,
+          })
+        );
       setStatus(value);
     }
   };
@@ -222,29 +222,29 @@ function Submissions() {
   const handleStatusRemove = () => {
     location?.state?.id
       ? dispatch(
-          sortNFilterSubmissionById({
-            filterFormId: location?.state?.id,
-            path: sortValue,
-            query: {
-              isRead: "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage,
-            },
-          })
-        )
+        sortNFilterSubmissionById({
+          filterFormId: location?.state?.id,
+          path: sortValue,
+          query: {
+            isRead: "",
+            formId: formStatus,
+            page: currentPage,
+            per_page: itemPrPage,
+          },
+        })
+      )
       : dispatch(
-          sortNFilterSubmission({
-            path: sortValue,
-            query: {
-              isRead: "",
-              formId: formStatus,
-              page: currentPage,
-              per_page: itemPrPage,
-            },
-            shopId,
-          })
-        );
+        sortNFilterSubmission({
+          path: sortValue,
+          query: {
+            isRead: "",
+            formId: formStatus,
+            page: currentPage,
+            per_page: itemPrPage,
+          },
+          shopId,
+        })
+      );
     setStatus([]);
   };
 
@@ -252,46 +252,6 @@ function Submissions() {
     if (value) {
       location?.state?.id
         ? dispatch(
-            sortNFilterSubmissionById({
-              filterFormId: location?.state?.id,
-              path: sortValue,
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
-                    ? false
-                    : "",
-                formId: value,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-            })
-          )
-        : dispatch(
-            sortNFilterSubmission({
-              path: sortValue,
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
-                    ? false
-                    : "",
-                formId: value,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-              shopId,
-            })
-          );
-      setFormStatus(value);
-    }
-  };
-
-  const handleFormStatusRemove = () => {
-    location?.state?.id
-      ? dispatch(
           sortNFilterSubmissionById({
             filterFormId: location?.state?.id,
             path: sortValue,
@@ -300,15 +260,15 @@ function Submissions() {
                 status[0] === "read"
                   ? true
                   : status[0] === "unread"
-                  ? false
-                  : "",
-              formId: [],
+                    ? false
+                    : "",
+              formId: value,
               page: currentPage,
               per_page: itemPrPage,
             },
           })
         )
-      : dispatch(
+        : dispatch(
           sortNFilterSubmission({
             path: sortValue,
             query: {
@@ -316,15 +276,55 @@ function Submissions() {
                 status[0] === "read"
                   ? true
                   : status[0] === "unread"
-                  ? false
-                  : "",
-              formId: [],
+                    ? false
+                    : "",
+              formId: value,
               page: currentPage,
               per_page: itemPrPage,
             },
             shopId,
           })
         );
+      setFormStatus(value);
+    }
+  };
+
+  const handleFormStatusRemove = () => {
+    location?.state?.id
+      ? dispatch(
+        sortNFilterSubmissionById({
+          filterFormId: location?.state?.id,
+          path: sortValue,
+          query: {
+            isRead:
+              status[0] === "read"
+                ? true
+                : status[0] === "unread"
+                  ? false
+                  : "",
+            formId: [],
+            page: currentPage,
+            per_page: itemPrPage,
+          },
+        })
+      )
+      : dispatch(
+        sortNFilterSubmission({
+          path: sortValue,
+          query: {
+            isRead:
+              status[0] === "read"
+                ? true
+                : status[0] === "unread"
+                  ? false
+                  : "",
+            formId: [],
+            page: currentPage,
+            per_page: itemPrPage,
+          },
+          shopId,
+        })
+      );
     setFormStatus([]);
   };
 
@@ -361,17 +361,17 @@ function Submissions() {
     dispatch(
       location.state?.id
         ? getSubmissionByFormId({
-            order: sortValue,
-            id: location.state?.id,
-            page: currentPage,
-            per_page: itemPrPage,
-          })
+          order: sortValue,
+          id: location.state?.id,
+          page: currentPage,
+          per_page: itemPrPage,
+        })
         : loadMoreSubmission({
-            order: sortValue,
-            shopId,
-            page: currentPage,
-            per_page: itemPrPage,
-          })
+          order: sortValue,
+          shopId,
+          page: currentPage,
+          per_page: itemPrPage,
+        })
     );
   }, [dispatch, location?.state?.id, currentPage, shopId]);
 
@@ -500,76 +500,76 @@ function Submissions() {
     if (selected === "createdAt") {
       location?.state?.id
         ? dispatch(
-            sortNFilterSubmissionById({
-              filterFormId: location?.state?.id,
-              path: "createdAt",
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
+          sortNFilterSubmissionById({
+            filterFormId: location?.state?.id,
+            path: "createdAt",
+            query: {
+              isRead:
+                status[0] === "read"
+                  ? true
+                  : status[0] === "unread"
                     ? false
                     : "",
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-            })
-          )
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+          })
+        )
         : dispatch(
-            sortNFilterSubmission({
-              path: "createdAt",
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
+          sortNFilterSubmission({
+            path: "createdAt",
+            query: {
+              isRead:
+                status[0] === "read"
+                  ? true
+                  : status[0] === "unread"
                     ? false
                     : "",
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-              shopId,
-            })
-          );
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+            shopId,
+          })
+        );
       setSortValue(selected);
     } else {
       location?.state?.id
         ? dispatch(
-            sortNFilterSubmissionById({
-              filterFormId: location?.state?.id,
-              path: "-createdAt",
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
+          sortNFilterSubmissionById({
+            filterFormId: location?.state?.id,
+            path: "-createdAt",
+            query: {
+              isRead:
+                status[0] === "read"
+                  ? true
+                  : status[0] === "unread"
                     ? false
                     : "",
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-            })
-          )
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+          })
+        )
         : dispatch(
-            sortNFilterSubmission({
-              path: "-createdAt",
-              query: {
-                isRead:
-                  status[0] === "read"
-                    ? true
-                    : status[0] === "unread"
+          sortNFilterSubmission({
+            path: "-createdAt",
+            query: {
+              isRead:
+                status[0] === "read"
+                  ? true
+                  : status[0] === "unread"
                     ? false
                     : "",
-                formId: formStatus,
-                page: currentPage,
-                per_page: itemPrPage,
-              },
-              shopId,
-            })
-          );
+              formId: formStatus,
+              page: currentPage,
+              per_page: itemPrPage,
+            },
+            shopId,
+          })
+        );
       setSortValue(selected);
     }
   };
@@ -607,9 +607,9 @@ function Submissions() {
             selectable
             alternateTool={
               <>
-                {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
-                  <CSVLink data={csvData} filename={fileName}>
-                    <Button>Export all Data</Button>
+                {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
+                  <CSVLink style={{ marginRight: "5px" }} data={csvData} filename={fileName}>
+                    <Button primary >Export all Data</Button>
                   </CSVLink>
                 ) : null}
                 <Select

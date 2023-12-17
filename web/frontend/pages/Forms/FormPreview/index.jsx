@@ -7,6 +7,7 @@ import {
   Grid,
   Heading,
   Layout,
+  LegacyCard,
   Link,
   Page,
   SkeletonBodyText,
@@ -16,7 +17,7 @@ import {
 import { CustomInput } from "./CustomInput";
 import {
   createSubmissions,
-  getRecaptchaSettingsByAppId,
+  getRecaptchaSettingsByShopId,
 } from "../../../redux/actions/allActions";
 import BannerCard from "./BannerCard";
 import { allFieldsAreRequired, validation } from "../../../utils/validation";
@@ -108,10 +109,10 @@ const FormPreview = () => {
   const subscription = useSelector(
     (state) => state.user?.userData?.subscription
   );
-  const isShowDrawer =
-    inputFields.length >=
-    subscription?.features?.form?.number_of_fields_per_form &&
-    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+  // const isShowDrawer =
+  //   inputFields.length >=
+  //   subscription?.features?.form?.number_of_fields_per_form &&
+  //   user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
 
   useEffect(() => {
     if (inputFields.length) {
@@ -291,20 +292,18 @@ const FormPreview = () => {
   const handleFileChange = (event) => {
     const { id, name, files } = event.target;
     const fileList = Array.from(files);
-    console.log('fileList: ', fileList);
-
-    const fileData = fileList.map((file) => ({
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      lastModified: file.lastModified,
-    }));
+    // const fileData = fileList.map((file) => ({
+    //   name: file.name,
+    //   size: file.size,
+    //   type: file.type,
+    //   lastModified: file.lastModified,
+    // }));
 
     let fieldArry = [...formFeildData];
     let fieldIndex = formFeildData.findIndex((item) => item.id === id);
     fieldArry[fieldIndex] = {
       ...fieldArry[fieldIndex],
-      ["feildValue"]: fileData,
+      ["feildValue"]: fileList,
       ["errorMessage"]: fieldArry[fieldIndex]?.required
         ? validation(
           fieldArry?.[fieldIndex]?.["feildName"],
@@ -314,7 +313,7 @@ const FormPreview = () => {
         : "",
     };
     setFormFeildData([...fieldArry]);
-    const formData = { ...formSubmissionData, [name]: fileData };
+    const formData = { ...formSubmissionData, [name]: fileList };
     dispatch(addFormSubmission(formData));
   };
 
@@ -367,99 +366,103 @@ const FormPreview = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('m', formSubmissionData)
     const finalFormData = new FormData();
     finalFormData.append("shopId", shopId)
-    for (const key in formSubmissionData) {
-      if (key.split("_").pop() === 'file') {
-        formSubmissionData[key].forEach(item => {
-          finalFormData.append(`file`, new File([], item.name, { type: item.type }));
-        })
-      }
-      else
-        finalFormData.append(key, formSubmissionData[key]);
-    }
-
-    const errorObj = {};
-    const cloneData = [...formFeildData];
-    let formData = {};
-    formFeildData?.forEach((value) => {
-      formData = { ...formData, [value.feildId]: "" };
-
-      const error = validation(
-        value?.["feildName"],
-        value?.["feildValue"],
-        errorFields
-      );
-      let confirm = "";
-      if (value?.required && value?.confirmPassword) {
-        confirm = validation(
-          value?.["confirmFeildName"],
-          value?.["confirmFeildValue"],
-          errorFields,
-          value
-        );
-      }
-      if (value?.required && error) {
-        errorObj[value?.["id"]] = error;
-        if (value?.required && confirm) {
-          errorObj[value?.["confirmFeildId"]] = confirm;
+    if (formSubmissionData && Object.keys(formSubmissionData).length > 0) {
+      for (const key in formSubmissionData) {
+        if (formSubmissionData[key] !== "" && key.split("_").pop() === 'file') {
+          formSubmissionData[key]?.forEach(item => {
+            finalFormData.append(key, item);
+          })
+        }
+        else if (Array.isArray(formSubmissionData[key]))
+          finalFormData.append(key, JSON.stringify(formSubmissionData[key]));
+        else {
+          finalFormData.append(key, formSubmissionData[key]);
         }
       }
-    });
 
-    const isAllFieldsRequired = allFieldsAreRequired(Object.values(errorObj));
+      const errorObj = {};
+      const cloneData = [...formFeildData];
+      let formData = {};
+      formFeildData?.forEach((value) => {
+        formData = { ...formData, [value.feildId]: "" };
 
-    if (isAllFieldsRequired) {
-      dispatch(
-        createSubmissions({
-          form: editFormId,
-          formData: finalFormData,
-        })
-      );
-
-      dispatch(setFormSubmitted(true));
-      const data = cloneData.map((feild) => {
-        return {
-          ...feild,
-          feildValue: "",
-          errorMessage: "",
-          confirmErrorMessage: "",
-        };
+        const error = validation(
+          value?.["feildName"],
+          value?.["feildValue"],
+          errorFields
+        );
+        let confirm = "";
+        if (value?.required && value?.confirmPassword) {
+          confirm = validation(
+            value?.["confirmFeildName"],
+            value?.["confirmFeildValue"],
+            errorFields,
+            value
+          );
+        }
+        if (value?.required && error) {
+          errorObj[value?.["id"]] = error;
+          if (value?.required && confirm) {
+            errorObj[value?.["confirmFeildId"]] = confirm;
+          }
+        }
       });
-      setFormFeildData(data);
-      if (selectedValue === "clearForm" || selectedValue === "hideForm") {
-        formRef.current.reset();
-        dispatch(addFormSubmission({ ...formData }));
-      } else if (selectedValue === "pageRedirect") {
-        formRef.current.reset();
-        redirect.dispatch(Redirect.Action.REMOTE, {
-          url: `${redirectUrl}`,
-          newContext: true,
+
+      const isAllFieldsRequired = allFieldsAreRequired(Object.values(errorObj));
+
+      if (isAllFieldsRequired) {
+        dispatch(
+          createSubmissions({
+            form: editFormId,
+            formData: finalFormData,
+          })
+        );
+
+        dispatch(setFormSubmitted(true));
+        const data = cloneData.map((feild) => {
+          return {
+            ...feild,
+            feildValue: "",
+            errorMessage: "",
+            confirmErrorMessage: "",
+          };
         });
-        dispatch(addFormSubmission({ ...formData }));
+        setFormFeildData(data);
+        if (selectedValue === "clearForm" || selectedValue === "hideForm") {
+          formRef.current.reset();
+          dispatch(addFormSubmission({ ...formData }));
+        } else if (selectedValue === "pageRedirect") {
+          formRef.current.reset();
+          redirect.dispatch(Redirect.Action.REMOTE, {
+            url: `${redirectUrl}`,
+            newContext: true,
+          });
+          dispatch(addFormSubmission({ ...formData }));
+        }
+      } else {
+        let array = [];
+        cloneData.forEach((value) => {
+          if (value?.confirmPassword && value?.required) {
+            array.push({
+              ...value,
+              errorMessage: value?.required ? errorObj[value?.["id"]] : "",
+              confirmErrorMessage:
+                value?.required || value?.confirmPassword
+                  ? errorObj[value?.["confirmFeildId"]]
+                  : "",
+            });
+          } else
+            array.push({
+              ...value,
+              errorMessage: value?.required ? errorObj[value?.["id"]] : "",
+            });
+        });
+        setFormFeildData(array);
       }
-    } else {
-      let array = [];
-      cloneData.forEach((value) => {
-        if (value?.confirmPassword && value?.required) {
-          array.push({
-            ...value,
-            errorMessage: value?.required ? errorObj[value?.["id"]] : "",
-            confirmErrorMessage:
-              value?.required || value?.confirmPassword
-                ? errorObj[value?.["confirmFeildId"]]
-                : "",
-          });
-        } else
-          array.push({
-            ...value,
-            errorMessage: value?.required ? errorObj[value?.["id"]] : "",
-          });
-      });
-      setFormFeildData(array);
-    }
-  };
+    };
+  }
 
   const handleResetForm = () => {
     let formData = {};
@@ -476,18 +479,18 @@ const FormPreview = () => {
 
   return (
     <div className={styles.formContent}>
-      {isShowDrawer ? (
+      {/* {isShowDrawer ? (
         <div className={styles.elementBanner}>
           <ElementListBanner
             title={"You can only add 12 element for a form with a Free plan."}
           />
         </div>
-      ) : null}
+      ) : null} */}
       {editFormData?.loading ? (
         <SkeletonPage>
           <Layout>
             <Layout.Section>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <div className={styles.previewCard}>
                   <div className={styles.previewBox}>
                     <SkeletonBodyText />
@@ -496,7 +499,7 @@ const FormPreview = () => {
                     <SkeletonBodyText />
                   </div>
                 </div>
-              </Card>
+              </LegacyCard>
             </Layout.Section>
           </Layout>
         </SkeletonPage>
@@ -577,7 +580,7 @@ const FormPreview = () => {
                     )}
                   <FormLayout>
                     <Grid>
-                      {elements(user.subscriptionName, inputFields, true).map(
+                      {inputFields.map(
                         ({ id, title, type, attributes, inputId }, index) => {
                           const width = {
                             md:

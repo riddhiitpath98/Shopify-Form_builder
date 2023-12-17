@@ -48,7 +48,6 @@ function FormList() {
   const navigate = useNavigate();
   const { elements } = useElements();
 
-
   const [active, setActive] = useState(false);
 
   const shopId = useSelector((state) => state.shopId.shopId);
@@ -78,15 +77,21 @@ function FormList() {
 
   const sortedItems = useMemo(() => {
     const data = formData?.formData?.filter((formItem) => {
-      if ((user?.subscriptionName === SUBSCRIPTION_TYPES.FREE && formItem?.hasPremiumInput?.length > 0) && formItem?.hasFreeInput?.length > 0) {
-        return formItem
-      }
-      else if (user?.subscriptionName === SUBSCRIPTION_TYPES.FREE && formItem?.hasPremiumInput?.length > 0)
-        return null
+      // if (
+      //   user?.subscriptionName === SUBSCRIPTION_TYPES.FREE &&
+      //   formItem?.hasPremiumInput?.length > 0 &&
+      //   formItem?.hasFreeInput?.length > 0
+      // ) {
+      //   return formItem;
+      // }
+      if (
+        user?.subscriptionName === SUBSCRIPTION_TYPES.FREE &&
+        formItem?.hasPremiumInput?.length > 0
+      )
+        return null;
       else if (user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-        return formItem
-      }
-      else return formItem;
+        return formItem;
+      } else return formItem;
     });
     switch (sortValue) {
       case "DATE_MODIFIED_DESC":
@@ -103,7 +108,6 @@ function FormList() {
         return data;
     }
   }, [formData?.formData, sortValue]);
-
 
   const handleSelectedItems = (selectedItems) => {
     let fackArray = [];
@@ -169,15 +173,21 @@ function FormList() {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch, shopId]);
   const isShowPremium =
-    formData.formData.length >= subscription?.features?.form?.number_of_forms &&
-    user.subscriptionName === SUBSCRIPTION_TYPES.FREE;
+    sortedItems?.length >= subscription?.features?.form?.number_of_forms &&
+    user?.subscriptionName === SUBSCRIPTION_TYPES.FREE;
   return (
     <>
-      {isShowPremium ? (
+      {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE ? (
         <div className={styles.elementBanner}>
           <ElementListBanner
             title={
-              "You are in Free plan. You've created 10 form allowed in your plan. Upgrade to premium to create more forms."
+              <>
+                You are in Free plan. You can create only 10 forms allowed in
+                your plan. Upgrade to premium to create more forms.{" "}
+                <Link url="/plans">
+                  <span className={styles.premiumPlanLink}>Upgrade now.</span>
+                </Link>
+              </>
             }
           />
         </div>
@@ -200,7 +210,6 @@ function FormList() {
           disabled: isShowPremium ? true : false,
         }}
       >
-
         <LegacyCard>
           {!shopId || formData?.formData?.length > 0 ? (
             <ResourceList
@@ -251,8 +260,8 @@ function FormList() {
     let data = [];
     items.customForm.map((item) => {
       if (item?.element)
-        data = elements(user.subscriptionName, item.element, true)
-    })
+        data = elements(user.subscriptionName, item.element, true);
+    });
     return (
       <ResourceItem id={index} name={items?._id} persistActions={true}>
         <div style={{ display: "flex", alignItems: "center" }}>

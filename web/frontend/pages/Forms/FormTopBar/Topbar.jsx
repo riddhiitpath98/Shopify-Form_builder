@@ -104,7 +104,7 @@ const Topbar = ({ handleRedirectToForm }) => {
     return fields
   }, [inputFields])
 
-  console.log('hasPremiumInput', hasPremiumInput)
+
   const hasFreeInput = useMemo(() => {
     let fields = [];
     inputFields.map((item) => {
@@ -115,7 +115,6 @@ const Topbar = ({ handleRedirectToForm }) => {
     return fields
   }, [inputFields])
 
-  console.log('hasFreeInput', hasFreeInput)
   const handleSubmit = () => {
     const combinedObjectArr = {
       shopId: shopId,
@@ -147,7 +146,7 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({ _id: editFormId, customForm: updatedFormData, hasFreeInput, hasPremiumInput })
+      updateFormData({ _id: editFormId, combinedObjectArr: { customForm: updatedFormData, hasFreeInput, hasPremiumInput } })
     );
     dispatch(
       createNupdateValidation({
@@ -238,6 +237,7 @@ const Topbar = ({ handleRedirectToForm }) => {
                     primary
                     onClick={handleUpdate}
                     loading={finalFormData?.loading}
+                    disabled={inputFields?.length === 0}
                   >
                     Update
                   </Button>
@@ -246,6 +246,7 @@ const Topbar = ({ handleRedirectToForm }) => {
                     primary
                     onClick={handleSubmit}
                     loading={finalFormData?.loading}
+                    disabled={inputFields?.length === 0}
                   >
                     Save
                   </Button>

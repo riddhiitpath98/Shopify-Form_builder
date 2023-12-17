@@ -4,7 +4,6 @@ import {
   FormLayout,
   TextField,
   Button,
-  Card,
   Page,
   Select,
   Grid,
@@ -15,7 +14,7 @@ import {
 } from "@shopify/polaris";
 import {
   createSMTPSettings,
-  getRecaptchaSettingsByAppId,
+  getRecaptchaSettingsByShopId,
   createRecaptchaSettings,
   editSmtpSettings,
   getSmtpSettingByAppId,
@@ -28,6 +27,7 @@ import styles from "./Settings.module.css";
 import { getRestrictionWithPlan } from "../../utils/function";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
+import IFrameLoader from "../../components/IFrameLoader";
 
 const initialState = {
   smtpName: "",
@@ -40,13 +40,20 @@ const initialState = {
 
 function Settings() {
   const [formValues, setFormValues] = useState(initialState);
+  const [iframeVisible, setIFrameVisible] = useState(false);
   const [reCaptchaValues, setreCaptchaValues] = useState({
     siteKey: "",
     secretKey: "",
     shopId: "",
   });
 
-  
+  const handleIFrameOpen = () => {
+    setIFrameVisible(true);
+  };
+  const handleIframeClose = () => {
+    setIFrameVisible(false);
+  };
+
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const dispatch = useDispatch();
@@ -119,7 +126,7 @@ function Settings() {
     setFormValues({ ...formValues, shopId: shopId })
     setreCaptchaValues({ ...reCaptchaValues, shopId: shopId });
     dispatch(getSmtpSettingByAppId(shopId));
-    dispatch(getRecaptchaSettingsByAppId(shopId));
+    dispatch(getRecaptchaSettingsByShopId(shopId));
   }, [shopId, dispatch]);
 
   useEffect(() => {
@@ -167,7 +174,7 @@ function Settings() {
                     <Heading>SMTP Settings</Heading>
                   </div>
                 </LegacyCard>
-                {getRestrictionWithPlan({ name: user.subscriptionName }) ? <LegacyCard sectioned>
+                {getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName }) ? <LegacyCard sectioned>
                   <div
                     className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
                       }`}
@@ -279,68 +286,78 @@ function Settings() {
                     </Form>
                     <ToastContainer />
                   </LegacyCard>
-                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user.subscriptionName })) ? <div className={styles.formLayoutContainer}>
-                  <Card sectioned>
-                    <Form onSubmit={(e) => handleSettingsSubmit(e)}>
-                      <FormLayout>
-                        <Heading>Google reCaptcha type v2</Heading>
-                        <Grid>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="siteKey"
-                              name="siteKey"
-                              value={
-                                reCaptchaValues?.siteKey || ""
+                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName })) ? <div className={styles.formLayoutContainer}>
+                sectioned>
+                  <Form onSubmit={(e) => handleSettingsSubmit(e)}>
+                    <FormLayout>
+                      <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onMouseEnter={handleIFrameOpen} className={styles.supportIcon}><Icon source={Icons.support} color="base" /></div></div>
+                      <Grid>
+                        <Grid.Cell
+                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                        >
+                          <TextField
+                            id="siteKey"
+                            name="siteKey"
+                            value={
+                              reCaptchaValues?.siteKey || ""
 
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("siteKey", value)
-                              }
-                              label="Site Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <TextField
-                              id="secretKey"
-                              name="secretKey"
-                              value={
-                                reCaptchaValues?.secretKey ||
-                                ""
-                              }
-                              onChange={(value) =>
-                                handleSettingsChange("secretKey", value)
-                              }
-                              label="Secret Key"
-                              type="text"
-                              autoComplete="off"
-                            // error={errorValues.smtpName}
-                            />
-                          </Grid.Cell>
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
-                          >
-                            <Button submit primary>
-                              Save
-                            </Button>
-                          </Grid.Cell>
-                        </Grid>
-                      </FormLayout>
-                    </Form>
-                    <ToastContainer />
-                  </Card>
+                            }
+                            onChange={(value) =>
+                              handleSettingsChange("siteKey", value)
+                            }
+                            label="Site Key"
+                            type="text"
+                            autoComplete="off"
+                          // error={errorValues.smtpName}
+                          />
+                        </Grid.Cell>
+                        <Grid.Cell
+                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                        >
+                          <TextField
+                            id="secretKey"
+                            name="secretKey"
+                            value={
+                              reCaptchaValues?.secretKey ||
+                              ""
+                            }
+                            onChange={(value) =>
+                              handleSettingsChange("secretKey", value)
+                            }
+                            label="Secret Key"
+                            type="text"
+                            autoComplete="off"
+                          // error={errorValues.smtpName}
+                          />
+                        </Grid.Cell>
+                        <Grid.Cell
+                          columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
+                        >
+                          <Button submit primary>
+                            Save
+                          </Button>
+                        </Grid.Cell>
+                      </Grid>
+                    </FormLayout>
+                  </Form>
+                  <ToastContainer />
+
                 </div> : null
               }
             </Layout.Section>
           </Layout>
         </div>
       </Page>
+      {iframeVisible && (
+        <IFrameLoader
+          open={iframeVisible}
+          handleClose={handleIframeClose}
+          src="https://www.google.com?igu=1"
+          title="Example Iframe"
+          width="1000"
+          height="1000"
+        />
+      )}
     </Frame >
   );
 }

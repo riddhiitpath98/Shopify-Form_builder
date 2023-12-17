@@ -49,23 +49,6 @@ export function AppBridgeProvider({ children }) {
     };
   });
 
-  const appBridge = new AppBridge({
-    host:
-      new URLSearchParams(location.search).get("host") ||
-      window.__SHOPIFY_DEV_HOST,
-    apiKey: process.env.SHOPIFY_API_KEY,
-  });
-
-  const getStoreNameAndAppName = async () => {
-    appBridge.getState().then((response) => {
-      dispatch(getAppName(response?.titleBar?.appInfo?.name));
-    });
-  };
-
-  useEffect(() => {
-    getStoreNameAndAppName();
-  }, []);
-  // dispatch(addShopId(appBridgeConfig.apiKey))
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
     const bannerProps = !process.env.SHOPIFY_API_KEY
       ? {

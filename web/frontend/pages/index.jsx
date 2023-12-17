@@ -120,6 +120,7 @@ import APISettingsList from "./AnyAPIIntegration/APISettingsList";
 import { Icons } from "../constant";
 import APILogs from "./AnyAPIIntegration/APILogs";
 import BillingHistory from "./Billing/BillingHistory";
+import StripeCardPayment from "./StripeCardPayment";
 
 export const navigation = [
   {
@@ -347,6 +348,14 @@ const routes = [
     isHideNavbar: true,
     element: <FormLayout />,
   },
+  {
+    id: "stripe-payment",
+    name: 'stripePayment',
+    path: '/premium-subscription/payment',
+    exact: false,
+    isHideNavbar: false,
+    element: <StripeCardPayment />
+  }
 ];
 
 export const withNavbarRoute = routes?.filter((data) => !data?.isHideNavbar);

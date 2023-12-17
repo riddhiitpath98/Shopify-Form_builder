@@ -32,7 +32,7 @@ const shopify = shopifyApp({
     path: "/api/webhooks",
   },
   // This should be replaced with your preferred storage strategy
-  sessionStorage: new MongoDBSessionStorage('mongodb+srv://rajkumaritpath:vx5ACFtKiE9Rlypa@cluster0.bkscd84.mongodb.net',
+  sessionStorage: new MongoDBSessionStorage('mongodb+srv://rajkumaritpath:ips12345@cluster0.bkscd84.mongodb.net',
     'shopify',),
 });
 

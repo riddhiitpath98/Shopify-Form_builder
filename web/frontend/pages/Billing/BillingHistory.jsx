@@ -4,6 +4,7 @@ import {
   fetchFormData,
   getApplicationCharge,
   getFormToAPISettings,
+  getInvoice,
   loadMoreLogs,
 } from "../../redux/actions/allActions";
 import {
@@ -20,6 +21,7 @@ import {
 import moment from "moment";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
+import { PLAN_DETAILS } from "../../constant";
 // import ModalLogs from "./ModalLogs";
 
 const BillingHistory = () => {
@@ -27,17 +29,19 @@ const BillingHistory = () => {
   const [active, setActive] = useState(false);
   const [logsData, setLogsData] = useState({});
   const shopId = useSelector((state) => state?.shopId?.shopId);
+  const user = useSelector(state => state.user.userData?.user)
+  const invoiceData = useSelector(state => state.user.invoiceData)
 
   const app = useAppBridge();
   const recurringCharges = useSelector(
-      (state) => state?.recurringCharge?.recurringCharges
-      );
-//   const total_count = useSelector(
-//     (state) => state?.anyAPISetting?.allApiLogsData?.total_count
-//   );
-//   const itemPrPage = 10;
+    (state) => state?.recurringCharge?.recurringCharges
+  );
+  //   const total_count = useSelector(
+  //     (state) => state?.anyAPISetting?.allApiLogsData?.total_count
+  //   );
+  //   const itemPrPage = 10;
 
-//   const [currentPage, setCurrentPage] = useState(1);
+  //   const [currentPage, setCurrentPage] = useState(1);
 
   const resourceName = {
     singular: "bill",
@@ -48,22 +52,18 @@ const BillingHistory = () => {
     useIndexResourceState(recurringCharges?.data);
 
   useEffect(() => {
-    getSessionToken(app).then(response => {
-        if (response) {
-          dispatch(getApplicationCharge({ shopId, session: response }))
-        }
-      })
-  }, [dispatch, shopId]);
+    dispatch(getInvoice({ id: user?.subscription?.customerId, priceId: PLAN_DETAILS.PREMIUM, shopId }))
+  }, [dispatch]);
 
-//   useEffect(() => {
-//     dispatch(
-//       loadMoreLogs({
-//         shopId,
-//         page: currentPage,
-//         per_page: itemPrPage,
-//       })
-//     );
-//   }, [dispatch, currentPage, shopId]);
+  //   useEffect(() => {
+  //     dispatch(
+  //       loadMoreLogs({
+  //         shopId,
+  //         page: currentPage,
+  //         per_page: itemPrPage,
+  //       })
+  //     );
+  //   }, [dispatch, currentPage, shopId]);
 
   const handleOpen = (data) => {
     setLogsData(data);
@@ -75,9 +75,9 @@ const BillingHistory = () => {
     setLogsData({});
   }, []);
 
-//   const fetchMoreData = async () => {
-//     setCurrentPage(currentPage + 1);
-//   };
+  //   const fetchMoreData = async () => {
+  //     setCurrentPage(currentPage + 1);
+  //   };
 
   const loading = !shopId || recurringCharges?.loading;
   const emptyStateMarkup = (
@@ -93,8 +93,8 @@ const BillingHistory = () => {
   );
 
   const rowMarkup =
-    recurringCharges?.data &&
-    recurringCharges?.data?.map((items, index) => (
+    invoiceData?.data &&
+    invoiceData?.data?.map((items, index) => (
       <IndexTable.Row
         id={items?.id}
         key={items?.id}
@@ -111,13 +111,17 @@ const BillingHistory = () => {
             data-primary-link={true}
             data-polaris-unstyled={true}
           >
-            <Text variation="strong">{items?.name}</Text>
+            <Text variation="strong">${items?.amount_paid / 100}</Text>
           </a>
         </IndexTable.Cell>
-        <IndexTable.Cell>{items?.price}</IndexTable.Cell>
+        <IndexTable.Cell>{items?.currency.toUpperCase()}</IndexTable.Cell>
         <IndexTable.Cell>{items?.status}</IndexTable.Cell>
+        <IndexTable.Cell>{items?.status === 'paid' ? "-" : items?.amount_due}</IndexTable.Cell>
         <IndexTable.Cell>
-          {moment(items?.created_at).format("YYYY-MM-DD")}
+          {moment(new Date(items?.lines?.data[0]?.period?.start * 1000)).format('YYYY-MM-DD HH:mm:ss')}
+        </IndexTable.Cell>
+        <IndexTable.Cell>
+          {moment(new Date(items?.lines?.data[0]?.period?.end * 1000)).format('YYYY-MM-DD HH:mm:ss')}
         </IndexTable.Cell>
       </IndexTable.Row>
     ));
@@ -127,8 +131,8 @@ const BillingHistory = () => {
         <LegacyCard>
           <IndexTable
             resourceName={resourceName}
-            loading={loading}
-            itemCount={recurringCharges?.data?.length || 0}
+            loading={invoiceData?.loading}
+            itemCount={invoiceData?.data?.length || 0}
             emptyState={emptyStateMarkup}
             selectedItemsCount={
               allResourcesSelected ? "All" : selectedResources.length
@@ -136,10 +140,12 @@ const BillingHistory = () => {
             onSelectionChange={handleSelectionChange}
             selectable={false}
             headings={[
-              { title: "Subscription Name" },
-              { title: "Price" },
-              { title: "Status" },
-              { title: "Created Date" },
+              { title: "AMOUNT" },
+              { title: "CURRENCY" },
+              { title: "STATUS" },
+              { title: "DUE AMOUNT" },
+              { title: "START DATE" },
+              { title: "END DATE" }
             ]}
           >
             {rowMarkup}

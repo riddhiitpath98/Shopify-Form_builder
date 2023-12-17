@@ -3,69 +3,76 @@ import { Badge, Button, Icon, LegacyCard, Page } from "@shopify/polaris";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
 import { MinusMinor } from "@shopify/polaris-icons";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
-import { useAppBridge } from "@shopify/app-bridge-react";
+import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./PricingPlan.module.css";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
+import BootstrapButton from 'react-bootstrap/Button';
+
 import {
   addShopData,
+  cancelSubscription,
   createApplicationCharge,
   getUserByShopId,
 } from "../../redux/actions/allActions";
 import {
+  PLAN_DETAILS,
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
+  handleRecurringChargeVal,
 } from "../../constant";
-import { addShopId } from "../../redux/reducers/appIdSlice";
+import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
 import { useAppQuery } from "../../hooks";
 import CommonModal from "../../components/CommonModal";
+import { ToastContainer } from "react-toastify";
+import { addClientSecret } from "../../redux/reducers/userSlice";
+import PaymentModal from "./paymentModal";
+import axios from "axios";
+
 
 function Pricingplans() {
   const app = useAppBridge();
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
-  const storeName = shopData?.data?.domain?.split(".")[0];
-  console.log('storeName: ', storeName, shopData);
 
   const [active, setActive] = useState(false);
+  const [recurringCharge, setRecurringCharge] = useState({});
   const [isCancelPlan, setIsCancelPlan] = useState(false);
+  const appearance = {
+    theme: 'stripe',
+  };
 
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
 
   const shopId = useSelector((state) => state?.shopId?.shopId);
-  const user = useSelector((state) => state.user.userData.user);
-  const subscription = useAppQuery({ url: "/api/subscriptions" });
-
-  const appName = useSelector((state) => state?.shopId?.appName);
-
+  const user = useSelector((state) => state?.user?.userData?.user);
+  const navigate = useNavigate();
+  const [priceId, setPriceId] = useState();
+  const [showCardElement, setShowCardElement] = useState(false);
   const handleOpen = (data) => {
     setActive(true);
     setIsCancelPlan(true);
   };
+  const appName = useSelector(state => state?.shopId?.appName);
 
   const handleClose = useCallback(() => {
     setActive(false);
   }, []);
 
-  const RECURRING_APPLICATION_CHARGE = {
-    premium_subscription: {
-      "name": "Premium Subscription",
-      "amount": 6.99,
-      "isTest": true,
-      "currencyCode": "USD",
-      "interval": "EVERY_30_DAYS",
-      "trialDays": 1,
-      "replacementBehavior": "APPLY_IMMEDIATELY",
-      "return_url": `https://admin.shopify.com/store/${shopData?.data?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`
-    }
-  }
-  console.log('RECURRING_APPLICATION_CHARGE', RECURRING_APPLICATION_CHARGE)
-  const handleUserNavigation = async (plan) => {
+
+
+  useEffect(() => {
+    app.getState().then(state =>
+      dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data) => setRecurringCharge(handleRecurringChargeVal(data?.payload)))
+  }, [])
+
+
+  const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
         id,
@@ -78,12 +85,12 @@ function Pricingplans() {
         shop_owner,
         myshopify_domain,
         phone,
-      } = shopData.data;
+      } = shopData?.data;
       let user = {
-        id,
-        name,
+        shopId: id,
+        shopName: name,
         email,
-        domain,
+        domain: myshopify_domain,
         city,
         country,
         customer_email,
@@ -96,97 +103,41 @@ function Pricingplans() {
           user = { ...user, subscriptionName, subscriptionId: _id };
         }
       });
-      dispatch(addShopData(user));
-      dispatch(addShopId(id));
-      toggleModal();
-      navigate("/dashboard", { replace: true });
-    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      getSessionToken(app).then((token) => {
-        if (token) {
-          try {
-            const options = {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}` || "",
-                "Content-Type": "application/json", // Set the content type to JSON
-              },
-              body: JSON.stringify(RECURRING_APPLICATION_CHARGE),
-            };
-            fetch(`/api/createSubscription`, options)
-              .then((res) => res.json())
-              .then((res) => {
-                if (res.success) {
-                  const pathSegments =
-                    res?.data?.appSubscriptionCreate?.appSubscription?.id.split(
-                      "/"
-                    );
-                  // The last segment contains the ID
-                  const chargeId = pathSegments[pathSegments.length - 1];
-                  dispatch(
-                    createApplicationCharge({
-                      chargeId,
-                      shopId: shopData?.data?.id,
-                    })
-                  );
-                  const redirect = Redirect.create(app);
-                  redirect.dispatch(
-                    Redirect.Action.REMOTE,
-                    res.data?.appSubscriptionCreate?.confirmationUrl
-                  );
-                }
-              })
-              .catch((err) => console.log("err", err));
-          } catch (error) {
-            console.log("error", error);
-          }
+      dispatch(addShopData(user)).then((data) => {
+        if (data?.payload) {
+          dispatch(addShopId(id));
+          toggleModal();
+          navigate("/dashboard", { replace: true });
         }
       });
-    }
-  };
-  // useAppQuery({ url: "/api/cancelSubscription" })
+    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
+          app.getState().then(state =>
+        dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data) => {
+          const recurring = handleRecurringChargeVal(data?.payload, shopData?.data)
+          const sessionData = { name: shopData?.data?.name, email: shopData?.data?.email, shopId, plan, successUrl: recurring?.premium_subscription?.return_url, customer: user?.subscription?.customerId || null }
+
+          axios.post("/payment/create-session-checkout", sessionData).then(res => {
+            console.log('res', res)
+            const redirect = Redirect.create(app);
+            redirect.dispatch(
+              Redirect.Action.REMOTE,
+              res?.data?.redirectUrl
+            );
+          })
+       })
+    };
+  }
+
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
-    dispatch(getUserByShopId(shopId));
-  }, [dispatch, shopId]);
+  }, [dispatch]);
 
-  const handleCancelSubscription = () => {
-    const cancelSubscription = subscription?.data?.appSubscriptions.filter(item => item.name === 'Premium Subscription')
-    getSessionToken(app).then((session) => {
-      const options = {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session}` || "",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cancelSubscription[0]),
-      };
+  const handleCancelSubscription = async () => {
+    dispatch(cancelSubscription({ id: user?.subscription?.subscriptionId, shopId })).then(data => dispatch(getUserByShopId(shopId)))
+    setActive(false);
+    setIsCancelPlan(false);
+  }
 
-      fetch(`/api/cancelSubscription`, options)
-        .then((res) => res.json())
-        .then((res) => {
-          if (
-            res?.data?.appSubscriptionCancel?.appSubscription?.status ===
-            "CANCELLED"
-          ) {
-            const index = subscriptionData.findIndex(
-              (sub) => sub.subscriptionName === SUBSCRIPTION_TYPES.FREE
-            );
-            const data = {
-              ...user,
-              id: user.shopId,
-              name: user.shopName,
-              myshopify_domain: user.domain,
-              subscriptionName: subscriptionData[index].subscriptionName,
-              subscriptionId: subscriptionData[index]._id,
-              chargeId: null,
-            };
-            dispatch(addShopData(data));
-            setActive(false)
-            setIsCancelPlan(false)
-          }
-        });
-    });
-  };
 
   const renderStatusIcon = (status) => {
     if (status === true) {
@@ -211,12 +162,16 @@ function Pricingplans() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-  useEffect(() => {
-    fullscreen.dispatch(Fullscreen.Action.EXIT);
-  }, []);
+  // useEffect(() => {
+  //   fullscreen.dispatch(Fullscreen.Action.EXIT);
+  // }, []);
 
+  const toggleModal = () => {
+    setShowCardElement(false);
+  }
   return (
     <Page fullWidth title="Pricing Plans">
+      {showCardElement ? <PaymentModal active={showCardElement} priceId={priceId} toggleModal={toggleModal} setShowCardElement={setShowCardElement} /> : null}
       <div style={{ width: "70%" }}>
         <LegacyCard>
           <LegacyCard.Section>
@@ -224,7 +179,7 @@ function Pricingplans() {
               <div className={styles.gridItem}>
                 <div className={styles.boxHeading}>
                   <h4
-                    className={`${styles.boxHeadingText} ${user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                    className={`${styles.boxHeadingText} ${user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
                       ? styles.freeHeader
                       : styles.premiumHeader
                       }`}
@@ -258,6 +213,7 @@ function Pricingplans() {
                           </span>
                         </Badge>
                       </div> */}
+                      {/* <div className={styles.trialDays}></div> */}
                       <div className={styles.monthlyPrice}>
                         <span className={styles.monthlyPriceCur}>USD</span>
                         <span className={styles.priceValue}>
@@ -276,24 +232,25 @@ function Pricingplans() {
                       <Button
                         primary
                         disabled={
-                          user.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE || (user && user?.subscription?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) || user?.subscription?.cancel_at_period_end
                         }
                         onClick={handleOpen}
                         fullWidth
                       >
-
                         <span>
                           <span>
                             <span>
-                              {user.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                                ? PLAN_TEXT.CURRENT_PLAN
+                              {user?.subscriptionName ===
+                                SUBSCRIPTION_TYPES.FREE
+                                ? PLAN_TEXT.ACTIVE_PLAN
                                 : PLAN_TEXT.CHOOSE_PLAN}
                             </span>
                           </span>
                         </span>
                       </Button>
                     </td>
-                    <td>
+                    <td className={styles.pricingRow}>
+                      {/* <div className={styles.trialDays}>3 days trial</div> */}
                       {/* <div className={styles.pmuBadge}>
                         <Badge status="success">
                           <span>
@@ -307,7 +264,7 @@ function Pricingplans() {
                           <span className={styles.price}>
                             <span>
                               {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$6.99</span>
+                              <span className={styles.rupees}>$6.67</span>
                             </span>
                           </span>
                         </span>
@@ -315,39 +272,47 @@ function Pricingplans() {
                           /<span>month</span>
                         </span>
                       </div>
-                      <Button
+                      {user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM ? <Button
                         disabled={
-                          user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                          user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
                         }
+                        loading={!user}
                         primary
                         fullWidth
                         onClick={() =>
-                          handleUserNavigation(SUBSCRIPTION_TYPES.PREMIUM)
+                          handleCreateSubscription(SUBSCRIPTION_TYPES.PREMIUM)
                         }
                       >
                         <span>
                           <span>
                             <span>
-                              {user.subscriptionName ===
+                              {user?.subscriptionName ===
                                 SUBSCRIPTION_TYPES.PREMIUM
                                 ? PLAN_TEXT.CURRENT_PLAN
-                                : PLAN_TEXT.CHOOSE_PLAN}
+                                : PLAN_TEXT.UPGRADE_PLAN}
                             </span>
                           </span>
                         </span>
-                      </Button>
-
-                      {user.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
-                        <div style={{ marginTop: "5px" }}>
-                          <Button fullWidth onClick={handleOpen}>
+                      </Button> : <div className="d-grid gap-2" style={{ marginTop: "5px" }}>
+                        <BootstrapButton variant="danger" onClick={handleOpen} disabled={user?.subscription?.cancel_at_period_end} >
+                          <span>
+                            <span>
+                              <span>{PLAN_TEXT.CANCEL_PLAN}</span>
+                            </span>
+                          </span>
+                        </BootstrapButton>
+                      </div>}
+                      {/* {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
+                        <div className="d-grid gap-2" style={{ marginTop: "5px" }}>
+                          <BootstrapButton variant="danger" fullWidth onClick={handleOpen} disabled={user?.subscription?.cancel_at_period_end} >
                             <span>
                               <span>
                                 <span>{PLAN_TEXT.CANCEL_PLAN}</span>
                               </span>
                             </span>
-                          </Button>
+                          </BootstrapButton>
                         </div>
-                      ) : null}
+                      ) : null} */}
                       {/* <div className={styles.pmuBadge}>
                         <span>7 days trial</span>
                       </div> */}
@@ -411,18 +376,22 @@ function Pricingplans() {
         {active && (
           <CommonModal
             {...{ active, isCancelPlan, handleClose, handleCancelSubscription }}
-            title="Are you sure to cancel/change the current plan?"
-            description="<p><strong>Note:</strong> Canceling this subscription plan will result in the following:</p>
+            title="Are you sure to cancel the current plan?"
+            description="<p><strong>Note: </strong> Canceling this subscription plan will result in the following:</p>
             <ul>
-              <li>The subscription will be set to the Free plan.</li>
-              <li>You will not be able to access the features available in premium plan.</li>
-              <li>You will not be able to access the form which are created in premium plan.</li>
+              <li>Upon cancellation, you'll retain access to premium features until the end of the current billing cycle.</li>
+              <li>You won't be charged for the following month, and after the current period, your subscription will automatically switch to the Free plan.</li>
+              <li>While premium features will no longer be available, you can still use forms created under the premium plan with restrictions.</li>
             </ul>
-            <p>Be sure to read above terms & conditions before cancelling the subscription.</p>"
+            <p>Please review our <a href='link-to-terms-and-conditions'>terms and conditions</a> for detailed information.</p>
+            <p>If you have any questions, our <a href='link-to-support'>customer support</a> is ready to assist.</p>
+            <p>Thank you for being a valued subscriber!</p>"
           />
         )}
+
       </div>
-    </Page>
+      <ToastContainer />
+    </Page >
   );
 }
 

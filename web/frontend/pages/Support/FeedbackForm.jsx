@@ -1,7 +1,7 @@
 import { useAppBridge } from "@shopify/app-bridge-react";
 import {
   Button,
-  Card,
+  LegacyCard,
   Form,
   FormLayout,
   Grid,
@@ -83,7 +83,7 @@ const FeedbackForm = () => {
         <Layout>
           <Layout.Section>
             <div className={styles.formLayoutContainer}>
-              <Card sectioned>
+              <LegacyCard sectioned>
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>
                     <Grid>
@@ -170,7 +170,7 @@ const FeedbackForm = () => {
                   </FormLayout>
                 </Form>
                 <ToastContainer />
-              </Card>
+              </LegacyCard>
             </div>
           </Layout.Section>
         </Layout>

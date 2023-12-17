@@ -1,25 +1,36 @@
 .layoutContainer {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
 
-  /* .card {
+/* .card {
     width: 250px;
   } */
 
-  .submissions {
-    display: flex;
-    align-items: center;
-    width: 150px;
-  }
+.submissions {
+  display: flex;
+  align-items: center;
+  width: 150px;
+}
 
-  /* .saveButton{
+/* .saveButton{
     margin-top: 1.4rem;
   } */
-  
-  .formLayoutContainer{
-    /* max-width: 800px; */
-  }
+
+.formLayoutContainer {
+  /* max-width: 800px; */
+}
+
+.mapFeildContainer {
+  display: flex !important;
+  align-items: center;
+}
+
+.supportIcon {
+  width: 15px;
+  height: 15px;
+  margin-left: 3px !important;
+}

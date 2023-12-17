@@ -16,7 +16,7 @@ const ModalLogs = ({
       instant
       open={open}
       onClose={handleClose}
-      title="Detail"
+      title="Log Details"
       primaryAction={[
         {
           content: "Close",

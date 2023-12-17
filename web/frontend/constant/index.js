@@ -100,8 +100,8 @@ export const pricingPlanData = [
   {
     heading: "Form",
     tableData: [
-      { title: "Number of form(s)", unpaid: "Unlimited" },
-      { title: "Number of fields per form", unpaid: 12 },
+      { title: "Number of form(s)", unpaid: 10 },
+      { title: "Number of fields per form", unpaid: "Unlimited" },
       {
         title: "Number of submissions per month",
         unpaid: "Unlimited",
@@ -184,6 +184,13 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const contactRegex = /^[2-9]{1}[0-9]{9}$/;
 
 export const validateTextField = (name, value) => {
+  if (name === 'accept_TNC') {
+    if (!value) {
+      return 'Please accept terms and condition to continue payment';
+    } else {
+      return '';
+    }
+  }
   if (!value || String(value).trim() === '') {
     return 'This field is required.'
   }
@@ -478,6 +485,35 @@ export const SUBSCRIPTION_TYPES = {
 
 export const PLAN_TEXT = {
   CHOOSE_PLAN: "Choose this Plan",
-  CURRENT_PLAN: "Current Plan",
-  CANCEL_PLAN: "Cancel Plan"
+  CURRENT_PLAN: "Your Current Plan",
+  CANCEL_PLAN: "Cancel Subscription",
+  START_FREE_PLAN: "Start with Free plan",
+  ACTIVE_PLAN: "Your Active plan",
+  UPGRADE_PLAN: "Upgrade your plan"
+
 }
+
+export const handleRecurringChargeVal = (appName, shopData) => {
+  const RECURRING_APPLICATION_CHARGE = {
+    premium_subscription: {
+      "name": "Premium Subscription",
+      "amount": '050',
+      "isTest": true,
+      "currencyCode": "USD",
+      "interval": "EVERY_30_DAYS",
+      "trialDays": 1,
+      "replacementBehavior": "APPLY_IMMEDIATELY",
+      "return_url": `https://admin.shopify.com/store/${shopData?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`,
+      "cancel_url": `https://admin.shopify.com/store/${shopData?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/cancel`
+    }
+  };
+
+  return RECURRING_APPLICATION_CHARGE
+}
+
+
+export const PLAN_DETAILS = {
+  PREMIUM: 'price_1OMTHaSEo6lSgy9num51RO2M',
+}
+
+

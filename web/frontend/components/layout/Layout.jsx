@@ -1,79 +1,88 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import NavigationMenubar from "./NavigationMenubar";
 import Footer from "./Footer";
 import { useDispatch, useSelector } from "react-redux";
 import PlanModal from "../../pages/Pricingplans/PlanModal";
 import { useAppQuery } from "../../hooks";
-import { addShopData, getAllSubscription, getUserByShopId } from "../../redux/actions/allActions";
-import { addShopId } from "../../redux/reducers/appIdSlice";
-import { SUBSCRIPTION_TYPES } from "../../constant";
+import {
+  addShopData,
+  getAllSubscription,
+  getUserByShopId,
+} from "../../redux/actions/allActions";
+import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
+import { SUBSCRIPTION_TYPES, handleRecurringChargeVal } from "../../constant";
+import { useAppBridge } from "@shopify/app-bridge-react";
+import { getSessionToken } from "@shopify/app-bridge/utilities";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import StripeCardPayment from "../../pages/StripeCardPayment";
+import ElementListBanner from "../ElementListBanner";
+import axios from "axios";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const location = useLocation();
-  const hideFooter = location.pathname === "/form" || location.pathname === "/plans" || location.pathname === "/submissions"
+  const [showCardElement, setShowCardElement] = useState(false);
+  const hideFooter =
+    location.pathname === "/form" ||
+    location.pathname === "/plans" ||
+    location.pathname === "/submissions";
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector(state => state.user.userData);
-  const path = location?.pathname === "/" ? "/dashboard" : location?.pathname
-  const param = new URLSearchParams(location.search)
-  const chargeId = param.get('charge_id');
+  const path = location?.pathname === "/" ? "/dashboard" : location?.pathname;
+  const user = useSelector(state => state.user.userData?.user)
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
-  const subscription = useAppQuery({ url: "/api/subscriptions" });
-  const subscriptionData = useSelector(
-    (state) => state.subscription?.subscriptionData?.data
-  );
-
-
+  const app = useAppBridge();
 
   useEffect(() => {
     if (shop.isSuccess) {
-      if (chargeId) {
-        const { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone } = shop.data;
-        let user = { id, name, email, domain, city, country, customer_email, shop_owner, myshopify_domain, phone, chargeId };
-        subscriptionData.filter(({ subscriptionName, _id }, index) => {
-          if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-            user = { ...user, subscriptionName, subscriptionId: _id }
-          }
-        })
-        dispatch(addShopData(user));
-        dispatch(addShopId(shop?.data?.id))
-        setIsShowPlan(false);
-        navigate(path, { replace: true })
-      }
-      else {
-        dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
-          const { userData } = data.payload
-          setIsShowPlan(!user.loading && !userData?.subscriptionName)
-          if (userData?.subscriptionName) {
-            setIsShowPlan(false)
-            dispatch(addShopId(shop?.data?.id))
-            navigate(path, { replace: true })
-          }
-        });
-      }
-
+      dispatch(getUserByShopId(shop?.data?.id)).then((data) => {
+        if (data.payload) {
+          const { userData } = data.payload;
+          setIsShowPlan(!user?.loading && !userData?.subscriptionName);
+          dispatch(addShopId(shop?.data?.id));
+          if (!showCardElement && !isShowPlan)
+            navigate(path, { replace: true });
+        }
+        else {
+          setIsShowPlan(true);
+        }
+      });
     }
-  }, [dispatch, shop.isSuccess])
+  }, [dispatch, shop?.isSuccess])
 
+  
+  useEffect(() => {
+    app.getState().then(state => 
+      dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data)=> handleRecurringChargeVal(data?.payload))
+  },[])
 
   const toggleModal = () => {
-    setIsShowPlan(false)
-  }
-
+    setIsShowPlan(false);
+  };
   return (
     <>
       <div>
-        {
-          isShowPlan ?
-            <PlanModal active={isShowPlan} toggleModal={toggleModal} shopData={shop?.data} />
-            : <div {...props}>
-              {!isHideNavbar ? <NavigationMenubar /> : null}
-              <Outlet />
-              {isShowFooter && !hideFooter ? <Footer /> : null}
-            </div>
+        {isShowPlan ? (
+          <PlanModal
+            active={isShowPlan}
+            toggleModal={toggleModal}
+            shopData={shop?.data}
+            {...{ showCardElement, setShowCardElement }}
+          />
+        ) : null
         }
+        {!isShowPlan && !showCardElement ? <div {...props}>
+          {!isHideNavbar ? <NavigationMenubar /> : null}<br />
+          <>
+            {user?.subscription?.isPlanExpiredIn3Days ? <ElementListBanner
+              title={user?.subscription?.planStatusForExpriation}
+            /> : null}
+            <Outlet />
+          </>
+          {isShowFooter && !hideFooter ? <Footer /> : null}
+        </div> : null}
       </div >
     </>
   );

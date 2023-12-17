@@ -1,0 +1,127 @@
+.DemoPickerWrapper {
+  padding: 0 12px;
+  font-family: "Source Code Pro", monospace;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+  background: white;
+  margin: 24px 0 48px;
+  width: 100%;
+}
+
+.DemoPicker {
+  font-size: 18px;
+  border-radius: 3px;
+  background-color: white;
+  height: 48px;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  border: 0;
+  width: 100%;
+  color: #6772e5;
+  outline: none;
+}
+
+.DemoWrapper {
+  margin: 50px auto;
+  max-width: 500px;
+  /* padding: 0 24px; */
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh; */
+}
+
+.Demo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 40%;
+}
+/* .buttonElement {
+  white-space: nowrap;
+  border: 0;
+  outline: 0;
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #fff;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  background-color: rgb(99, 80, 80);
+  text-decoration: none;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+  margin-top: 10px;
+} */
+
+.StripeElement.IdealBankElement,
+.StripeElement.FpxBankElement,
+.StripeElement.PaymentRequestButton {
+  padding: 0;
+}
+
+.StripeElement.PaymentRequestButton {
+  height: 40px;
+}
+.classicInput {
+  padding: 10px 14px;
+}
+
+.errorMessage {
+  color: red;
+}
+
+.custom-container {
+  max-width: 50%;
+  margin: 20px auto;
+}
+.labelName {
+  /* margin: 0.7rem 0 0 0; */
+  font-size: 1rem;
+  font-weight: 500;
+}
+/* .custom-container.required .labelName:after { 
+  content:"*";
+  color:red;
+} */
+
+.formHeader {
+  font-size: 2em;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.StripeElement {
+  display: block;
+  width: 100%;
+  padding: 1.175rem 0.75rem;
+  padding-bottom: 1.8rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  -webkit-appearance: auto;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control {
+  -webkit-appearance: auto;
+  font-size: 0.85rem;
+}
+.InputElement {
+  font-size: 13px !important;
+}
+
+.terms-condition-container {
+  color: blue !important;
+  text-decoration: underline !important;
+}

@@ -4,7 +4,7 @@ import { Checkbox, Icon } from "@shopify/polaris";
 import { Icons } from "../../../constant";
 import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import {
-  getRecaptchaSettingsByAppId,
+  getRecaptchaSettingsByShopId,
   updateReCaptchaSettings,
 } from "../../../redux/actions/allActions";
 import { updateEnableRecaptcha } from "../../../redux/reducers/inputFieldSlice";
@@ -18,7 +18,7 @@ const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
   const navigate = useNavigate();
   const shopOrigin = sessionStorage.getItem("hostOrigin");
 
-  const appId = useSelector((state) => state?.appId?.appId);
+  const shopId = useSelector((state) => state?.shopId?.shopId);
 
   const recaptchaSettings = useSelector(
     (state) => state?.setting?.reCaptchaSettingData?.data
@@ -31,7 +31,7 @@ const GooglereCaptcha = ({ isEdit, tabId, toggleDrawer }) => {
   );
 
   useEffect(() => {
-    dispatch(getRecaptchaSettingsByAppId(appId));
+    dispatch(getRecaptchaSettingsByShopId(shopId));
     app.getState().then((state) => {
       setAppName(state.titleBar.appInfo.name)
     });
