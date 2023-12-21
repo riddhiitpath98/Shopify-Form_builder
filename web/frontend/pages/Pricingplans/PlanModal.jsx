@@ -4,7 +4,6 @@ import styles from "./PricingPlan.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Icons,
-  PLAN_DETAILS,
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
   handleRecurringChargeVal,
@@ -21,7 +20,7 @@ import CheckoutForm from "../StripeCardPayment";
 const stripePromise = loadStripe(
   "pk_live_IGCZ91wblgKajj7dxA8xci0E"
 );
-
+// const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
 
 export default function PlanModal({
   active,
@@ -58,7 +57,8 @@ export default function PlanModal({
     }
   };
 
-  const handleCreateSubscription = async (plan) => {
+  const handleCreateSubscription = async (plan, sp_Id) => {
+    console.log('plan,sp_Id', plan, sp_Id)
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
         id,
@@ -67,6 +67,7 @@ export default function PlanModal({
         domain,
         city,
         country,
+        country_code,
         customer_email,
         shop_owner,
         myshopify_domain,
@@ -79,6 +80,7 @@ export default function PlanModal({
         domain: myshopify_domain,
         city,
         country,
+        countryCode: country_code,
         customer_email,
         shop_owner,
         myshopify_domain,
@@ -99,9 +101,10 @@ export default function PlanModal({
 
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       setShowCardElement(true);
-      setPriceId(PLAN_DETAILS.PREMIUM);
+      setPriceId(sp_Id);
     }
   };
+  console.log('priceId', priceId)
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
@@ -145,12 +148,11 @@ export default function PlanModal({
                       <thead>
                         <tr>
                           <th scope="col"></th>
-                          <th scope="col">
-                            <p>FREE</p>
-                          </th>
-                          <th scope="col">
-                            <p>PREMIUM</p>
-                          </th>
+                          {subscriptionData?.map(item => (
+                            <th scope="col">
+                              <p>{item?.subscriptionName.toUpperCase()}</p>
+                            </th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
@@ -159,98 +161,41 @@ export default function PlanModal({
                             <span>Price</span>
                           </div>
                         </th>
-                        <td className={styles.pricingRow}>
-                          <div className={styles.badge}>
-                            <Badge status="success">
-                              <span>
-                                <span>-33% lifetime off</span>
-                              </span>
-                            </Badge>
-                          </div>
-                          {/* <div className={styles.trialDays}></div> */}
-                          <div className={styles.monthlyPrice}>
-                            <span className={styles.monthlyPriceCur}>USD</span>
-                            <span className={styles.priceValue}>
-                              <span className={styles.price}>
-                                <span>
-                                  {/* <sub className={styles.dollar}>$</sub> */}
-                                  <span className={styles.rupees}>$0</span>
+                        {subscriptionData?.map(item => (
+                          <td className={styles.pricingRow}>
+                            {/* <div className={styles.trialDays}>3 days trial</div> */}
+                            <div className={styles.monthlyPrice}>
+                              <span className={styles.monthlyPriceCur}>{item.curruncyType}</span>
+                              <span className={styles.priceValue}>
+                                <span className={styles.price}>
+                                  <span>
+                                    {/* <sub className={styles.dollar}>$</sub> */}
+                                    <span className={styles.rupees}>{item.price}</span>
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                            <span className={styles.month}>
-                              /<span>mo</span>
-                            </span>
-                          </div>
-
-                          <Button
-
-                            fullWidth
-                            onClick={() =>
-                              handleCreateSubscription(SUBSCRIPTION_TYPES.FREE)
-                            }
-                          >
-                            <span>
-                              <span>
-                                <span>{PLAN_TEXT.START_FREE_PLAN}</span>
+                              <span className={styles.month}>
+                                /<span>mo</span>
                               </span>
-                            </span>
-                          </Button>
-                          <div className={styles.badge}>
-                            <span>0 days trial</span>
-                          </div>
-                        </td>
-                        <td className={styles.pricingRow}>
-                          {/* <div className={styles.pmuBadge}>
-                        <Badge status="success">
-                          <span>
-                            <span>-33% lifetime off</span>
-                          </span>
-                        </Badge>
-                      </div> */}
-
-                          {/* <div className={styles.trialDays}>3 days trial</div> */}
-                          <div className={styles.monthlyPrice}>
-                            <span className={styles.monthlyPriceCur}>USD</span>
-                            <span className={styles.priceValue}>
-                              <span className={styles.price}>
+                            </div>
+                            <Button
+                              primary
+                              fullWidth
+                              onClick={() =>
+                                handleCreateSubscription(
+                                  item?.subscriptionName, item?.stripePriceId
+                                )
+                              }
+                            >
+                              <span>
                                 <span>
-                                  {/* <sub className={styles.dollar}>$</sub> */}
-                                  <span className={styles.rupees}>$6.67</span>
+                                  {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? <span> {PLAN_TEXT?.START_FREE_PLAN}</span> : <span> {PLAN_TEXT?.UPGRADE_PLAN}</span>}
                                 </span>
                               </span>
-                            </span>
-                            <span className={styles.month}>
-                              /<span>mo</span>
-                            </span>
-                          </div>
-                          <Button
-                            primary
-                            fullWidth
-                            onClick={() =>
-                              handleCreateSubscription(
-                                SUBSCRIPTION_TYPES.PREMIUM
-                              )
-                            }
-                          >
-                            <span>
-                              <span>
-                                <span>{PLAN_TEXT.CHOOSE_PLAN}</span>
-                              </span>
-                            </span>
-                          </Button>
-                          {/* 
-                      <Button onClick={handleClick} primary fullWidth>
-                        <span>
-                          <span>
-                            <span>Start free trial</span>
-                          </span>
-                        </span>
-                      </Button>
-                      <div className={styles.pmuBadge}>
-                        <span>7 days trial</span>
-                      </div> */}
-                        </td>
+                            </Button>
+                          </td>
+                        ))}
+
 
                         {subscriptionData.length > 0 &&
                           Object.keys(subscriptionData[0]?.features).map(

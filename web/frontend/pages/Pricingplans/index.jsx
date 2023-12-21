@@ -61,7 +61,7 @@ function Pricingplans() {
     setActive(false);
   }, []);
 
-  const handleCreateSubscription = async (plan) => {
+  const handleCreateSubscription = async (plan, sp_Id) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
         id,
@@ -70,6 +70,7 @@ function Pricingplans() {
         domain,
         city,
         country,
+        country_code,
         customer_email,
         shop_owner,
         myshopify_domain,
@@ -82,6 +83,7 @@ function Pricingplans() {
         domain: myshopify_domain,
         city,
         country,
+        countryCode: country_code,
         customer_email,
         shop_owner,
         myshopify_domain,
@@ -101,7 +103,7 @@ function Pricingplans() {
       });
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       setShowCardElement(true)
-      setPriceId(PLAN_DETAILS.PREMIUM)
+      setPriceId(sp_Id)
     };
   }
 
@@ -110,12 +112,12 @@ function Pricingplans() {
   }, [dispatch]);
 
   const handleCancelSubscription = async () => {
-    dispatch(cancelSubscription({ id: user?.subscription?.subscriptionId, shopId })).then(data => dispatch(getUserByShopId(shopId)))
+    dispatch(cancelSubscription({ id: user?.subscription?.subscriptionId, shopId })).then(data => { console.log('data', data); dispatch(getUserByShopId(shopId)) })
     setActive(false);
     setIsCancelPlan(false);
   }
 
-
+  console.log('user', user)
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -168,12 +170,11 @@ function Pricingplans() {
                   <thead>
                     <tr>
                       <th scope="col"></th>
-                      <th scope="col">
-                        <p>FREE</p>
-                      </th>
-                      <th scope="col">
-                        <p>PREMIUM</p>
-                      </th>
+                      {subscriptionData?.map(item => (
+                        <th scope="col">
+                          <p>{item?.subscriptionName.toUpperCase()}</p>
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -182,118 +183,91 @@ function Pricingplans() {
                         <span>Price</span>
                       </div>
                     </th>
-                    <td className={styles.pricingRow}>
-                      {/* <div className={styles.badge}>
-                        <Badge status="success">
-                          <span>
-                            <span>-33% lifetime off</span>
-                          </span>
-                        </Badge>
-                      </div> */}
-                      {/* <div className={styles.trialDays}></div> */}
-                      <div className={styles.monthlyPrice}>
-                        <span className={styles.monthlyPriceCur}>USD</span>
-                        <span className={styles.priceValue}>
-                          <span className={styles.price}>
-                            <span>
-                              {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$0</span>
+                    {subscriptionData?.map(item => (
+                      <td className={styles.pricingRow}>
+                        {/* <div className={styles.trialDays}>3 days trial</div> */}
+                        <div className={styles.monthlyPrice}>
+                          <span className={styles.monthlyPriceCur}>{item.curruncyType}</span>
+                          <span className={styles.priceValue}>
+                            <span className={styles.price}>
+                              <span>
+                                {/* <sub className={styles.dollar}>$</sub> */}
+                                <span className={styles.rupees}>{item.price}</span>
+                              </span>
                             </span>
                           </span>
-                        </span>
-                        <span className={styles.month}>
-                          /<span>month</span>
-                        </span>
-                      </div>
+                          <span className={styles.month}>
+                            /<span>mo</span>
+                          </span>
+                        </div>
+                        {item?.subscriptionName === SUBSCRIPTION_TYPES.FREE && <Button
+                          primary
+                          disabled={
+                            user?.subscriptionName === SUBSCRIPTION_TYPES.FREE || (user && user?.subscription?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) || user?.subscription?.cancel_at_period_end
+                          }
+                          onClick={handleOpen}
+                          fullWidth
+                        >
+                          <span>
+                            <span>
+                              <span>
+                                {user?.subscriptionName ===
+                                  SUBSCRIPTION_TYPES.FREE
+                                  ? PLAN_TEXT.ACTIVE_PLAN
+                                  : PLAN_TEXT.CHOOSE_PLAN}
+                              </span>
+                            </span>
+                          </span>
+                        </Button>}
 
-                      <Button
-                        primary
-                        disabled={
-                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE || (user && user?.subscription?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) || user?.subscription?.cancel_at_period_end
-                        }
-                        onClick={handleOpen}
-                        fullWidth
-                      >
-                        <span>
+                        {item?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM && <>{user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM ? <Button
+                          disabled={
+                            user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                          }
+                          loading={!user}
+                          primary
+                          fullWidth
+                          onClick={() =>
+                            handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
+                          }
+                        >
                           <span>
                             <span>
-                              {user?.subscriptionName ===
-                                SUBSCRIPTION_TYPES.FREE
-                                ? PLAN_TEXT.ACTIVE_PLAN
-                                : PLAN_TEXT.CHOOSE_PLAN}
+                              <span>
+                                {user?.subscriptionName ===
+                                  SUBSCRIPTION_TYPES.PREMIUM
+                                  ? PLAN_TEXT.CURRENT_PLAN
+                                  : PLAN_TEXT.UPGRADE_PLAN}
+                              </span>
                             </span>
                           </span>
-                        </span>
-                      </Button>
-                    </td>
-                    <td className={styles.pricingRow}>
-                      {/* <div className={styles.trialDays}>3 days trial</div> */}
-                      {/* <div className={styles.pmuBadge}>
-                        <Badge status="success">
-                          <span>
-                            <span>-33% lifetime off</span>
-                          </span>
-                        </Badge>
-                      </div> */}
-                      <div className={styles.monthlyPrice}>
-                        <span className={styles.monthlyPriceCur}>USD</span>
-                        <span className={styles.priceValue}>
-                          <span className={styles.price}>
-                            <span>
-                              {/* <sub className={styles.dollar}>$</sub> */}
-                              <span className={styles.rupees}>$6.67</span>
-                            </span>
-                          </span>
-                        </span>
-                        <span className={styles.month}>
-                          /<span>month</span>
-                        </span>
-                      </div>
-                      {user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM ? <Button
-                        disabled={
-                          user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
-                        }
-                        loading={!user}
-                        primary
-                        fullWidth
-                        onClick={() =>
-                          handleCreateSubscription(SUBSCRIPTION_TYPES.PREMIUM)
-                        }
-                      >
-                        <span>
-                          <span>
-                            <span>
-                              {user?.subscriptionName ===
-                                SUBSCRIPTION_TYPES.PREMIUM
-                                ? PLAN_TEXT.CURRENT_PLAN
-                                : PLAN_TEXT.UPGRADE_PLAN}
-                            </span>
-                          </span>
-                        </span>
-                      </Button> : <div className="d-grid gap-2" style={{ marginTop: "5px" }}>
-                        <BootstrapButton variant="danger" onClick={handleOpen} disabled={user?.subscription?.cancel_at_period_end} >
-                          <span>
-                            <span>
-                              <span>{PLAN_TEXT.CANCEL_PLAN}</span>
-                            </span>
-                          </span>
-                        </BootstrapButton>
-                      </div>}
-                      {/* {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
-                        <div className="d-grid gap-2" style={{ marginTop: "5px" }}>
-                          <BootstrapButton variant="danger" fullWidth onClick={handleOpen} disabled={user?.subscription?.cancel_at_period_end} >
+                        </Button> : <div className="d-grid gap-2" style={{ marginTop: "5px" }}>
+                          <BootstrapButton variant="danger" onClick={handleOpen} disabled={user?.subscription?.cancel_at_period_end} >
                             <span>
                               <span>
                                 <span>{PLAN_TEXT.CANCEL_PLAN}</span>
                               </span>
                             </span>
                           </BootstrapButton>
-                        </div>
-                      ) : null} */}
-                      {/* <div className={styles.pmuBadge}>
-                        <span>7 days trial</span>
-                      </div> */}
-                    </td>
+                        </div>}</>}
+                        {/* <Button
+                          primary
+                          fullWidth
+                          onClick={() =>
+                            handleCreateSubscription(
+                              item?.subscriptionName, item?.stripePriceId
+                            )
+                          }
+                        >
+                          <span>
+                            <span>
+                              {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? <span> {PLAN_TEXT?.START_FREE_PLAN}</span> : <span> {PLAN_TEXT?.UPGRADE_PLAN}</span>}
+                            </span>
+                          </span>
+                        </Button> */}
+                      </td>
+                    ))}
+
                     {subscriptionData?.length > 0 &&
                       Object.keys(subscriptionData[0]?.features).map(
                         (featureKey) => (

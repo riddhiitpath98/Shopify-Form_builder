@@ -3,7 +3,9 @@ import {
   addShopData,
   cancelSubscription,
   getInvoice,
+  getPriceDetails,
   getUserByShopId,
+  updateUserSubscription,
 } from "../actions/allActions";
 
 const initialState = {
@@ -15,6 +17,12 @@ const initialState = {
     error: "",
     loading: false,
     success: false,
+  },
+  priceData: {
+    price: {},
+    error: "",
+    loading: false,
+    success: false
   },
   invoiceData: {
     data: [],
@@ -65,6 +73,33 @@ const userSlice = createSlice({
             subscription: {},
             error: action.payload,
             loading: false,
+          },
+        };
+      })
+      .addCase(getPriceDetails.pending, (state, action) => {
+        return {
+          ...state,
+          priceData: {
+            loading: true,
+          },
+        };
+      })
+      .addCase(getPriceDetails.fulfilled, (state, action) => {
+        return {
+          ...state,
+          priceData: {
+            price: action.payload,
+            success: true
+          },
+        };
+      })
+      .addCase(getPriceDetails.rejected, (state, action) => {
+        return {
+          ...state,
+          priceData: {
+            error: action.payload,
+            loading: false,
+            success: false
           },
         };
       })

@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
-import { SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
+import { SUBSCRIPTION_PRICE_ID, SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -15,10 +15,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./CardElement.css";
 import { useAppQuery } from "../../hooks";
-import { addShopData } from "../../redux/actions/allActions";
+import { addShopData, getPriceDetails } from "../../redux/actions/allActions";
 import IFrameLoader from "../../components/IFrameLoader";
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
+    console.log('priceId: ', priceId);
     const shopData = useAppQuery({ url: "/api/shop" });
     const subscriptionData = useSelector(
         (state) => state.subscription?.subscriptionData?.data
@@ -41,7 +42,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         country: "",
         city: "",
         state: "",
-        accept_TNC: ""
+        accept_TNC: "",
     };
     const [billingAddress, setBillingAddress] = useState({
         ...initialState, accept_TNC: false
@@ -55,6 +56,8 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
 
     const shopId = useSelector((state) => state.shopId.shopId);
     const user = useSelector((state) => state?.user?.userData?.user);
+    const priceData = useSelector(state => state?.user?.priceData?.price);
+    console.log('priceData: ', priceData);
     const navigate = useNavigate();
     // collect data from the user
     const userData = useState({});
@@ -64,7 +67,9 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         // Fetch the initial list of countries
         const countryList = Country.getAllCountries();
         setCountries(countryList);
+        dispatch(getPriceDetails(priceId))
     }, []);
+
 
     // stripe items
     const stripe = useStripe();
@@ -123,6 +128,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
 
     const handleInputChange = (e) => {
         const { type, name, value, checked } = e.target;
+
         if (type === 'checkbox') {
             setErrorValues({ ...errorValues, [name]: validateTextField(name, checked) });
             setBillingAddress({
@@ -139,6 +145,151 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
         }
 
     };
+    // console.log('billingDetails', billingAddress)
+    // const handleSubmitSubscription = async (e) => {
+    //     e.preventDefault();
+    //     const errorMessages = {};
+    //     const { ...data } = billingAddress;
+    //     Object.keys(data).forEach((val) => {
+    //         const error = validateTextField(val, data[val]);
+    //         if (error) {
+    //             errorMessages[val] = error;
+    //         }
+    //     });
+    //     if (Object.keys(errorMessages).length) {
+    //         setErrorValues(errorMessages);
+    //         // return;
+    //     }
+
+    //     try {
+    //         // create a payment method
+    //         if (!Object.values(billingAddress).includes("")) {
+    //             setPaymentLoading(true);
+    //             const paymentMethod = await stripe?.createPaymentMethod({
+    //                 type: "card",
+    //                 card: elements?.getElement(CardElement),
+    //                 billing_details: {
+    //                     name: billingAddress?.cardholderName,
+    //                     email: billingAddress?.email,
+    //                     address: {
+    //                         city: billingAddress?.city,
+    //                         line1: billingAddress?.addressLine1,
+    //                         line2: billingAddress?.addressLine2,
+    //                         country: billingAddress?.country,
+    //                         state: billingAddress?.state,
+    //                     },
+    //                 },
+    //             });
+
+    //             // call the backend to create subscription
+    //             const responseSetupIntent = await axios.post("/payment/setup-intent", {
+    //                 paymentMethod: paymentMethod?.paymentMethod?.id,
+    //                 shopId,
+    //                 name: billingAddress?.cardholderName,
+    //                 email: billingAddress?.email,
+    //                 priceId: priceId,
+    //                 customerId: user?.subscription?.customerId || null,
+    //             });
+    //             console.log('first')
+
+    //             // const { setupIntent, error } = await stripe.confirmCardSetup(responseSetupIntent?.data?.clientSecret, {
+    //             //     payment_method: {
+    //             //         card: elements?.getElement(CardElement),
+    //             //         // Additional card details if needed
+    //             //     },
+    //             // });
+    //             // console.log('setupIntent, error: ', setupIntent);
+
+    //             // const { paymentIntent, err } = await stripe.confirmCardPayment(
+    //             //     responseSetupIntent?.data?.clientSecret,
+    //             //     {
+    //             //         payment_method: {
+    //             //             card: elements?.getElement(CardElement),
+    //             //             // Additional card details if needed
+    //             //         },
+    //             //     }
+    //             // );
+
+    //             // console.log(paymentIntent, "++++");
+    //             if (setupIntent) {
+    //                 try {
+    //                     console.log("object");
+    //                     const responseAttachPayment = await axios.post('/payment/attach-payment-method', {
+    //                         payment_method: setupIntent?.payment_method,
+    //                         priceId,
+    //                         customer_id: responseSetupIntent?.data?.customerId,  // Replace with the actual customer ID
+    //                     }, {
+    //                         headers: {
+    //                             'Content-Type': 'application/json',
+    //                         },
+    //                     });
+
+    //                     // Handle the response as needed
+    //                     console.log(responseAttachPayment.data);
+    //                 } catch (error) {
+    //                     // Handle errors
+    //                     console.error(error);
+    //                 }
+    //             }
+    //             // console.log('setupIntent, error', setupIntent, error)
+    //             // await stripe?.confirmCardPayment(
+    //             //     response?.data?.clientSecret
+    //             // ).then(res => {
+    //             //     if (res?.paymentIntent?.status === 'succeeded') {
+    //             //         const {
+    //             //             id,
+    //             //             name,
+    //             //             email,
+    //             //             domain,
+    //             //             city,
+    //             //             country,
+    //             //             country_code,
+    //             //             customer_email,
+    //             //             shop_owner,
+    //             //             myshopify_domain,
+    //             //             phone,
+    //             //         } = shopData.data;
+    //             //         let user = {
+    //             //             shopId: id,
+    //             //             shopName: name,
+    //             //             email,
+    //             //             domain: myshopify_domain,
+    //             //             city,
+    //             //             country,
+    //             //             countryCode: country_code,
+    //             //             customer_email,
+    //             //             shop_owner,
+    //             //             myshopify_domain,
+    //             //             phone,
+    //             //             acceptTermCondition: billingAddress?.accept_TNC,
+    //             //             ssId: response?.data?.subscriptionId
+    //             //         };
+    //             //         subscriptionData.filter(({ subscriptionName, _id }, index) => {
+    //             //             if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+    //             //                 user = { ...user, subscriptionName, subscriptionId: _id };
+    //             //             }
+    //             //         });
+    //             //         dispatch(addShopData(user)).then((data) => {
+    //             //             if (data?.payload) {
+    //             //                 setShowCardElement(false);
+    //             //                 toggleModal();
+    //             //                 setBillingAddress({})
+    //             //                 setErrorValues({});
+    //             //                 setPaymentLoading(false)
+    //             //                 toast.success("premium subscription Added", toastConfig);
+    //             //                 navigate("/dashboard", { replace: true });
+    //             //             }
+    //             //         });
+    //             //     }
+    //             //     if (res?.error) {
+    //             //         toast.error(res.error.message, toastConfig);
+    //             //     }
+    //             // });
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
     const handleSubmitSubscription = async (e) => {
         e.preventDefault();
         const errorMessages = {};
@@ -173,67 +324,192 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         },
                     },
                 });
-
+                console.log('paymentMethod', paymentMethod)
                 // call the backend to create subscription
                 const response = await axios.post("/payment/create-subscription", {
                     paymentMethod: paymentMethod?.paymentMethod?.id,
                     name: billingAddress?.cardholderName,
                     email: billingAddress?.email,
+                    address: {
+                        city: billingAddress?.city,
+                        line1: billingAddress?.addressLine1,
+                        line2: billingAddress?.addressLine2,
+                        country: billingAddress?.country,
+                        state: billingAddress?.state,
+                    },
                     priceId: priceId,
                     shopId,
                     customerId: user?.subscription?.customerId || null,
                 });
+                console.log('response', response)
+                if (response.data.setupIntent.status === 'requires_action') {
 
-                await stripe?.confirmCardPayment(
-                    response?.data?.clientSecret
-                ).then(res => {
-                    if (res?.paymentIntent?.status === 'succeeded') {
-                        const {
-                            id,
-                            name,
-                            email,
-                            domain,
-                            city,
-                            country,
-                            customer_email,
-                            shop_owner,
-                            myshopify_domain,
-                            phone,
-                        } = shopData.data;
-                        let user = {
-                            shopId: id,
-                            shopName: name,
-                            email,
-                            domain: myshopify_domain,
-                            city,
-                            country,
-                            customer_email,
-                            shop_owner,
-                            myshopify_domain,
-                            phone,
-                            acceptTermCondition: billingAddress?.accept_TNC
-                        };
-                        subscriptionData.filter(({ subscriptionName, _id }, index) => {
-                            if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
-                                user = { ...user, subscriptionName, subscriptionId: _id };
-                            }
-                        });
-                        dispatch(addShopData(user)).then((data) => {
-                            if (data?.payload) {
-                                setShowCardElement(false);
-                                toggleModal();
-                                setBillingAddress({})
-                                setErrorValues({});
-                                setPaymentLoading(false)
-                                toast.success("premium subscription Added", toastConfig);
-                                navigate("/dashboard", { replace: true });
-                            }
-                        });
+                    const setupCard = await stripe?.confirmCardSetup(
+                        response?.data?.clientSecret, {
+
+                        payment_method: paymentMethod?.paymentMethod?.id,
+
                     }
-                    if (res?.error) {
-                        toast.error(res.error.message, toastConfig);
-                    }
-                });
+                    )
+                    console.log('setupCard', setupCard)
+                    // Display 3D Secure authentication modal to the user
+                    // const { error: confirmationError } = await stripe.handleCardAction(response.data.paymentIntent.client_secret);
+                    // if (confirmationError) {
+                    //     // Handle confirmation error
+                    //     console.error('Error confirming 3D Secure:', confirmationError);
+                    //     return res.status(500).json({ error: 'Internal Server Error' });
+                    // }
+                    const res = await axios.post("/payment/create-customer", {
+                        paymentMethod: paymentMethod?.paymentMethod?.id,
+                        name: billingAddress?.cardholderName,
+                        email: billingAddress?.email,
+                        address: {
+                            city: billingAddress?.city,
+                            line1: billingAddress?.addressLine1,
+                            line2: billingAddress?.addressLine2,
+                            country: billingAddress?.country,
+                            state: billingAddress?.state,
+                        },
+                        priceId: priceId,
+                        shopId,
+                        customerId: user?.subscription?.customerId || null,
+                        clientSecret: response?.data?.paymentIntent?.client_secret
+                    })
+
+                    console.log('response', res)
+                    await stripe?.confirmCardPayment(
+                        res?.data?.clientSecret
+                    ).then(res => {
+                        console.log('res: ', res);
+                        if (res?.paymentIntent?.status === 'succeeded') {
+                            console.log("object");
+                            const {
+                                id,
+                                name,
+                                email,
+                                domain,
+                                city,
+                                country,
+                                country_code,
+                                customer_email,
+                                shop_owner,
+                                myshopify_domain,
+                                phone,
+                            } = shopData.data;
+                            let user = {
+                                shopId: id,
+                                shopName: name,
+                                email,
+                                domain: myshopify_domain,
+                                city,
+                                country,
+                                countryCode: country_code,
+                                customer_email,
+                                shop_owner,
+                                myshopify_domain,
+                                phone,
+                                acceptTermCondition: billingAddress?.accept_TNC,
+                                ssId: response?.data?.subscriptionId
+                            };
+                            subscriptionData.filter(({ subscriptionName, _id }, index) => {
+                                if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+                                    user = { ...user, subscriptionName, subscriptionId: _id };
+                                }
+                            });
+                            dispatch(addShopData(user)).then((data) => {
+                                if (data?.payload) {
+                                    setShowCardElement(false);
+                                    toggleModal();
+                                    setBillingAddress({})
+                                    setErrorValues({});
+                                    setPaymentLoading(false)
+                                    toast.success("premium subscription Added", toastConfig);
+                                    navigate("/dashboard", { replace: true });
+                                }
+                            });
+                        }
+                        if (res?.error) {
+                            toast.error(res.error.message, toastConfig);
+                        }
+                    });
+                    // await stripe.confirmCardPayment(
+                    //     response.data.paymentIntent.client_secret,
+                    //     {
+                    //         payment_method: {
+                    //             card: elements?.getElement(CardElement),
+                    //             // Additional card details if needed
+                    //         },
+                    //     }
+                    // ).then(async res => {
+                    //     console.log('res: ', res);
+                    //     if (res?.paymentIntent?.status === 'succeeded') {
+                    //         const response = await axios.post("/payment/create-customer", {
+                    //             paymentMethod: paymentMethod?.paymentMethod?.id,
+                    //             name: billingAddress?.cardholderName,
+                    //             email: billingAddress?.email,
+                    //             address: {
+                    //                 city: billingAddress?.city,
+                    //                 line1: billingAddress?.addressLine1,
+                    //                 line2: billingAddress?.addressLine2,
+                    //                 country: billingAddress?.country,
+                    //                 state: billingAddress?.state,
+                    //             },
+                    //             priceId: priceId,
+                    //             shopId,
+                    //             customerId: user?.subscription?.customerId || null,
+                    //         })
+                    //         const {
+                    //             id,
+                    //             name,
+                    //             email,
+                    //             domain,
+                    //             city,
+                    //             country,
+                    //             country_code,
+                    //             customer_email,
+                    //             shop_owner,
+                    //             myshopify_domain,
+                    //             phone,
+                    //         } = shopData.data;
+                    //         let user = {
+                    //             shopId: id,
+                    //             shopName: name,
+                    //             email,
+                    //             domain: myshopify_domain,
+                    //             city,
+                    //             country,
+                    //             countryCode: country_code,
+                    //             customer_email,
+                    //             shop_owner,
+                    //             myshopify_domain,
+                    //             phone,
+                    //             acceptTermCondition: billingAddress?.accept_TNC,
+                    //             ssId: response?.data?.subscriptionId
+                    //         };
+                    //         subscriptionData.filter(({ subscriptionName, _id }, index) => {
+                    //             if (subscriptionName === SUBSCRIPTION_TYPES.PREMIUM) {
+                    //                 user = { ...user, subscriptionName, subscriptionId: _id };
+                    //             }
+                    //         });
+                    //         dispatch(addShopData(user)).then((data) => {
+                    //             if (data?.payload) {
+                    //                 setShowCardElement(false);
+                    //                 toggleModal();
+                    //                 setBillingAddress({})
+                    //                 setErrorValues({});
+                    //                 setPaymentLoading(false)
+                    //                 toast.success("premium subscription Added", toastConfig);
+                    //                 navigate("/dashboard", { replace: true });
+                    //             }
+                    //         });
+                    //     }
+                    //     if (res?.error) {
+                    //         toast.error(res.error.message, toastConfig);
+                    //     }
+                    // });
+                }
+
+
             }
         } catch (error) {
             console.log(error);
@@ -390,6 +666,26 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     </Form.Control>
                     <small className="text-danger">{errorValues?.city}</small>
                 </Form.Group>
+                {/* <Form.Group className="labelName" as={Col} controlId="formGridCity">
+                    <Form.Label className="labelName">Payment</Form.Label>
+                    <Form.Control
+                        as="select"
+                        name="priceId"
+                        value={billingAddress?.priceId}
+                        custom
+                        onChange={(e) => handleInputChange(e)}
+                    >
+                        <option value="" disabled selected>
+                            Select Payment Type
+                        </option>
+                        {SUBSCRIPTION_PRICE_ID?.map((option) => (
+                            <option key={option.label} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </Form.Control>
+                    <small className="text-danger">{errorValues?.city}</small>
+                </Form.Group> */}
             </Row>
             <Row>
                 <Form.Group as={Col} controlId="formGridCheckbox">
@@ -409,7 +705,7 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     {paymentLoading ? (
                         <Spinner animation="border" size="sm" />
                     ) : (
-                        <span>Pay $6.67</span>
+                        <span>Pay {priceData && priceData?.unit_amount / 100}{priceData && priceData?.currency == "inr" ? "₹" : "$"}</span>
                     )}
 
                 </Button>
