@@ -6,13 +6,15 @@ import ExitIframe from "./pages/ExitIframe";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSubscription } from "./redux/actions/allActions";
+import { useAppQuery } from "./hooks";
 
 export default function Routing({ ...props }) {
-  const shopId = useSelector((state) => state.shopId.shopId);
+  const shop = useAppQuery({ url: '/api/shop' })
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllSubscription(shopId))
-  }, [dispatch])
+    if (shop?.isSuccess)
+      dispatch(getAllSubscription({ country: shop?.data?.country, countryCode: shop?.data?.country_code, shopId: shop?.data?.id }))
+  }, [dispatch, shop.isSuccess])
 
   return (
     <Routes>

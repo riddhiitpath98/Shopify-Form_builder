@@ -3,15 +3,16 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../constant";
 import { concat } from "../../utils/function";
-axios.defaults.baseURL = "https://localhost:3008/api";
+// axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
+axios.defaults.baseURL = "https://192.168.1.213:3008/api" || "https://shopifyappapi.project-demo.info:3008/api";
 
 // ====================================== Store data API started =========================================
 
 export const addShopData = createAsyncThunk(
   "shop/addShopData",
-  async (shopData, { rejectWithValue, dispatch }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.post("/user", shopData);
+      const response = await axios.post(`/user`, data);
       return response.data.data;
     } catch (error) {
       toast.error(error?.response?.message, toastConfig);
@@ -31,6 +32,28 @@ export const getUserByShopId = createAsyncThunk(
     }
   }
 );
+
+export const getPriceDetails = createAsyncThunk("/shop/getPriceDetails", async (id, { rejectWithValue, dispatch }) => {
+  console.log('id: ', id);
+  try {
+    const response = await axios.get(`/payment/get-price-details/${id}`);
+    console.log('response', response)
+    return response.data.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+
+})
+
+export const updateUserSubscription = createAsyncThunk("/shop/updateUserSubscription", async (data, { rejectWithValue, dispatch }) => {
+  console.log('data: ', data);
+  try {
+    const response = await axios.get(`/user/update-subscription?shopId=${data?.shopId}&SSId=${data.SSId}&subscriptionId=${data.subscriptionId}`);
+    return response.data.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
 
 export const cancelSubscription = createAsyncThunk(
   "shop/cancelSubscription",
@@ -588,9 +611,9 @@ export const createRecaptchaSettings = createAsyncThunk(
 // =====================subscription api ===========================
 export const getAllSubscription = createAsyncThunk(
   "subscription/getAllSubscription",
-  async (shopId) => {
+  async (data) => {
     try {
-      const response = await axios.get(`/subscriptions`);
+      const response = await axios.get(`/subscriptions?shopId=${data.shopId}&code=${data?.countryCode}&country=${data?.country}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

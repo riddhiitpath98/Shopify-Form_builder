@@ -15,12 +15,16 @@ import { SUBSCRIPTION_TYPES, handleRecurringChargeVal } from "../../constant";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import {
+
+
+} from '@stripe/stripe-js';
 import StripeCardPayment from "../../pages/StripeCardPayment";
 import ElementListBanner from "../ElementListBanner";
 import axios from "axios";
 
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
+  const app = useAppBridge();
   const location = useLocation();
   const [showCardElement, setShowCardElement] = useState(false);
   const hideFooter =
@@ -33,7 +37,6 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const user = useSelector(state => state.user.userData?.user)
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
-  const app = useAppBridge();
 
   useEffect(() => {
     if (shop.isSuccess) {
@@ -52,11 +55,11 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
     }
   }, [dispatch, shop?.isSuccess])
 
-  
+
   useEffect(() => {
-    app.getState().then(state => 
-      dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data)=> handleRecurringChargeVal(data?.payload))
-  },[])
+    app.getState().then(state =>
+      dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data) => handleRecurringChargeVal(data?.payload))
+  }, [])
 
   const toggleModal = () => {
     setIsShowPlan(false);

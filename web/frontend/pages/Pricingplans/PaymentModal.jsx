@@ -5,6 +5,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Modal } from '@shopify/polaris';
 const stripePromise = loadStripe("pk_live_IGCZ91wblgKajj7dxA8xci0E");
 
+
+// const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
+
 const PaymentModal = ({ active, priceId, toggleModal, setShowCardElement }) => {
     return (
         <Modal

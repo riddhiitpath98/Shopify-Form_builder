@@ -51,9 +51,9 @@ const BillingHistory = () => {
   const { selectedResources, allResourcesSelected, handleSelectionChange } =
     useIndexResourceState(recurringCharges?.data);
 
-  useEffect(() => {
-    dispatch(getInvoice({ id: user?.subscription?.customerId, priceId: PLAN_DETAILS.PREMIUM, shopId }))
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getInvoice({ id: user?.subscription?.customerId, priceId: PLAN_DETAILS.PREMIUM, shopId }))
+  // }, [dispatch]);
 
   //   useEffect(() => {
   //     dispatch(
