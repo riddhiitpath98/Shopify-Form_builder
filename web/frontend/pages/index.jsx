@@ -187,6 +187,12 @@ export const Tabs = [
     path: "/api-settings",
   },
   {
+    id: "anyAPILogs",
+    content: "Logs",
+    icon: Icons.submission,
+    path: "/logs",
+  },
+  {
     id: "settings",
     content: "Settings",
     icon: Icons.settings,
@@ -197,12 +203,6 @@ export const Tabs = [
     content: "Plans",
     icon: Icons.plans,
     path: "/plans",
-  },
-  {
-    id: "anyAPILogs",
-    content: "Logs",
-    icon: Icons.submission,
-    path: "/logs",
   },
   
   // {
