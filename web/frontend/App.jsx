@@ -40,20 +40,20 @@ export default function App() {
                   destination: "/submissions",
                 },
                 {
-                  label: "Settings",
-                  destination: "/settings",
-                },
-                {
-                  label: "Pricing Plans",
-                  destination: "/plans",
+                  label: "Any API integration",
+                  destination: "/api-settings",
                 },
                 {
                   label: "Logs",
                   destination: "/logs",
                 },
                 {
-                  label: "Any API integration",
-                  destination: "/api-settings",
+                  label: "Settings",
+                  destination: "/settings",
+                },
+                {
+                  label: "Pricing Plans",
+                  destination: "/plans",
                 },
                 // {
                 //   label: "Billing History",

@@ -136,20 +136,20 @@ export const navigation = [
     destination: "/submissions",
   },
   {
-    label: "Settings",
-    destination: "/settings",
-  },
-  {
-    label: "Pricing Plans",
-    destination: "/plans",
+    label: "All API",
+    destination: "/api-settings",
   },
   {
     label: "Logs",
     destination: "/logs",
   },
   {
-    label: "All API",
-    destination: "/api-settings",
+    label: "Settings",
+    destination: "/settings",
+  },
+  {
+    label: "Pricing Plans",
+    destination: "/plans",
   },
   // {
   //   label: "Billing History",
