@@ -10,9 +10,7 @@ import {
   handleRecurringChargeVal,
 } from "../../constant";
 import { useNavigate } from "react-router-dom";
-import {
-  addShopData,
-} from "../../redux/actions/allActions";
+import { addShopData } from "../../redux/actions/allActions";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { addShopId } from "../../redux/reducers/appIdSlice";
 import { loadStripe } from "@stripe/stripe-js";
@@ -20,9 +18,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
 import axios from "axios";
 import { Redirect } from "@shopify/app-bridge/actions";
-const stripePromise = loadStripe(
-  "pk_live_IGCZ91wblgKajj7dxA8xci0E"
-);
+const stripePromise = loadStripe("pk_live_IGCZ91wblgKajj7dxA8xci0E");
 
 // const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
 
@@ -31,7 +27,7 @@ export default function PlanModal({
   toggleModal,
   shopData,
   showCardElement,
-  setShowCardElement
+  setShowCardElement,
 }) {
   const app = useAppBridge();
   const navigate = useNavigate();
@@ -41,7 +37,7 @@ export default function PlanModal({
     (state) => state.subscription?.subscriptionData?.data
   );
   const appName = useSelector((state) => state?.shopId?.appName);
-  const user = useSelector(state => state?.user?.userData?.user);
+  const user = useSelector((state) => state?.user?.userData?.user);
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
@@ -100,7 +96,6 @@ export default function PlanModal({
           navigate("/dashboard", { replace: true });
         }
       });
-
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       const {
         id,
@@ -129,7 +124,7 @@ export default function PlanModal({
         myshopify_domain,
         phone,
         subscriptionId: subscriptionData[0].id,
-        subscriptionName: subscriptionData[0].subscriptionName
+        subscriptionName: subscriptionData[0].subscriptionName,
       };
 
       subscriptionData.filter(({ subscriptionName, _id }, index) => {
@@ -137,15 +132,19 @@ export default function PlanModal({
           user = { ...user, subscriptionName, subscriptionId: _id };
         }
       });
-      let recurring = handleRecurringChargeVal(appName, shopData)
-      const sessionData = { priceId: PLAN_DETAILS?.PREMIUM_USD, plan, successUrl: recurring?.premium_subscription?.return_url, user }
-      await axios.post("/payment/create-session-checkout", sessionData).then(res => {
-        const redirect = Redirect.create(app);
-        redirect.dispatch(
-          Redirect.Action.REMOTE,
-          res?.data?.redirectUrl
-        );
-      })
+      let recurring = handleRecurringChargeVal(appName, shopData);
+      const sessionData = {
+        priceId: PLAN_DETAILS?.PREMIUM_USD,
+        plan,
+        successUrl: recurring?.premium_subscription?.return_url,
+        user,
+      };
+      await axios
+        .post("/payment/create-session-checkout", sessionData)
+        .then((res) => {
+          const redirect = Redirect.create(app);
+          redirect.dispatch(Redirect.Action.REMOTE, res?.data?.redirectUrl);
+        });
     }
   };
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
@@ -179,10 +178,14 @@ export default function PlanModal({
                   <div className={styles.gridItem}>
                     <div className={styles.boxHeading}>
                       <h4
-                        className={`${styles.boxHeadingText} ${!Object?.keys(user).length && user?.subscriptionName !== SUBSCRIPTION_TYPES.PREMIUM || user === undefined
-                          ? styles.freeHeader
-                          : styles.premiumHeader
-                          }`}
+                        className={`${styles.boxHeadingText} ${
+                          (!Object?.keys(user).length &&
+                            user?.subscriptionName !==
+                              SUBSCRIPTION_TYPES.PREMIUM) ||
+                          user === undefined
+                            ? styles.freeHeader
+                            : styles.premiumHeader
+                        }`}
                       >
                         {PLAN_TEXT.CURRENT_PLAN}
                       </h4>
@@ -191,7 +194,7 @@ export default function PlanModal({
                       <thead>
                         <tr>
                           <th scope="col"></th>
-                          {subscriptionData?.map(item => (
+                          {subscriptionData?.map((item) => (
                             <th scope="col">
                               <p>{item?.subscriptionName.toUpperCase()}</p>
                             </th>
@@ -204,16 +207,20 @@ export default function PlanModal({
                             <span>Price</span>
                           </div>
                         </th>
-                        {subscriptionData?.map(item => (
+                        {subscriptionData?.map((item) => (
                           <td className={styles.pricingRow}>
                             {/* <div className={styles.trialDays}>3 days trial</div> */}
                             <div className={styles.monthlyPrice}>
-                              <span className={styles.monthlyPriceCur}>{item.curruncyType}</span>
+                              <span className={styles.monthlyPriceCur}>
+                                {item.curruncyType}
+                              </span>
                               <span className={styles.priceValue}>
                                 <span className={styles.price}>
                                   <span>
                                     {/* <sub className={styles.dollar}>$</sub> */}
-                                    <span className={styles.rupees}>{item.price}</span>
+                                    <span className={styles.rupees}>
+                                      {item.price}
+                                    </span>
                                   </span>
                                 </span>
                               </span>
@@ -221,24 +228,46 @@ export default function PlanModal({
                                 /<span>mo</span>
                               </span>
                             </div>
-                            <Button
-                              primary
-                              fullWidth
-                              onClick={() =>
-                                handleCreateSubscription(
-                                  item?.subscriptionName, item?.stripePriceId
-                                )
-                              }
+                            <div
+                              className="d-grid gap-2"
+                              // style={{ height: "36px" }}
                             >
-                              <span>
+                              <BootstrapButton
+                                variant="primary"
+                                style={{ height: "36px" }}
+                                // primary
+                                // fullWidth
+                                onClick={() =>
+                                  handleCreateSubscription(
+                                    item?.subscriptionName,
+                                    item?.stripePriceId
+                                  )
+                                }
+                              >
                                 <span>
-                                  {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? <span> {PLAN_TEXT?.START_FREE_PLAN}</span> : <span> {PLAN_TEXT?.UPGRADE_PLAN}</span>}
+                                  <span>
+                                    {item.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.FREE ? (
+                                      <span> {PLAN_TEXT?.START_FREE_PLAN}</span>
+                                    ) : (
+                                      <span
+                                        style={{
+                                          fontFamily:
+                                            "-apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+                                          fontSize: "0.935rem",
+                                          fontWeight: 500,
+                                        }}
+                                      >
+                                        {" "}
+                                        {PLAN_TEXT?.UPGRADE_PLAN}
+                                      </span>
+                                    )}
+                                  </span>
                                 </span>
-                              </span>
-                            </Button>
+                              </BootstrapButton>
+                            </div>
                           </td>
                         ))}
-
 
                         {subscriptionData.length > 0 &&
                           Object.keys(subscriptionData[0]?.features).map(
@@ -279,14 +308,14 @@ export default function PlanModal({
                                     <td>
                                       {renderStatusIcon(
                                         subscriptionData[0].features[
-                                        featureKey
+                                          featureKey
                                         ][innerKey]
                                       )}
                                     </td>
                                     <td>
                                       {renderStatusIcon(
                                         subscriptionData[1].features[
-                                        featureKey
+                                          featureKey
                                         ][innerKey]
                                       )}
                                     </td>
@@ -302,9 +331,8 @@ export default function PlanModal({
               </LegacyCard.Section>
             </LegacyCard>
           </div>
-        )
-        }
-      </Modal >
-    </div >
+        )}
+      </Modal>
+    </div>
   );
 }
