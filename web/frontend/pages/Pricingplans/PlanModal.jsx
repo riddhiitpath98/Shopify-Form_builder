@@ -29,7 +29,6 @@ const stripePromise = loadStripe(
 export default function PlanModal({
   active,
   toggleModal,
-  isSuccess,
   shopData,
   showCardElement,
   setShowCardElement
@@ -38,7 +37,6 @@ export default function PlanModal({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [priceId, setPriceId] = useState();
-  const shopId = useSelector((state) => state.shopId.shopId);
   const subscriptionData = useSelector(
     (state) => state.subscription?.subscriptionData?.data
   );
@@ -140,7 +138,6 @@ export default function PlanModal({
         }
       });
       let recurring = handleRecurringChargeVal(appName, shopData)
-
       const sessionData = { priceId: PLAN_DETAILS?.PREMIUM_USD, plan, successUrl: recurring?.premium_subscription?.return_url, user }
       await axios.post("/payment/create-session-checkout", sessionData).then(res => {
         const redirect = Redirect.create(app);
@@ -149,10 +146,6 @@ export default function PlanModal({
           res?.data?.redirectUrl
         );
       })
-
-
-      // setShowCardElement(true);
-      // setPriceId(PLAN_DETAILS.PREMIUM_USD);
     }
   };
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
