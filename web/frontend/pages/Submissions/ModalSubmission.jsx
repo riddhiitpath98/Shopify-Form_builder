@@ -31,7 +31,6 @@ const ModalSubmission = ({
     return labelMap;
   }, []);
 
-  console.log('fieldLabel', fieldLabel)
   return (
     <Modal
       instant

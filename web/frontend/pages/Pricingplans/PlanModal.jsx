@@ -140,13 +140,9 @@ export default function PlanModal({
         }
       });
       let recurring = handleRecurringChargeVal(appName, shopData)
-      console.log('recurringCharge: ', recurring);
-      console.log('user', user)
 
       const sessionData = { priceId: PLAN_DETAILS?.PREMIUM_USD, plan, successUrl: recurring?.premium_subscription?.return_url, user }
-      console.log('sessionData: ', sessionData);
       await axios.post("/payment/create-session-checkout", sessionData).then(res => {
-        console.log('res: ', res);
         const redirect = Redirect.create(app);
         redirect.dispatch(
           Redirect.Action.REMOTE,
@@ -159,7 +155,6 @@ export default function PlanModal({
       // setPriceId(PLAN_DETAILS.PREMIUM_USD);
     }
   };
-  console.log('priceId', priceId)
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");

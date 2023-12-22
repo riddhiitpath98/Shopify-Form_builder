@@ -19,7 +19,6 @@ import { addShopData, getPriceDetails } from "../../redux/actions/allActions";
 import IFrameLoader from "../../components/IFrameLoader";
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
-    console.log('priceId: ', priceId);
     const shopData = useAppQuery({ url: "/api/shop" });
     const subscriptionData = useSelector(
         (state) => state.subscription?.subscriptionData?.data
@@ -57,7 +56,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const shopId = useSelector((state) => state.shopId.shopId);
     const user = useSelector((state) => state?.user?.userData?.user);
     const priceData = useSelector(state => state?.user?.priceData?.price);
-    console.log('priceData: ', priceData);
     const navigate = useNavigate();
     // collect data from the user
     const userData = useState({});
@@ -324,7 +322,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                     },
                 });
 
-                console.log('paymentMethod', paymentMethod)
                 // call the backend to create subscription
                 const response = await axios.post("/payment/create-subscription", {
                     paymentMethod: paymentMethod?.paymentMethod?.id,
@@ -392,7 +389,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         toast.error(res.error.message, toastConfig);
                     }
                 });
-                console.log('response', response)
                 if (response.data.setupIntent.status === 'requires_action') {
 
                     const setupCard = await stripe?.confirmCardSetup(
@@ -402,7 +398,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
 
                     }
                     )
-                    console.log('setupCard', setupCard)
                     // Display 3D Secure authentication modal to the user
                     // const { error: confirmationError } = await stripe.handleCardAction(response.data.paymentIntent.client_secret);
                     // if (confirmationError) {
@@ -427,13 +422,10 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                         clientSecret: response?.data?.paymentIntent?.client_secret
                     })
 
-                    console.log('response', res)
                     await stripe?.confirmCardPayment(
                         res?.data?.clientSecret
                     ).then(res => {
-                        console.log('res: ', res);
                         if (res?.paymentIntent?.status === 'succeeded') {
-                            console.log("object");
                             const {
                                 id,
                                 name,

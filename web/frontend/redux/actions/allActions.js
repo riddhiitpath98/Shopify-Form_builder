@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../constant";
 import { concat } from "../../utils/function";
-// axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
-axios.defaults.baseURL = "https://192.168.1.213:3008/api" || "https://shopifyappapi.project-demo.info:3008/api";
+axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
+// axios.defaults.baseURL = "https://192.168.1.213:3008/api" || "https://shopifyappapi.project-demo.info:3008/api";
 
 // ====================================== Store data API started =========================================
 
@@ -34,10 +34,8 @@ export const getUserByShopId = createAsyncThunk(
 );
 
 export const getPriceDetails = createAsyncThunk("/shop/getPriceDetails", async (id, { rejectWithValue, dispatch }) => {
-  console.log('id: ', id);
   try {
     const response = await axios.get(`/payment/get-price-details/${id}`);
-    console.log('response', response)
     return response.data.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -46,7 +44,6 @@ export const getPriceDetails = createAsyncThunk("/shop/getPriceDetails", async (
 })
 
 export const updateUserSubscription = createAsyncThunk("/shop/updateUserSubscription", async (data, { rejectWithValue, dispatch }) => {
-  console.log('data: ', data);
   try {
     const response = await axios.get(`/user/update-subscription?shopId=${data?.shopId}&SSId=${data.SSId}&subscriptionId=${data.subscriptionId}`);
     return response.data.data;

@@ -18,7 +18,7 @@ import Stripe from "stripe";
 dotenv.config();
 
 const PORT = 3007;
-const STATIC_PATH = `${process.cwd()}/frontend`;
+const STATIC_PATH = `${process.cwd()}/frontend/dist`;
 
 const app = express();
 app.use(cors());

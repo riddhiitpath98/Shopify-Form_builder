@@ -213,7 +213,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setElementsValue({});
     setErrorValues({});
     setShowForm(false);
-    navigate("/all-api");
+    navigate("/api-settings");
   };
 
   const handleUpdate = () => {
@@ -236,12 +236,12 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setElementsValue({});
     setErrorValues({});
     setShowForm(false);
-    navigate("/all-api");
+    navigate("/api-settings");
   };
 
   const viewAPIList = () => {
     setShowForm(false);
-    navigate("/all-api");
+    navigate("/api-settings");
   };
 
   const handleForm = (event) => {
@@ -417,8 +417,8 @@ const AnyAPIIntegration = ({ isEdit }) => {
         <IFrameLoader
           open={iframeVisible}
           handleClose={handleIframeClose}
-          src="https://www.google.com?igu=1"
-          title="Example Iframe"
+          src="https://www.contactformtoapi.com/mapping-fields/"
+          title="Mapping Fields"
           width="1000"
           height="1000"
         />

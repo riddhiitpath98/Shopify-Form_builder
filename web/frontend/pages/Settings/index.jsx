@@ -352,8 +352,8 @@ function Settings() {
         <IFrameLoader
           open={iframeVisible}
           handleClose={handleIframeClose}
-          src="https://www.google.com?igu=1"
-          title="Example Iframe"
+          src="https://www.contactformtoapi.com/terms-of-service/"
+          title="Terms of Service"
           width="1000"
           height="1000"
         />

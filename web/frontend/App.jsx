@@ -53,12 +53,12 @@ export default function App() {
                 },
                 {
                   label: "Any API integration",
-                  destination: "/all-api",
+                  destination: "/api-settings",
                 },
-                {
-                  label: "Billing History",
-                  destination: "/billing-history",
-                },
+                // {
+                //   label: "Billing History",
+                //   destination: "/billing-history",
+                // },
                 {
                   label: "Contact Us",
                   destination: "/contact-us",

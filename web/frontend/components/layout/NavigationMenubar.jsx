@@ -29,9 +29,9 @@ function NavigationMenubar() {
                 to={path}
                 className={`${styles.menuLink} ${location?.pathname?.includes(path)
                   ? styles.active
-                  : (path === "/all-api" &&
+                  : (path === "/api-settings" &&
                     location.pathname === "/add-api") ||
-                    (path === "/all-api" && hasEditApi)
+                    (path === "/api-settings" && hasEditApi)
                     ? styles.active
                     : ""
                   }`}

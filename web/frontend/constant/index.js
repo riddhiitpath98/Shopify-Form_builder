@@ -512,16 +512,16 @@ export const handleRecurringChargeVal = (appName, shopData) => {
 }
 
 // live Ids
-// export const PLAN_DETAILS = {
-//   // PREMIUM_INR: "price_1OP0GqHZlJ4bphZxUuVXj8zj",
-//   PREMIUM_USD: "price_1ONZX0HZlJ4bphZxUjZs8hpl"
-// }
+export const PLAN_DETAILS = {
+  // PREMIUM_INR: "price_1OP0GqHZlJ4bphZxUuVXj8zj",
+  PREMIUM_USD: "price_1ONZX0HZlJ4bphZxUjZs8hpl"
+}
 
 // test mode
-export const PLAN_DETAILS = {
-  PREMIUM_INR: "price_1OOwJ9SEo6lSgy9nOUpZFhKl",
-  PREMIUM_USD: "price_1OPMKvSEo6lSgy9nLb12Xsn5"
-}
+// export const PLAN_DETAILS = {
+//   PREMIUM_INR: "price_1OOwJ9SEo6lSgy9nOUpZFhKl",
+//   PREMIUM_USD: "price_1OPMKvSEo6lSgy9nLb12Xsn5"
+// }
 
 export const SUBSCRIPTION_PRICE_ID = [
   { label: 'INR', value: 'price_1OOwJ9SEo6lSgy9nOUpZFhKl' },

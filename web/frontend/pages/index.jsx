@@ -149,12 +149,12 @@ export const navigation = [
   },
   {
     label: "All API",
-    destination: "/all-api",
+    destination: "/api-settings",
   },
-  {
-    label: "Billing History",
-    destination: "/billing-history",
-  },
+  // {
+  //   label: "Billing History",
+  //   destination: "/billing-history",
+  // },
   {
     label: "Contact Us",
     destination: "/contact-us"
@@ -181,6 +181,12 @@ export const Tabs = [
     path: "/submissions",
   },
   {
+    id: "anyAPI",
+    content: "API Settings",
+    icon: Icons.settings,
+    path: "/api-settings",
+  },
+  {
     id: "settings",
     content: "Settings",
     icon: Icons.settings,
@@ -198,18 +204,13 @@ export const Tabs = [
     icon: Icons.submission,
     path: "/logs",
   },
-  {
-    id: "anyAPI",
-    content: "All API",
-    icon: Icons.apiIntegrate,
-    path: "/all-api",
-  },
-  {
-    id: "billing-history",
-    content: "Billing History",
-    icon: Icons.apiIntegrate,
-    path: "/billing-history",
-  },
+  
+  // {
+  //   id: "billing-history",
+  //   content: "Billing History",
+  //   icon: Icons.apiIntegrate,
+  //   path: "/billing-history",
+  // },
   {
     id: "support",
     content: "Support",
@@ -268,30 +269,9 @@ const routes = [
     element: <Submissions />,
   },
   {
-    id: "settings",
-    name: "Settings",
-    path: "/settings",
-    exact: true,
-    element: <Settings />,
-  },
-  {
-    id: "plans",
-    name: "Plans",
-    path: "/plans",
-    exact: true,
-    element: <Pricingplans />,
-  },
-  {
-    id: "anyAPILogs",
-    name: "Logs",
-    path: "/logs",
-    exact: true,
-    element: <APILogs />,
-  },
-  {
     id: "allApi",
     name: "allAPI",
-    path: "/all-api",
+    path: "/api-settings",
     exact: true,
     element: <APISettingsList />,
   },
@@ -311,6 +291,27 @@ const routes = [
     element: <AnyAPIIntegration isEdit />,
   },
   {
+    id: "anyAPILogs",
+    name: "Logs",
+    path: "/logs",
+    exact: true,
+    element: <APILogs />,
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    path: "/settings",
+    exact: true,
+    element: <Settings />,
+  },
+  {
+    id: "plans",
+    name: "Plans",
+    path: "/plans",
+    exact: true,
+    element: <Pricingplans />,
+  },
+  {
     id: "contact-us",
     name: "Contact Us",
     path: "/contact-us",
@@ -324,13 +325,13 @@ const routes = [
     exact: true,
     element: <FeedbackForm />,
   },
-  {
-    id: "billing-history",
-    name: "Billing",
-    path: "/billing-history",
-    exact: true,
-    element: <BillingHistory />,
-  },
+  // {
+  //   id: "billing-history",
+  //   name: "Billing",
+  //   path: "/billing-history",
+  //   exact: true,
+  //   element: <BillingHistory />,
+  // },
   {
     id: "edit-form",
     name: "editForm",
