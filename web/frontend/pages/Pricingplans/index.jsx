@@ -86,7 +86,7 @@ function Pricingplans() {
         shop_owner,
         myshopify_domain,
         phone,
-      } = shopData?.data;
+      } = shopData;
       let user = {
         shopId: id,
         shopName: name,
@@ -112,50 +112,56 @@ function Pricingplans() {
           navigate("/dashboard", { replace: true });
         }
       });
-    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
-      app.getState().then(state =>
-        dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data) => {
-          const {
-            id,
-            name,
-            email,
-            domain,
-            city,
-            country,
-            country_code,
-            customer_email,
-            shop_owner,
-            myshopify_domain,
-            phone,
-          } = shopData?.data;
-          let user = {
-            shopId: id,
-            shopName: name,
-            email,
-            domain: myshopify_domain,
-            city,
-            country,
-            countryCode: country_code,
-            customer_email,
-            shop_owner,
-            myshopify_domain,
-            phone,
-          };
-          const recurring = handleRecurringChargeVal(data?.payload, shopData?.data)
-          console.log('user', user)
-          const sessionData = { name: shopData?.data?.name, email: shopData?.data?.email, shopId, plan, successUrl: recurring?.premium_subscription?.return_url, user }
 
-          axios.post("/payment/create-session-checkout", sessionData).then(res => {
-            console.log('res', res)
-            const redirect = Redirect.create(app);
-            redirect.dispatch(
-              Redirect.Action.REMOTE,
-              res?.data?.redirectUrl
-            );
-          })
-        })
-    };
-  }
+    } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
+      const {
+        id,
+        name,
+        email,
+        domain,
+        city,
+        country,
+        country_code,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+      } = shopData.data;
+
+      let user = {
+        shopId: id,
+        shopName: name,
+        email,
+        domain: myshopify_domain,
+        city,
+        country,
+        countryCode: country_code,
+        customer_email,
+        shop_owner,
+        myshopify_domain,
+        phone,
+        subscriptionId: subscriptionData[0].id,
+        subscriptionName: subscriptionData[0].subscriptionName
+      };
+
+      subscriptionData.filter(({ subscriptionName, _id }, index) => {
+        if (subscriptionName === plan) {
+          user = { ...user, subscriptionName, subscriptionId: _id };
+        }
+      });
+      let recurring = handleRecurringChargeVal(appName, shopData.data)
+      const sessionData = { priceId: PLAN_DETAILS?.PREMIUM_USD, plan, successUrl: recurring?.premium_subscription?.return_url, user }
+      console.log('sessionData: ', sessionData);
+      await axios.post("/payment/create-session-checkout", sessionData).then(res => {
+        console.log('res: ', res);
+        const redirect = Redirect.create(app);
+        redirect.dispatch(
+          Redirect.Action.REMOTE,
+          res?.data?.redirectUrl
+        );
+      })
+    }
+  };
 
   useEffect(() => {
     fullscreen.dispatch(Fullscreen.Action.EXIT);
@@ -168,7 +174,6 @@ function Pricingplans() {
   }
 
 
-  console.log('user', user)
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (

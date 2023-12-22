@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { toastConfig } from "../../constant";
 import { concat } from "../../utils/function";
-// axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
-axios.defaults.baseURL = "https://192.168.1.213:3008/api" || "https://shopifyappapi.project-demo.info:3008/api";
+axios.defaults.baseURL = "https://shopifyappapi.project-demo.info:3008/api";
+// axios.defaults.baseURL = "https://192.168.1.213:3008/api" || "https://shopifyappapi.project-demo.info:3008/api";
 
 // ====================================== Store data API started =========================================
 
