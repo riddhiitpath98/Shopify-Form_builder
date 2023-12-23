@@ -18,6 +18,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
 import axios from "axios";
 import { Redirect } from "@shopify/app-bridge/actions";
+import BootstrapButton from "react-bootstrap/Button";
 const stripePromise = loadStripe("pk_live_IGCZ91wblgKajj7dxA8xci0E");
 
 // const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
@@ -153,7 +154,7 @@ export default function PlanModal({
     string = string[0].toUpperCase() + string.substring(1);
     return string;
   };
-
+  
   return (
     <div className="modalContainer" style={{ height: "500px" }}>
       <Modal
@@ -179,10 +180,10 @@ export default function PlanModal({
                     <div className={styles.boxHeading}>
                       <h4
                         className={`${styles.boxHeadingText} ${
-                          (!Object?.keys(user).length &&
+                          user === undefined || (!Object?.keys(user).length > 0 &&
                             user?.subscriptionName !==
-                              SUBSCRIPTION_TYPES.PREMIUM) ||
-                          user === undefined
+                              SUBSCRIPTION_TYPES.PREMIUM)
+                           
                             ? styles.freeHeader
                             : styles.premiumHeader
                         }`}
@@ -232,8 +233,9 @@ export default function PlanModal({
                               className="d-grid gap-2"
                               // style={{ height: "36px" }}
                             >
+                              
                               <BootstrapButton
-                                variant="primary"
+                                variant= {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? 'success' : 'primary' }
                                 style={{ height: "36px" }}
                                 // primary
                                 // fullWidth
@@ -244,11 +246,14 @@ export default function PlanModal({
                                   )
                                 }
                               >
-                                <span>
-                                  <span>
                                     {item.subscriptionName ===
                                     SUBSCRIPTION_TYPES.FREE ? (
-                                      <span> {PLAN_TEXT?.START_FREE_PLAN}</span>
+                                      <span  style={{
+                                        fontFamily:
+                                          "-apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
+                                        fontSize: "0.935rem",
+                                        fontWeight: 500,
+                                      }}> {PLAN_TEXT?.START_FREE_PLAN}</span>
                                     ) : (
                                       <span
                                         style={{
@@ -262,15 +267,13 @@ export default function PlanModal({
                                         {PLAN_TEXT?.UPGRADE_PLAN}
                                       </span>
                                     )}
-                                  </span>
-                                </span>
                               </BootstrapButton>
                             </div>
                           </td>
                         ))}
 
                         {subscriptionData.length > 0 &&
-                          Object.keys(subscriptionData[0]?.features).map(
+                          Object?.keys(subscriptionData[0]?.features).map(
                             (featureKey) => (
                               <React.Fragment key={featureKey}>
                                 <tr>

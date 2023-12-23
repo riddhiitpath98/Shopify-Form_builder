@@ -487,9 +487,9 @@ export const PLAN_TEXT = {
   CHOOSE_PLAN: "Choose this Plan",
   CURRENT_PLAN: "Your Current Plan",
   CANCEL_PLAN: "Cancel Subscription",
-  START_FREE_PLAN: "Start with Free plan",
+  START_FREE_PLAN: "Start with Free Plan",
   ACTIVE_PLAN: "Your Active plan",
-  UPGRADE_PLAN: "Upgrade your plan"
+  UPGRADE_PLAN: "Upgrade your Plan"
 
 }
 

@@ -63,15 +63,6 @@ function Pricingplans() {
     setActive(false);
   }, []);
 
-  useEffect(() => {
-    app
-      .getState()
-      .then((state) => dispatch(getAppName(state?.titleBar?.appInfo?.name)))
-      .then((data) =>
-        setRecurringCharge(handleRecurringChargeVal(data?.payload))
-      );
-  }, []);
-
   const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
       const {
@@ -470,7 +461,7 @@ function Pricingplans() {
               <li>You won't be charged for the following month, and after the current period, your subscription will automatically switch to the Free plan.</li>
               <li>While premium features will no longer be available and you can not access forms created under the premium plan.</li>
             </ul>
-            <p>Please review our <a href='link-to-terms-and-conditions'>terms and conditions</a> for detailed information.</p>
+            <p>Please review our <a href='https://www.contactformtoapi.com/terms-of-service/' target='_blank' >terms and conditions</a> for detailed information.</p>
             <p>If you have any questions, our <a href='link-to-support'>customer support</a> is ready to assist.</p>
             <p>Thank you for being a valued subscriber!</p>"
           />

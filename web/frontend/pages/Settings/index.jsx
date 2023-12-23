@@ -352,8 +352,8 @@ function Settings() {
         <IFrameLoader
           open={iframeVisible}
           handleClose={handleIframeClose}
-          src="https://www.contactformtoapi.com/terms-of-service/"
-          title="Terms of Service"
+          src="https://www.contactformtoapi.com/mapping-fields/"
+          title="Recaptcha settings"
           width="1000"
           height="1000"
         />

@@ -2,7 +2,7 @@ import {
   BillingInterval, LATEST_API_VERSION, BillingReplacementBehavior
 } from "@shopify/shopify-api";
 import { shopifyApp } from "@shopify/shopify-app-express";
-import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
+// import { SQLiteSessionStorage } from "@shopify/shopify-app-session-storage-sqlite";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
 import { MongoDBSessionStorage } from '@shopify/shopify-app-session-storage-mongodb';
 import dotenv from 'dotenv'

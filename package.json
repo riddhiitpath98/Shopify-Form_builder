@@ -1,3 +1,5 @@
+
+
 {
   "name": "my-node-app",
   "version": "1.0.0",
@@ -6,7 +8,7 @@
   "scripts": {
     "shopify": "shopify",
     "build": "env-cmd -f .env shopify app build",
-    "dev": "shopify app dev",
+    "dev": "env-cmd -f .env shopify app dev",
     "info": "shopify app info",
     "generate": "shopify app extension generate",
     "deploy": "shopify app deploy"

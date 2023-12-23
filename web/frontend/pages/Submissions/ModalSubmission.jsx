@@ -84,7 +84,10 @@ const ModalSubmission = ({
                 }
 
                 if (term === "Checkboxes") {
-                  val = JSON.parse(val)?.map(obj => obj.value).join(",");
+                  if(Array.isArray(val))
+                      val =  val?.map(obj => obj.value).join(",");
+                  else
+                      val =  JSON.parse(val)?.map(obj => obj.value).join(",");
                 }
                 if (Array.isArray(val)) {
                   val =
