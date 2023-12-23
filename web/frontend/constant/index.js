@@ -514,7 +514,7 @@ export const handleRecurringChargeVal = (appName, shopData) => {
 // live Ids
 export const PLAN_DETAILS = {
   // PREMIUM_INR: "price_1OP0GqHZlJ4bphZxUuVXj8zj",
-  PREMIUM_USD: "price_1ONZX0HZlJ4bphZxUjZs8hpl"
+  PREMIUM_USD: "price_1OQNoEHZlJ4bphZxnqTg4O7c"
 }
 
 // test mode
