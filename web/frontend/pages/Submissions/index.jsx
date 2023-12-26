@@ -368,9 +368,18 @@ function Submissions() {
         })
         : loadMoreSubmission({
           order: sortValue,
+          query: {
+            isRead:
+              status[0] === "read"
+                ? true
+                : status[0] === "unread"
+                ? false
+                : "",
+            formId: formStatus,
+            page: currentPage,
+            per_page: itemPrPage,
+          },
           shopId,
-          page: currentPage,
-          per_page: itemPrPage,
         })
     );
   }, [dispatch, location?.state?.id, currentPage, shopId]);

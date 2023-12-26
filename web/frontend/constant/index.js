@@ -511,19 +511,13 @@ export const handleRecurringChargeVal = (appName, shopData) => {
   return RECURRING_APPLICATION_CHARGE
 }
 
-// live Ids
+
+//stripe live Ids
 export const PLAN_DETAILS = {
-  // PREMIUM_INR: "price_1OP0GqHZlJ4bphZxUuVXj8zj",
   PREMIUM_USD: "price_1OQNoEHZlJ4bphZxnqTg4O7c"
 }
 
-// test mode
+// stripe test ids
 // export const PLAN_DETAILS = {
-//   PREMIUM_INR: "price_1OOwJ9SEo6lSgy9nOUpZFhKl",
 //   PREMIUM_USD: "price_1OPMKvSEo6lSgy9nLb12Xsn5"
 // }
-
-export const SUBSCRIPTION_PRICE_ID = [
-  { label: 'INR', value: 'price_1OOwJ9SEo6lSgy9nOUpZFhKl' },
-  { label: 'USD', value: 'price_1OOwl0SEo6lSgy9nnptsBTQl' }
-]

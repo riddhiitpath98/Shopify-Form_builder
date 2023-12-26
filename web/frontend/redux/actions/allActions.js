@@ -370,9 +370,30 @@ export const getSubmission = createAsyncThunk(
 export const loadMoreSubmission = createAsyncThunk(
   "submission/loadMoreSubmission",
   async (data) => {
+    const { isRead, formId, page, per_page } = data?.query;
+    const params = new URLSearchParams();
+    formId.forEach((item) => {
+      params.append("formId[]", item);
+    });
+
+    const queryString = params.toString();
     try {
       const response = await axios.get(
-        `/submission/data/loadmore/${data.order}?shopId=${data.shopId}&page=${data.page}&per_page=${data.per_page}`
+        concat(
+          "/submission/data/loadmore/",
+          data.order,
+          isRead !== "" ? `?isRead=${isRead}` : "",
+          formId.length !== 0
+            ? `${isRead !== "" ? "&" : "?"}${queryString}`
+            : "",
+          data?.shopId !== ""
+            ? `${isRead !== "" || formId.length !== 0 ? "&" : "?"}shopId=${
+                data?.shopId
+              }`
+            : "",
+          page ? `&page=${page}` : "",
+          per_page ? `&per_page=${per_page}` : ""
+        )
       );
       return response?.data;
     } catch (error) {

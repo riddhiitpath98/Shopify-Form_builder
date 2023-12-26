@@ -147,7 +147,7 @@ export const CustomInput = ({
         return (
           <div className={styles.inputContainer}>
             <div
-              style={{ width: widthInput }}
+              style={{ width: attributes?.column_width }}
               className={styles.checkBoxWrapper}
             >
               <input

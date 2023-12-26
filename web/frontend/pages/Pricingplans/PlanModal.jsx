@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, LegacyCard, Badge, Icon } from "@shopify/polaris";
-import styles from "./PricingPlan.module.css";
+import { Modal, LegacyCard, Badge, Icon } from "@shopify/polaris";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Icons,
@@ -18,9 +17,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
 import axios from "axios";
 import { Redirect } from "@shopify/app-bridge/actions";
-import BootstrapButton from "react-bootstrap/Button";
+import { Button } from "react-bootstrap";
+import styles from "./PricingPlan.module.css";
 const stripePromise = loadStripe("pk_live_IGCZ91wblgKajj7dxA8xci0E");
-
 // const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
 
 export default function PlanModal({
@@ -154,7 +153,7 @@ export default function PlanModal({
     string = string[0].toUpperCase() + string.substring(1);
     return string;
   };
-  
+
   return (
     <div className="modalContainer" style={{ height: "500px" }}>
       <Modal
@@ -180,10 +179,10 @@ export default function PlanModal({
                     <div className={styles.boxHeading}>
                       <h4
                         className={`${styles.boxHeadingText} ${
-                          user === undefined || (!Object?.keys(user).length > 0 &&
+                          user === undefined ||
+                          (!Object?.keys(user).length > 0 &&
                             user?.subscriptionName !==
                               SUBSCRIPTION_TYPES.PREMIUM)
-                           
                             ? styles.freeHeader
                             : styles.premiumHeader
                         }`}
@@ -229,16 +228,15 @@ export default function PlanModal({
                                 /<span>mo</span>
                               </span>
                             </div>
-                            <div
-                              className="d-grid gap-2"
-                              // style={{ height: "36px" }}
-                            >
-                              
-                              <BootstrapButton
-                                variant= {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? 'success' : 'primary' }
-                                style={{ height: "36px" }}
-                                // primary
-                                // fullWidth
+                            <div className="d-grid gap-2">
+                              <Button
+                                variant="primary"
+                                className={`${
+                                  item.subscriptionName ===
+                                  SUBSCRIPTION_TYPES.FREE
+                                    ? styles.buttonSuccess
+                                    : ""
+                                }`}
                                 onClick={() =>
                                   handleCreateSubscription(
                                     item?.subscriptionName,
@@ -246,28 +244,19 @@ export default function PlanModal({
                                   )
                                 }
                               >
-                                    {item.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.FREE ? (
-                                      <span  style={{
-                                        fontFamily:
-                                          "-apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
-                                        fontSize: "0.935rem",
-                                        fontWeight: 500,
-                                      }}> {PLAN_TEXT?.START_FREE_PLAN}</span>
-                                    ) : (
-                                      <span
-                                        style={{
-                                          fontFamily:
-                                            "-apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
-                                          fontSize: "0.935rem",
-                                          fontWeight: 500,
-                                        }}
-                                      >
-                                        {" "}
-                                        {PLAN_TEXT?.UPGRADE_PLAN}
-                                      </span>
-                                    )}
-                              </BootstrapButton>
+                                {item.subscriptionName ===
+                                SUBSCRIPTION_TYPES.FREE ? (
+                                  <span className={styles.buttonFontStyle}>
+                                    {" "}
+                                    {PLAN_TEXT?.START_FREE_PLAN}
+                                  </span>
+                                ) : (
+                                  <span className={styles.buttonFontStyle}>
+                                    {" "}
+                                    {PLAN_TEXT?.UPGRADE_PLAN}
+                                  </span>
+                                )}
+                              </Button>
                             </div>
                           </td>
                         ))}

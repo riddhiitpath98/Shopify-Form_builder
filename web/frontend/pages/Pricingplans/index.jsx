@@ -1,4 +1,4 @@
-import { Badge, Button, Icon, LegacyCard, Page } from "@shopify/polaris";
+import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
@@ -9,7 +9,7 @@ import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./PricingPlan.module.css";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
-import BootstrapButton from "react-bootstrap/Button";
+import { Button } from "react-bootstrap";
 
 import {
   addShopData,
@@ -103,7 +103,6 @@ function Pricingplans() {
           navigate("/dashboard", { replace: true });
         }
       });
-
     } else if (plan === SUBSCRIPTION_TYPES.PREMIUM) {
       const {
         id,
@@ -132,7 +131,7 @@ function Pricingplans() {
         myshopify_domain,
         phone,
         subscriptionId: subscriptionData[0].id,
-        subscriptionName: subscriptionData[0].subscriptionName
+        subscriptionName: subscriptionData[0].subscriptionName,
       };
 
       subscriptionData.filter(({ subscriptionName, _id }, index) => {
@@ -140,17 +139,19 @@ function Pricingplans() {
           user = { ...user, subscriptionName, subscriptionId: _id };
         }
       });
-      let recurring = handleRecurringChargeVal(appName, shopData.data)
-      const sessionData = { priceId: PLAN_DETAILS?.PREMIUM_USD, plan, successUrl: recurring?.premium_subscription?.return_url, user }
-      console.log('sessionData: ', sessionData);
-      await axios.post("/payment/create-session-checkout", sessionData).then(res => {
-        console.log('res: ', res);
-        const redirect = Redirect.create(app);
-        redirect.dispatch(
-          Redirect.Action.REMOTE,
-          res?.data?.redirectUrl
-        );
-      })
+      let recurring = handleRecurringChargeVal(appName, shopData.data);
+      const sessionData = {
+        priceId: PLAN_DETAILS?.PREMIUM_USD,
+        plan,
+        successUrl: recurring?.premium_subscription?.return_url,
+        user,
+      };
+      await axios
+        .post("/payment/create-session-checkout", sessionData)
+        .then((res) => {
+          const redirect = Redirect.create(app);
+          redirect.dispatch(Redirect.Action.REMOTE, res?.data?.redirectUrl);
+        });
     }
   };
 
@@ -264,30 +265,37 @@ function Pricingplans() {
                           </span>
                         </div>
                         {item?.subscriptionName === SUBSCRIPTION_TYPES.FREE && (
-                          <Button
-                            primary
-                            disabled={
-                              user?.subscriptionName ===
-                                SUBSCRIPTION_TYPES.FREE ||
-                              (user &&
+                          <div className="d-grid ">
+                            <Button
+                              variant="secondary"
+                              className={`${
+                                user?.subscriptionName !==
+                                SUBSCRIPTION_TYPES.FREE
+                                  ? styles.buttonSuccess
+                                  : ""
+                              }`}
+                              disabled={
                                 user?.subscriptionName ===
-                                  SUBSCRIPTION_TYPES.PREMIUM) ||
-                              user?.subscription?.cancel_at_period_end
-                            }
-                            onClick={handleOpen}
-                            fullWidth
-                          >
-                            <span>
+                                  SUBSCRIPTION_TYPES.FREE ||
+                                (user &&
+                                  user?.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.PREMIUM) ||
+                                user?.subscription?.cancel_at_period_end
+                              }
+                              onClick={handleOpen}
+                            >
                               <span>
                                 <span>
-                                  {user?.subscriptionName ===
-                                  SUBSCRIPTION_TYPES.FREE
-                                    ? PLAN_TEXT.ACTIVE_PLAN
-                                    : PLAN_TEXT.CHOOSE_PLAN}
+                                  <span className={styles.buttonFontStyle}>
+                                    {user?.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.FREE
+                                      ? PLAN_TEXT.ACTIVE_PLAN
+                                      : PLAN_TEXT.CHOOSE_PLAN}
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                          </Button>
+                            </Button>
+                          </div>
                         )}
 
                         {item?.subscriptionName ===
@@ -295,13 +303,9 @@ function Pricingplans() {
                           <>
                             {user?.subscriptionName !==
                             SUBSCRIPTION_TYPES.PREMIUM ? (
-                              <div
-                                className="d-grid gap-2"
-                                // style={{ height: "36px" }}
-                              >
-                                <BootstrapButton
+                              <div className="d-grid gap-2">
+                                <Button
                                   variant="primary"
-                                  style={{height: "36px"}}
                                   onClick={() =>
                                     handleCreateSubscription(
                                       item?.subscriptionName,
@@ -316,14 +320,7 @@ function Pricingplans() {
                                 >
                                   <span>
                                     <span>
-                                      <span
-                                        style={{
-                                          fontFamily:
-                                            "-apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
-                                          fontSize: "0.935rem",
-                                          fontWeight: 500,
-                                        }}
-                                      >
+                                      <span className={styles.buttonFontStyle}>
                                         {user?.subscriptionName ===
                                         SUBSCRIPTION_TYPES.PREMIUM
                                           ? PLAN_TEXT.CURRENT_PLAN
@@ -331,7 +328,7 @@ function Pricingplans() {
                                       </span>
                                     </span>
                                   </span>
-                                </BootstrapButton>
+                                </Button>
                               </div>
                             ) : (
                               //   <Button
@@ -356,11 +353,8 @@ function Pricingplans() {
                               //     </span>
                               //   </span>
                               // </Button>
-                              <div
-                                className="d-grid gap-2"
-                                style={{ marginTop: "5px" }}
-                              >
-                                <BootstrapButton
+                              <div className="d-grid gap-2">
+                                <Button
                                   variant="danger"
                                   onClick={handleOpen}
                                   disabled={
@@ -369,29 +363,16 @@ function Pricingplans() {
                                 >
                                   <span>
                                     <span>
-                                      <span>{PLAN_TEXT.CANCEL_PLAN}</span>
+                                      <span className={styles.buttonFontStyle}>
+                                        {PLAN_TEXT.CANCEL_PLAN}
+                                      </span>
                                     </span>
                                   </span>
-                                </BootstrapButton>
+                                </Button>
                               </div>
                             )}
                           </>
                         )}
-                        {/* <Button
-                          primary
-                          fullWidth
-                          onClick={() =>
-                            handleCreateSubscription(
-                              item?.subscriptionName, item?.stripePriceId
-                            )
-                          }
-                        >
-                          <span>
-                            <span>
-                              {item.subscriptionName === SUBSCRIPTION_TYPES.FREE ? <span> {PLAN_TEXT?.START_FREE_PLAN}</span> : <span> {PLAN_TEXT?.UPGRADE_PLAN}</span>}
-                            </span>
-                          </span>
-                        </Button> */}
                       </td>
                     ))}
 

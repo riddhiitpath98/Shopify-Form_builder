@@ -5,18 +5,17 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Country, State, City } from "country-state-city";
-import { SUBSCRIPTION_PRICE_ID, SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
+import { SUBSCRIPTION_TYPES, toastConfig, validateTextField } from "../../constant";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Spinner from 'react-bootstrap/Spinner'
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import "./CardElement.css";
 import { useAppQuery } from "../../hooks";
 import { addShopData, getPriceDetails } from "../../redux/actions/allActions";
 import IFrameLoader from "../../components/IFrameLoader";
+import "./CardElement.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const shopData = useAppQuery({ url: "/api/shop" });
@@ -31,7 +30,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const handleIframeClose = () => {
         setIFrameVisible(false);
     };
-
 
     const initialState = {
         email: "",
@@ -140,7 +138,6 @@ function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
                 [name]: value,
             });
         }
-
     };
     // console.log('billingDetails', billingAddress)
     // const handleSubmitSubscription = async (e) => {

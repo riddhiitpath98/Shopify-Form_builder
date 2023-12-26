@@ -28,7 +28,11 @@ const AcceptTermsFields = ({ isEdit,tabId, toggleDrawer }) => {
   ];
 
   const handleChange = (name, value) => {
-    const updatedFormInputs = { ...acceptTermsInput, [name]: value };
+    let selectedValue = value;
+    if (Array.isArray(value)) {
+      selectedValue = value[0];
+    }
+    const updatedFormInputs = { ...acceptTermsInput, [name]: selectedValue };
     setAcceptTermsInput(updatedFormInputs);
     dispatch(
       updatePayload({

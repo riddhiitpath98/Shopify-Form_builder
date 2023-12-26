@@ -176,7 +176,7 @@ tbody td {
   border-radius: 10px;
   color: #fff;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-  font-weight: 400;
+  font-weight: 500;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -190,4 +190,14 @@ tbody td {
 }
 .trialDays {
   height: 21px;
+}
+.buttonFontStyle {
+  font-family: "-apple-system, BlinkMacSystemFont, " San Francisco ", " Segoe UI
+    ", Roboto, " Helvetica Neue ", sans-serif";
+  font-size: 14px;
+  font-weight: 500;
+}
+.buttonSuccess{
+  background-color: #007a5c !important;
+  border: transparent !important;
 }
