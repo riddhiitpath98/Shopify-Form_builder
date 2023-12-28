@@ -122,7 +122,7 @@ const catchFormDivAndAppendForm = (data) => {
   let formElement = [];
   let validation = {};
   let afterSubmit = {};
-  const createSubmission = async (data, formId) => {
+  const createSubmission = async (data, formId) => { 
     const finalFormData = new FormData();
     finalFormData.append("shopId", shopId);
     if (data && Object.keys(data).length > 0) {
