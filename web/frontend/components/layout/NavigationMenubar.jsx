@@ -2,9 +2,10 @@ import { Link, useLocation } from "react-router-dom";
 import { Tabs } from "../../pages";
 import { Icon } from "@shopify/polaris";
 import SubMenuList from "./SubMenuList";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DropdownMinor } from "@shopify/polaris-icons";
 import styles from "./NavigationMenubar.module.css";
+import { useSelector } from "react-redux";
 
 function NavigationMenubar() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -13,12 +14,25 @@ function NavigationMenubar() {
   };
   const location = useLocation();
   const hasEditApi = location.pathname.includes("/edit-api");
+  const user = useSelector((state) => state.user.userData?.user);
+
+  const tabsData = useMemo(()=> {
+    const data = Tabs.filter(tab =>{
+      if(!tab?.viewAccess)
+        return tab
+      else if(tab?.viewAccess?.includes(user?.subscriptionName))
+        return tab
+      else
+      return null
+    })
+    return data
+  },[user])
 
   return (
     <nav className={styles.nav}>
       <div className={styles.contentNav}>
         <ul className={styles.navigation}>
-          {Tabs?.map(({ id, icon, content, path, children }) => (
+          {tabsData?.map(({ id, icon, content, path, children }) => (
             <li
               key={id}
               className={`${styles.menuItems} ${children && isOpenMenu && styles.active

@@ -9,7 +9,7 @@ import {
   PolarisProvider,
 } from "./components";
 import Routing from "./Routes";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
@@ -39,14 +39,14 @@ export default function App() {
                   label: "Submissions",
                   destination: "/submissions",
                 },
-                {
-                  label: "Any API integration",
-                  destination: "/api-settings",
-                },
-                {
-                  label: "Logs",
-                  destination: "/logs",
-                },
+                // {
+                //   label: "Any API integration",
+                //   destination: "/api-settings",
+                // },
+                // {
+                //   label: "Logs",
+                //   destination: "/logs",
+                // },
                 {
                   label: "Settings",
                   destination: "/settings",

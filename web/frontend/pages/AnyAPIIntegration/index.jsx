@@ -255,7 +255,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
   return (
     <Page
       fullWidth
-      title="Contact Form with any API List"
+      title="Add New Contact Form API"
       primaryAction={{
         content: "View API List",
         onAction: () => viewAPIList(),

@@ -95,22 +95,9 @@
 import React from "react";
 import Dashboard from "./Dashboard";
 import Pricingplans from "./Pricingplans";
-
 import Settings from "./Settings";
 import Submissions from "./Submissions";
 import ContactUsForm from "./Support/ContactUsForm";
-import {
-  AnalyticsMajor,
-  FormsMajor,
-  SettingsMajor,
-  CashDollarMajor,
-  QuestionMarkInverseMajor,
-  ReportsMajor,
-  EmailMajor,
-  CircleInformationMajor,
-  ListMajor,
-  FirstOrderMajor,
-} from "@shopify/polaris-icons";
 import FeedbackForm from "./Support/FeedbackForm";
 import FormList from "./Forms/FormList";
 import FormLayout from "./Forms/FormLayout/FormLayout";
@@ -119,7 +106,6 @@ import AnyAPIIntegration from "./AnyAPIIntegration";
 import APISettingsList from "./AnyAPIIntegration/APISettingsList";
 import { Icons } from "../constant";
 import APILogs from "./AnyAPIIntegration/APILogs";
-import BillingHistory from "./Billing/BillingHistory";
 import StripeCardPayment from "./StripeCardPayment";
 
 export const navigation = [
@@ -135,14 +121,14 @@ export const navigation = [
     label: "Submissions",
     destination: "/submissions",
   },
-  {
-    label: "All API",
-    destination: "/api-settings",
-  },
-  {
-    label: "Logs",
-    destination: "/logs",
-  },
+  // {
+  //   label: "All API",
+  //   destination: "/api-settings",
+  // },
+  // {
+  //   label: "Logs",
+  //   destination: "/logs",
+  // },
   {
     label: "Settings",
     destination: "/settings",
@@ -185,12 +171,14 @@ export const Tabs = [
     content: "API Settings",
     icon: Icons.settings,
     path: "/api-settings",
+    viewAccess : ['premium']
   },
   {
     id: "anyAPILogs",
     content: "Logs",
     icon: Icons.submission,
     path: "/logs",
+    viewAccess : ['premium']
   },
   {
     id: "settings",

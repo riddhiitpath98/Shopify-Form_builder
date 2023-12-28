@@ -14,11 +14,8 @@ import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
 import { SUBSCRIPTION_TYPES, handleRecurringChargeVal } from "../../constant";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
-import { Elements } from '@stripe/react-stripe-js';
-import {
-
-
-} from '@stripe/stripe-js';
+import { Elements } from "@stripe/react-stripe-js";
+import {} from "@stripe/stripe-js";
 import StripeCardPayment from "../../pages/StripeCardPayment";
 import ElementListBanner from "../ElementListBanner";
 import axios from "axios";
@@ -26,15 +23,20 @@ import axios from "axios";
 const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
   const app = useAppBridge();
   const location = useLocation();
+  const hasEditApi = location.pathname.includes("/edit-api");
   const [showCardElement, setShowCardElement] = useState(false);
   const hideFooter =
     location.pathname === "/form" ||
     location.pathname === "/plans" ||
-    location.pathname === "/submissions";
+    location.pathname === "/submissions" ||
+    location.pathname === "/add-api" ||
+    location.pathname === "/api-settings" ||
+    hasEditApi ||
+    location.pathname === "/logs";
   const [isShowPlan, setIsShowPlan] = useState(false);
   const navigate = useNavigate();
   const path = location?.pathname === "/" ? "/dashboard" : location?.pathname;
-  const user = useSelector(state => state.user.userData?.user)
+  const user = useSelector((state) => state.user.userData?.user);
   const shop = useAppQuery({ url: "/api/shop" });
   const dispatch = useDispatch();
 
@@ -47,19 +49,19 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
           dispatch(addShopId(shop?.data?.id));
           if (!showCardElement && !isShowPlan)
             navigate(path, { replace: true });
-        }
-        else {
+        } else {
           setIsShowPlan(true);
         }
       });
     }
-  }, [dispatch, shop?.isSuccess])
-
+  }, [dispatch, shop?.isSuccess]);
 
   useEffect(() => {
-    app.getState().then(state =>
-      dispatch(getAppName(state?.titleBar?.appInfo?.name))).then((data) => handleRecurringChargeVal(data?.payload))
-  }, [])
+    app
+      .getState()
+      .then((state) => dispatch(getAppName(state?.titleBar?.appInfo?.name)))
+      .then((data) => handleRecurringChargeVal(data?.payload));
+  }, []);
 
   const toggleModal = () => {
     setIsShowPlan(false);
@@ -74,19 +76,23 @@ const Layout = ({ isShowFooter, isHideNavbar, ...props }) => {
             shopData={shop?.data}
             {...{ showCardElement, setShowCardElement }}
           />
-        ) : null
-        }
-        {!isShowPlan && !showCardElement ? <div {...props}>
-          {!isHideNavbar ? <NavigationMenubar /> : null}<br />
-          <>
-            {user?.subscription?.isPlanExpiredIn3Days ? <ElementListBanner
-              title={user?.subscription?.planStatusForExpriation}
-            /> : null}
-            <Outlet />
-          </>
-          {isShowFooter && !hideFooter ? <Footer /> : null}
-        </div> : null}
-      </div >
+        ) : null}
+        {!isShowPlan && !showCardElement ? (
+          <div {...props}>
+            {!isHideNavbar ? <NavigationMenubar /> : null}
+            <br />
+            <>
+              {user?.subscription?.isPlanExpiredIn3Days ? (
+                <ElementListBanner
+                  title={user?.subscription?.planStatusForExpriation}
+                />
+              ) : null}
+              <Outlet />
+            </>
+            {isShowFooter && !hideFooter ? <Footer /> : null}
+          </div>
+        ) : null}
+      </div>
     </>
   );
 };

@@ -2,7 +2,7 @@ import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
-import { MinusMinor } from "@shopify/polaris-icons";
+import { CancelMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
@@ -180,7 +180,7 @@ function Pricingplans() {
     } else if (status === false || status === null) {
       return (
         <span className={styles.priceValue}>
-          <Icon source={MinusMinor} color="base" />
+          <Icon source={CancelMinor} color="critical" />
         </span>
       );
     } else {
@@ -383,7 +383,7 @@ function Pricingplans() {
                             <tr>
                               <th colSpan={3}>
                                 <span className={styles.tableHeader}>
-                                  <span>{featureKey}</span>
+                                  <span>{capitalizeFirstLetter(featureKey)}</span>
                                 </span>
                               </th>
                             </tr>

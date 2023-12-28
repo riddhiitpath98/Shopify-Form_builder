@@ -136,7 +136,7 @@ function APISettingsList() {
   return (
     <Page
       fullWidth
-      title="All API"
+      title="Contact Form with API List"
       primaryAction={{
         content: "Add new API",
         onAction: () => handleAddAPIData(),
