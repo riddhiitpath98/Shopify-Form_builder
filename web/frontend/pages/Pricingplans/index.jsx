@@ -480,7 +480,7 @@ function Pricingplans() {
             <img
               src={ipsBanner}
               alt=""
-              style={{ width: "50vh", height: "50%" }}
+              style={{ width: "100%", height: "50%" }}
             />
           </a>
           <a
@@ -490,7 +490,7 @@ function Pricingplans() {
             <img
               src={ratingBanner}
               alt=""
-              style={{ width: "50vh", marginTop: "7px" }}
+              style={{ width: "100%", marginTop: "7px" }}
             />
           </a>
         </div>
