@@ -30,6 +30,8 @@ import { ToastContainer } from "react-toastify";
 import { addClientSecret } from "../../redux/reducers/userSlice";
 import PaymentModal from "./paymentModal";
 import axios from "axios";
+import ipsBanner from "../../assets/ips_banner_2.jpg"
+import ratingBanner from "../../assets/ips_banner_1.png"
 
 function Pricingplans() {
   const app = useAppBridge();
@@ -210,6 +212,7 @@ function Pricingplans() {
           setShowCardElement={setShowCardElement}
         />
       ) : null}
+      <div style={{display: "flex"}}> 
       <div style={{ width: "70%" }}>
         <LegacyCard>
           <LegacyCard.Section>
@@ -265,7 +268,10 @@ function Pricingplans() {
                           </span>
                         </div>
                         {item?.subscriptionName === SUBSCRIPTION_TYPES.FREE && (
-                          <div className="d-grid ">
+                          <div
+                            className="d-grid "
+                            style={{ visibility: "hidden" }}
+                          >
                             <Button
                               variant="secondary"
                               className={`${
@@ -375,7 +381,13 @@ function Pricingplans() {
                         )}
                       </td>
                     ))}
-
+                    <tr>
+                      <th colSpan={3} className={styles.featureTitle}>
+                        <span className={styles.tableHeader}>
+                          <span>Feature List</span>
+                        </span>
+                      </th>
+                    </tr>
                     {subscriptionData?.length > 0 &&
                       Object.keys(subscriptionData[0]?.features).map(
                         (featureKey) => (
@@ -383,7 +395,9 @@ function Pricingplans() {
                             <tr>
                               <th colSpan={3}>
                                 <span className={styles.tableHeader}>
-                                  <span>{capitalizeFirstLetter(featureKey)}</span>
+                                  <span>
+                                    {capitalizeFirstLetter(featureKey)}
+                                  </span>
                                 </span>
                               </th>
                             </tr>
@@ -447,6 +461,11 @@ function Pricingplans() {
             <p>Thank you for being a valued subscriber!</p>"
           />
         )}
+      </div>
+      <div style={{width: "30%", marginLeft: "20px"}}>
+         <a href="https://www.itpathsolutions.com/contact-us/" target="_blank" ><img src={ipsBanner} alt="" style={{width: "50vh", height:"50%"}}/></a>
+          <a href="https://apps.shopify.com/contact-form-to-any-api" target="_blank" ><img src={ratingBanner} alt="" style={{width: "50vh", marginTop: "7px"}}/></a>
+      </div>
       </div>
       <ToastContainer />
     </Page>

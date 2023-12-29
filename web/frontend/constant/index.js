@@ -489,7 +489,7 @@ export const PLAN_TEXT = {
   CANCEL_PLAN: "Cancel Subscription",
   START_FREE_PLAN: "Start with Free Plan",
   ACTIVE_PLAN: "Your Active plan",
-  UPGRADE_PLAN: "Upgrade your Plan"
+  UPGRADE_PLAN: "Upgrade"
 
 }
 
@@ -514,7 +514,7 @@ export const handleRecurringChargeVal = (appName, shopData) => {
 
 //stripe live Ids
 export const PLAN_DETAILS = {
-  PREMIUM_USD: "price_1OQNoEHZlJ4bphZxnqTg4O7c"
+  PREMIUM_USD: "price_1OSLFlHZlJ4bphZxZK8VOnnI"
 }
 
 // stripe test ids

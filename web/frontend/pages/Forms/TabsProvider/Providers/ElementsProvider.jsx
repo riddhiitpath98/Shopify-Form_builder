@@ -44,9 +44,9 @@ const ElementsProvider = ({ isEdit }) => {
           icon: Icons.header_tab,
           attributes: {
             showHeader: true,
-            title: "New Form",
+            title: "Form name",
             description:
-              "Leave your message",
+              "Form description",
             email: "",
           },
         },

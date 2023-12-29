@@ -65,7 +65,7 @@ tbody td {
   color: #212b35;
   display: block;
   font-family: ShopifySans, Helvetica, Arial, sans-serif;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.222;
 }
 .labelName {
@@ -74,6 +74,7 @@ tbody td {
 .labelText {
   display: block;
   margin-bottom: 3px;
+  font-weight: 500 !important;
 }
 .rowData {
   background-color: transparent;
@@ -201,4 +202,8 @@ tbody td {
 .buttonSuccess{
   background-color: #007a5c !important;
   border: transparent !important;
+}
+.featureTitle{
+  padding: 20px 13px;
+  /* background-color: cadetblue; */
 }
