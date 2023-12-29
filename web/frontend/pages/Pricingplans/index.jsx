@@ -32,6 +32,7 @@ import PaymentModal from "./paymentModal";
 import axios from "axios";
 import ipsBanner from "../../assets/ips_banner_2.jpg";
 import ratingBanner from "../../assets/ips_banner_1.png";
+import helpBanner from "../../assets/ips_banner_3.jpg";
 import "../Forms/PolarisFormListStyles.css"
 
 function Pricingplans() {
@@ -214,7 +215,7 @@ function Pricingplans() {
         />
       ) : null}
       <div style={{ display: "flex" }}>
-        <div style={{ width: "70%" }}>
+        <div className={styles.dashbordLeft}>
           <LegacyCard>
             <LegacyCard.Section>
               <div className="grid">
@@ -475,12 +476,12 @@ function Pricingplans() {
             />
           )}
         </div>
-        <div style={{ width: "30%", marginLeft: "40px" }}>
+        <div className={styles.dashbordRight}>
           <a href="https://www.itpathsolutions.com/contact-us/" target="_blank">
             <img
               src={ipsBanner}
-              alt=""
-              style={{ width: "100%", height: "50%" }}
+            alt=""
+              
             />
           </a>
           <a
@@ -492,7 +493,18 @@ function Pricingplans() {
               alt=""
               style={{ width: "100%", marginTop: "7px" }}
             />
+            
           </a>
+          <a
+            href="https://apps.shopify.com/contact-form-to-any-api"
+            target="_blank"
+          >
+          <img
+              src={helpBanner}
+              alt=""
+              style={{ width: "100%", marginTop: "7px" }}
+            />
+            </a>
         </div>
       </div>
       <ToastContainer />

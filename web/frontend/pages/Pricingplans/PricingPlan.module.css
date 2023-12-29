@@ -219,3 +219,29 @@ tbody td {
 .tooltipContainer{
   color: #007a5c;
 }
+
+.dashbordLeft{
+  width: 81.5%;
+}
+
+.dashbordRight{
+  width: calc(100% - 79%);
+  margin-left: 10px;
+}
+
+.dashbordRight a{
+  height: auto;
+  display: inline-block;
+  width: 100%;
+}
+
+.dashbordRight a:first-child{
+  height: auto;
+}
+
+.dashbordRight img{
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
