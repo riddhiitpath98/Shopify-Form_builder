@@ -383,7 +383,7 @@ const FormPreview = () => {
       }
 
       const errorObj = {};
-      const cloneData = [...formFeildData];
+      const cloneData = [...formFeildData]; 
       let formData = {};
       formFeildData?.forEach((value) => {
         formData = { ...formData, [value.feildId]: "" };

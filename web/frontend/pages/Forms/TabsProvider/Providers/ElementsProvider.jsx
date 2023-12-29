@@ -40,7 +40,7 @@ const ElementsProvider = ({ isEdit }) => {
       data: [
         {
           id: "header_tab",
-          title: "Header",
+          title: "Header", 
           icon: Icons.header_tab,
           attributes: {
             showHeader: true,

@@ -22,3 +22,13 @@
 .Polaris-Text--headingXs:hover{
   color: #1f2124;
 }
+.Polaris-Tooltip {
+  background-color: #d3dddd !important;
+  color: black;
+}
+.Polaris-Tooltip .Polaris-Tooltip__Content {
+  background-color: #ffcc00; /* Change this to your desired background color */
+}
+.Polaris-Tooltip-Content {
+  background-color: #ffcc00 !important;
+}

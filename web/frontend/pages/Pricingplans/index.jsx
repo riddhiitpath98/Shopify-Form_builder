@@ -1,4 +1,4 @@
-import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
+import { Badge, Icon, LegacyCard, Page, Text, Tooltip } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
 import "./PricingPlan.module.css";
 import { TickMinor } from "@shopify/polaris-icons";
@@ -30,8 +30,9 @@ import { ToastContainer } from "react-toastify";
 import { addClientSecret } from "../../redux/reducers/userSlice";
 import PaymentModal from "./paymentModal";
 import axios from "axios";
-import ipsBanner from "../../assets/ips_banner_2.jpg"
-import ratingBanner from "../../assets/ips_banner_1.png"
+import ipsBanner from "../../assets/ips_banner_2.jpg";
+import ratingBanner from "../../assets/ips_banner_1.png";
+import "../Forms/PolarisFormListStyles.css"
 
 function Pricingplans() {
   const app = useAppBridge();
@@ -212,245 +213,257 @@ function Pricingplans() {
           setShowCardElement={setShowCardElement}
         />
       ) : null}
-      <div style={{display: "flex"}}> 
-      <div style={{ width: "70%" }}>
-        <LegacyCard>
-          <LegacyCard.Section>
-            <div className="grid">
-              <div className={styles.gridItem}>
-                <div className={styles.boxHeading}>
-                  <h4
-                    className={`${styles.boxHeadingText} ${
-                      user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                        ? styles.freeHeader
-                        : styles.premiumHeader
-                    }`}
-                  >
-                    Your current plan
-                  </h4>
-                </div>
-                <table className={styles.pricingTable} border={1}>
-                  <thead>
-                    <tr>
-                      <th scope="col"></th>
+      <div style={{ display: "flex" }}>
+        <div style={{ width: "70%" }}>
+          <LegacyCard>
+            <LegacyCard.Section>
+              <div className="grid">
+                <div className={styles.gridItem}>
+                  <div className={styles.boxHeading}>
+                    <Tooltip content="Your Current Plan" >
+                      <h4
+                        className={`${styles.boxHeadingText} ${
+                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                            ? styles.freeHeader
+                            : styles.premiumHeader
+                        }`}
+                      >
+                        Your current plan
+                      </h4>
+                    </Tooltip>
+                  </div>
+                  <table className={styles.pricingTable} border={1}>
+                    <thead>
+                      <tr>
+                        <th scope="col"></th>
+                        {subscriptionData?.map((item) => (
+                          <th scope="col">
+                            <p>{item?.subscriptionName.toUpperCase()}</p>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <th scope="row" className={styles.rowTransparent}>
+                        <div className={styles.rowTitle}>
+                          <span className={styles.priceTitle}>Price</span>
+                        </div>
+                      </th>
                       {subscriptionData?.map((item) => (
-                        <th scope="col">
-                          <p>{item?.subscriptionName.toUpperCase()}</p>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <th scope="row" className={styles.rowTransparent}>
-                      <div className={styles.rowTitle}>
-                        <span>Price</span>
-                      </div>
-                    </th>
-                    {subscriptionData?.map((item) => (
-                      <td className={styles.pricingRow}>
-                        {/* <div className={styles.trialDays}>3 days trial</div> */}
-                        <div className={styles.monthlyPrice}>
-                          <span className={styles.monthlyPriceCur}>
-                            {item.curruncyType}
-                          </span>
-                          <span className={styles.priceValue}>
-                            <span className={styles.price}>
-                              <span>
-                                {/* <sub className={styles.dollar}>$</sub> */}
-                                <span className={styles.rupees}>
-                                  {item.price}
+                        <td className={styles.pricingRow}>
+                          {/* <div className={styles.trialDays}>3 days trial</div> */}
+                          <div className={styles.monthlyPrice}>
+                            <span className={styles.monthlyPriceCur}>
+                              {item.curruncyType}
+                            </span>
+                            <span className={styles.priceValue}>
+                              <span className={styles.price}>
+                                <span>
+                                  {/* <sub className={styles.dollar}>$</sub> */}
+                                  <span className={styles.rupees}>
+                                    {item.price}
+                                  </span>
                                 </span>
                               </span>
                             </span>
-                          </span>
-                          <span className={styles.month}>
-                            /<span>mo</span>
-                          </span>
-                        </div>
-                        {item?.subscriptionName === SUBSCRIPTION_TYPES.FREE && (
-                          <div
-                            className="d-grid "
-                            style={{ visibility: "hidden" }}
-                          >
-                            <Button
-                              variant="secondary"
-                              className={`${
-                                user?.subscriptionName !==
-                                SUBSCRIPTION_TYPES.FREE
-                                  ? styles.buttonSuccess
-                                  : ""
-                              }`}
-                              disabled={
-                                user?.subscriptionName ===
-                                  SUBSCRIPTION_TYPES.FREE ||
-                                (user &&
-                                  user?.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.PREMIUM) ||
-                                user?.subscription?.cancel_at_period_end
-                              }
-                              onClick={handleOpen}
-                            >
-                              <span>
-                                <span>
-                                  <span className={styles.buttonFontStyle}>
-                                    {user?.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.FREE
-                                      ? PLAN_TEXT.ACTIVE_PLAN
-                                      : PLAN_TEXT.CHOOSE_PLAN}
-                                  </span>
-                                </span>
-                              </span>
-                            </Button>
+                            <span className={styles.month}>
+                              /<span>mo</span>
+                            </span>
                           </div>
-                        )}
-
-                        {item?.subscriptionName ===
-                          SUBSCRIPTION_TYPES.PREMIUM && (
-                          <>
-                            {user?.subscriptionName !==
-                            SUBSCRIPTION_TYPES.PREMIUM ? (
-                              <div className="d-grid gap-2">
-                                <Button
-                                  variant="primary"
-                                  onClick={() =>
-                                    handleCreateSubscription(
-                                      item?.subscriptionName,
-                                      item?.stripePriceId
-                                    )
-                                  }
-                                  disabled={
+                          {item?.subscriptionName ===
+                            SUBSCRIPTION_TYPES.FREE && (
+                            <div
+                              className="d-grid "
+                              style={{ visibility: "hidden" }}
+                            >
+                              <Button
+                                variant="secondary"
+                                className={`${
+                                  user?.subscriptionName !==
+                                  SUBSCRIPTION_TYPES.FREE
+                                    ? styles.buttonSuccess
+                                    : ""
+                                }`}
+                                disabled={
+                                  user?.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.FREE ||
+                                  (user &&
                                     user?.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.PREMIUM
-                                  }
-                                  loading={!user}
-                                >
+                                      SUBSCRIPTION_TYPES.PREMIUM) ||
+                                  user?.subscription?.cancel_at_period_end
+                                }
+                                onClick={handleOpen}
+                              >
+                                <span>
                                   <span>
-                                    <span>
-                                      <span className={styles.buttonFontStyle}>
-                                        {user?.subscriptionName ===
-                                        SUBSCRIPTION_TYPES.PREMIUM
-                                          ? PLAN_TEXT.CURRENT_PLAN
-                                          : PLAN_TEXT.UPGRADE_PLAN}
-                                      </span>
+                                    <span className={styles.buttonFontStyle}>
+                                      {user?.subscriptionName ===
+                                      SUBSCRIPTION_TYPES.FREE
+                                        ? PLAN_TEXT.ACTIVE_PLAN
+                                        : PLAN_TEXT.CHOOSE_PLAN}
                                     </span>
-                                  </span>
-                                </Button>
-                              </div>
-                            ) : (
-                              //   <Button
-                              //   disabled={
-                              //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
-                              //   }
-                              //   loading={!user}
-                              //   primary
-                              //   fullWidth
-                              //   onClick={() =>
-                              //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
-                              //   }
-                              // >
-                              //   <span>
-                              //     <span>
-                              //       <span>
-                              //         {user?.subscriptionName ===
-                              //           SUBSCRIPTION_TYPES.PREMIUM
-                              //           ? PLAN_TEXT.CURRENT_PLAN
-                              //           : PLAN_TEXT.UPGRADE_PLAN}
-                              //       </span>
-                              //     </span>
-                              //   </span>
-                              // </Button>
-                              <div className="d-grid gap-2">
-                                <Button
-                                  variant="danger"
-                                  onClick={handleOpen}
-                                  disabled={
-                                    user?.subscription?.cancel_at_period_end
-                                  }
-                                >
-                                  <span>
-                                    <span>
-                                      <span className={styles.buttonFontStyle}>
-                                        {PLAN_TEXT.CANCEL_PLAN}
-                                      </span>
-                                    </span>
-                                  </span>
-                                </Button>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </td>
-                    ))}
-                    <tr>
-                      <th colSpan={3} className={styles.featureTitle}>
-                        <span className={styles.tableHeader}>
-                          <span>Feature List</span>
-                        </span>
-                      </th>
-                    </tr>
-                    {subscriptionData?.length > 0 &&
-                      Object.keys(subscriptionData[0]?.features).map(
-                        (featureKey) => (
-                          <React.Fragment key={featureKey}>
-                            <tr>
-                              <th colSpan={3}>
-                                <span className={styles.tableHeader}>
-                                  <span>
-                                    {capitalizeFirstLetter(featureKey)}
                                   </span>
                                 </span>
-                              </th>
-                            </tr>
+                              </Button>
+                            </div>
+                          )}
 
-                            {Object.entries(
-                              subscriptionData[0]?.features[featureKey]
-                            ).map(([innerKey, innerValue]) => (
-                              <tr key={innerKey}>
-                                <th scope="row" className={styles.rowData}>
-                                  <div className={styles.rowTitle}>
-                                    <dl className={styles.labelName}>
-                                      <dt className={styles.labelText}>
-                                        <span>
-                                          {capitalizeFirstLetter(innerKey)}
+                          {item?.subscriptionName ===
+                            SUBSCRIPTION_TYPES.PREMIUM && (
+                            <>
+                              {user?.subscriptionName !==
+                              SUBSCRIPTION_TYPES.PREMIUM ? (
+                                <div className="d-grid gap-2">
+                                  <Button
+                                    variant="primary"
+                                    onClick={() =>
+                                      handleCreateSubscription(
+                                        item?.subscriptionName,
+                                        item?.stripePriceId
+                                      )
+                                    }
+                                    disabled={
+                                      user?.subscriptionName ===
+                                      SUBSCRIPTION_TYPES.PREMIUM
+                                    }
+                                    loading={!user}
+                                  >
+                                    <span>
+                                      <span>
+                                        <span
+                                          className={styles.buttonFontStyle}
+                                        >
+                                          {user?.subscriptionName ===
+                                          SUBSCRIPTION_TYPES.PREMIUM
+                                            ? PLAN_TEXT.CURRENT_PLAN
+                                            : PLAN_TEXT.UPGRADE_PLAN}
                                         </span>
-                                      </dt>
-                                      <dd
-                                        className={styles.labelDescription}
-                                      ></dd>
-                                    </dl>
-                                  </div>
+                                      </span>
+                                    </span>
+                                  </Button>
+                                </div>
+                              ) : (
+                                //   <Button
+                                //   disabled={
+                                //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                                //   }
+                                //   loading={!user}
+                                //   primary
+                                //   fullWidth
+                                //   onClick={() =>
+                                //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
+                                //   }
+                                // >
+                                //   <span>
+                                //     <span>
+                                //       <span>
+                                //         {user?.subscriptionName ===
+                                //           SUBSCRIPTION_TYPES.PREMIUM
+                                //           ? PLAN_TEXT.CURRENT_PLAN
+                                //           : PLAN_TEXT.UPGRADE_PLAN}
+                                //       </span>
+                                //     </span>
+                                //   </span>
+                                // </Button>
+                                <div className="d-grid gap-2">
+                                  <Button
+                                    variant="danger"
+                                    onClick={handleOpen}
+                                    disabled={
+                                      user?.subscription?.cancel_at_period_end
+                                    }
+                                  >
+                                    <span>
+                                      <span>
+                                        <span
+                                          className={styles.buttonFontStyle}
+                                        >
+                                          {PLAN_TEXT.CANCEL_PLAN}
+                                        </span>
+                                      </span>
+                                    </span>
+                                  </Button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </td>
+                      ))}
+                      <tr>
+                        <th colSpan={3} className={styles.featureTitle}>
+                          <span className={styles.tableHeader}>
+                            <span className={styles.featureHeader}>Features</span>
+                          </span>
+                        </th>
+                      </tr>
+                      {subscriptionData?.length > 0 &&
+                        Object.keys(subscriptionData[0]?.features).map(
+                          (featureKey) => (
+                            <React.Fragment key={featureKey}>
+                              <tr>
+                                <th colSpan={3}>
+                                  <span className={styles.tableHeader}>
+                                    <span>
+                                      {capitalizeFirstLetter(featureKey)}
+                                    </span>
+                                  </span>
                                 </th>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[0].features[featureKey][
-                                      innerKey
-                                    ]
-                                  )}
-                                </td>
-                                <td>
-                                  {renderStatusIcon(
-                                    subscriptionData[1].features[featureKey][
-                                      innerKey
-                                    ]
-                                  )}
-                                </td>
                               </tr>
-                            ))}
-                          </React.Fragment>
-                        )
-                      )}
-                  </tbody>
-                </table>
+
+                              {Object.entries(
+                                subscriptionData[0]?.features[featureKey]
+                              ).map(([innerKey, innerValue]) => (
+                                <tr key={innerKey}>
+                                  <th scope="row" className={styles.rowData}>
+                                    <div className={styles.rowTitle}>
+                                      <dl className={styles.labelName}>
+                                        <dt className={styles.labelText}>
+                                          <span>
+                                            {capitalizeFirstLetter(innerKey)}
+                                          </span>
+                                        </dt>
+                                        <dd
+                                          className={styles.labelDescription}
+                                        ></dd>
+                                      </dl>
+                                    </div>
+                                  </th>
+                                  <td>
+                                    {renderStatusIcon(
+                                      subscriptionData[0].features[featureKey][
+                                        innerKey
+                                      ]
+                                    )}
+                                  </td>
+                                  <td>
+                                    {renderStatusIcon(
+                                      subscriptionData[1].features[featureKey][
+                                        innerKey
+                                      ]
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                            </React.Fragment>
+                          )
+                        )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-            {/* </div> */}
-          </LegacyCard.Section>
-        </LegacyCard>
-        {active && (
-          <CommonModal
-            {...{ active, isCancelPlan, handleClose, handleCancelSubscription }}
-            title="Are you sure to cancel the current plan?"
-            description="<p><strong>Note: </strong> Canceling this subscription plan will result in the following:</p>
+              {/* </div> */}
+            </LegacyCard.Section>
+          </LegacyCard>
+          {active && (
+            <CommonModal
+              {...{
+                active,
+                isCancelPlan,
+                handleClose,
+                handleCancelSubscription,
+              }}
+              title="Are you sure to cancel the current plan?"
+              description="<p><strong>Note: </strong> Canceling this subscription plan will result in the following:</p>
             <ul>
               <li>Upon cancellation, you'll retain access to premium features until the end of the current billing cycle.</li>
               <li>You won't be charged for the following month, and after the current period, your subscription will automatically switch to the Free plan.</li>
@@ -459,13 +472,28 @@ function Pricingplans() {
             <p>Please review our <a href='https://www.contactformtoapi.com/terms-of-service/' target='_blank' >terms and conditions</a> for detailed information.</p>
             <p>If you have any questions, our <a href='link-to-support'>customer support</a> is ready to assist.</p>
             <p>Thank you for being a valued subscriber!</p>"
-          />
-        )}
-      </div>
-      <div style={{width: "30%", marginLeft: "20px"}}>
-         <a href="https://www.itpathsolutions.com/contact-us/" target="_blank" ><img src={ipsBanner} alt="" style={{width: "50vh", height:"50%"}}/></a>
-          <a href="https://apps.shopify.com/contact-form-to-any-api" target="_blank" ><img src={ratingBanner} alt="" style={{width: "50vh", marginTop: "7px"}}/></a>
-      </div>
+            />
+          )}
+        </div>
+        <div style={{ width: "30%", marginLeft: "40px" }}>
+          <a href="https://www.itpathsolutions.com/contact-us/" target="_blank">
+            <img
+              src={ipsBanner}
+              alt=""
+              style={{ width: "50vh", height: "50%" }}
+            />
+          </a>
+          <a
+            href="https://apps.shopify.com/contact-form-to-any-api"
+            target="_blank"
+          >
+            <img
+              src={ratingBanner}
+              alt=""
+              style={{ width: "50vh", marginTop: "7px" }}
+            />
+          </a>
+        </div>
       </div>
       <ToastContainer />
     </Page>
