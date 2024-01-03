@@ -221,17 +221,16 @@ function Pricingplans() {
               <div className="grid">
                 <div className={styles.gridItem}>
                   <div className={styles.boxHeading}>
-                    <Tooltip content="Your Current Plan" >
-                      <h4
-                        className={`${styles.boxHeadingText} ${
-                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                            ? styles.freeHeader
-                            : styles.premiumHeader
+
+                    <h4
+                      className={`${styles.boxHeadingText} ${user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                        ? styles.freeHeader
+                        : styles.premiumHeader
                         }`}
-                      >
-                        Your current plan
-                      </h4>
-                    </Tooltip>
+                    >
+                      Your current plan
+                    </h4>
+
                   </div>
                   <table className={styles.pricingTable} border={1}>
                     <thead>
@@ -239,7 +238,7 @@ function Pricingplans() {
                         <th scope="col"></th>
                         {subscriptionData?.map((item) => (
                           <th scope="col">
-                            <p>{item?.subscriptionName.toUpperCase()}</p>
+                            <p style={{ marginTop: '10px' }}>{item?.subscriptionName.toUpperCase()}</p>
                           </th>
                         ))}
                       </tr>
@@ -273,121 +272,120 @@ function Pricingplans() {
                           </div>
                           {item?.subscriptionName ===
                             SUBSCRIPTION_TYPES.FREE && (
-                            <div
-                              className="d-grid "
-                              style={{ visibility: "hidden" }}
-                            >
-                              <Button
-                                variant="secondary"
-                                className={`${
-                                  user?.subscriptionName !==
-                                  SUBSCRIPTION_TYPES.FREE
+                              <div
+                                className="d-grid "
+                                style={{ visibility: "hidden" }}
+                              >
+                                <Button
+                                  variant="secondary"
+                                  className={`${user?.subscriptionName !==
+                                    SUBSCRIPTION_TYPES.FREE
                                     ? styles.buttonSuccess
                                     : ""
-                                }`}
-                                disabled={
-                                  user?.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.FREE ||
-                                  (user &&
+                                    }`}
+                                  disabled={
                                     user?.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.FREE ||
+                                    (user &&
+                                      user?.subscriptionName ===
                                       SUBSCRIPTION_TYPES.PREMIUM) ||
-                                  user?.subscription?.cancel_at_period_end
-                                }
-                                onClick={handleOpen}
-                              >
-                                <span>
+                                    user?.subscription?.cancel_at_period_end
+                                  }
+                                  onClick={handleOpen}
+                                >
                                   <span>
-                                    <span className={styles.buttonFontStyle}>
-                                      {user?.subscriptionName ===
-                                      SUBSCRIPTION_TYPES.FREE
-                                        ? PLAN_TEXT.ACTIVE_PLAN
-                                        : PLAN_TEXT.CHOOSE_PLAN}
+                                    <span>
+                                      <span className={styles.buttonFontStyle}>
+                                        {user?.subscriptionName ===
+                                          SUBSCRIPTION_TYPES.FREE
+                                          ? PLAN_TEXT.ACTIVE_PLAN
+                                          : PLAN_TEXT.CHOOSE_PLAN}
+                                      </span>
                                     </span>
                                   </span>
-                                </span>
-                              </Button>
-                            </div>
-                          )}
+                                </Button>
+                              </div>
+                            )}
 
                           {item?.subscriptionName ===
                             SUBSCRIPTION_TYPES.PREMIUM && (
-                            <>
-                              {user?.subscriptionName !==
-                              SUBSCRIPTION_TYPES.PREMIUM ? (
-                                <div className="d-grid gap-2">
-                                  <Button
-                                    variant="primary"
-                                    onClick={() =>
-                                      handleCreateSubscription(
-                                        item?.subscriptionName,
-                                        item?.stripePriceId
-                                      )
-                                    }
-                                    disabled={
-                                      user?.subscriptionName ===
-                                      SUBSCRIPTION_TYPES.PREMIUM
-                                    }
-                                    loading={!user}
-                                  >
-                                    <span>
+                              <>
+                                {user?.subscriptionName !==
+                                  SUBSCRIPTION_TYPES.PREMIUM ? (
+                                  <div className="d-grid gap-2">
+                                    <Button
+                                      variant="primary"
+                                      onClick={() =>
+                                        handleCreateSubscription(
+                                          item?.subscriptionName,
+                                          item?.stripePriceId
+                                        )
+                                      }
+                                      disabled={
+                                        user?.subscriptionName ===
+                                        SUBSCRIPTION_TYPES.PREMIUM
+                                      }
+                                      loading={!user}
+                                    >
                                       <span>
-                                        <span
-                                          className={styles.buttonFontStyle}
-                                        >
-                                          {user?.subscriptionName ===
-                                          SUBSCRIPTION_TYPES.PREMIUM
-                                            ? PLAN_TEXT.CURRENT_PLAN
-                                            : PLAN_TEXT.UPGRADE_PLAN}
+                                        <span>
+                                          <span
+                                            className={styles.buttonFontStyle}
+                                          >
+                                            {user?.subscriptionName ===
+                                              SUBSCRIPTION_TYPES.PREMIUM
+                                              ? PLAN_TEXT.CURRENT_PLAN
+                                              : PLAN_TEXT.UPGRADE_PLAN}
+                                          </span>
                                         </span>
                                       </span>
-                                    </span>
-                                  </Button>
-                                </div>
-                              ) : (
-                                //   <Button
-                                //   disabled={
-                                //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
-                                //   }
-                                //   loading={!user}
-                                //   primary
-                                //   fullWidth
-                                //   onClick={() =>
-                                //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
-                                //   }
-                                // >
-                                //   <span>
-                                //     <span>
-                                //       <span>
-                                //         {user?.subscriptionName ===
-                                //           SUBSCRIPTION_TYPES.PREMIUM
-                                //           ? PLAN_TEXT.CURRENT_PLAN
-                                //           : PLAN_TEXT.UPGRADE_PLAN}
-                                //       </span>
-                                //     </span>
-                                //   </span>
-                                // </Button>
-                                <div className="d-grid gap-2">
-                                  <Button
-                                    variant="danger"
-                                    onClick={handleOpen}
-                                    disabled={
-                                      user?.subscription?.cancel_at_period_end
-                                    }
-                                  >
-                                    <span>
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  //   <Button
+                                  //   disabled={
+                                  //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                                  //   }
+                                  //   loading={!user}
+                                  //   primary
+                                  //   fullWidth
+                                  //   onClick={() =>
+                                  //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
+                                  //   }
+                                  // >
+                                  //   <span>
+                                  //     <span>
+                                  //       <span>
+                                  //         {user?.subscriptionName ===
+                                  //           SUBSCRIPTION_TYPES.PREMIUM
+                                  //           ? PLAN_TEXT.CURRENT_PLAN
+                                  //           : PLAN_TEXT.UPGRADE_PLAN}
+                                  //       </span>
+                                  //     </span>
+                                  //   </span>
+                                  // </Button>
+                                  <div className="d-grid gap-2">
+                                    <Button
+                                      variant="danger"
+                                      onClick={handleOpen}
+                                      disabled={
+                                        user?.subscription?.cancel_at_period_end
+                                      }
+                                    >
                                       <span>
-                                        <span
-                                          className={styles.buttonFontStyle}
-                                        >
-                                          {PLAN_TEXT.CANCEL_PLAN}
+                                        <span>
+                                          <span
+                                            className={styles.buttonFontStyle}
+                                          >
+                                            {PLAN_TEXT.CANCEL_PLAN}
+                                          </span>
                                         </span>
                                       </span>
-                                    </span>
-                                  </Button>
-                                </div>
-                              )}
-                            </>
-                          )}
+                                    </Button>
+                                  </div>
+                                )}
+                              </>
+                            )}
                         </td>
                       ))}
                       <tr>
@@ -432,14 +430,14 @@ function Pricingplans() {
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[0].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[1].features[featureKey][
-                                        innerKey
+                                      innerKey
                                       ]
                                     )}
                                   </td>
@@ -480,8 +478,8 @@ function Pricingplans() {
           <a href="https://www.itpathsolutions.com/contact-us/" target="_blank">
             <img
               src={ipsBanner}
-            alt=""
-              
+              alt=""
+
             />
           </a>
           <a
@@ -493,18 +491,18 @@ function Pricingplans() {
               alt=""
               style={{ width: "100%", marginTop: "7px" }}
             />
-            
+
           </a>
           <a
             href="https://apps.shopify.com/contact-form-to-any-api"
             target="_blank"
           >
-          <img
+            <img
               src={helpBanner}
               alt=""
               style={{ width: "100%", marginTop: "7px" }}
             />
-            </a>
+          </a>
         </div>
       </div>
       <ToastContainer />

@@ -95,6 +95,7 @@ const FormPreview = () => {
   const selectedBackground =
     appearanceFields && appearanceFields?.appearanceBackground;
 
+  console.log('selectedBackground', selectedBackground)
   const errorFields = useSelector(
     (state) => state?.formSetting?.validationData?.validationFields
   );
@@ -383,7 +384,7 @@ const FormPreview = () => {
       }
 
       const errorObj = {};
-      const cloneData = [...formFeildData]; 
+      const cloneData = [...formFeildData];
       let formData = {};
       formFeildData?.forEach((value) => {
         formData = { ...formData, [value.feildId]: "" };
@@ -504,15 +505,15 @@ const FormPreview = () => {
           </Layout>
         </SkeletonPage>
       ) : (
-        <div className={styles.previewCard}>
+        <div className={styles?.previewCard}>
           <div
-            className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
+            className={`${selectedBackground === 'none' ? styles?.previewBoxNone : styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
               }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${styles.formBuilder} ${selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
+                className={`${selectedBackground === 'none' ? styles?.formBuilderNone : styles.formBuilder} ${selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
                   } ${selectedBackground === "image" && styles.formImageBackground
                   } `}
                 style={{
@@ -521,7 +522,7 @@ const FormPreview = () => {
                     selectedBackground === "color"
                       ? appearanceFields?.formBackgroundColor
                       : selectedBackground === "none"
-                        ? "#fff"
+                        ? "transparent"
                         : "#fff",
                   backgroundImage:
                     selectedBackground === "image"

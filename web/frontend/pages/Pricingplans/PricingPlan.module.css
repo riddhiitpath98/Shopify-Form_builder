@@ -161,7 +161,9 @@ tbody td {
   /* top: -18px; */
 
   text-align: center;
+  /* position: absolute; */
 }
+
 .boxHeadingText {
   /* background: #007a5c;
   margin-bottom: 0;
@@ -171,19 +173,43 @@ tbody td {
   color: #fff;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
   font-weight: 400; */
+  top: 20px;
+  left: 60px;
+  z-index: 1;
+  background-color: #fff;
+  /* box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2); */
+  width: 17em;
+  padding: 15px;
   background: #007a5c;
   margin-bottom: 0;
   display: inline-block;
-  padding: 8px 15px;
+  padding: 10px 15px;
   border-radius: 10px;
   color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  /* box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px; */
   font-weight: 500;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
   width: max-content;
+}
+
+.boxHeadingText:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -1em;
+  margin-top: -1em;
+  left: 52%; /* change to 0% for left arrow */
+  top: 95%;
+  box-sizing: border-box;
+  border: 0.8em solid black;
+  border-color: #007a5c transparent transparent #007a5c;
+  transform-origin: 50% 50%;
+  transform: rotate(-135deg); /* change to 45 deg for left arrow */
+  /* box-shadow: -5px 5px 10px 0 rgba(0, 0, 0, 0.1); */
 }
 .freeHeader {
   top: 10px;
@@ -201,45 +227,44 @@ tbody td {
   font-size: 14px;
   font-weight: 500;
 }
-.buttonSuccess{
+.buttonSuccess {
   background-color: #007a5c !important;
   border: transparent !important;
 }
-.featureTitle{
+.featureTitle {
   padding: 20px 13px;
   background-color: #d3dddd;
-  
 }
-.featureHeader{
+.featureHeader {
   font-size: 18px;
 }
-.priceTitle{
+.priceTitle {
   font-size: 16px;
 }
-.tooltipContainer{
+.tooltipContainer {
   color: #007a5c;
 }
 
-.dashbordLeft{
+.dashbordLeft {
   width: 81.5%;
 }
 
-.dashbordRight{
+.dashbordRight {
   width: calc(100% - 79%);
   margin-left: 10px;
 }
 
-.dashbordRight a{
+.dashbordRight a {
   height: auto;
   display: inline-block;
   width: 100%;
 }
 
-.dashbordRight a:first-child{
+.dashbordRight a:first-child {
   height: auto;
 }
 
-.dashbordRight img{
+.dashbordRight img {
   width: 100%;
   height: 100%;
   display: block;

@@ -28,6 +28,7 @@ const AppearanceFields = ({ isEdit, tabId, toggleDrawer }) => {
   const [selectedColor, setSelectedColor] = useState("");
   const [showColorPicker, setShowColorPicker] = useState({});
   const [conditionalValue, setConditionalValue] = useState({});
+  console.log('conditionalValue: ', conditionalValue);
 
   const handleColorPickerToggle = (name) => {
     setShowColorPicker((prevShowColorPicker) => ({
