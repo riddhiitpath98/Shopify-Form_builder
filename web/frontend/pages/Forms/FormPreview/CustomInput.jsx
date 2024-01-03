@@ -61,10 +61,14 @@ export const CustomInput = ({
 
   let inputStyles = {};
   const selectedValue = appearanceFields && appearanceFields?.appearanceStyle;
-  if (selectedValue === "classicRounded" || selectedValue === "flatRounded") {
+  const formBackground = appearanceFields && appearanceFields?.appearanceBackground;
+  if (selectedValue === "classicRounded") {
     inputStyles = { borderRadius: "20px" };
   } else if (selectedValue === "flat") {
-    inputStyles = { boxShadow: "none" };
+    inputStyles = { boxShadow: "none", border: '0.5px solid lightgrey', background: 'none' };
+  }
+  else if (selectedValue === "flatRounded") {
+    inputStyles = { borderRadius: "20px", background: 'none', boxShadow: 'none', border: '0.5px solid lightgrey' };
   }
 
   const formSubmissionData = useSelector(

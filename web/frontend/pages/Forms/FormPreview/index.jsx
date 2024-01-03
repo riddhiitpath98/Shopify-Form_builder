@@ -95,7 +95,6 @@ const FormPreview = () => {
   const selectedBackground =
     appearanceFields && appearanceFields?.appearanceBackground;
 
-  console.log('selectedBackground', selectedBackground)
   const errorFields = useSelector(
     (state) => state?.formSetting?.validationData?.validationFields
   );

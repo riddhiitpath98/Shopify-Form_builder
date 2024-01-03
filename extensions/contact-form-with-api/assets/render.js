@@ -442,7 +442,6 @@ const catchFormDivAndAppendForm = async (data) => {
         } else errorElement.textContent = "";
       }
     });
-    console.log('recaptcha_response', recaptcha_response)
     const captchaError = document.getElementById("captcha_error");
     captchaError.textContent = recaptcha_response === "" ? "please varify Captcha" : "";
     if (enableRecaptcha) {
@@ -526,14 +525,20 @@ const catchFormDivAndAppendForm = async (data) => {
 
   let inputStyles = {};
   let appearanceStyle = appearanceFields && appearanceFields?.appearanceStyle;
-  if (
-    appearanceStyle === "classicRounded" ||
-    appearanceStyle === "flatRounded"
-  ) {
+  if (appearanceStyle === "classicRounded") {
     inputStyles.borderRadius = "20px";
   } else if (appearanceStyle === "flat") {
     inputStyles.boxShadow = "none";
+    inputStyles.border = '0.5px solid lightgrey';
+    inputStyles.background = 'none';
   }
+  else if (appearanceStyle === "flatRounded") {
+    inputStyles.borderRadius = "20px";
+    inputStyles.background = 'none';
+    inputStyles.boxShadow = 'none';
+    inputStyles.border = '0.5px solid lightgrey';
+  }
+
   const checkPlan = elements(user.subscriptionName, formElementData, true);
   if (checkPlan.length > 0) {
     setTimeout(() => {
@@ -1498,7 +1503,6 @@ const catchFormDivAndAppendForm = async (data) => {
 
         reCaptchaElement.setAttribute("data-sitekey", recaptchadata?.siteKey);
         captchaContainer.appendChild(reCaptchaElement);
-        console.log("captchaContainer: ", captchaContainer);
 
         const smallElement = document.createElement("small");
         const captchaErrorMsgElement = document.createElement("p");
@@ -1518,7 +1522,6 @@ const catchFormDivAndAppendForm = async (data) => {
         }, 2000);
 
         const captchaError = document.getElementById("captcha_error");
-        console.log('captchaError: ', captchaError);
         if (enableRecaptcha) {
           captchaContainer.style.display = "";
           captchaError.style.display = "";
