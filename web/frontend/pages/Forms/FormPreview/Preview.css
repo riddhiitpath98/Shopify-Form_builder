@@ -4,7 +4,7 @@
 /* textarea:focus{
   border: 1px solid rgb(99, 224, 255);
 } */
-.checkbox-label {
+.accept-terms-checkbox-label {
 border-color: aqua;
 }
 #rc-anchor-container{
@@ -15,4 +15,7 @@ position: absolute;
 .rc-anchor-pt{
 /* left: 15px !important; */
 right: 200px !important;
+}
+.Polaris-Select__Input {
+  padding-left: 10px !important;
 }

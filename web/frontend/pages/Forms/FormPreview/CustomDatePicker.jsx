@@ -23,7 +23,7 @@ const CustomDatePicker = ({
   };
 
   const customInputOptions = {
-    className: styles.classicInput,
+    className: styles.ipsFormPreviewInputClassicInput,
     placeholder: placeholder,
     readOnly: true,
   };

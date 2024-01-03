@@ -20,11 +20,11 @@ const SubMenuList = ({ submenus, isOpenMenu, setIsOpenMenu }) => {
   }, []);
   return (
     <ul
-      className={`${styles.subMenu} ${`dropdown ${isOpenMenu ? styles.show : ""
+      className={`${styles.ipsTabSubMenu} ${`dropdown ${isOpenMenu ? styles.ipsTabShow : ""
         }`}`}
     >
       {submenus.map(({ id, content, path, icon }) => (
-        <li key={id} className={styles.subMenuItems}>
+        <li key={id} className={styles.ipsTabSubMenuItems}>
           {id === "faq" ? (
             <Link
               to="https://www.contactformtoapi.com/#faq"
@@ -34,32 +34,32 @@ const SubMenuList = ({ submenus, isOpenMenu, setIsOpenMenu }) => {
                   Redirect.create(app, "https://www.contactformtoapi.com/#faq")
                 )
               }
-              className={`${styles.menuLink} ${location.pathname?.includes(path) ? styles.active : ""
+              className={`${styles.ipsTabMenuLink} ${location.pathname?.includes(path) ? styles.ipsTabActive : ""
                 }`}
             >
               <div style={{ margin: 0 }}>
                 <Icon
                   source={icon}
-                  className={`${location.pathname?.includes(path) ? styles.active : ""
+                  className={`${location.pathname?.includes(path) ? styles.ipsTabActive : ""
                     }`}
                 />
               </div>
-              <span className={styles.navTitle}>{content}</span>
+              <span className={styles.ipsTabNavTitle}>{content}</span>
             </Link>
           ) : (
             <Link
               to={path}
-              className={`${styles.menuLink} ${location.pathname?.includes(path) ? styles.active : ""
+              className={`${styles.ipsTabMenuLink} ${location.pathname?.includes(path) ? styles.ipsTabActive : ""
                 }`}
             >
               <div style={{ margin: 0 }}>
                 <Icon
                   source={icon}
-                  className={`${location.pathname?.includes(path) ? styles.active : ""
+                  className={`${location.pathname?.includes(path) ? styles.ipsTabActive : ""
                     }`}
                 />
               </div>
-              <span className={styles.navTitle}>{content}</span>
+              <span className={styles.ipsTabNavTitle}>{content}</span>
             </Link>
           )}
         </li>

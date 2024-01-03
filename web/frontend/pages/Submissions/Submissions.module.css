@@ -1,16 +1,4 @@
-.Polaris-Select__Input input.--pc-select-input {
-  margin: 10px;
-}
-/* .statusOption{
-    margin: 4px 8px;
-  }
-  .tableCell{
-    width: 20%;
-  } */
-/* .cardLayoutContainer{
-  max-width: 1024px;
-} */
-.modalTop {
+.ipsSubmissionModalHead {
   border-bottom: 1px dashed #dfe3e8;
   padding-bottom: 1.6rem;
   font-size: 1rem;
@@ -29,7 +17,7 @@
 .isReadElement {
   font-weight: 600;
 }
-.pagination_button {
+.ipsPaginationButton {
   display: flex;
   justify-content: flex-end;
   margin: 7px 15px;

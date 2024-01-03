@@ -30,22 +30,22 @@ const CommonFileInput = ({
   } = attributes || {};
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.ipsFormPreviewInputContainer}>
       <label
         htmlFor={inputId}
-        className={styles.classicLabel}
+        className={styles.ipsFormPreviewInputClassicLabel}
         style={{
           color: appearanceFields?.labelColor && appearanceFields?.labelColor,
         }}
       >
         {hideLabel ? "" : label}
       </label>
-      <span className={styles.textRequired}> {required ? " *" : ""}</span>
+      <span className={styles.ipsFormPreviewTextRequired}> {required ? " *" : ""}</span>
       <br />
       <input
         type={type}
         id={inputId}
-        className={styles.classicInput}
+        className={styles.ipsFormPreviewInputClassicInput}
         name={`${inputId}_${id}`}
         accept={acceptExtensions}
         placeholder={placeholder}
@@ -57,7 +57,7 @@ const CommonFileInput = ({
         onChange={(event) => handleFileChange(event)}
       />
       <span
-        className={styles.description}
+        className={styles.ipsPreviewDescription}
         style={{
           color:
             appearanceFields?.descriptionColor &&
@@ -67,7 +67,7 @@ const CommonFileInput = ({
         {description}
       </span>
       <small>
-        <p className={styles.errorMessage}>
+        <p className={styles.ipsFormPreviewErrorMessage}>
           {required ? formFeildData[index]?.errorMessage : null}
         </p>
       </small>

@@ -50,7 +50,7 @@ const ModalSubmission = ({
     >
       <Modal.Section>
         <div>
-          <div className={styles.modalTop}>
+          <div className={styles.ipsSubmissionModalHead}>
             <ExceptionList
               items={[
                 {

@@ -1,7 +1,7 @@
 import React from "react";
-import "./ToggleSwitch.css";
 import { useDispatch, useSelector } from "react-redux";
 import { editVisibleFlag } from "../../redux/actions/allActions";
+import "./ToggleSwitch.css";
 
 const ToggleSwitch = ({ items }) => {
   const dispatch = useDispatch();
@@ -11,8 +11,8 @@ const ToggleSwitch = ({ items }) => {
   }
 
   return (
-    <div className="container">
-      <div className="toggle-switch">
+    <div className="ips-switch-container">
+      <div className="ips-toggle-switch">
         <input type="checkbox" checked={items.isVisible} className="checkbox" name="isvisible_switch" id={`isvisible_switch_${items._id}`} onChange={(e) => handleVisibility(e, items._id)} />
         <label className="label" htmlFor={`isvisible_switch_${items._id}`}>
           <span className="inner" />

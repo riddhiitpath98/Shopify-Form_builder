@@ -5,7 +5,7 @@ import NotFound from "./pages/NotFound";
 import ExitIframe from "./pages/ExitIframe";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSubscription } from "./redux/actions/allActions";
+import { getAllSubscription, getAllTestSubscription } from "./redux/actions/allActions";
 import { useAppQuery } from "./hooks";
 
 export default function Routing({ ...props }) {
@@ -13,7 +13,8 @@ export default function Routing({ ...props }) {
   const dispatch = useDispatch();
   useEffect(() => {
     if (shop?.isSuccess)
-      dispatch(getAllSubscription({ country: shop?.data?.country, countryCode: shop?.data?.country_code, shopId: shop?.data?.id }))
+      // dispatch(getAllSubscription({ country: shop?.data?.country, countryCode: shop?.data?.country_code, shopId: shop?.data?.id }))
+    dispatch(getAllTestSubscription())
   }, [dispatch, shop.isSuccess])
 
   return (

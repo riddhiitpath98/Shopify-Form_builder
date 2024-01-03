@@ -35,6 +35,7 @@ import {
   DragHandleMinor,
   DuplicateMinor,
   TickMinor,
+  CancelMinor,
   DeleteMajor,
   EditMajor,
   AnalyticsMajor,
@@ -44,8 +45,6 @@ import {
   FirstOrderMajor,
   QuestionMarkInverseMajor,
   CircleInformationMajor,
-
-
 } from "@shopify/polaris-icons";
 
 export const Icons = {
@@ -93,7 +92,7 @@ export const Icons = {
   apiIntegrate: FirstOrderMajor,
   support: QuestionMarkInverseMajor,
   faq: CircleInformationMajor,
-
+  cancel: CancelMinor,
 };
 
 export const pricingPlanData = [
@@ -121,9 +120,7 @@ export const pricingPlanData = [
   },
   {
     heading: "Third Party Integration",
-    tableData: [
-      { title: "Google reCAPTCHA", unpaid: false },
-    ],
+    tableData: [{ title: "Google reCAPTCHA", unpaid: false }],
   },
   {
     heading: "Features",
@@ -184,36 +181,35 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const contactRegex = /^[2-9]{1}[0-9]{9}$/;
 
 export const validateTextField = (name, value) => {
-  if (name === 'accept_TNC') {
+  if (name === "accept_TNC") {
     if (!value) {
-      return 'Please accept terms and condition to continue payment';
+      return "Please accept terms and condition to continue payment";
     } else {
-      return '';
+      return "";
     }
   }
-  if (!value || String(value).trim() === '') {
-    return 'This field is required.'
+  if (!value || String(value).trim() === "") {
+    return "This field is required.";
   }
 
   switch (name) {
-    case 'email':
-      if (!value || String(value).trim() === '') {
-        return 'This field is required.'
+    case "email":
+      if (!value || String(value).trim() === "") {
+        return "This field is required.";
       } else if (!emailRegex.test(value)) {
-        return 'This is not a valid email format!'
-      } else return ''
+        return "This is not a valid email format!";
+      } else return "";
 
-    case 'contactNumber':
-      if (!value || String(value).trim() === '') {
-        return 'This field is required.'
+    case "contactNumber":
+      if (!value || String(value).trim() === "") {
+        return "This field is required.";
       } else if (!contactRegex.test(value)) {
-        return 'Please enter a valid contact number!'
-      } else return ''
-    default: return ''
+        return "Please enter a valid contact number!";
+      } else return "";
+    default:
+      return "";
   }
 };
-
-
 
 export const validationAttributes = [
   {
@@ -479,9 +475,9 @@ export const getIncrementedKeysData = (data) => {
 };
 
 export const SUBSCRIPTION_TYPES = {
-  FREE: 'free',
-  PREMIUM: "premium"
-}
+  FREE: "free",
+  PREMIUM: "premium",
+};
 
 export const PLAN_TEXT = {
   CHOOSE_PLAN: "Choose this Plan",
@@ -489,33 +485,35 @@ export const PLAN_TEXT = {
   CANCEL_PLAN: "Cancel Subscription",
   START_FREE_PLAN: "Start with Free Plan",
   ACTIVE_PLAN: "Your Active plan",
-  UPGRADE_PLAN: "Upgrade"
-
-}
+  UPGRADE_PLAN: "Upgrade",
+};
 
 export const handleRecurringChargeVal = (appName, shopData) => {
   const RECURRING_APPLICATION_CHARGE = {
     premium_subscription: {
-      "name": "Premium Subscription",
-      "amount": '050',
-      "isTest": true,
-      "currencyCode": "USD",
-      "interval": "EVERY_30_DAYS",
-      "trialDays": 1,
-      "replacementBehavior": "APPLY_IMMEDIATELY",
-      "return_url": `https://admin.shopify.com/store/${shopData?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`,
-      "cancel_url": `https://admin.shopify.com/store/${shopData?.domain?.split(".")[0]}/apps/${appName?.split(" ").join("-").toLowerCase()}/cancel`
-    }
+      name: "Premium Subscription",
+      amount: "050",
+      isTest: true,
+      currencyCode: "USD",
+      interval: "EVERY_30_DAYS",
+      trialDays: 1,
+      replacementBehavior: "APPLY_IMMEDIATELY",
+      return_url: `https://admin.shopify.com/store/${
+        shopData?.domain?.split(".")[0]
+      }/apps/${appName?.split(" ").join("-").toLowerCase()}/dashboard`,
+      cancel_url: `https://admin.shopify.com/store/${
+        shopData?.domain?.split(".")[0]
+      }/apps/${appName?.split(" ").join("-").toLowerCase()}/cancel`,
+    },
   };
 
-  return RECURRING_APPLICATION_CHARGE
-}
-
+  return RECURRING_APPLICATION_CHARGE;
+};
 
 //stripe live Ids
 export const PLAN_DETAILS = {
-  PREMIUM_USD: "price_1OSLFlHZlJ4bphZxZK8VOnnI"
-}
+  PREMIUM_USD: "price_1OSLFlHZlJ4bphZxZK8VOnnI",
+};
 
 // stripe test ids
 // export const PLAN_DETAILS = {

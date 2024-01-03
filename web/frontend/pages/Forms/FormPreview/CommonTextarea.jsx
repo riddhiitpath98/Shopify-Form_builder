@@ -30,24 +30,24 @@ const CommonTextarea = ({
     resizeTextarea,
   } = attributes || {};
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.ipsFormPreviewInputContainer}>
       <label
         htmlFor={inputId}
-        className={styles.classicLabel}
+        className={styles.ipsFormPreviewInputClassicLabel}
         style={{
           color: appearanceFields?.labelColor && appearanceFields?.labelColor,
         }}
       >
         {hideLabel ? "" : label}
       </label>
-      <span className={styles.textRequired}> {required ? " *" : ""}</span>
+      <span className={styles.ipsFormPreviewTextRequired}> {required ? " *" : ""}</span>
       <br />
       <textarea
         placeholder={placeholder}
         id={inputId}
         rows={3}
         name={`${inputId}_${id}`}
-        className={styles.classicInput}
+        className={styles.ipsFormPreviewInputClassicInput}
         required={""}
         maxLength={limit_chars ? limit_chars_count : undefined}
         style={{
@@ -60,7 +60,7 @@ const CommonTextarea = ({
         onChange={handleChange}
       />
       <span
-        className={styles.description}
+        className={styles.ipsPreviewDescription}
         style={{
           color:
             appearanceFields?.descriptionColor &&
@@ -70,7 +70,7 @@ const CommonTextarea = ({
         {description}
       </span>
       <small>
-        <p className={styles.errorMessage}>
+        <p className={styles.ipsFormPreviewErrorMessage}>
           {required ? formFeildData[index]?.errorMessage : null}
         </p>
       </small>

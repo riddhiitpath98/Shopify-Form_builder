@@ -145,24 +145,24 @@ export const CustomInput = ({
     case "checkbox":
       if (id === "accept_terms") {
         return (
-          <div className={styles.inputContainer}>
+          <div className={styles.ipsFormPreviewInputContainer}>
             <div
-              style={{ width: attributes?.column_width }}
-              className={styles.checkBoxWrapper}
+              style={{ width: widthInput }}
+              className={styles.ipsFormPreviewInputCheckboxWrapper}
             >
               <input
-                className={styles.checkBoxInput}
+                className={styles.ipsFormPreviewInputCheckboxInput}
                 id={inputId}
                 type={type}
                 name={`${inputId}_${id}`}
                 onChange={(event) => handleChange(event)}
               />
               <label
-                className={`${styles.checkBoxLabel} checkbox-label`}
+                className={`${styles.ipsFormPreviewInputCheckboxLabel} accept-terms-checkbox-label`}
                 htmlFor={inputId}
               >
                 <span
-                  className={styles.labelContent}
+                  className={styles.ipsPreviewDescription}
                   style={{
                     color:
                       appearanceFields?.labelColor &&
@@ -171,13 +171,13 @@ export const CustomInput = ({
                   dangerouslySetInnerHTML={{ __html: label }}
                 />
               </label>
-              <span className={styles.textRequired}>
+              <span className={styles.ipsFormPreviewTextRequired}>
                 {" "}
                 {required ? " *" : ""}
               </span>
             </div>
             <span
-              className={styles.description}
+              className={styles.ipsPreviewDescription}
               style={{
                 color:
                   appearanceFields?.descriptionColor &&
@@ -187,7 +187,7 @@ export const CustomInput = ({
               {description}
             </span>
             <small>
-              <p className={styles.errorMessage}>
+              <p className={styles.ipsFormPreviewErrorMessage}>
                 {required ? formFeildData[index]?.errorMessage : null}
               </p>
             </small>
@@ -196,10 +196,10 @@ export const CustomInput = ({
       } else {
         return (
           <>
-            <div className={styles.inputContainer}>
+            <div className={styles.ipsFormPreviewInputContainer}>
               <label
                 htmlFor={inputId}
-                className={styles.classicLabel}
+                className={styles.ipsFormPreviewInputClassicLabel}
                 style={{
                   color:
                     appearanceFields?.labelColor &&
@@ -208,7 +208,7 @@ export const CustomInput = ({
               >
                 {hideLabel ? "" : label}
               </label>
-              <span className={styles.textRequired}>
+              <span className={styles.ipsFormPreviewTextRequired}>
                 {" "}
                 {required ? " *" : ""}
               </span>
@@ -224,9 +224,9 @@ export const CustomInput = ({
               >
                 {options?.map((option) => (
                   <li style={{ width: inputWidth }} key={option.value}>
-                    <div className={styles.checkBoxWrapper}>
+                    <div className={styles.ipsFormPreviewInputCheckboxWrapper}>
                       <label
-                        className={styles.checkBoxLabel}
+                        className={styles.ipsFormPreviewInputCheckboxLabel}
                         style={{
                           color:
                             appearanceFields?.optionColor &&
@@ -234,7 +234,7 @@ export const CustomInput = ({
                         }}
                       >
                         <input
-                          className={styles.checkBoxInput}
+                          className={styles.ipsFormPreviewInputCheckboxInput}
                           type={type}
                           value={option.value}
                           id={inputId}
@@ -254,7 +254,7 @@ export const CustomInput = ({
                 ))}
               </ul>
               <span
-                className={styles.description}
+                className={styles.ipsPreviewDescription}
                 style={{
                   color:
                     appearanceFields?.descriptionColor &&
@@ -264,7 +264,7 @@ export const CustomInput = ({
                 {description}
               </span>
               <small>
-                <p className={styles.errorMessage}>
+                <p className={styles.ipsFormPreviewErrorMessage}>
                   {required ? formFeildData[index]?.errorMessage : null}
                 </p>
               </small>
@@ -276,10 +276,10 @@ export const CustomInput = ({
     case "radio":
       return (
         <>
-          <div className={styles.inputContainer}>
+          <div className={styles.ipsFormPreviewInputContainer}>
             <label
               htmlFor={inputId}
-              className={styles.classicLabel}
+              className={styles.ipsFormPreviewInputClassicLabel}
               style={{
                 color:
                   appearanceFields?.labelColor && appearanceFields?.labelColor,
@@ -287,7 +287,7 @@ export const CustomInput = ({
             >
               {hideLabel ? "" : label}
             </label>
-            <span className={styles.textRequired}> {required ? " *" : ""}</span>
+            <span className={styles.ipsFormPreviewTextRequired}> {required ? " *" : ""}</span>
             <ul
               style={{
                 listStyleType: "none",
@@ -300,9 +300,9 @@ export const CustomInput = ({
             >
               {radio_options?.map((option) => (
                 <li key={option.value} style={{ width: inputWidth }}>
-                  <div className={styles.checkBoxWrapper}>
+                  <div className={styles.ipsFormPreviewInputCheckboxWrapper}>
                     <label
-                      className={styles.checkBoxLabel}
+                      className={styles.ipsFormPreviewInputCheckboxLabel}
                       style={{
                         color:
                           appearanceFields?.optionColor &&
@@ -310,7 +310,7 @@ export const CustomInput = ({
                       }}
                     >
                       <input
-                        className={styles.checkBoxInput}
+                        className={styles.ipsFormPreviewInputCheckboxInput}
                         type={type}
                         id={inputId}
                         name={`${inputId}_${id}`}
@@ -330,7 +330,7 @@ export const CustomInput = ({
               ))}
             </ul>
             <span
-              className={styles.description}
+              className={styles.ipsPreviewDescription}
               style={{
                 color:
                   appearanceFields?.descriptionColor &&
@@ -340,7 +340,7 @@ export const CustomInput = ({
               {description}
             </span>
             <small>
-              <p className={styles.errorMessage}>
+              <p className={styles.ipsFormPreviewErrorMessage}>
                 {required ? formFeildData[index]?.errorMessage : null}
               </p>
             </small>
@@ -391,10 +391,10 @@ export const CustomInput = ({
       );
     case "select":
       return (
-        <div className={styles.inputContainer}>
+        <div className={styles.ipsFormPreviewInputContainer}>
           <label
             htmlFor={inputId}
-            className={styles.classicLabel}
+            className={styles.ipsFormPreviewInputClassicLabel}
             style={{
               color:
                 appearanceFields?.labelColor && appearanceFields?.labelColor,
@@ -402,11 +402,11 @@ export const CustomInput = ({
           >
             {hideLabel ? "" : label}
           </label>
-          <span className={styles.textRequired}> {required ? " *" : ""}</span>
+          <span className={styles.ipsFormPreviewTextRequired}> {required ? " *" : ""}</span>
           <select
             name={`${inputId}_${id}`}
             id={inputId}
-            className={styles.classicInput}
+            className={styles.ipsFormPreviewInputClassicInput}
             defaultValue={default_value}
             value={formSubmissionData[`${inputId}_${id}`]}
             style={{ ...inputStyles, width: widthInput }}
@@ -420,7 +420,7 @@ export const CustomInput = ({
             ))}
           </select>
           <span
-            className={styles.description}
+            className={styles.ipsPreviewDescription}
             style={{
               color:
                 appearanceFields?.descriptionColor &&
@@ -430,7 +430,7 @@ export const CustomInput = ({
             {description}
           </span>
           <small>
-            <p className={styles.errorMessage}>
+            <p className={styles.ipsFormPreviewErrorMessage}>
               {required ? formFeildData[index]?.errorMessage : null}
             </p>
           </small>
@@ -440,10 +440,10 @@ export const CustomInput = ({
     case "hidden":
       return (
         <div
-          className={styles.inputContainer}
+          className={styles.ipsFormPreviewInputContainer}
           style={{ display: "none", visibility: "hidden", width: widthInput }}
         >
-          <label htmlFor={inputId} className={styles.classicLabel}>
+          <label htmlFor={inputId} className={styles.ipsFormPreviewInputClassicLabel}>
             <span data-label="Hidden">{label}</span>
           </label>
 
@@ -458,9 +458,9 @@ export const CustomInput = ({
       );
     case "editor":
       return (
-        <div className={styles.inputContainer}>
+        <div className={styles.ipsFormPreviewInputContainer}>
           <div
-            className={styles.paragraphInput}
+            className={styles.ipsFormPreviewParagraphInput}
             style={{
               width: widthInput,
               color:
@@ -476,20 +476,20 @@ export const CustomInput = ({
       );
     case "heading":
       return (
-        <div className={styles.inputContainer}>
+        <div className={styles.ipsFormPreviewInputContainer}>
           <h3
-            className={styles.headingTitle}
+            className={styles.ipsFormPreviewHeadingTitle}
             dangerouslySetInnerHTML={{ __html: heading }}
           />
           <p
-            className={styles.headingCaption}
+            className={styles.ipsFormPreviewHeadingCaption}
             dangerouslySetInnerHTML={{ __html: caption }}
           />
         </div>
       );
     case "HTML":
       return (
-        <div className={styles.inputContainer}>
+        <div className={styles.ipsFormPreviewInputContainer}>
           <div
             dangerouslySetInnerHTML={{ __html: htmlCode ? htmlCode : caption }}
           />

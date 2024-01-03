@@ -8,6 +8,7 @@ import {
   SUBSCRIPTION_TYPES,
   handleRecurringChargeVal,
 } from "../../constant";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { addShopData } from "../../redux/actions/allActions";
 import { useAppBridge } from "@shopify/app-bridge-react";
@@ -15,9 +16,12 @@ import { addShopId } from "../../redux/reducers/appIdSlice";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "../StripeCardPayment";
-import axios from "axios";
 import { Redirect } from "@shopify/app-bridge/actions";
 import { Button } from "react-bootstrap";
+import {
+  capitalizeFirstLetter,
+  capitalizeFirstLetterAndAPI
+} from "../../utils/function";
 import styles from "./PricingPlan.module.css";
 const stripePromise = loadStripe("pk_live_IGCZ91wblgKajj7dxA8xci0E");
 // const stripePromise = loadStripe("pk_test_51Ns1GtSEo6lSgy9nBDPpMCyJkpcuDTYpDo3VV3HZ7kgxWS2URSwUqWL7ShhgXQwWZLCUXHYfPSr5grIM9SCaus5r00DHhniALW");
@@ -38,23 +42,6 @@ export default function PlanModal({
   );
   const appName = useSelector((state) => state?.shopId?.appName);
   const user = useSelector((state) => state?.user?.userData?.user);
-  const renderStatusIcon = (status) => {
-    if (status === true) {
-      return (
-        <span className={styles.priceValue}>
-          <Icon source={Icons.tick} color="primary" />
-        </span>
-      );
-    } else if (status === false || status === null) {
-      return (
-        <span className={styles.priceValue}>
-          <Icon source={Icons.divider} color="base" />
-        </span>
-      );
-    } else {
-      return status;
-    }
-  };
 
   const handleCreateSubscription = async (plan) => {
     if (plan === SUBSCRIPTION_TYPES.FREE) {
@@ -147,11 +134,30 @@ export default function PlanModal({
         });
     }
   };
+
   const removeUnderScoreNdSetFirstLetterCapital = (key) => {
     let string = "";
     string = key.replace(/_/g, " ");
     string = string[0].toUpperCase() + string.substring(1);
     return string;
+  };
+
+  const renderStatusIcon = (status) => {
+    if (status === true) {
+      return (
+        <span className={styles.planPriceValue}>
+          <Icon source={Icons.tick} color="primary" />
+        </span>
+      );
+    } else if (status === false || status === null) {
+      return (
+        <span className={styles.planPriceValue}>
+          <Icon source={Icons.cancel} color="critical" />
+        </span>
+      );
+    } else {
+      return status;
+    }
   };
 
   return (
@@ -175,22 +181,22 @@ export default function PlanModal({
             <LegacyCard>
               <LegacyCard.Section>
                 <div className="grid">
-                  <div className={styles.gridItem}>
-                    <div className={styles.boxHeading}>
-                      <h4
-                        className={`${styles.boxHeadingText} ${
+                  <div className={styles.planGridItem}>
+                    <div className={styles.planBoxHeading}>
+                      {/* <h4
+                        className={`${styles.planBoxHeadingText} ${
                           user === undefined ||
                           (!Object?.keys(user).length > 0 &&
                             user?.subscriptionName !==
                               SUBSCRIPTION_TYPES.PREMIUM)
-                            ? styles.freeHeader
-                            : styles.premiumHeader
+                            ? styles.freePlanHeader
+                            : styles.premiumPlanHeader
                         }`}
                       >
                         {PLAN_TEXT.CURRENT_PLAN}
-                      </h4>
+                      </h4> */}
                     </div>
-                    <table className={styles.pricingTable} border={1}>
+                    <table className={styles.planPicingTable} border={1}>
                       <thead>
                         <tr>
                           <th scope="col"></th>
@@ -203,28 +209,28 @@ export default function PlanModal({
                       </thead>
                       <tbody>
                         <th scope="row" className={styles.rowTransparent}>
-                          <div className={styles.rowTitle}>
-                            <span>Price</span>
+                          <div className={styles.planRowTitle}>
+                            <span className={styles.planPriceTitle}>Price</span>
                           </div>
                         </th>
                         {subscriptionData?.map((item) => (
-                          <td className={styles.pricingRow}>
-                            {/* <div className={styles.trialDays}>3 days trial</div> */}
-                            <div className={styles.monthlyPrice}>
-                              <span className={styles.monthlyPriceCur}>
+                          <td className={styles.planPricingRow}>
+                            {/* <div className={styles.planTrialDays}>3 days trial</div> */}
+                            <div className={styles.planMonthlyPrice}>
+                              <span className={styles.planMonthlyPriceCur}>
                                 {item.curruncyType}
                               </span>
-                              <span className={styles.priceValue}>
-                                <span className={styles.price}>
+                              <span className={styles.planPriceValue}>
+                                <span className={styles.planPrice}>
                                   <span>
                                     {/* <sub className={styles.dollar}>$</sub> */}
-                                    <span className={styles.rupees}>
+                                    <span className={styles.planRupees}>
                                       {item.price}
                                     </span>
                                   </span>
                                 </span>
                               </span>
-                              <span className={styles.month}>
+                              <span className={styles.planMonth}>
                                 /<span>mo</span>
                               </span>
                             </div>
@@ -234,7 +240,7 @@ export default function PlanModal({
                                 className={`${
                                   item.subscriptionName ===
                                   SUBSCRIPTION_TYPES.FREE
-                                    ? styles.buttonSuccess
+                                    ? styles.planButtonSuccess
                                     : ""
                                 }`}
                                 onClick={() =>
@@ -246,12 +252,12 @@ export default function PlanModal({
                               >
                                 {item.subscriptionName ===
                                 SUBSCRIPTION_TYPES.FREE ? (
-                                  <span className={styles.buttonFontStyle}>
+                                  <span className={styles.planButtonFontStyle}>
                                     {" "}
                                     {PLAN_TEXT?.START_FREE_PLAN}
                                   </span>
                                 ) : (
-                                  <span className={styles.buttonFontStyle}>
+                                  <span className={styles.planButtonFontStyle}>
                                     {" "}
                                     {PLAN_TEXT?.UPGRADE_PLAN}
                                   </span>
@@ -260,40 +266,55 @@ export default function PlanModal({
                             </div>
                           </td>
                         ))}
-
+                        <tr>
+                          <th colSpan={3} className={styles.planFeatureTitle}>
+                            <span className={styles.planTableHeader}>
+                              <span className={styles.planFeatureHeader}>
+                                Features
+                              </span>
+                            </span>
+                          </th>
+                        </tr>
                         {subscriptionData.length > 0 &&
                           Object?.keys(subscriptionData[0]?.features).map(
                             (featureKey) => (
                               <React.Fragment key={featureKey}>
                                 <tr>
                                   <th colSpan={3}>
-                                    <span className={styles.tableHeader}>
+                                    <span className={styles.planTableHeader}>
                                       <span>
-                                        {removeUnderScoreNdSetFirstLetterCapital(
-                                          featureKey
-                                        )}
+                                        {capitalizeFirstLetter(featureKey)}
                                       </span>
                                     </span>
                                   </th>
                                 </tr>
 
                                 {Object.entries(
-                                  subscriptionData[0].features[featureKey]
-                                ).map(([innerKey, innerValue]) => (
-                                  <tr key={innerKey}>
-                                    <th scope="row" className={styles.rowData}>
-                                      <div className={styles.rowTitle}>
-                                        <dl className={styles.labelName}>
-                                          <dt className={styles.labelText}>
+                                  subscriptionData[0]?.features[featureKey]
+                                ).map(([index, feature]) => (
+                                  <tr key={index}>
+                                    <th
+                                      scope="row"
+                                      className={styles.planRowData}
+                                    >
+                                      <div className={styles.planRowTitle}>
+                                        <dl className={styles.planLabelName}>
+                                          <dt className={styles.planLabelText}>
                                             <span>
-                                              {removeUnderScoreNdSetFirstLetterCapital(
-                                                innerKey
+                                              {capitalizeFirstLetter(
+                                                feature?.label
                                               )}
                                             </span>
                                           </dt>
                                           <dd
-                                            className={styles.labelDescription}
-                                          ></dd>
+                                            className={
+                                              styles.planLabelDescription
+                                            }
+                                          >
+                                            {capitalizeFirstLetterAndAPI(
+                                              feature?.description
+                                            )}
+                                          </dd>
                                         </dl>
                                       </div>
                                     </th>
@@ -301,14 +322,14 @@ export default function PlanModal({
                                       {renderStatusIcon(
                                         subscriptionData[0].features[
                                           featureKey
-                                        ][innerKey]
+                                        ][index].value
                                       )}
                                     </td>
                                     <td>
                                       {renderStatusIcon(
                                         subscriptionData[1].features[
                                           featureKey
-                                        ][innerKey]
+                                        ][index].value
                                       )}
                                     </td>
                                   </tr>

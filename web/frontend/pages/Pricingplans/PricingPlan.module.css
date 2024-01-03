@@ -1,4 +1,4 @@
-.gridItem {
+.planGridItem {
   margin-top: 15px;
   overflow: auto;
   width: 100%;
@@ -10,18 +10,18 @@
   font-weight: 400;
   padding: 10px 15px;
 }
-.rowTitle {
+.planRowTitle {
   color: #212b35;
   font-size: 14px;
-  font-weight: 700;
+  /* font-weight: 700; */
 }
-.pricingRow {
+.planPricingRow {
   min-width: 165px;
   text-align: center;
   width: 33%;
   padding: 10px 15px;
 }
-.pricingTable {
+.planPicingTable {
   border: 1px solid #dfe3e8;
   border-collapse: collapse;
   border-spacing: 0;
@@ -57,8 +57,8 @@ tbody td {
   width: 33%;
   padding: 10px 15px;
 }
-.tableHeader {
-  font-size: 14px;
+.planTableHeader {
+  font-size: 16px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0;
@@ -68,23 +68,23 @@ tbody td {
   font-weight: 700;
   line-height: 1.222;
 }
-.labelName {
+.planLabelName {
   margin: 0;
 }
-.labelText {
+.planLabelText {
   display: block;
   margin-bottom: 3px;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
 }
-.rowData {
+.planRowData {
   background-color: transparent;
 }
-.labelDescription {
+.planLabelDescription {
   color: #637381;
   font-size: 0.9375em;
   margin-left: 0;
 }
-.priceValue {
+.planPriceValue {
   font-size: 1em;
   display: inline-block;
   line-height: 1;
@@ -92,14 +92,14 @@ tbody td {
 .badge {
   opacity: 0;
 }
-.monthlyPrice {
+.planMonthlyPrice {
   align-items: baseline;
   display: flex;
   justify-content: center;
   padding-bottom: 20px;
   padding-top: 20px;
 }
-.monthlyPriceCur {
+.planMonthlyPriceCur {
   display: inline-block;
   line-height: 1;
   align-self: flex-start;
@@ -109,7 +109,7 @@ tbody td {
   padding-top: 0.2em;
   font-size: 0.75em;
 }
-.price {
+.planPrice {
   color: #212b35;
   /* font-family: ShopifySans, Helvetica, Arial, sans-serif; */
   font-size: 35px;
@@ -125,7 +125,7 @@ tbody td {
   margin-top: 0.3em;
   padding-right: 3px;
 }
-.month {
+.planMonth {
   display: inline-block;
   line-height: 1;
   font-size: 0.75em;
@@ -136,7 +136,7 @@ tbody td {
   padding: 0 5px;
   text-decoration: line-through;
 }
-.rupees {
+.planRupees {
   display: inline-block;
   vertical-align: top;
   font-size: 30px;
@@ -152,32 +152,29 @@ tbody td {
   display: flex;
   gap: 0.5rem;
 }
-.gridItem {
+.planGridItem {
   overflow-x: auto;
   width: 100%;
 }
-.boxHeading {
+.planBoxHeading {
   position: relative;
   /* top: -18px; */
-
   text-align: center;
 }
-.boxHeadingText {
-  /* background: #007a5c;
-  margin-bottom: 0;
-  display: inline-block;
-  padding: 8px 15px;
-  border-radius: 10px;
-  color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-  font-weight: 400; */
+.planBoxHeadingText {
+  top: 20px;
+  left: 60px;
+  z-index: 1;
+  background-color: #fff;
+  width: 17em;
+  padding: 15px;
   background: #007a5c;
   margin-bottom: 0;
   display: inline-block;
-  padding: 8px 15px;
+  padding: 10px 15px;
   border-radius: 10px;
   color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  /* box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px; */
   font-weight: 500;
   position: absolute;
   left: 50%;
@@ -185,61 +182,79 @@ tbody td {
   cursor: pointer;
   width: max-content;
 }
-.freeHeader {
+
+.planBoxHeadingText:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin-left: -1em;
+  margin-top: -1em;
+  left: 52%; /* change to 0% for left arrow */
+  top: 95%;
+  box-sizing: border-box;
+  border: 0.8em solid black;
+  border-color: #007a5c transparent transparent #007a5c;
+  transform-origin: 50% 50%;
+  transform: rotate(-135deg); /* change to 45 deg for left arrow */
+  /* box-shadow: -5px 5px 10px 0 rgba(0, 0, 0, 0.1); */
+}
+.freePlanHeader {
   top: 10px;
 }
-.premiumHeader {
+.premiumPlanHeader {
   top: 10px;
   left: 83%;
 }
-.trialDays {
+.planTrialDays {
   height: 21px;
 }
-.buttonFontStyle {
+.planButtonFontStyle {
   font-family: "-apple-system, BlinkMacSystemFont, " San Francisco ", " Segoe UI
     ", Roboto, " Helvetica Neue ", sans-serif";
   font-size: 14px;
   font-weight: 500;
 }
-.buttonSuccess{
+.planButtonSuccess{
   background-color: #007a5c !important;
   border: transparent !important;
 }
-.featureTitle{
+.planFeatureTitle{
   padding: 20px 13px;
-  background-color: #d3dddd;
+  background-color: #efefef;
   
 }
-.featureHeader{
+.planFeatureHeader{
   font-size: 18px;
 }
-.priceTitle{
+.planPriceTitle{
   font-size: 16px;
+  font-weight: 700;
 }
-.tooltipContainer{
+.planTooltipContainer{
   color: #007a5c;
 }
 
-.dashbordLeft{
-  width: 81.5%;
+.planPageLeft{
+  width: 80%;
 }
 
-.dashbordRight{
-  width: calc(100% - 79%);
+.planPageRight{
+  width: calc(100% - 80%);
   margin-left: 10px;
 }
 
-.dashbordRight a{
+.planPageRight a{
   height: auto;
   display: inline-block;
   width: 100%;
 }
 
-.dashbordRight a:first-child{
+.planPageRight a:first-child{
   height: auto;
 }
 
-.dashbordRight img{
+.planPageRight img{
   width: 100%;
   height: 100%;
   display: block;

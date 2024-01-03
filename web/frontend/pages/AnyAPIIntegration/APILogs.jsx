@@ -137,7 +137,7 @@ const APILogs = () => {
           </a>
         </IndexTable.Cell>
         <IndexTable.Cell>{findAPINameById(items?.apiId)}</IndexTable.Cell>
-        <IndexTable.Cell className="custom-cell">{JSON.stringify(items?.log)}</IndexTable.Cell>
+        <IndexTable.Cell className="ips-custom-cell">{JSON.stringify(items?.log)}</IndexTable.Cell>
         <IndexTable.Cell>
           {moment(items?.createdAt).format("YYYY-MM-DD")}
         </IndexTable.Cell>
@@ -167,7 +167,7 @@ const APILogs = () => {
             {rowMarkup}
           </IndexTable>
           {allApiLogsDataArr.length < total_count ? (
-            <div className="pagination_button">
+            <div className="ips-pagination_button">
               <Button primary onClick={fetchMoreData}>
                 Load More
               </Button>

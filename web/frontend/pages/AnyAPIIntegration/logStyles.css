@@ -1,4 +1,4 @@
-.modalTop {
+.ips-logs-modal-head {
     border-bottom: 1px dashed #dfe3e8;
     padding-bottom: 1.6rem;
     font-size: 1rem;
@@ -7,12 +7,13 @@
   .Polaris-ExceptionList__Item{
     margin-bottom: 0.7rem;
   }
-  .pagination_button {
+  .ips-pagination_button {
     display: flex;
     justify-content: flex-end;
     margin: 7px 15px;
     padding: 10px;
   }
-  .custom-cell {
+  .ips-custom-cell {
     white-space: normal !important;
   }
+  

@@ -120,7 +120,7 @@ export const InputTypeProvider = ({
             id={id}
             name={name}
             onChange={(event) => handleTagChange(event)}
-            style={{ width: "80%", resize: "none", maxHeight: "200px", minHeight: "80px" }}
+            style={{ width: "80%", resize: "none", maxHeight: "200px", minHeight: "80px", paddingLeft: "0.3rem"}}
             rows={3}
             placeholder="Type an option and press Enter"
           ></textarea>

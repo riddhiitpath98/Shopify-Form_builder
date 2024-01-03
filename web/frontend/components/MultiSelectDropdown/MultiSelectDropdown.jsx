@@ -7,6 +7,13 @@ const MultiSelectDropdown = ({
   handleOptionSelect,
   title,
 }) => {
+  const customStyles = {
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 9999,
+      padding: "0.3rem"
+    }),
+  };
   return (
     <>
       <label htmlFor="multi-select">{title}</label>
@@ -16,7 +23,7 @@ const MultiSelectDropdown = ({
         value={selectedOptions}
         onChange={handleOptionSelect}
         options={options}
-        styles={{ menu: (provided) => ({ ...provided, zIndex: 9999 }) }}
+        styles={customStyles}
         isMulti
         closeMenuOnSelect={false}
         components={{
@@ -28,17 +35,19 @@ const MultiSelectDropdown = ({
   );
 };
 
-const OptionComponent = (props) => (
-  <div>
+const OptionComponent = (props) => 
+  (
+  <div >
+    {/* {console.log('first', props)} */}
     <input
-      id="file_options"
+      id={props?.innerProps?.id} // Unique ID for each checkbox
       name="file_options"
       type="checkbox"
       checked={props.isSelected}
       onChange={() => props.selectOption(props.data)}
       style={{ marginRight: "5px" }}
     />
-    <label htmlFor="file_options">{props.label}</label>
+    <label htmlFor={props?.innerProps?.id}>{props.label}</label>
   </div>
 );
 
@@ -54,4 +63,4 @@ const RemoveComponent = (props) => (
   </button>
 );
 
-export default MultiSelectDropdown;
+export default React.memo(MultiSelectDropdown);

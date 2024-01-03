@@ -1,4 +1,4 @@
-.layoutContainer {
+.ipsContactusLayoutContainer {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -10,26 +10,18 @@
     width: 250px;
   } */
 
-.submissions {
+.ipsContactusSubmissions {
   display: flex;
   align-items: center;
   width: 150px;
 }
 
-/* .saveButton{
-    margin-top: 1.4rem;
-  } */
-
-.formLayoutContainer {
-  /* max-width: 800px; */
-}
-
-.mapFeildContainer {
+.ipsAPIMapFeildContainer {
   display: flex !important;
   align-items: center;
 }
 
-.supportIcon {
+.ipsAPISupportIcon {
   width: 15px;
   height: 15px;
   margin-left: 3px !important;

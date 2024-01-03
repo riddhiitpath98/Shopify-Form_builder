@@ -138,7 +138,7 @@ function APISettingsList() {
       fullWidth
       title="Contact Form with API List"
       primaryAction={{
-        content: "Add new API",
+        content: "Add New API",
         onAction: () => handleAddAPIData(),
       }}
     >

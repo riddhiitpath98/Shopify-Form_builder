@@ -82,7 +82,7 @@ const FeedbackForm = () => {
       <div>
         <Layout>
           <Layout.Section>
-            <div className={styles.formLayoutContainer}>
+            <div className={styles.ipsContactusFormLayoutContainer}>
               <LegacyCard sectioned>
                 <Form onSubmit={handleSubmit} noValidate>
                   <FormLayout>

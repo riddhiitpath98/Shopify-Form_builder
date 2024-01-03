@@ -170,11 +170,11 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   useEffect(() => {
     if (isSaveOrUpdate) {
-      dispatch(clearForm());
-      dispatch(setFormSubmitted(false));
-      dispatch(setShowMessage(false));
-      fullscreen.dispatch(Fullscreen.Action.EXIT);
-      navigate("/form", { replace: true });
+      // dispatch(clearForm());
+      // dispatch(setFormSubmitted(false));
+      // dispatch(setShowMessage(false));
+      // fullscreen.dispatch(Fullscreen.Action.EXIT);
+      // navigate("/form", { replace: true });
     }
   }, [isSaveOrUpdate]);
   useEffect(() => {
@@ -206,7 +206,7 @@ const Topbar = ({ handleRedirectToForm }) => {
               <TextField
                 labelHidden
                 name="title"
-                placeholder="Name your Form"
+                placeholder="Enter Form Name"
                 value={titleValue?.title}
                 onChange={(value) => handleChange("title", value)}
               />
@@ -214,14 +214,14 @@ const Topbar = ({ handleRedirectToForm }) => {
             <div className={styles.itemViewPort}>
               <ul className={styles.viewPortSelector}>
                 <li
-                  className={`${styles.mobileView} ${selectedViewPort === "mobile" ? styles.active : ""
+                  className={`${styles.mobileView} ${selectedViewPort === "mobile" ? styles.ipsTabActive : ""
                     }`}
                   onClick={() => handleViewPortClick("mobile")}
                 >
                   <Icon source={Icons.mobile} />
                 </li>
                 <li
-                  className={`${styles.desktopView} ${selectedViewPort === "desktop" ? styles.active : ""
+                  className={`${styles.desktopView} ${selectedViewPort === "desktop" ? styles.ipsTabActive : ""
                     }`}
                   onClick={() => handleViewPortClick("desktop")}
                 >

@@ -26,7 +26,7 @@ const ModalLogs = ({
     >
       <Modal.Section>
         <div>
-          <div className="modalTop">
+          <div className="ips-logs-modal-head">
             <ExceptionList
               items={[
                 {

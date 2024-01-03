@@ -478,9 +478,9 @@ const FormPreview = () => {
   };
 
   return (
-    <div className={styles.formContent}>
+    <div className={styles.ipsformPreviewContent}>
       {/* {isShowDrawer ? (
-        <div className={styles.elementBanner}>
+        <div className={styles.ipsFormPreviewElementBanner}>
           <ElementListBanner
             title={"You can only add 12 element for a form with a Free plan."}
           />
@@ -491,8 +491,8 @@ const FormPreview = () => {
           <Layout>
             <Layout.Section>
               <LegacyCard sectioned>
-                <div className={styles.previewCard}>
-                  <div className={styles.previewBox}>
+                <div className={styles.ipsformPreviewCard}>
+                  <div className={styles.ipsFormPreviewBox}>
                     <SkeletonBodyText />
                     <SkeletonBodyText />
                     <SkeletonBodyText />
@@ -504,16 +504,16 @@ const FormPreview = () => {
           </Layout>
         </SkeletonPage>
       ) : (
-        <div className={styles.previewCard}>
+        <div className={styles.ipsformPreviewCard}>
           <div
-            className={`${styles.previewBox} ${selectedViewPort === "mobile" ? styles.mobile : ""
+            className={`${styles.ipsFormPreviewBox} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewMobile : ""
               }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${styles.formBuilder} ${selectedViewPort === "mobile" ? styles.formBuilderMobile : ""
-                  } ${selectedBackground === "image" && styles.formImageBackground
+                className={`${styles.ipsFormBuilder} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewFormBuilderMobile : ""
+                  } ${selectedBackground === "image" && styles.ipsFormPreviewFormImageBackground
                   } `}
                 style={{
                   maxWidth: appearanceFields?.appearanceWidth || "700px",
@@ -538,7 +538,7 @@ const FormPreview = () => {
                   ref={formRef}
                   name="submissionForm"
                   id="submissionForm"
-                  className={styles.formContainer}
+                  className={styles.ipsFormPreviewContainer}
                   onSubmit={handleFormSubmit}
                   method="POST"
                   encType="multipart/form-data"
@@ -553,7 +553,7 @@ const FormPreview = () => {
                   {headerFieldData &&
                     headerFieldData?.attributes?.showHeader && (
                       <div
-                        className={styles.header}
+                        className={styles.ipsFormPreviewHeader}
                         style={{
                           color:
                             appearanceFields?.headingColor &&
@@ -562,12 +562,12 @@ const FormPreview = () => {
                       >
                         <h3
                           id={headerFieldData.id}
-                          className={styles.formTitle}
+                          className={styles.ipsFormPreviewFormTitle}
                         >
                           {headerFieldData?.attributes?.title}
                         </h3>
                         <div
-                          className={styles.headerDescription}
+                          className={styles.ipsFormPreviewHeaderDescription}
                           style={{
                             color:
                               appearanceFields?.descriptionColor &&
@@ -627,7 +627,7 @@ const FormPreview = () => {
                     </Grid>
                   </FormLayout>
                   {googelRecaptcha?.enable ? (
-                    <div className={styles.captchaContainer}>
+                    <div className={styles.ipsFormPreviewCaptchaContainer}>
                       <div style={{ width: 0 }}>
                         <ReCAPTCHA
                           sitekey={`${recaptchaSettings?.siteKey}`}
@@ -645,7 +645,7 @@ const FormPreview = () => {
                             : footerAlign,
                         }}
                       >
-                        <div className={styles.footerDescription}>
+                        <div className={styles.ipsFormPreviewFooterDescription}>
                           <Heading element="h5" id={footerFieldData.id}>
                             <span
                               dangerouslySetInnerHTML={{
@@ -657,12 +657,12 @@ const FormPreview = () => {
 
                         <button
                           type="submit"
-                          className={`${styles.classicButton} ${styles.submitButton
+                          className={`${styles.ipsFormPreviewClassicButton} ${styles.ipsFormPreviewSubmitButton
                             }
                             ${footerFieldData?.attributes?.buttonWidth
-                              ? styles.buttonWidth
-                              : `${styles.classicButton}${styles.submitButton}`
-                            } ${submissionData.loading && styles.loadingBtn}`}
+                              ? styles.ipsFormPreviewButtonWidth
+                              : `${styles.ipsFormPreviewClassicButton}${styles.ipsFormPreviewSubmitButton}`
+                            } ${submissionData.loading && styles.ipsPreviewLoadingBtn}`}
                           style={{
                             backgroundColor:
                               appearanceFields?.mainButtonColor &&
@@ -682,11 +682,11 @@ const FormPreview = () => {
                         {footerFieldData.attributes.resetButton ? (
                           <button
                             type="button"
-                            className={`${styles.classicButton} ${styles.resetButton
+                            className={`${styles.ipsFormPreviewClassicButton} ${styles.resetButton
                               }
                               ${footerFieldData?.attributes?.buttonWidth
-                                ? styles.buttonWidth
-                                : `${styles.classicButton}${styles.resetButton}`
+                                ? styles.ipsFormPreviewButtonWidth
+                                : `${styles.ipsFormPreviewClassicButton}${styles.resetButton}`
                               }`}
                             style={{
                               color:

@@ -264,7 +264,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
       <div>
         <Layout>
           <Layout.Section>
-            <div className={styles.formLayoutContainer}>
+            <div className={styles.ipsContactusFormLayoutContainer}>
               <LegacyCard sectioned>
                 <Form onSubmit={(event) => handleForm(event)} noValidate>
                   <FormLayout>
@@ -342,10 +342,10 @@ const AnyAPIIntegration = ({ isEdit }) => {
                       </Grid.Cell>
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>
-                        <div className={styles.mapFeildContainer}>
+                        <div className={styles.ipsAPIMapFeildContainer}>
                           <Text>Map your Fields</Text>
                           <div
-                            className={styles.supportIcon}
+                            className={styles.ipsAPISupportIcon}
                             onMouseEnter={handleIFrameOpen}
                           >
                             <Icon source={Icons.support} color="base" />

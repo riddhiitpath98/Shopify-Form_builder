@@ -1,9 +1,9 @@
-.container {
+.ips-switch-container {
   text-align: start;
   /* display: flex;
   align-items: center; */
 }
-.toggle-switch {
+.ips-toggle-switch {
   position: relative;
   width: 86px;
   display: inline-block;

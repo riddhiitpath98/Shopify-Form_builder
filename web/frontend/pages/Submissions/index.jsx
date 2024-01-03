@@ -618,7 +618,7 @@ function Submissions() {
               <>
                 {user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM ? (
                   <CSVLink style={{ marginRight: "5px" }} data={csvData} filename={fileName}>
-                    <Button primary >Export all Data</Button>
+                    <Button primary >Export All Data</Button>
                   </CSVLink>
                 ) : null}
                 <Select
@@ -633,7 +633,7 @@ function Submissions() {
             filterControl={filterControl}
           />
           {submissionData.length < total_count ? (
-            <div className={styles.pagination_button}>
+            <div className={styles.ipsPaginationButton}>
               <Button primary onClick={fetchMoreData}>
                 Load More
               </Button>

@@ -170,7 +170,7 @@ function FormList() {
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
-    fullscreen.dispatch(Fullscreen.Action.EXIT);
+    // fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch, shopId]);
   const isShowPremium =
     sortedItems?.length >= subscription?.features?.form?.number_of_forms &&
@@ -178,7 +178,7 @@ function FormList() {
   return (
     <>
       {user?.subscriptionName === SUBSCRIPTION_TYPES.FREE ? (
-        <div className={styles.elementBanner}>
+        <div className={styles.ipsFormPreviewElementBanner}>
           <ElementListBanner
             title={
               <>
@@ -203,9 +203,9 @@ function FormList() {
         : null} */}
       <Page
         fullWidth
-        title="Form"
+        title="Forms"
         primaryAction={{
-          content: "Create new Form",
+          content: "Create New Form",
           onAction: () => handleCreateForm(),
           disabled: isShowPremium ? true : false,
         }}
@@ -266,7 +266,8 @@ function FormList() {
       <ResourceItem id={index} name={items?._id} persistActions={true}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div
-            className={styles.resouceItemTd}
+            className={styles.resouceItemTd} 
+            style={{padding: "2rem"}}
             onClick={() => navigate(`/form/${items?._id}`)}
           >
             {formData?.loading ? (

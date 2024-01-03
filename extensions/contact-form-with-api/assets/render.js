@@ -76,8 +76,8 @@ const catchFormDivAndAppendForm = (data) => {
   );
   const loaderElementId = generateElementId(
     "loader",
-    `loader-${data?.elementData?._id}`
-  );
+    `ipsFormPreviewLoader-${data?.elementData?._id}`
+    );
   const bannerElementId = generateElementId(
     "banner",
     `polaris-banner-${data.elementData?._id}`
@@ -493,7 +493,7 @@ const catchFormDivAndAppendForm = (data) => {
   if (checkPlan.length > 0) {
     setTimeout(() => {
       const divElement = document.createElement("div");
-      divElement.className = `formBuilder ${selectedBackground === "image" ? "formImageBackground" : ""
+      divElement.className = `ipsFormBuilder ${selectedBackground === "image" ? "ipsFormPreviewFormImageBackground" : ""
         }`;
 
       divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
@@ -515,7 +515,7 @@ const catchFormDivAndAppendForm = (data) => {
 
       mainFormElement.appendChild(divElement);
       const formElement = document.createElement("form");
-      formElement.className = "formContainer";
+      formElement.className = "ipsFormPreviewContainer";
       formElement.id = formElementId;
       formElement.noValidate = emailValidate;
       formElement.enctype = "multipart/form-data";
@@ -532,18 +532,18 @@ const catchFormDivAndAppendForm = (data) => {
       if (headerFieldData) {
         if (headerFieldData?.attributes?.showHeader) {
           const headerDivElement = document.createElement("div");
-          headerDivElement.className = "header";
+          headerDivElement.className = "ipsFormPreviewHeader";
           formElement.appendChild(headerDivElement);
 
           const headerElement = document.createElement("h3");
           headerElement.id = headerFieldData.id;
-          headerElement.className = "formTitle";
+          headerElement.className = "ipsFormPreviewFormTitle";
           headerElement.textContent = headerFieldData?.attributes?.title;
           headerElement.style.color = appearanceFields?.headingColor;
           headerDivElement.appendChild(headerElement);
 
           const headerDescription = document.createElement("div");
-          headerDescription.className = "headerDescription";
+          headerDescription.className = "ipsFormPreviewHeaderDescription";
           headerDescription.textContent =
             headerFieldData?.attributes?.description;
           headerDescription.style.color = appearanceFields?.descriptionColor;
@@ -551,7 +551,7 @@ const catchFormDivAndAppendForm = (data) => {
         }
       }
       const gridElement = document.createElement("div");
-      gridElement.className = "grid-container";
+      gridElement.className = "ipsFormPreviewGridContainer";
       formElement.appendChild(gridElement);
 
       elements(user.subscriptionName, formElementData, true)?.forEach((item) => {
@@ -617,12 +617,12 @@ const catchFormDivAndAppendForm = (data) => {
         ) {
           emailValidate = item.type === "email" && required ? false : true;
           const inputContainer = document.createElement("div");
-          inputContainer.className = "inputContainer";
+          inputContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(inputContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields?.labelColor
             : "";
@@ -630,7 +630,7 @@ const catchFormDivAndAppendForm = (data) => {
           inputContainer.appendChild(labelElement);
 
           const requiredElement = document.createElement("span");
-          requiredElement.className = "textRequired";
+          requiredElement.className = "ipsFormPreviewTextRequired";
           requiredElement.textContent = required ? " *" : "";
           labelElement.appendChild(requiredElement);
 
@@ -644,7 +644,7 @@ const catchFormDivAndAppendForm = (data) => {
             "data-id",
             `${formElementId}_${item?.inputId}`
           );
-          inputElement.className = "classicInput";
+          inputElement.className = "ipsFormPreviewInputClassicInput";
 
           inputElement.name = `${item.inputId}_${item.id}`;
           inputElement.min = 0;
@@ -663,13 +663,13 @@ const catchFormDivAndAppendForm = (data) => {
           );
 
           const descriptionElement = document.createElement("span");
-          descriptionElement.className = "description";
+          descriptionElement.className = "ipsPreviewDescription";
           descriptionElement.textContent = description;
           inputContainer.appendChild(descriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
 
           smallElement.appendChild(errorMessageElement);
@@ -680,12 +680,12 @@ const catchFormDivAndAppendForm = (data) => {
             .join(",");
 
           const inputContainer = document.createElement("div");
-          inputContainer.className = "inputContainer";
+          inputContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(inputContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields.labelColor
             : "";
@@ -693,7 +693,7 @@ const catchFormDivAndAppendForm = (data) => {
           inputContainer.appendChild(labelElement);
 
           const requiredElement = document.createElement("span");
-          requiredElement.className = "textRequired";
+          requiredElement.className = "ipsFormPreviewTextRequired";
           requiredElement.textContent = required ? " *" : "";
           labelElement.appendChild(requiredElement);
 
@@ -707,7 +707,7 @@ const catchFormDivAndAppendForm = (data) => {
             "data-id",
             `${formElementId}_${item?.inputId}`
           );
-          fileInputElement.className = "classicInput";
+          fileInputElement.className = "ipsFormPreviewInputClassicInput";
           // fileInputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
           fileInputElement.name = `${item.inputId}_${item.id}`;
           fileInputElement.accept = acceptExtensions;
@@ -729,25 +729,25 @@ const catchFormDivAndAppendForm = (data) => {
           // const element = document.getElementById(item.inputId)
           // element.addEventListener("input", handleChange);
           const fileDescriptionElement = document.createElement("span");
-          fileDescriptionElement.className = "description";
+          fileDescriptionElement.className = "ipsPreviewDescription";
           fileDescriptionElement.textContent = description;
           inputContainer.appendChild(fileDescriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
           // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
           smallElement.appendChild(errorMessageElement);
           inputContainer.appendChild(smallElement);
         } else if (item?.type === "password") {
           const inputContainer = document.createElement("div");
-          inputContainer.className = "inputContainer";
+          inputContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(inputContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields.labelColor
             : "";
@@ -755,7 +755,7 @@ const catchFormDivAndAppendForm = (data) => {
           inputContainer.appendChild(labelElement);
 
           const requiredElement = document.createElement("span");
-          requiredElement.className = "textRequired";
+          requiredElement.className = "ipsFormPreviewTextRequired";
           requiredElement.textContent = required ? " *" : "";
           labelElement.appendChild(requiredElement);
 
@@ -769,7 +769,7 @@ const catchFormDivAndAppendForm = (data) => {
             "data-id",
             `${formElementId}_${item?.inputId}`
           );
-          passwordInputElement.className = "classicInput";
+          passwordInputElement.className = "ipsFormPreviewInputClassicInput";
 
           passwordInputElement.name = `${item.inputId}_${item.id}`;
           passwordInputElement.min = 0;
@@ -789,13 +789,13 @@ const catchFormDivAndAppendForm = (data) => {
           );
 
           const passwordDescriptionElement = document.createElement("span");
-          passwordDescriptionElement.className = "description";
+          passwordDescriptionElement.className = "ipsPreviewDescription";
           passwordDescriptionElement.textContent = description;
           inputContainer.appendChild(passwordDescriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
 
           smallElement.appendChild(errorMessageElement);
@@ -803,12 +803,12 @@ const catchFormDivAndAppendForm = (data) => {
 
           if (confirmPassword) {
             const inputContainer = document.createElement("div");
-            inputContainer.className = "inputContainer";
+            inputContainer.className = "ipsFormPreviewInputContainer";
             innerDivElement.appendChild(inputContainer);
 
             const labelElement = document.createElement("label");
             labelElement.htmlFor = item.inputId;
-            labelElement.className = "classicLabel";
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
             labelElement.style.color = appearanceFields?.labelColor
               ? appearanceFields.labelColor
               : "";
@@ -816,7 +816,7 @@ const catchFormDivAndAppendForm = (data) => {
             inputContainer.appendChild(labelElement);
 
             const requiredElement = document.createElement("span");
-            requiredElement.className = "textRequired";
+            requiredElement.className = "ipsFormPreviewTextRequired";
             requiredElement.textContent = required ? " *" : "";
             labelElement.appendChild(requiredElement);
 
@@ -830,7 +830,7 @@ const catchFormDivAndAppendForm = (data) => {
               "data-id",
               `${formElementId}_${item?.inputId}`
             );
-            confirmPasswordInputElement.className = "classicInput";
+            confirmPasswordInputElement.className = "ipsFormPreviewInputClassicInput";
             confirmPasswordInputElement.name = `${item.inputId}_confirm_${item.id}`;
             confirmPasswordInputElement.placeholder = confirmPasswordPlaceholder;
             confirmPasswordInputElement.autocomplete = "off";
@@ -849,7 +849,7 @@ const catchFormDivAndAppendForm = (data) => {
 
             const confirmPasswordDescriptionElement =
               document.createElement("span");
-            confirmPasswordDescriptionElement.className = "description";
+            confirmPasswordDescriptionElement.className = "ipsPreviewDescription";
             confirmPasswordDescriptionElement.textContent =
               confirmPasswordDescription;
             inputContainer.appendChild(confirmPasswordDescriptionElement);
@@ -857,7 +857,7 @@ const catchFormDivAndAppendForm = (data) => {
             const confirmPasswordSmallElement = document.createElement("small");
             const confirmPasswordErrorMessageElement =
               document.createElement("p");
-            confirmPasswordErrorMessageElement.className = "errorMessage";
+            confirmPasswordErrorMessageElement.className = "ipsFormPreviewErrorMessage";
             confirmPasswordErrorMessageElement.id = `${item.inputId}_CPError`;
 
             confirmPasswordSmallElement.appendChild(
@@ -867,12 +867,12 @@ const catchFormDivAndAppendForm = (data) => {
           }
         } else if (item?.type === "textarea") {
           const inputContainer = document.createElement("div");
-          inputContainer.className = "inputContainer";
+          inputContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(inputContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields.labelColor
             : "";
@@ -880,7 +880,7 @@ const catchFormDivAndAppendForm = (data) => {
           inputContainer.appendChild(labelElement);
 
           const requiredElement = document.createElement("span");
-          requiredElement.className = "textRequired";
+          requiredElement.className = "ipsFormPreviewTextRequired";
           requiredElement.textContent = required ? " *" : "";
           labelElement.appendChild(requiredElement);
 
@@ -896,7 +896,7 @@ const catchFormDivAndAppendForm = (data) => {
           );
           textareaInputElement.rows = 3;
           textareaInputElement.name = `${item.inputId}_${item.id}`;
-          textareaInputElement.className = "classicInput";
+          textareaInputElement.className = "ipsFormPreviewInputClassicInput";
           textareaInputElement.required = "";
           textareaInputElement.style.width = widthInput;
           Object.assign(textareaInputElement.style, inputStyles);
@@ -914,29 +914,29 @@ const catchFormDivAndAppendForm = (data) => {
           );
 
           const textareaDescriptionElement = document.createElement("span");
-          textareaDescriptionElement.className = "description";
+          textareaDescriptionElement.className = "ipsPreviewDescription";
           textareaDescriptionElement.textContent = description;
           inputContainer.appendChild(textareaDescriptionElement);
 
           const textareaSmallElement = document.createElement("small");
           const textareaErrorMessageElement = document.createElement("p");
-          textareaErrorMessageElement.className = "errorMessage";
+          textareaErrorMessageElement.className = "ipsFormPreviewErrorMessage";
           textareaErrorMessageElement.id = `${item.inputId}_error`;
           textareaSmallElement.appendChild(textareaErrorMessageElement);
           inputContainer.appendChild(textareaSmallElement);
         } else if (item?.type === "checkbox") {
           if (item?.id === "accept_terms") {
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.className = "inputContainer";
+            checkboxContainer.className = "ipsFormPreviewInputContainer";
             innerDivElement.appendChild(checkboxContainer);
 
             const checkboxWrapperElement = document.createElement("div");
             checkboxWrapperElement.style.width = widthInput;
-            checkboxWrapperElement.className = "checkBoxWrapper";
+            checkboxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
             checkboxContainer.appendChild(checkboxWrapperElement);
 
             const checkboxInputElement = document.createElement("input");
-            checkboxInputElement.className = "checkBoxInput";
+            checkboxInputElement.className = "ipsFormPreviewInputCheckboxInput";
             checkboxInputElement.id = item?.inputId;
             checkboxInputElement.setAttribute(
               "data-id",
@@ -953,7 +953,7 @@ const catchFormDivAndAppendForm = (data) => {
             checkboxWrapperElement.appendChild(checkboxLabelElement);
 
             const labelContentElement = document.createElement("span");
-            labelContentElement.className = "labelContent";
+            labelContentElement.className = "ipsPreviewLabelContent";
             labelContentElement.style.color = appearanceFields?.labelColor
               ? appearanceFields.labelColor
               : "";
@@ -961,18 +961,18 @@ const catchFormDivAndAppendForm = (data) => {
             checkboxLabelElement.appendChild(labelContentElement);
 
             const textRequiredElement = document.createElement("span");
-            textRequiredElement.className = "textRequired";
+            textRequiredElement.className = "ipsFormPreviewTextRequired";
             textRequiredElement.textContent = required ? " *" : "";
             checkboxWrapperElement.appendChild(textRequiredElement);
 
             const descriptionElement = document.createElement("span");
-            descriptionElement.className = "description";
+            descriptionElement.className = "ipsPreviewDescription";
             descriptionElement.textContent = description;
             checkboxContainer.appendChild(descriptionElement);
 
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
-            errorMessageElement.className = "errorMessage";
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
             errorMessageElement.id = `${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
             checkboxContainer.appendChild(smallElement);
@@ -984,12 +984,12 @@ const catchFormDivAndAppendForm = (data) => {
             );
           } else {
             const checkboxContainer = document.createElement("div");
-            checkboxContainer.className = "inputContainer";
+            checkboxContainer.className = "ipsFormPreviewInputContainer";
             innerDivElement.appendChild(checkboxContainer);
 
             const labelElement = document.createElement("label");
             labelElement.htmlFor = item?.inputId;
-            labelElement.className = "classicLabel";
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
             labelElement.style.color = appearanceFields?.labelColor
               ? appearanceFields.labelColor
               : "";
@@ -997,7 +997,7 @@ const catchFormDivAndAppendForm = (data) => {
             checkboxContainer.appendChild(labelElement);
 
             const textRequiredElement = document.createElement("span");
-            textRequiredElement.className = "textRequired";
+            textRequiredElement.className = "ipsFormPreviewTextRequired";
             textRequiredElement.textContent = required ? " *" : "";
             checkboxContainer.appendChild(textRequiredElement);
 
@@ -1017,18 +1017,18 @@ const catchFormDivAndAppendForm = (data) => {
               ulElement.appendChild(liElement);
 
               const checkBoxWrapperElement = document.createElement("div");
-              checkBoxWrapperElement.className = "checkBoxWrapper";
+              checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
               liElement.appendChild(checkBoxWrapperElement);
 
               const checkBoxLabelElement = document.createElement("label");
-              checkBoxLabelElement.className = "checkBoxLabel";
+              checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
               checkBoxLabelElement.style.color = appearanceFields?.optionColor
                 ? appearanceFields.optionColor
                 : "";
               checkBoxWrapperElement.appendChild(checkBoxLabelElement);
 
               const checkBoxInputElement = document.createElement("input");
-              checkBoxInputElement.className = "checkBoxInput";
+              checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
               checkBoxInputElement.type = item?.type;
               checkBoxInputElement.value = option.value;
               checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
@@ -1065,13 +1065,13 @@ const catchFormDivAndAppendForm = (data) => {
               });
             });
             const descriptionElement = document.createElement("span");
-            descriptionElement.className = "description";
+            descriptionElement.className = "ipsPreviewDescription";
             descriptionElement.textContent = description;
             checkboxContainer.appendChild(descriptionElement);
 
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
-            errorMessageElement.className = "errorMessage";
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
             errorMessageElement.id = `${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
             checkboxContainer.appendChild(smallElement);
@@ -1091,12 +1091,12 @@ const catchFormDivAndAppendForm = (data) => {
 
         } else if (item?.type === "radio") {
           const radioContainer = document.createElement("div");
-          radioContainer.className = "inputContainer";
+          radioContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(radioContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item?.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields.labelColor
             : "";
@@ -1104,7 +1104,7 @@ const catchFormDivAndAppendForm = (data) => {
           radioContainer.appendChild(labelElement);
 
           const textRequiredElement = document.createElement("span");
-          textRequiredElement.className = "textRequired";
+          textRequiredElement.className = "ipsFormPreviewTextRequired";
           textRequiredElement.textContent = required ? " *" : "";
           radioContainer.appendChild(textRequiredElement);
 
@@ -1123,18 +1123,18 @@ const catchFormDivAndAppendForm = (data) => {
             ulElement.appendChild(liElement);
 
             const checkBoxWrapperElement = document.createElement("div");
-            checkBoxWrapperElement.className = "checkBoxWrapper";
+            checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
             liElement.appendChild(checkBoxWrapperElement);
 
             const checkBoxLabelElement = document.createElement("label");
-            checkBoxLabelElement.className = "checkBoxLabel";
+            checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
             checkBoxLabelElement.style.color = appearanceFields?.optionColor
               ? appearanceFields.optionColor
               : "";
             checkBoxWrapperElement.appendChild(checkBoxLabelElement);
 
             const checkBoxInputElement = document.createElement("input");
-            checkBoxInputElement.className = "checkBoxInput";
+            checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
             checkBoxInputElement.type = item?.type;
             checkBoxInputElement.value = option.value;
             checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
@@ -1167,13 +1167,13 @@ const catchFormDivAndAppendForm = (data) => {
           });
 
           const descriptionElement = document.createElement("span");
-          descriptionElement.className = "description";
+          descriptionElement.className = "ipsPreviewDescription";
           descriptionElement.textContent = description;
           radioContainer.appendChild(descriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
           smallElement.appendChild(errorMessageElement);
           radioContainer.appendChild(smallElement);
@@ -1189,12 +1189,12 @@ const catchFormDivAndAppendForm = (data) => {
           }
         } else if (item?.type === "select") {
           const selectContainer = document.createElement("div");
-          selectContainer.className = "inputContainer";
+          selectContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(selectContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item?.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields.labelColor
             : "";
@@ -1202,7 +1202,7 @@ const catchFormDivAndAppendForm = (data) => {
           selectContainer.appendChild(labelElement);
 
           const textRequiredElement = document.createElement("span");
-          textRequiredElement.className = "textRequired";
+          textRequiredElement.className = "ipsFormPreviewTextRequired";
           textRequiredElement.textContent = required ? " *" : "";
           selectContainer.appendChild(textRequiredElement);
 
@@ -1213,7 +1213,7 @@ const catchFormDivAndAppendForm = (data) => {
             "data-id",
             `${formElementId}_${item?.inputId}`
           );
-          selectElement.className = "classicInput";
+          selectElement.className = "ipsFormPreviewInputClassicInput";
           selectElement.style.width = widthInput;
           Object.assign(selectElement.style, inputStyles);
           selectContainer.appendChild(selectElement);
@@ -1239,13 +1239,13 @@ const catchFormDivAndAppendForm = (data) => {
           });
 
           const descriptionElement = document.createElement("span");
-          descriptionElement.className = "description";
+          descriptionElement.className = "ipsPreviewDescription";
           descriptionElement.textContent = description;
           selectContainer.appendChild(descriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
           smallElement.appendChild(errorMessageElement);
           selectContainer.appendChild(smallElement);
@@ -1256,19 +1256,19 @@ const catchFormDivAndAppendForm = (data) => {
         } else if (item?.type === "divider") {
           if (!hideDivider) {
             const hrElement = document.createElement("hr");
-            hrElement.className = "divider";
+            hrElement.className = "ipsFormPreviewDivider";
             innerDivElement.appendChild(hrElement);
           }
         } else if (item?.type === "hidden") {
           const hiddenContainer = document.createElement("div");
-          hiddenContainer.className = "inputContainer";
+          hiddenContainer.className = "ipsFormPreviewInputContainer";
           hiddenContainer.style.display = "none";
           hiddenContainer.style.visibility = "hidden";
           innerDivElement.appendChild(hiddenContainer);
 
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item?.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           hiddenContainer.appendChild(labelElement);
 
           const spanElement = document.createElement("span");
@@ -1285,11 +1285,11 @@ const catchFormDivAndAppendForm = (data) => {
           hiddenContainer.appendChild(inputElement);
         } else if (item?.type === "editor") {
           const editorContainer = document.createElement("div");
-          editorContainer.className = "inputContainer";
+          editorContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(editorContainer);
 
           const paragraphInput = document.createElement("div");
-          paragraphInput.className = "paragraphInput";
+          paragraphInput.className = "ipsFormPreviewParagraphInput";
           paragraphInput.style.width = widthInput;
           paragraphInput.style.color = appearanceFields?.paragraphColor
             ? appearanceFields.paragraphColor
@@ -1301,22 +1301,22 @@ const catchFormDivAndAppendForm = (data) => {
           paragraphInput.innerHTML = text;
           editorContainer.appendChild(paragraphInput);
         } else if (item?.type === "heading") {
-          const headingContainer = document.createElement("div");
-          headingContainer.className = "inputContainer";
+          const headingContainer = document.createElement("div"); 
+          headingContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(headingContainer);
 
           const headingTitle = document.createElement("h3");
-          headingTitle.className = "headingTitle";
+          headingTitle.className = "ipsFormPreviewHeadingTitle";
           headingTitle.innerHTML = heading;
           headingContainer.appendChild(headingTitle);
 
           const headingCaption = document.createElement("p");
-          headingCaption.className = "headingCaption";
+          headingCaption.className = "ipsFormPreviewHeadingCaption";
           headingCaption.innerHTML = caption;
           headingContainer.appendChild(headingCaption);
         } else if (item?.type === "HTML") {
           const htmlContainer = document.createElement("div");
-          htmlContainer.className = "inputContainer";
+          htmlContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(htmlContainer);
 
           const htmlContent = document.createElement("div");
@@ -1324,11 +1324,11 @@ const catchFormDivAndAppendForm = (data) => {
           htmlContainer.appendChild(htmlContent);
         } else if (item?.type === "date") {
           const dateContainer = document.createElement("div");
-          dateContainer.className = "inputContainer";
+          dateContainer.className = "ipsFormPreviewInputContainer";
           innerDivElement.appendChild(dateContainer);
           const labelElement = document.createElement("label");
           labelElement.htmlFor = item.inputId;
-          labelElement.className = "classicLabel";
+          labelElement.className = "ipsFormPreviewInputClassicLabel";
           labelElement.style.color = appearanceFields?.labelColor
             ? appearanceFields?.labelColor
             : "";
@@ -1336,7 +1336,7 @@ const catchFormDivAndAppendForm = (data) => {
           dateContainer.appendChild(labelElement);
 
           const requiredElement = document.createElement("span");
-          requiredElement.className = "textRequired";
+          requiredElement.className = "ipsFormPreviewTextRequired";
           requiredElement.textContent = required ? " *" : "";
           labelElement.appendChild(requiredElement);
 
@@ -1350,7 +1350,7 @@ const catchFormDivAndAppendForm = (data) => {
             "data-id",
             `${formElementId}_${item?.inputId}`
           );
-          inputElement.className = "classicInput";
+          inputElement.className = "ipsFormPreviewInputClassicInput";
           // inputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
           inputElement.value = "";
           inputElement.name = `${item.inputId}_${item.id}`;
@@ -1372,13 +1372,13 @@ const catchFormDivAndAppendForm = (data) => {
           dateContainer.appendChild(inputElement);
 
           const descriptionElement = document.createElement("span");
-          descriptionElement.className = "description";
+          descriptionElement.className = "ipsPreviewDescription";
           descriptionElement.textContent = description;
           dateContainer.appendChild(descriptionElement);
 
           const smallElement = document.createElement("small");
           const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "errorMessage";
+          errorMessageElement.className = "ipsFormPreviewErrorMessage";
           errorMessageElement.id = `${item.inputId}_error`;
           // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
           smallElement.appendChild(errorMessageElement);
@@ -1432,7 +1432,7 @@ const catchFormDivAndAppendForm = (data) => {
         formElement.appendChild(footerDivElement);
 
         const footerDescription = document.createElement("div");
-        footerDescription.className = "footerDescription";
+        footerDescription.className = "ipsFormPreviewFooterDescription";
         footerDivElement.appendChild(footerDescription);
 
         const footerElement = document.createElement("h5");
@@ -1457,8 +1457,8 @@ const catchFormDivAndAppendForm = (data) => {
         const buttonElement = document.createElement("button");
         buttonElement.type = "submit";
         buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
-          ? "buttonWidth classicButton submitButton"
-          : "classicButton submitButton"
+          ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
+          : "ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
           }`;
         const spanSubmit = document.createElement("span");
         spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
@@ -1470,7 +1470,7 @@ const catchFormDivAndAppendForm = (data) => {
         buttonElement.style.border = "none";
         const loaderElement = document.createElement("div");
         loaderElement.id = loaderElementId;
-        loaderElement.className = "loader";
+        loaderElement.className = "ipsFormPreviewLoader";
         // loaderElement.style.backgroundColor = 'red';
         // const imageElement = document.createElement("img");
         // imageElement.style.height = "20px"; // Change to your desired height
@@ -1491,8 +1491,8 @@ const catchFormDivAndAppendForm = (data) => {
           resetButton.type = "button";
           resetButton.id = "resetButton";
           resetButton.className = `${footerFieldData?.attributes?.buttonWidth
-            ? "buttonWidth classicButton resetButton"
-            : "classicButton resetButton"
+            ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
+            : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
             }`;
           resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
           resetButton.style.color = appearanceFields?.buttonTextColor;
@@ -1553,7 +1553,7 @@ const catchFormDivAndAppendForm = (data) => {
       bannerHeading.appendChild(headingText);
       bannerChildElement3.appendChild(bannerHeading);
       const bannerTextElement = document.createElement("div");
-      bannerTextElement.className = "banner-main";
+      bannerTextElement.className = "ips-banner-main";
       bannerTextElement.appendChild(bannerChildElement2);
       bannerTextElement.appendChild(bannerChildElement3);
       bannerElement.appendChild(bannerTextElement);

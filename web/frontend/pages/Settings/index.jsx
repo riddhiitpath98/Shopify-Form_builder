@@ -164,7 +164,7 @@ function Settings() {
               <Layout.Section>
                 <LegacyCard sectioned>
                   <div
-                    className={`${styles.submissions} ${selectedSetting === "smtp" ? styles.active : ""
+                    className={`${styles.ipsContactusSubmissions} ${selectedSetting === "smtp" ? styles.ipsTabActive : ""
                       }`}
                     onClick={() => setSelectedSetting("smtp")}
                   >
@@ -176,7 +176,7 @@ function Settings() {
                 </LegacyCard>
                 {getRestrictionWithPlan({ name: user?.subscriptionName }) ? <LegacyCard sectioned>
                   <div
-                    className={`${styles.submissions} ${selectedSetting === "recaptcha" ? styles.active : ""
+                    className={`${styles.ipsContactusSubmissions} ${selectedSetting === "recaptcha" ? styles.ipsTabActive : ""
                       }`}
                     onClick={() => setSelectedSetting("recaptcha")}
                   >
@@ -190,7 +190,7 @@ function Settings() {
             </div>
             <Layout.Section>
               {
-                selectedSetting === 'smtp' ? <div className={styles.formLayoutContainer}>
+                selectedSetting === 'smtp' ? <div className={styles.ipsContactusFormLayoutContainer}>
                   <LegacyCard sectioned>
                     <Form onSubmit={(e) => handleSubmit(e)} noValidate>
                       <FormLayout>
@@ -286,11 +286,11 @@ function Settings() {
                     </Form>
                     <ToastContainer />
                   </LegacyCard>
-                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName })) ? <div className={styles.formLayoutContainer}>
+                </div> : (selectedSetting === 'recaptcha' && getRestrictionWithPlan({ name: user?.subscriptionName || user?.subscription?.subscriptionName })) ? <div className={styles.ipsContactusFormLayoutContainer}>
                   <LegacyCard sectioned>
                     <Form onSubmit={(e) => handleSettingsSubmit(e)}>
                       <FormLayout>
-                        <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onMouseEnter={handleIFrameOpen} className={styles.supportIcon}><Icon source={Icons.support} color="base" /></div></div>
+                        <div className={styles.recaptchaHeadingContainer}><Heading>Google reCaptcha type v2</Heading> <div onMouseEnter={handleIFrameOpen} className={styles.ipsAPISupportIcon}><Icon source={Icons.support} color="base" /></div></div>
                         <Grid>
                           <Grid.Cell
                             columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}
@@ -352,7 +352,7 @@ function Settings() {
         <IFrameLoader
           open={iframeVisible}
           handleClose={handleIframeClose}
-          src="https://www.contactformtoapi.com/mapping-fields/"
+          src="https://www.contactformtoapi.com/shopify-app-documentation/"
           title="Recaptcha settings"
           width="1000"
           height="1000"

@@ -3,7 +3,7 @@
   min-width: 40%;
 }
 
-.layoutContainer {
+.ipsContactusLayoutContainer {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -16,7 +16,7 @@
   width: 20%;
 }
 
-.submissions {
+.ipsContactusSubmissions {
   display: flex;
   align-items: center;
   justify-content: space-between;

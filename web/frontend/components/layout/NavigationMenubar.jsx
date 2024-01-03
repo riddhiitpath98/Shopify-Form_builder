@@ -29,24 +29,24 @@ function NavigationMenubar() {
   },[user])
 
   return (
-    <nav className={styles.nav}>
-      <div className={styles.contentNav}>
-        <ul className={styles.navigation}>
+    <nav className={styles.ipsTabNav}>
+      <div className={styles.ipsTabContentNav}>
+        <ul className={styles.ipsTabNavigation}>
           {tabsData?.map(({ id, icon, content, path, children }) => (
             <li
               key={id}
-              className={`${styles.menuItems} ${children && isOpenMenu && styles.active
+              className={`${styles.ipsTabMenuItems} ${children && isOpenMenu && styles.ipsTabActive
                 }`}
               onClick={closeDropdown}
             >
               <Link
                 to={path}
-                className={`${styles.menuLink} ${location?.pathname?.includes(path)
-                  ? styles.active
+                className={`${styles.ipsTabMenuLink} ${location?.pathname?.includes(path)
+                  ? styles.ipsTabActive
                   : (path === "/api-settings" &&
                     location.pathname === "/add-api") ||
                     (path === "/api-settings" && hasEditApi)
-                    ? styles.active
+                    ? styles.ipsTabActive
                     : ""
                   }`}
                 onClick={() => {
@@ -55,10 +55,10 @@ function NavigationMenubar() {
               >
                 <Icon
                   source={icon}
-                  className={`${styles.navIcons} ${location.pathname?.includes(path) ? styles.active : ""
+                  className={`${styles.navIcons} ${location.pathname?.includes(path) ? styles.ipsTabActive : ""
                     }`}
                 />
-                <span className={styles.navTitle}>{content}</span>
+                <span className={styles.ipsTabNavTitle}>{content}</span>
               </Link>
               {children && (
                 <>

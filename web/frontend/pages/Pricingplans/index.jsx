@@ -1,46 +1,46 @@
-import { Badge, Icon, LegacyCard, Page, Text, Tooltip } from "@shopify/polaris";
+import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
-import "./PricingPlan.module.css";
-import { TickMinor } from "@shopify/polaris-icons";
-import { CancelMinor } from "@shopify/polaris-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./PricingPlan.module.css";
 import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Button } from "react-bootstrap";
-
 import {
   addShopData,
   cancelSubscription,
-  createApplicationCharge,
   getUserByShopId,
 } from "../../redux/actions/allActions";
 import {
+  Icons,
   PLAN_DETAILS,
   PLAN_TEXT,
   SUBSCRIPTION_TYPES,
   handleRecurringChargeVal,
 } from "../../constant";
+import axios from "axios";
 import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
 import { useAppQuery } from "../../hooks";
 import CommonModal from "../../components/CommonModal";
 import { ToastContainer } from "react-toastify";
-import { addClientSecret } from "../../redux/reducers/userSlice";
 import PaymentModal from "./paymentModal";
-import axios from "axios";
+import {
+  capitalizeFirstLetter,
+  capitalizeFirstLetterAndAPI,
+} from "../../utils/function";
 import ipsBanner from "../../assets/ips_banner_2.jpg";
 import ratingBanner from "../../assets/ips_banner_1.png";
 import helpBanner from "../../assets/ips_banner_3.jpg";
-import "../Forms/PolarisFormListStyles.css"
+import "./PricingPlan.module.css";
+import "../Forms/PolarisFormListStyles.css";
+import styles from "./PricingPlan.module.css";
 
 function Pricingplans() {
   const app = useAppBridge();
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
-
+  
   const [active, setActive] = useState(false);
   const [recurringCharge, setRecurringCharge] = useState({});
   const [isCancelPlan, setIsCancelPlan] = useState(false);
@@ -177,33 +177,25 @@ function Pricingplans() {
   const renderStatusIcon = (status) => {
     if (status === true) {
       return (
-        <span className={styles.priceValue}>
-          <Icon source={TickMinor} color="primary" />
+        <span className={styles.planPriceValue}>
+          <Icon source={Icons.tick} color="primary" />
         </span>
       );
     } else if (status === false || status === null) {
       return (
-        <span className={styles.priceValue}>
-          <Icon source={CancelMinor} color="critical" />
+        <span className={styles.planPriceValue}>
+          <Icon source={Icons.cancel} color="critical" />
         </span>
       );
     } else {
       return status;
     }
   };
-  const capitalizeFirstLetter = (str) => {
-    return str
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-  // useEffect(() => {
-  //   fullscreen.dispatch(Fullscreen.Action.EXIT);
-  // }, []);
 
   const toggleModal = () => {
     setShowCardElement(false);
   };
+
   return (
     <Page fullWidth title="Pricing Plans">
       {showCardElement ? (
@@ -215,59 +207,61 @@ function Pricingplans() {
         />
       ) : null}
       <div style={{ display: "flex" }}>
-        <div className={styles.dashbordLeft}>
+        <div className={styles.planPageLeft}>
           <LegacyCard>
             <LegacyCard.Section>
               <div className="grid">
-                <div className={styles.gridItem}>
-                  <div className={styles.boxHeading}>
-                    <Tooltip content="Your Current Plan" >
-                      <h4
-                        className={`${styles.boxHeadingText} ${
-                          user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                            ? styles.freeHeader
-                            : styles.premiumHeader
-                        }`}
-                      >
-                        Your current plan
-                      </h4>
-                    </Tooltip>
+                <div className={styles.planGridItem}>
+                  <div className={styles.planBoxHeading}>
+                    {/* <Tooltip content="Your Current Plan" > */}
+                    <h4
+                      className={`${styles.planBoxHeadingText} ${
+                        user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                          ? styles.freePlanHeader
+                          : styles.premiumPlanHeader
+                      }`}
+                    >
+                      Your current plan
+                    </h4>
+                    {/* </Tooltip> */}
                   </div>
-                  <table className={styles.pricingTable} border={1}>
+                  <table className={styles.planPicingTable} border={1}>
                     <thead>
                       <tr>
                         <th scope="col"></th>
                         {subscriptionData?.map((item) => (
                           <th scope="col">
-                            <p>{item?.subscriptionName.toUpperCase()}</p>
+                            <p style={{ marginTop: "15px" }}>
+                              {item?.subscriptionName.toUpperCase()}
+                            </p>
                           </th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
                       <th scope="row" className={styles.rowTransparent}>
-                        <div className={styles.rowTitle}>
-                          <span className={styles.priceTitle}>Price</span>
+                        <div className={styles.planRowTitle}>
+                          <span className={styles.planPriceTitle}>Price</span>
                         </div>
                       </th>
                       {subscriptionData?.map((item) => (
-                        <td className={styles.pricingRow}>
-                          {/* <div className={styles.trialDays}>3 days trial</div> */}
-                          <div className={styles.monthlyPrice}>
-                            <span className={styles.monthlyPriceCur}>
+                        <td className={styles.planPricingRow}>
+                          {/* <div className={styles.planTrialDays}>3 days trial</div> */}
+                          <div className={styles.planMonthlyPrice}>
+                            <span className={styles.planMonthlyPriceCur}>
                               {item.curruncyType}
                             </span>
-                            <span className={styles.priceValue}>
-                              <span className={styles.price}>
+                            <span className={styles.planPriceValue}>
+                              <span className={styles.planPrice}>
                                 <span>
                                   {/* <sub className={styles.dollar}>$</sub> */}
-                                  <span className={styles.rupees}>
+                                  <span className={styles.planRupees}>
                                     {item.price}
                                   </span>
                                 </span>
                               </span>
                             </span>
-                            <span className={styles.month}>
+                            <span className={styles.planMonth}>
                               /<span>mo</span>
                             </span>
                           </div>
@@ -282,7 +276,7 @@ function Pricingplans() {
                                 className={`${
                                   user?.subscriptionName !==
                                   SUBSCRIPTION_TYPES.FREE
-                                    ? styles.buttonSuccess
+                                    ? styles.planButtonSuccess
                                     : ""
                                 }`}
                                 disabled={
@@ -297,7 +291,9 @@ function Pricingplans() {
                               >
                                 <span>
                                   <span>
-                                    <span className={styles.buttonFontStyle}>
+                                    <span
+                                      className={styles.planButtonFontStyle}
+                                    >
                                       {user?.subscriptionName ===
                                       SUBSCRIPTION_TYPES.FREE
                                         ? PLAN_TEXT.ACTIVE_PLAN
@@ -332,7 +328,7 @@ function Pricingplans() {
                                     <span>
                                       <span>
                                         <span
-                                          className={styles.buttonFontStyle}
+                                          className={styles.planButtonFontStyle}
                                         >
                                           {user?.subscriptionName ===
                                           SUBSCRIPTION_TYPES.PREMIUM
@@ -344,28 +340,6 @@ function Pricingplans() {
                                   </Button>
                                 </div>
                               ) : (
-                                //   <Button
-                                //   disabled={
-                                //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
-                                //   }
-                                //   loading={!user}
-                                //   primary
-                                //   fullWidth
-                                //   onClick={() =>
-                                //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
-                                //   }
-                                // >
-                                //   <span>
-                                //     <span>
-                                //       <span>
-                                //         {user?.subscriptionName ===
-                                //           SUBSCRIPTION_TYPES.PREMIUM
-                                //           ? PLAN_TEXT.CURRENT_PLAN
-                                //           : PLAN_TEXT.UPGRADE_PLAN}
-                                //       </span>
-                                //     </span>
-                                //   </span>
-                                // </Button>
                                 <div className="d-grid gap-2">
                                   <Button
                                     variant="danger"
@@ -377,7 +351,7 @@ function Pricingplans() {
                                     <span>
                                       <span>
                                         <span
-                                          className={styles.buttonFontStyle}
+                                          className={styles.planButtonFontStyle}
                                         >
                                           {PLAN_TEXT.CANCEL_PLAN}
                                         </span>
@@ -391,9 +365,11 @@ function Pricingplans() {
                         </td>
                       ))}
                       <tr>
-                        <th colSpan={3} className={styles.featureTitle}>
-                          <span className={styles.tableHeader}>
-                            <span className={styles.featureHeader}>Features</span>
+                        <th colSpan={3} className={styles.planFeatureTitle}>
+                          <span className={styles.planTableHeader}>
+                            <span className={styles.planFeatureHeader}>
+                              Features
+                            </span>
                           </span>
                         </th>
                       </tr>
@@ -403,44 +379,54 @@ function Pricingplans() {
                             <React.Fragment key={featureKey}>
                               <tr>
                                 <th colSpan={3}>
-                                  <span className={styles.tableHeader}>
+                                  <span className={styles.planTableHeader}>
                                     <span>
                                       {capitalizeFirstLetter(featureKey)}
                                     </span>
                                   </span>
                                 </th>
                               </tr>
-
                               {Object.entries(
                                 subscriptionData[0]?.features[featureKey]
-                              ).map(([innerKey, innerValue]) => (
-                                <tr key={innerKey}>
-                                  <th scope="row" className={styles.rowData}>
-                                    <div className={styles.rowTitle}>
-                                      <dl className={styles.labelName}>
-                                        <dt className={styles.labelText}>
+                              ).map(([index, feature]) => (
+                                <tr key={index}>
+                                  <th
+                                    scope="row"
+                                    className={styles.planRowData}
+                                  >
+                                    <div className={styles.planRowTitle}>
+                                      <dl className={styles.planLabelName}>
+                                        <dt className={styles.planLabelText}>
                                           <span>
-                                            {capitalizeFirstLetter(innerKey)}
+                                            {capitalizeFirstLetter(
+                                              feature?.label
+                                            )}
                                           </span>
                                         </dt>
                                         <dd
-                                          className={styles.labelDescription}
-                                        ></dd>
+                                          className={
+                                            styles.planLabelDescription
+                                          }
+                                        >
+                                          {capitalizeFirstLetterAndAPI(
+                                            feature?.description
+                                          )}
+                                        </dd>
                                       </dl>
                                     </div>
                                   </th>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[0].features[featureKey][
-                                        innerKey
-                                      ]
+                                        index
+                                      ].value
                                     )}
                                   </td>
                                   <td>
                                     {renderStatusIcon(
                                       subscriptionData[1].features[featureKey][
-                                        innerKey
-                                      ]
+                                        index
+                                      ].value
                                     )}
                                   </td>
                                 </tr>
@@ -471,18 +457,14 @@ function Pricingplans() {
               <li>While premium features will no longer be available and you can not access forms created under the premium plan.</li>
             </ul>
             <p>Please review our <a href='https://www.contactformtoapi.com/terms-of-service/' target='_blank' >terms and conditions</a> for detailed information.</p>
-            <p>If you have any questions, our <a href='link-to-support'>customer support</a> is ready to assist.</p>
+            <p>If you have any questions, our <a href='https://www.contactformtoapi.com/'>customer support</a> is ready to assist.</p>
             <p>Thank you for being a valued subscriber!</p>"
             />
           )}
         </div>
-        <div className={styles.dashbordRight}>
+        <div className={styles.planPageRight}>
           <a href="https://www.itpathsolutions.com/contact-us/" target="_blank">
-            <img
-              src={ipsBanner}
-            alt=""
-              
-            />
+            <img src={ipsBanner} alt="" />
           </a>
           <a
             href="https://apps.shopify.com/contact-form-to-any-api"
@@ -493,18 +475,14 @@ function Pricingplans() {
               alt=""
               style={{ width: "100%", marginTop: "7px" }}
             />
-            
           </a>
-          <a
-            href="https://apps.shopify.com/contact-form-to-any-api"
-            target="_blank"
-          >
-          <img
+          <a href="https://www.itpathsolutions.com/contact-us/" target="_blank">
+            <img
               src={helpBanner}
               alt=""
               style={{ width: "100%", marginTop: "7px" }}
             />
-            </a>
+          </a>
         </div>
       </div>
       <ToastContainer />

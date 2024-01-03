@@ -113,7 +113,7 @@ const ChartDashboard = (props) => {
 
     return (
         <LegacyCard sectioned>
-            <div className={styles.submissions}>
+            <div className={styles.ipsContactusSubmissions}>
                 <div className={styles.submissionHeading}>
                     <Icon source={NoteMajor} color="base" />
                     <Heading>{chartTitle}</Heading>

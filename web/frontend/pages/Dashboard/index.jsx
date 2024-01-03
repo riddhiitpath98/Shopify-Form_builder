@@ -45,7 +45,7 @@ function Dashboard() {
   return (
     <>
       <Page fullWidth>
-        <div className={styles.layoutContainer}>
+        <div className={styles.ipsContactusLayoutContainer}>
           <Layout>
             <div className={styles.card}>
               <Layout.Section>

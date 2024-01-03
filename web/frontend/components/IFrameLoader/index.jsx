@@ -10,7 +10,7 @@ const IFrameLoader = ({ open, handleClose, src, title, height, width }) => {
             title={title}
             large
         >
-            <div className={styles.iframeContainer}>
+            <div className={styles.ipsIframeContainer}>
                 <Modal.Section>
                     <iframe {...{ src, height, width }}
                     />

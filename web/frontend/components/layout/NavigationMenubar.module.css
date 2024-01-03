@@ -1,4 +1,4 @@
-.nav {
+.ipsTabNav {
   position: relative;
   display: flex;
   height: 3.5rem;
@@ -6,7 +6,7 @@
   background-color: var(--p-surface);
   transition: var(--p-duration-200) background-color var(--p-ease-in-out);
 }
-.contentNav {
+.ipsTabContentNav {
   align-items: center !important;
   /* display: none!important; */
   flex: unset !important;
@@ -14,7 +14,7 @@
   width: 100% !important;
   z-index: var(--p-z-1);
 }
-.navigation {
+.ipsTabNavigation {
   align-items: center;
   display: flex;
   height: 100%;
@@ -23,14 +23,14 @@
   margin: 0;
   padding: 0;
 }
-.menuItems {
+.ipsTabMenuItems {
   display: flex;
   height: 100%;
   position: relative;
   text-align: left;
   margin: 0px 10px;
 }
-.menuLink {
+.ipsTabMenuLink {
   align-items: center;
   border-radius: 3px;
   cursor: pointer;
@@ -42,7 +42,7 @@
   color: #1f2124;
   fill: #1f2124;
 }
-.navTitle {
+.ipsTabNavTitle {
   margin-left: 5px;
 }
 li:hover {
@@ -51,13 +51,13 @@ li:hover {
 a:hover {
   color: #1f2124;
 }
-.active {
+.ipsTabActive {
   color: #008060 !important;
   /* width: 130px; */
   background-color: #ebecef !important;
   fill: var(--p-action-primary) !important;
 }
-.subMenu {
+.ipsTabSubMenu {
   align-items: start;
   background-color: #fff;
   border-radius: 3px;
@@ -73,7 +73,7 @@ a:hover {
   top: 100%;
   z-index: 100;
 }
-.subMenuItems {
+.ipsTabSubMenuItems {
   /* display: inline!important; */
   /* display: flex; */
   height: 100%;
@@ -81,7 +81,7 @@ a:hover {
   position: relative;
   text-align: left;
 }
-.show {
+.ipsTabShow {
   display: block;
 }
 body {

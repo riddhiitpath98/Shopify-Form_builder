@@ -31,17 +31,17 @@ const CommonDateInput = ({
   } = attributes || {};
 
   return (
-    <div className={styles.inputContainer}>
+    <div className={styles.ipsFormPreviewInputContainer}>
       <label
         htmlFor={inputId}
-        className={styles.classicLabel}
+        className={styles.ipsFormPreviewInputClassicLabel}
         style={{
           color: appearanceFields?.labelColor && appearanceFields?.labelColor,
         }}
       >
         {hideLabel ? "" : label}
       </label>
-      <span className={styles.textRequired}> {required ? " *" : ""}</span>
+      <span className={styles.ipsFormPreviewTextRequired}> {required ? " *" : ""}</span>
       <CustomDatePicker
         // value={selectedDateTime}
         id={inputId}
@@ -56,7 +56,7 @@ const CommonDateInput = ({
         handleDateTimeChange={handleDateTimeChange}
       />
       <span
-        className={styles.description}
+        className={styles.ipsPreviewDescription}
         style={{
           color:
             appearanceFields?.descriptionColor &&
@@ -66,7 +66,7 @@ const CommonDateInput = ({
         {description}
       </span>
       <small>
-        <p className={styles.errorMessage}>
+        <p className={styles.ipsFormPreviewErrorMessage}>
           {required ? formFeildData[index]?.errorMessage : null}
         </p>
       </small>
