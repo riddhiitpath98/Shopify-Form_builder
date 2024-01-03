@@ -21,6 +21,8 @@
   /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 0 12px rgba(0, 0, 0, 0.1);
   height: calc(100% - 50px); */
   max-width: 1440px;
+  height: 800px;
+  /* height: calc(100% - 50px); */
   /* transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); */
   width: 100%;
   overflow-y: auto;
