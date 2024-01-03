@@ -40,7 +40,7 @@ function Pricingplans() {
   const dispatch = useDispatch();
   const fullscreen = Fullscreen.create(app);
   const shopData = useAppQuery({ url: "/api/shop" });
-  
+
   const [active, setActive] = useState(false);
   const [recurringCharge, setRecurringCharge] = useState({});
   const [isCancelPlan, setIsCancelPlan] = useState(false);
@@ -213,7 +213,6 @@ function Pricingplans() {
               <div className="grid">
                 <div className={styles.planGridItem}>
                   <div className={styles.planBoxHeading}>
-                    {/* <Tooltip content="Your Current Plan" > */}
                     <h4
                       className={`${styles.planBoxHeadingText} ${
                         user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
@@ -223,7 +222,6 @@ function Pricingplans() {
                     >
                       Your current plan
                     </h4>
-                    {/* </Tooltip> */}
                   </div>
                   <table className={styles.planPicingTable} border={1}>
                     <thead>
@@ -231,7 +229,7 @@ function Pricingplans() {
                         <th scope="col"></th>
                         {subscriptionData?.map((item) => (
                           <th scope="col">
-                            <p style={{ marginTop: "15px" }}>
+                            <p style={{ marginTop: "10px" }}>
                               {item?.subscriptionName.toUpperCase()}
                             </p>
                           </th>
@@ -340,6 +338,28 @@ function Pricingplans() {
                                   </Button>
                                 </div>
                               ) : (
+                                //   <Button
+                                //   disabled={
+                                //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                                //   }
+                                //   loading={!user}
+                                //   primary
+                                //   fullWidth
+                                //   onClick={() =>
+                                //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
+                                //   }
+                                // >
+                                //   <span>
+                                //     <span>
+                                //       <span>
+                                //         {user?.subscriptionName ===
+                                //           SUBSCRIPTION_TYPES.PREMIUM
+                                //           ? PLAN_TEXT.CURRENT_PLAN
+                                //           : PLAN_TEXT.UPGRADE_PLAN}
+                                //       </span>
+                                //     </span>
+                                //   </span>
+                                // </Button>
                                 <div className="d-grid gap-2">
                                   <Button
                                     variant="danger"
@@ -457,7 +477,7 @@ function Pricingplans() {
               <li>While premium features will no longer be available and you can not access forms created under the premium plan.</li>
             </ul>
             <p>Please review our <a href='https://www.contactformtoapi.com/terms-of-service/' target='_blank' >terms and conditions</a> for detailed information.</p>
-            <p>If you have any questions, our <a href='https://www.contactformtoapi.com/'>customer support</a> is ready to assist.</p>
+            <p>If you have any questions, our <a href='https://www.contactformtoapi.com/' target='_blank'>customer support</a> is ready to assist.</p>
             <p>Thank you for being a valued subscriber!</p>"
             />
           )}

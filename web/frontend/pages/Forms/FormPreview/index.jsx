@@ -383,7 +383,7 @@ const FormPreview = () => {
       }
 
       const errorObj = {};
-      const cloneData = [...formFeildData]; 
+      const cloneData = [...formFeildData];
       let formData = {};
       formFeildData?.forEach((value) => {
         formData = { ...formData, [value.feildId]: "" };
@@ -504,15 +504,15 @@ const FormPreview = () => {
           </Layout>
         </SkeletonPage>
       ) : (
-        <div className={styles.ipsformPreviewCard}>
+        <div className={styles?.previewCard}>
           <div
-            className={`${styles.ipsFormPreviewBox} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewMobile : ""
+            className={`${selectedBackground === 'none' ? styles?.previewBoxNone : styles.ipsFormPreviewBox} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewMobile : ""
               }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${styles.ipsFormBuilder} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewFormBuilderMobile : ""
+                className={`${selectedBackground === 'none' ? styles?.formBuilderNone : styles.ipsFormBuilder} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewFormBuilderMobile : ""
                   } ${selectedBackground === "image" && styles.ipsFormPreviewFormImageBackground
                   } `}
                 style={{
@@ -521,7 +521,7 @@ const FormPreview = () => {
                     selectedBackground === "color"
                       ? appearanceFields?.formBackgroundColor
                       : selectedBackground === "none"
-                        ? "#fff"
+                        ? "transparent"
                         : "#fff",
                   backgroundImage:
                     selectedBackground === "image"

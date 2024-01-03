@@ -46,10 +46,9 @@ const AppearanceFields = ({ isEdit, tabId, toggleDrawer }) => {
       }
 
     }
-    const updatedValue = name === "appearanceWidth" ? value + "px" : value;
     const newArray = appearance.map((item, i) => {
       if (item.name === name) {
-        return { ...item, value: updatedValue };
+        return { ...item, value: name === "appearanceWidth" ? `${value}%` : value };
       } else {
         return item;
       }

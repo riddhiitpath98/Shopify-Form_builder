@@ -1,332 +1,340 @@
 .formContent {
-    background: #f4f6f8;
-    display: inline-block;
-    height: calc(100vh - 5.6rem);
-    padding: 0 25px;
-    width: calc(100% - 500px);
-  }
-  .previewCard {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-  }
-  .messageBanner {
-    max-width: 1440px;
-    width: 100%;
-  }
-  .previewBox {
-    position: relative;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 0 12px rgba(0, 0, 0, 0.1);
-    height: calc(100% - 50px);
-    max-width: 1440px;
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-    width: 100%;
-    overflow-y: auto;
-  }
-  iframe {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-  .ipsFormBuilder {
-    height: auto !important;
-    /* display: flex;
+  background: #f4f6f8;
+  display: inline-block;
+  height: calc(100vh - 5.6rem);
+  padding: 0 25px;
+  width: calc(100% - 500px);
+}
+.previewCard {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+.messageBanner {
+  max-width: 1440px;
+  width: 100%;
+}
+.previewBox {
+  position: relative;
+  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 0 12px rgba(0, 0, 0, 0.1); */
+  height: calc(100% - 50px);
+  max-width: 1440px;
+  /* transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); */
+  width: 100%;
+  overflow-y: auto;
+}
+iframe {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.ipsFormBuilder {
+  height: auto !important;
+  /* display: flex;
         justify-content: center; */
-    max-width: 600px;
-    width: -webkit-fill-available;
-    /* background-color: #fff; */
-    margin: 20px auto;
-    border-radius: 2px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-      0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-    padding: 15px;
-    /* font-family: initial; */
+  max-width: 600px;
+  width: -webkit-fill-available;
+  /* background-color: #fff; */
+  margin: 20px auto;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  /* font-family: initial; */
+}
+.formBuilderNone {
+  height: auto !important;
+  /* display: flex;
+          justify-content: center; */
+  max-width: 600px;
+  width: -webkit-fill-available;
+  /* background-color: #fff; */
+  margin: 20px auto;
+  border-radius: 2px;
+  padding: 15px;
+  /* font-family: initial; */
+}
+.mainForm {
+  max-width: 600px;
+  width: -webkit-fill-available;
+  background-color: #fff;
+  position: relative;
+  transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  margin: 30px auto;
+}
+.ipsFormPreviewHeader {
+  padding: 0;
+  margin-bottom: 2rem;
+  display: block;
+  background: none;
+}
+.form {
+  display: flex;
+  flex-wrap: wrap;
+}
+.myGrid {
+  width: 100% !important;
+}
+
+.myGridCell {
+  grid-column: span 1;
+}
+
+.myInput {
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+.ipsFormPreviewContainer {
+  display: grid;
+  /* grid-template-columns: 1fr 1fr; */
+  /* grid-gap: 10px; */
+}
+.ipsFormPreviewInputContainer {
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+  padding: 0 5px;
+  /* width: 100%; */
+  /* position: relative; */
+}
+.ipsFormPreviewInputClassicInput {
+  display: block;
+  /* height: 41px; */
+  padding: 10px 12px;
+  color: #000;
+  background-color: #f1f1f1;
+  border-radius: 2px;
+  font-size: 14px;
+  position: relative;
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  /* width: 100%; */
+  box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.15s ease;
+  background-image: none !important;
+  border: none;
+  outline: none;
+}
+.ipsFormPreviewInputClassicLabel {
+  color: #000;
+  text-align: left !important;
+  font-size: 14px;
+  display: inline-block;
+  margin-bottom: 4px;
+  font-weight: 400;
+  line-height: 20px;
+  text-transform: initial;
+  letter-spacing: initial;
+  cursor: pointer;
+}
+.ipsFormPreviewInputCheckboxWrapper {
+  display: flex;
+  align-items: center;
+}
+.ipsFormPreviewInputCheckboxInput {
+  height: 30px;
+  width: 15px;
+  margin-right: 5px;
+}
+.ipsFormPreviewInputCheckboxLabel {
+  font-weight: 400;
+  line-height: 24px;
+  text-align: left;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 14px;
+  top: 0;
+  display: flex;
+  align-items: center;
+}
+
+textarea {
+  height: initial;
+}
+.submitBtn {
+  margin-right: 3px;
+}
+.ipsFormPreviewFooterDescription {
+  margin-bottom: 0.7rem;
+  color: #6c757d;
+}
+.ipsFormPreviewSubmitButton {
+  background-color: #007bff;
+  color: #ffffff;
+}
+.ipsFormPreviewResetButton {
+  color: #ffffff;
+}
+.ipsFormPreviewClassicButton {
+  border: 1px solid #90c3f9;
+  text-transform: none;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  transition: all 0.25s ease-in-out;
+  font-weight: 400;
+  border-radius: 2px;
+  padding: 11px 22px;
+  min-width: 100px;
+  cursor: pointer;
+  position: relative;
+  margin-right: 3px;
+}
+.ipsFormPreviewButtonWidth {
+  border: 1px solid #90c3f9;
+  width: 100%;
+  margin-bottom: 3px;
+}
+.ipsPreviewLoadingBtn {
+  background-color: #c7c7c7;
+  border: none;
+}
+.ipsPreviewLabelContent {
+  color: #000;
+  text-align: left !important;
+}
+.ipsPreviewDescription {
+  color: #6c757d;
+  font-size: 12px;
+}
+a {
+  text-decoration: underline;
+}
+.ipsFormPreviewTextRequired {
+  font-size: 12px;
+  color: red;
+}
+.ipsFormPreviewErrorMessage {
+  color: #dc3545;
+  font-size: 12px;
+}
+.ipsFormPreviewParagraphInput {
+  background: #fff;
+  color: #000;
+  width: 100% !important;
+  padding: 5px;
+}
+.ipsFormPreviewHeadingTitle {
+  font-size: 19px;
+  line-height: 19px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.ipsFormPreviewHeadingCaption {
+  line-height: 17px;
+  font-weight: 300;
+  font-size: 17px;
+}
+button:focus {
+  outline: none;
+}
+b {
+  font-weight: bold;
+}
+.ipsFormPreviewHeaderDescription {
+  margin-top: 0;
+  font-size: 16px;
+  /* font-weight: 300;  */
+  line-height: 1.7;
+  color: #000;
+}
+.ipsFormPreviewFormTitle {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: 26px;
+}
+.ipsFormPreviewFormColorBackground {
+  background-color: #fff;
+}
+.ipsFormPreviewFormImageBackground {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.ipsFormPreviewCaptchaContainer {
+  transform-origin: right top;
+  -webkit-transform-origin: left top;
+  position: relative;
+  max-width: 304px;
+}
+.ipsFormPreviewDivider {
+  margin: 1.5rem 0 !important;
+}
+.ipsFormPreviewGridContainer {
+  display: grid;
+  gap: 0px 20px;
+  grid-template-columns: auto auto auto;
+}
+.polaris-banner {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #95c9b4;
+  background-color: #f1f8f5;
+  border-radius: 10px;
+  /* padding: 10px; */
+}
+.ips-banner-main {
+  display: flex;
+  justify-content: flex-start;
+}
+.Polaris-Banner__Ribbon {
+  margin: auto;
+  margin-top: 16px;
+  margin-left: 4px;
+}
+.Polaris-Button {
+  margin-top: 19px;
+  margin-right: 10px;
+}
+.heading-text {
+  font-size: medium;
+  font-weight: bold;
+  color: #000000;
+}
+.Polaris-Banner__ContentWrapper {
+  margin-left: 10px;
+}
+.ipsFormPreviewLoader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #3498db;
+  width: 25px;
+  height: 25px;
+  margin: auto;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
   }
-  .mainForm {
-    max-width: 600px;
-    width: -webkit-fill-available;
-    background-color: #fff;
-    position: relative;
-    transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
-    border-radius: 2px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-      0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    margin: 30px auto;
+  100% {
+    -webkit-transform: rotate(360deg);
   }
-  .ipsFormPreviewHeader {
-    padding: 0;
-    margin-bottom: 2rem;
-    display: block;
-    background: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  .form {
-    display: flex;
-    flex-wrap: wrap;
+  100% {
+    transform: rotate(360deg);
   }
-  .myGrid {
-    width: 100% !important;
-  }
-  
-  .myGridCell {
-    grid-column: span 1;
-  }
-  
-  .myInput {
-    font-size: 16px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-  .ipsFormPreviewContainer {
-    display: grid;
-    /* grid-template-columns: 1fr 1fr; */
-    /* grid-gap: 10px; */
-  }
-  .ipsFormPreviewInputContainer {
-    margin-bottom: 1.5rem;
-    font-size: 14px;
-    padding: 0 5px;
-    /* width: 100%; */
-    /* position: relative; */
-  }
-  .ipsFormPreviewInputClassicInput {
-    display: block;
-    /* height: 41px; */
-    padding: 10px 12px;
-    color: #000;
-    background-color: #f1f1f1;
-    border-radius: 2px;
-    font-size: 14px;
-    position: relative;
-    flex: 1 1 auto;
-    margin-bottom: 0;
-    /* width: 100%; */
-    box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
-    transition: box-shadow 0.15s ease;
-    background-image: none !important;
-    border: none;
-    outline: none;
-  }
-  .ipsFormPreviewInputClassicLabel {
-    color: #000;
-    text-align: left !important;
-    font-size: 14px;
-    display: inline-block;
-    margin-bottom: 4px;
-    font-weight: 400;
-    line-height: 20px;
-    text-transform: initial;
-    letter-spacing: initial;
-    cursor: pointer;
-  }
-  .ipsFormPreviewInputCheckboxWrapper {
-    display: flex;
-    align-items: center;
-  }
-  .ipsFormPreviewInputCheckboxInput {
-    height: 30px;
-    width: 15px;
-    margin-right: 5px;
-  }
-  .ipsFormPreviewInputCheckboxLabel {
-    font-weight: 400;
-    line-height: 24px;
-    text-align: left;
-    box-sizing: border-box;
-    display: inline-block;
-    position: relative;
-    margin-bottom: 0;
-    cursor: pointer;
-    font-size: 14px;
-    top: 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  textarea {
-    height: initial;
-  }
-  .submitBtn {
-    margin-right: 3px;
-  }
-  .ipsFormPreviewFooterDescription {
-    margin-bottom: 0.7rem;
-    color: #6c757d;
-  }
-  .ipsFormPreviewSubmitButton {
-    background-color: #007bff;
-    color: #ffffff;
-  }
-  .ipsFormPreviewResetButton {
-    color: #ffffff;
-  }
-  .ipsFormPreviewClassicButton {
-    border: 1px solid #90c3f9;
-    text-transform: none;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    user-select: none;
-    transition: all 0.25s ease-in-out;
-    font-weight: 400;
-    border-radius: 2px;
-    padding: 11px 22px;
-    min-width: 100px;
-    cursor: pointer;
-    position: relative;
-    margin-right: 3px;
-      }
-  .ipsFormPreviewButtonWidth {
-    border: 1px solid #90c3f9;
-    width: 100%;
-    margin-bottom: 3px;
-  }
-  .ipsPreviewLoadingBtn {
-    background-color: #c7c7c7;
-    border: none;
-  }
-  .ipsPreviewLabelContent {
-    color: #000;
-    text-align: left !important;
-  }
-  .ipsPreviewDescription {
-    color: #6c757d;
-    font-size: 12px;
-  }
-  a {
-    text-decoration: underline;
-  }
-  .ipsFormPreviewTextRequired {
-    font-size: 12px;
-    color: red;
-  }
-  .ipsFormPreviewErrorMessage {
-    color: #dc3545;
-    font-size: 12px;
-  }
-  .ipsFormPreviewParagraphInput {
-    background: #fff;
-    color: #000;
-    width: 100% !important;
-    padding: 5px;
-  }
-  .ipsFormPreviewHeadingTitle {
-    font-size: 19px;
-    line-height: 19px;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .ipsFormPreviewHeadingCaption {
-    line-height: 17px;
-    font-weight: 300;
-    font-size: 17px;
-  }
-  button:focus {
-    outline: none;
-  }
-  b {
-    font-weight: bold;
-  }
-  .ipsFormPreviewHeaderDescription {
-    margin-top: 0;
-    font-size: 16px;
-    /* font-weight: 300;  */
-    line-height: 1.7;
-    color: #000;
-  }
-  .ipsFormPreviewFormTitle {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    line-height: 1.5;
-    font-size: 26px;
-  }
-  .ipsFormPreviewFormColorBackground {
-    background-color: #fff;
-  }
-  .ipsFormPreviewFormImageBackground {
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .ipsFormPreviewCaptchaContainer {
-    transform-origin: right top;
-    -webkit-transform-origin: left top;
-    position: relative;
-    max-width: 304px;
-  }
-  .ipsFormPreviewDivider {
-    margin: 1.5rem 0 !important;
-  }
-  .ipsFormPreviewGridContainer {
-    display: grid;
-    gap: 0px 20px;
-    grid-template-columns: auto auto auto;
-  }
-  
-  .polaris-banner {
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid #95c9b4;
-    background-color: #f1f8f5;
-    border-radius: 10px;
-    /* padding: 10px; */
-  }
-  
-  .ips-banner-main {
-    display: flex;
-    justify-content: flex-start;
-  }
-  
-  .Polaris-Banner__Ribbon {
-    margin: auto;
-    margin-top: 16px;
-    margin-left: 4px;
-  }
-  .Polaris-Button {
-    margin-top: 19px;
-    margin-right: 10px;
-  }
-  .heading-text {
-    font-size: medium;
-    font-weight: bold;
-    color: #000000;
-  }
-  .Polaris-Banner__ContentWrapper {
-    margin-left: 10px;
-  }
-  
-  .ipsFormPreviewLoader {
-    border: 5px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 5px solid #3498db;
-    width: 25px;
-    height: 25px;
-    margin: auto;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
-  }
-  
-  /* Safari */
-  @-webkit-keyframes spin {
-    0% {
-      -webkit-transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
-  }
-  
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+}

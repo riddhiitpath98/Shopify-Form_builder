@@ -9,6 +9,7 @@ let formCounter = 1;
 let submitButtonCouter = 1;
 let loaderCounter = 1;
 let bannerCounter = 1;
+let recaptcha_response = "";
 const generateElementId = (type, id) => {
   let counter =
     type === "form"
@@ -62,10 +63,21 @@ const getUser = async (id) => {
   return data.data;
 };
 
+const handleRecaptcha = async () => {
+  const response = await fetch(`${server}/setting/rechaptcha/${shopId}`);
+  const data = await response.json();
+  return data?.data;
+};
 
-const catchFormDivAndAppendForm = (data) => {
+const catchFormDivAndAppendForm = async (data) => {
   loadRecaptchaScript();
   loadFlatpickrScript();
+  const enableRecaptcha = data?.elementData?.enableRecaptcha;
+  let recaptchadata;
+  if (enableRecaptcha) {
+    recaptchadata = await handleRecaptcha();
+  }
+
   const formElementId = generateElementId(
     "form",
     `myForm-${data?.elementData?._id}`
@@ -86,12 +98,9 @@ const catchFormDivAndAppendForm = (data) => {
   const checkElements = (plan, elem, checkPreview) => {
     const data = checkPreview
       ? elem.filter((val) => {
-        if (!val?.viewAccess)
-          return val
-        else if (val?.viewAccess?.includes(plan))
-          return val
-        else
-          return null
+        if (!val?.viewAccess) return val;
+        else if (val?.viewAccess?.includes(plan)) return val;
+        else return null;
       })
       : elem.map((val) => {
         return {
@@ -122,27 +131,30 @@ const catchFormDivAndAppendForm = (data) => {
   let formElement = [];
   let validation = {};
   let afterSubmit = {};
-  const createSubmission = async (data, formId) => { 
+  const createSubmission = async (data, formId) => {
     const finalFormData = new FormData();
     finalFormData.append("shopId", shopId);
     if (data && Object.keys(data).length > 0) {
       for (const key in data) {
-        if (data[key] !== "" && key.split("_").pop() === 'file') {
-          data[key]?.forEach(item => {
+        if (data[key] !== "" && key.split("_").pop() === "file") {
+          data[key]?.forEach((item) => {
             finalFormData.append(key, item);
-          })
-        }
-        else if (Array.isArray(data[key]))
+          });
+        } else if (Array.isArray(data[key]))
           finalFormData.append(key, JSON.stringify(data[key]));
         else {
           finalFormData.append(key, data[key]);
         }
       }
     }
+
+    if (enableRecaptcha && recaptcha_response) {
+      finalFormData.append("recaptcha_response", recaptcha_response);
+    }
     try {
       const requestOptions = {
         method: "POST",
-        body: finalFormData
+        body: finalFormData,
       };
       const response = await fetch(
         `${server}/submission/${formId}`,
@@ -169,6 +181,12 @@ const catchFormDivAndAppendForm = (data) => {
     return obj;
   };
 
+  const handleCaptchaChange = async (response) => {
+    recaptcha_response = response;
+    const captchaError = document.getElementById("captcha_error");
+    captchaError.textContent = response === "" ? "please varify Captcha" : "";
+  };
+
   function loadFlatpickrScript(callback) {
     const link = document.createElement("link");
     link.rel = "stylesheet";
@@ -193,7 +211,9 @@ const catchFormDivAndAppendForm = (data) => {
 
   function validateInput(fieldType, fieldValue, obj) {
     const value = !Array.isArray(fieldValue)
-      ? typeof fieldValue !== "boolean" && fieldValue.trim() ? typeof fieldValue !== "boolean" && fieldValue.trim() : fieldValue
+      ? typeof fieldValue !== "boolean" && fieldValue.trim()
+        ? typeof fieldValue !== "boolean" && fieldValue.trim()
+        : fieldValue
       : fieldValue;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const contactRegex = /^[2-9]{1}[0-9]{9}$/;
@@ -252,6 +272,24 @@ const catchFormDivAndAppendForm = (data) => {
         checkValidation("radio", value);
         formData[renderId][name] = value;
       }
+    } else if (type === 'file') {
+      const fileList = Array.from(files);
+      formFieldData = formFieldData.map((item) => {
+        let fieldData = {};
+        fieldData = {
+          ...item,
+          fieldValue: fileList,
+          fieldName: name
+        }
+        let error = validateInput(
+          fieldData.fieldName,
+          fieldData.fieldValue
+        );
+        const errorElement = document.getElementById(`${item.id}_error`);
+        errorElement.textContent = error && item.required ? error : "";
+        return fieldData;
+      })
+      formData[renderId][name] = fileList;
     } else {
       formFieldData = formFieldData.map((item) => {
         let fieldData = {};
@@ -274,8 +312,7 @@ const catchFormDivAndAppendForm = (data) => {
             checkValidation("accept_terms", checked);
             formData[renderId][name] = checked;
             fieldData = { ...item, fieldValue: checked };
-          }
-          else fieldData = { ...item, fieldValue: value };
+          } else fieldData = { ...item, fieldValue: value };
           let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
           const errorElement = document.getElementById(`${item.id}_error`);
           errorElement.textContent = error && item.required ? error : "";
@@ -341,6 +378,8 @@ const catchFormDivAndAppendForm = (data) => {
       const confirmPasswordError =
         attributes.confirmPassword &&
         document.getElementById(`${inputId}_CPError`);
+      const captchaError = document.getElementById("captcha_error");
+      captchaError.textContent = "";
       if (attributes.confirmPassword) confirmPasswordError.textContent = "";
       if (id === "radio") {
         const redioElements = document.querySelectorAll(
@@ -403,6 +442,11 @@ const catchFormDivAndAppendForm = (data) => {
         } else errorElement.textContent = "";
       }
     });
+    const captchaError = document.getElementById("captcha_error");
+    captchaError.textContent = recaptcha_response === "" ? "please varify Captcha" : "";
+    if (enableRecaptcha) {
+      hasError = recaptcha_response !== "" ? false : true
+    }
 
     if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
       const loader = document.getElementById(loaderElementId);
@@ -481,19 +525,25 @@ const catchFormDivAndAppendForm = (data) => {
 
   let inputStyles = {};
   let appearanceStyle = appearanceFields && appearanceFields?.appearanceStyle;
-  if (
-    appearanceStyle === "classicRounded" ||
-    appearanceStyle === "flatRounded"
-  ) {
+  if (appearanceStyle === "classicRounded") {
     inputStyles.borderRadius = "20px";
   } else if (appearanceStyle === "flat") {
     inputStyles.boxShadow = "none";
+    inputStyles.border = '0.5px solid lightgrey';
+    inputStyles.background = 'none';
   }
-  const checkPlan = elements(user.subscriptionName, formElementData, true)
+  else if (appearanceStyle === "flatRounded") {
+    inputStyles.borderRadius = "20px";
+    inputStyles.background = 'none';
+    inputStyles.boxShadow = 'none';
+    inputStyles.border = '0.5px solid lightgrey';
+  }
+
+  const checkPlan = elements(user.subscriptionName, formElementData, true);
   if (checkPlan.length > 0) {
     setTimeout(() => {
       const divElement = document.createElement("div");
-      divElement.className = `ipsFormBuilder ${selectedBackground === "image" ? "ipsFormPreviewFormImageBackground" : ""
+      divElement.className = `${selectedBackground === 'none' ? 'formBuilderNone' : 'ipsFormBuilder'} ${selectedBackground === "image" ? "ipsFormPreviewFormImageBackground" : ""
         }`;
 
       divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
@@ -501,7 +551,7 @@ const catchFormDivAndAppendForm = (data) => {
         selectedBackground === "color" && appearanceFields?.formBackgroundColor
           ? appearanceFields?.formBackgroundColor
           : selectedBackground === "none"
-            ? "#fff"
+            ? "transparent"
             : "#fff";
       divElement.style.backgroundImage =
         selectedBackground === "image"
@@ -554,254 +604,69 @@ const catchFormDivAndAppendForm = (data) => {
       gridElement.className = "ipsFormPreviewGridContainer";
       formElement.appendChild(gridElement);
 
-      elements(user.subscriptionName, formElementData, true)?.forEach((item) => {
-        const {
-          label,
-          placeholder,
-          description,
-          limit_chars,
-          limit_chars_count,
-          required,
-          column_width,
-          options,
-          radio_options,
-          hideDivider,
-          hideLabel,
-          allowedExtensions,
-          allowMultiple,
-          hiddenValue,
-          htmlCode,
-          no_of_options,
-          text,
-          heading,
-          caption,
-          dateTimeFormat,
-          dateFormat,
-          timeFormat,
-          dropdown_options,
-          default_value,
-          confirmPassword,
-          confirmPasswordLabel,
-          confirmPasswordPlaceholder,
-          confirmPasswordDescription,
-          resizeTextarea,
-        } = item?.attributes || {};
-        const width = {
-          md:
-            column_width === "33%"
-              ? 4
-              : column_width === "50%"
-                ? 6
-                : column_width === "100%" && 12,
-          xl:
-            column_width === "33%"
-              ? 4
-              : column_width === "50%"
-                ? 6
-                : column_width === "100%" && 12,
-        };
+      elements(user.subscriptionName, formElementData, true)?.forEach(
+        (item) => {
+          const {
+            label,
+            placeholder,
+            description,
+            limit_chars,
+            limit_chars_count,
+            required,
+            column_width,
+            options,
+            radio_options,
+            hideDivider,
+            hideLabel,
+            allowedExtensions,
+            allowMultiple,
+            hiddenValue,
+            htmlCode,
+            no_of_options,
+            text,
+            heading,
+            caption,
+            dateTimeFormat,
+            dateFormat,
+            timeFormat,
+            dropdown_options,
+            default_value,
+            confirmPassword,
+            confirmPasswordLabel,
+            confirmPasswordPlaceholder,
+            confirmPasswordDescription,
+            resizeTextarea,
+          } = item?.attributes || {};
+          const width = {
+            md:
+              column_width === "33%"
+                ? 4
+                : column_width === "50%"
+                  ? 6
+                  : column_width === "100%" && 12,
+            xl:
+              column_width === "33%"
+                ? 4
+                : column_width === "50%"
+                  ? 6
+                  : column_width === "100%" && 12,
+          };
 
-        const noOfOptions = parseInt(no_of_options?.[0]);
-        const inputWidth = 100 / noOfOptions + "%";
-        const widthInput = "100%";
+          const noOfOptions = parseInt(no_of_options?.[0]);
+          const inputWidth = 100 / noOfOptions + "%";
+          const widthInput = "100%";
 
-        const innerDivElement = document.createElement("div");
-        innerDivElement.className = "grid-item";
-        innerDivElement.style.gridColumn = `span ${width.xl}`;
-        gridElement.appendChild(innerDivElement);
+          const innerDivElement = document.createElement("div");
+          innerDivElement.className = "grid-item";
+          innerDivElement.style.gridColumn = `span ${width.xl}`;
+          gridElement.appendChild(innerDivElement);
 
-        if (
-          item.type === "text" ||
-          item.type === "email" ||
-          item.type === "number"
-        ) {
-          emailValidate = item.type === "email" && required ? false : true;
-          const inputContainer = document.createElement("div");
-          inputContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(inputContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields?.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : label;
-          inputContainer.appendChild(labelElement);
-
-          const requiredElement = document.createElement("span");
-          requiredElement.className = "ipsFormPreviewTextRequired";
-          requiredElement.textContent = required ? " *" : "";
-          labelElement.appendChild(requiredElement);
-
-          const brElement = document.createElement("br");
-          inputContainer.appendChild(brElement);
-
-          const inputElement = document.createElement("input");
-          inputElement.type = item.type;
-          inputElement.id = item.inputId;
-          inputElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          inputElement.className = "ipsFormPreviewInputClassicInput";
-
-          inputElement.name = `${item.inputId}_${item.id}`;
-          inputElement.min = 0;
-
-          inputElement.placeholder = placeholder;
-          inputElement.autocomplete = "off";
-
-          inputElement.style.width = widthInput;
-          Object.assign(inputElement.style, inputStyles);
-          inputContainer.appendChild(inputElement);
-          const element = document.querySelector(
-            `input[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("input", (e) =>
-            handleChange(formElementId, e)
-          );
-
-          const descriptionElement = document.createElement("span");
-          descriptionElement.className = "ipsPreviewDescription";
-          descriptionElement.textContent = description;
-          inputContainer.appendChild(descriptionElement);
-
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-
-          smallElement.appendChild(errorMessageElement);
-          inputContainer.appendChild(smallElement);
-        } else if (item?.type === "file") {
-          const acceptExtensions = allowedExtensions
-            ?.map((extension) => `.${extension.value}`)
-            .join(",");
-
-          const inputContainer = document.createElement("div");
-          inputContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(inputContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : item.title;
-          inputContainer.appendChild(labelElement);
-
-          const requiredElement = document.createElement("span");
-          requiredElement.className = "ipsFormPreviewTextRequired";
-          requiredElement.textContent = required ? " *" : "";
-          labelElement.appendChild(requiredElement);
-
-          const brElement = document.createElement("br");
-          inputContainer.appendChild(brElement);
-
-          const fileInputElement = document.createElement("input");
-          fileInputElement.type = item.type;
-          fileInputElement.id = item.inputId;
-          fileInputElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          fileInputElement.className = "ipsFormPreviewInputClassicInput";
-          // fileInputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
-          fileInputElement.name = `${item.inputId}_${item.id}`;
-          fileInputElement.accept = acceptExtensions;
-          fileInputElement.min = 0;
-          fileInputElement.required = "";
-          fileInputElement.placeholder = placeholder;
-          fileInputElement.autocomplete = "off";
-          // fileInputElement.maxLength = limit_chars ? limit_chars_count : 20;
-          fileInputElement.style.width = widthInput;
-          Object.assign(fileInputElement.style, inputStyles);
-          fileInputElement.multiple = allowMultiple ? true : false;
-          inputContainer.appendChild(fileInputElement);
-          const element = document.querySelector(
-            `input[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("input", (e) =>
-            handleChange(formElementId, e)
-          );
-          // const element = document.getElementById(item.inputId)
-          // element.addEventListener("input", handleChange);
-          const fileDescriptionElement = document.createElement("span");
-          fileDescriptionElement.className = "ipsPreviewDescription";
-          fileDescriptionElement.textContent = description;
-          inputContainer.appendChild(fileDescriptionElement);
-
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-          // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
-          smallElement.appendChild(errorMessageElement);
-          inputContainer.appendChild(smallElement);
-        } else if (item?.type === "password") {
-          const inputContainer = document.createElement("div");
-          inputContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(inputContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : label;
-          inputContainer.appendChild(labelElement);
-
-          const requiredElement = document.createElement("span");
-          requiredElement.className = "ipsFormPreviewTextRequired";
-          requiredElement.textContent = required ? " *" : "";
-          labelElement.appendChild(requiredElement);
-
-          const brElement = document.createElement("br");
-          inputContainer.appendChild(brElement);
-
-          const passwordInputElement = document.createElement("input");
-          passwordInputElement.type = item.type;
-          passwordInputElement.id = item.inputId;
-          passwordInputElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          passwordInputElement.className = "ipsFormPreviewInputClassicInput";
-
-          passwordInputElement.name = `${item.inputId}_${item.id}`;
-          passwordInputElement.min = 0;
-          passwordInputElement.required = "";
-          passwordInputElement.placeholder = placeholder;
-          passwordInputElement.autocomplete = "off";
-          // passwordInputElement.maxLength = limit_chars ? limit_chars_count : "";
-          passwordInputElement.style.width = widthInput;
-          Object.assign(passwordInputElement.style, inputStyles);
-
-          inputContainer.appendChild(passwordInputElement);
-          const element = document.querySelector(
-            `input[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("input", (e) =>
-            handleChange(formElementId, e)
-          );
-
-          const passwordDescriptionElement = document.createElement("span");
-          passwordDescriptionElement.className = "ipsPreviewDescription";
-          passwordDescriptionElement.textContent = description;
-          inputContainer.appendChild(passwordDescriptionElement);
-
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-
-          smallElement.appendChild(errorMessageElement);
-          inputContainer.appendChild(smallElement);
-
-          if (confirmPassword) {
+          if (
+            item.type === "text" ||
+            item.type === "email" ||
+            item.type === "number"
+          ) {
+            emailValidate = item.type === "email" && required ? false : true;
             const inputContainer = document.createElement("div");
             inputContainer.className = "ipsFormPreviewInputContainer";
             innerDivElement.appendChild(inputContainer);
@@ -810,9 +675,9 @@ const catchFormDivAndAppendForm = (data) => {
             labelElement.htmlFor = item.inputId;
             labelElement.className = "ipsFormPreviewInputClassicLabel";
             labelElement.style.color = appearanceFields?.labelColor
-              ? appearanceFields.labelColor
+              ? appearanceFields?.labelColor
               : "";
-            labelElement.textContent = hideLabel ? "" : confirmPasswordLabel;
+            labelElement.textContent = hideLabel ? "" : label;
             inputContainer.appendChild(labelElement);
 
             const requiredElement = document.createElement("span");
@@ -823,169 +688,472 @@ const catchFormDivAndAppendForm = (data) => {
             const brElement = document.createElement("br");
             inputContainer.appendChild(brElement);
 
-            const confirmPasswordInputElement = document.createElement("input");
-            confirmPasswordInputElement.type = item.type;
-            confirmPasswordInputElement.id = `confirm_${item.inputId}`;
-            confirmPasswordInputElement.setAttribute(
+            const inputElement = document.createElement("input");
+            inputElement.type = item.type;
+            inputElement.id = item.inputId;
+            inputElement.setAttribute(
               "data-id",
               `${formElementId}_${item?.inputId}`
             );
-            confirmPasswordInputElement.className = "ipsFormPreviewInputClassicInput";
-            confirmPasswordInputElement.name = `${item.inputId}_confirm_${item.id}`;
-            confirmPasswordInputElement.placeholder = confirmPasswordPlaceholder;
-            confirmPasswordInputElement.autocomplete = "off";
-            confirmPasswordInputElement.required = "";
-            // confirmPasswordInputElement.maxLength = limit_chars ? limit_chars_count  : "";
-            confirmPasswordInputElement.style.width = widthInput;
-            Object.assign(confirmPasswordInputElement.style, inputStyles);
+            inputElement.className = "ipsFormPreviewInputClassicInput";
 
-            inputContainer.appendChild(confirmPasswordInputElement);
+            inputElement.name = `${item.inputId}_${item.id}`;
+            inputElement.min = 0;
+
+            inputElement.placeholder = placeholder;
+            inputElement.autocomplete = "off";
+
+            inputElement.style.width = widthInput;
+            Object.assign(inputElement.style, inputStyles);
+            inputContainer.appendChild(inputElement);
             const element = document.querySelector(
               `input[data-id=${formElementId}_${item?.inputId}]`
             );
-            element.addEventListener("input", (event) =>
-              handleChange(formElementId, event, confirmPassword)
+            element.addEventListener("input", (e) =>
+              handleChange(formElementId, e)
             );
-
-            const confirmPasswordDescriptionElement =
-              document.createElement("span");
-            confirmPasswordDescriptionElement.className = "ipsPreviewDescription";
-            confirmPasswordDescriptionElement.textContent =
-              confirmPasswordDescription;
-            inputContainer.appendChild(confirmPasswordDescriptionElement);
-
-            const confirmPasswordSmallElement = document.createElement("small");
-            const confirmPasswordErrorMessageElement =
-              document.createElement("p");
-            confirmPasswordErrorMessageElement.className = "ipsFormPreviewErrorMessage";
-            confirmPasswordErrorMessageElement.id = `${item.inputId}_CPError`;
-
-            confirmPasswordSmallElement.appendChild(
-              confirmPasswordErrorMessageElement
-            );
-            inputContainer.appendChild(confirmPasswordSmallElement);
-          }
-        } else if (item?.type === "textarea") {
-          const inputContainer = document.createElement("div");
-          inputContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(inputContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : label;
-          inputContainer.appendChild(labelElement);
-
-          const requiredElement = document.createElement("span");
-          requiredElement.className = "ipsFormPreviewTextRequired";
-          requiredElement.textContent = required ? " *" : "";
-          labelElement.appendChild(requiredElement);
-
-          const brElement = document.createElement("br");
-          inputContainer.appendChild(brElement);
-
-          const textareaInputElement = document.createElement("textarea");
-          textareaInputElement.placeholder = placeholder;
-          textareaInputElement.id = item.inputId;
-          textareaInputElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          textareaInputElement.rows = 3;
-          textareaInputElement.name = `${item.inputId}_${item.id}`;
-          textareaInputElement.className = "ipsFormPreviewInputClassicInput";
-          textareaInputElement.required = "";
-          textareaInputElement.style.width = widthInput;
-          Object.assign(textareaInputElement.style, inputStyles);
-          textareaInputElement.style.resize = resizeTextarea
-            ? "vertical"
-            : "none";
-          textareaInputElement.style.maxHeight = "200px";
-          textareaInputElement.style.minHeight = "80px";
-          inputContainer.appendChild(textareaInputElement);
-          const element = document.querySelector(
-            `textarea[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("input", (e) =>
-            handleChange(formElementId, e)
-          );
-
-          const textareaDescriptionElement = document.createElement("span");
-          textareaDescriptionElement.className = "ipsPreviewDescription";
-          textareaDescriptionElement.textContent = description;
-          inputContainer.appendChild(textareaDescriptionElement);
-
-          const textareaSmallElement = document.createElement("small");
-          const textareaErrorMessageElement = document.createElement("p");
-          textareaErrorMessageElement.className = "ipsFormPreviewErrorMessage";
-          textareaErrorMessageElement.id = `${item.inputId}_error`;
-          textareaSmallElement.appendChild(textareaErrorMessageElement);
-          inputContainer.appendChild(textareaSmallElement);
-        } else if (item?.type === "checkbox") {
-          if (item?.id === "accept_terms") {
-            const checkboxContainer = document.createElement("div");
-            checkboxContainer.className = "ipsFormPreviewInputContainer";
-            innerDivElement.appendChild(checkboxContainer);
-
-            const checkboxWrapperElement = document.createElement("div");
-            checkboxWrapperElement.style.width = widthInput;
-            checkboxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
-            checkboxContainer.appendChild(checkboxWrapperElement);
-
-            const checkboxInputElement = document.createElement("input");
-            checkboxInputElement.className = "ipsFormPreviewInputCheckboxInput";
-            checkboxInputElement.id = item?.inputId;
-            checkboxInputElement.setAttribute(
-              "data-id",
-              `${formElementId}_${item?.inputId}`
-            );
-            checkboxInputElement.type = item?.type;
-            checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
-
-            checkboxWrapperElement.appendChild(checkboxInputElement);
-
-            const checkboxLabelElement = document.createElement("label");
-            checkboxLabelElement.className = "checkBoxLabel checkbox-label";
-            checkboxLabelElement.htmlFor = item?.inputId;
-            checkboxWrapperElement.appendChild(checkboxLabelElement);
-
-            const labelContentElement = document.createElement("span");
-            labelContentElement.className = "ipsPreviewLabelContent";
-            labelContentElement.style.color = appearanceFields?.labelColor
-              ? appearanceFields.labelColor
-              : "";
-            labelContentElement.innerHTML = label;
-            checkboxLabelElement.appendChild(labelContentElement);
-
-            const textRequiredElement = document.createElement("span");
-            textRequiredElement.className = "ipsFormPreviewTextRequired";
-            textRequiredElement.textContent = required ? " *" : "";
-            checkboxWrapperElement.appendChild(textRequiredElement);
 
             const descriptionElement = document.createElement("span");
             descriptionElement.className = "ipsPreviewDescription";
             descriptionElement.textContent = description;
-            checkboxContainer.appendChild(descriptionElement);
+            inputContainer.appendChild(descriptionElement);
 
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
             errorMessageElement.id = `${item.inputId}_error`;
+
             smallElement.appendChild(errorMessageElement);
-            checkboxContainer.appendChild(smallElement);
+            inputContainer.appendChild(smallElement);
+          } else if (item?.type === "file") {
+            const acceptExtensions = allowedExtensions
+              ?.map((extension) => `.${extension.value}`)
+              .join(",");
+
+            const inputContainer = document.createElement("div");
+            inputContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(inputContainer);
+
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            labelElement.style.color = appearanceFields?.labelColor
+              ? appearanceFields.labelColor
+              : "";
+            labelElement.textContent = hideLabel ? "" : item.title;
+            inputContainer.appendChild(labelElement);
+
+            const requiredElement = document.createElement("span");
+            requiredElement.className = "ipsFormPreviewTextRequired";
+            requiredElement.textContent = required ? " *" : "";
+            labelElement.appendChild(requiredElement);
+
+            const brElement = document.createElement("br");
+            inputContainer.appendChild(brElement);
+
+            const fileInputElement = document.createElement("input");
+            fileInputElement.type = item.type;
+            fileInputElement.id = item.inputId;
+            fileInputElement.setAttribute(
+              "data-id",
+              `${formElementId}_${item?.inputId}`
+            );
+            fileInputElement.className = "ipsFormPreviewInputClassicInput";
+            // fileInputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
+            fileInputElement.name = `${item.inputId}_${item.id}`;
+            fileInputElement.accept = acceptExtensions;
+            fileInputElement.min = 0;
+            fileInputElement.required = "";
+            fileInputElement.placeholder = placeholder;
+            fileInputElement.autocomplete = "off";
+            // fileInputElement.maxLength = limit_chars ? limit_chars_count : 20;
+            fileInputElement.style.width = widthInput;
+            Object.assign(fileInputElement.style, inputStyles);
+            fileInputElement.multiple = allowMultiple ? true : false;
+            inputContainer.appendChild(fileInputElement);
             const element = document.querySelector(
               `input[data-id=${formElementId}_${item?.inputId}]`
             );
-            element.addEventListener("change", (e) =>
+
+            element.addEventListener("input", (e) =>
               handleChange(formElementId, e)
             );
-          } else {
-            const checkboxContainer = document.createElement("div");
-            checkboxContainer.className = "ipsFormPreviewInputContainer";
-            innerDivElement.appendChild(checkboxContainer);
+            // const element = document.getElementById(item.inputId)
+            // element.addEventListener("input", handleChange);
+            const fileDescriptionElement = document.createElement("span");
+            fileDescriptionElement.className = "ipsPreviewDescription";
+            fileDescriptionElement.textContent = description;
+            inputContainer.appendChild(fileDescriptionElement);
+
+            const smallElement = document.createElement("small");
+            const errorMessageElement = document.createElement("p");
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
+            errorMessageElement.id = `${item.inputId}_error`;
+            // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
+            smallElement.appendChild(errorMessageElement);
+            inputContainer.appendChild(smallElement);
+          } else if (item?.type === "password") {
+            const inputContainer = document.createElement("div");
+            inputContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(inputContainer);
+
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            labelElement.style.color = appearanceFields?.labelColor
+              ? appearanceFields.labelColor
+              : "";
+            labelElement.textContent = hideLabel ? "" : label;
+            inputContainer.appendChild(labelElement);
+
+            const requiredElement = document.createElement("span");
+            requiredElement.className = "ipsFormPreviewTextRequired";
+            requiredElement.textContent = required ? " *" : "";
+            labelElement.appendChild(requiredElement);
+
+            const brElement = document.createElement("br");
+            inputContainer.appendChild(brElement);
+
+            const passwordInputElement = document.createElement("input");
+            passwordInputElement.type = item.type;
+            passwordInputElement.id = item.inputId;
+            passwordInputElement.setAttribute(
+              "data-id",
+              `${formElementId}_${item?.inputId}`
+            );
+            passwordInputElement.className = "ipsFormPreviewInputClassicInput";
+
+            passwordInputElement.name = `${item.inputId}_${item.id}`;
+            passwordInputElement.min = 0;
+            passwordInputElement.required = "";
+            passwordInputElement.placeholder = placeholder;
+            passwordInputElement.autocomplete = "off";
+            // passwordInputElement.maxLength = limit_chars ? limit_chars_count : "";
+            passwordInputElement.style.width = widthInput;
+            Object.assign(passwordInputElement.style, inputStyles);
+
+            inputContainer.appendChild(passwordInputElement);
+            const element = document.querySelector(
+              `input[data-id=${formElementId}_${item?.inputId}]`
+            );
+            element.addEventListener("input", (e) =>
+              handleChange(formElementId, e)
+            );
+
+            const passwordDescriptionElement = document.createElement("span");
+            passwordDescriptionElement.className = "ipsPreviewDescription";
+            passwordDescriptionElement.textContent = description;
+            inputContainer.appendChild(passwordDescriptionElement);
+
+            const smallElement = document.createElement("small");
+            const errorMessageElement = document.createElement("p");
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
+            errorMessageElement.id = `${item.inputId}_error`;
+
+            smallElement.appendChild(errorMessageElement);
+            inputContainer.appendChild(smallElement);
+
+            if (confirmPassword) {
+              const inputContainer = document.createElement("div");
+              inputContainer.className = "ipsFormPreviewInputContainer";
+              innerDivElement.appendChild(inputContainer);
+
+              const labelElement = document.createElement("label");
+              labelElement.htmlFor = item.inputId;
+              labelElement.className = "ipsFormPreviewInputClassicInput";
+              labelElement.style.color = appearanceFields?.labelColor
+                ? appearanceFields.labelColor
+                : "";
+              labelElement.textContent = hideLabel ? "" : confirmPasswordLabel;
+              inputContainer.appendChild(labelElement);
+
+              const requiredElement = document.createElement("span");
+              requiredElement.className = "ipsFormPreviewTextRequired";
+              requiredElement.textContent = required ? " *" : "";
+              labelElement.appendChild(requiredElement);
+
+              const brElement = document.createElement("br");
+              inputContainer.appendChild(brElement);
+
+              const confirmPasswordInputElement =
+                document.createElement("input");
+              confirmPasswordInputElement.type = item.type;
+              confirmPasswordInputElement.id = `confirm_${item.inputId}`;
+              confirmPasswordInputElement.setAttribute(
+                "data-id",
+                `${formElementId}_${item?.inputId}`
+              );
+              confirmPasswordInputElement.className = "ipsFormPreviewInputClassicInput";
+              confirmPasswordInputElement.name = `${item.inputId}_confirm_${item.id}`;
+              confirmPasswordInputElement.placeholder =
+                confirmPasswordPlaceholder;
+              confirmPasswordInputElement.autocomplete = "off";
+              confirmPasswordInputElement.required = "";
+              // confirmPasswordInputElement.maxLength = limit_chars ? limit_chars_count  : "";
+              confirmPasswordInputElement.style.width = widthInput;
+              Object.assign(confirmPasswordInputElement.style, inputStyles);
+
+              inputContainer.appendChild(confirmPasswordInputElement);
+              const element = document.querySelector(
+                `input[data-id=${formElementId}_${item?.inputId}]`
+              );
+              element.addEventListener("input", (event) =>
+                handleChange(formElementId, event, confirmPassword)
+              );
+
+              const confirmPasswordDescriptionElement =
+                document.createElement("span");
+              confirmPasswordDescriptionElement.className = "ipsPreviewDescription";
+              confirmPasswordDescriptionElement.textContent =
+                confirmPasswordDescription;
+              inputContainer.appendChild(confirmPasswordDescriptionElement);
+
+              const confirmPasswordSmallElement =
+                document.createElement("small");
+              const confirmPasswordErrorMessageElement =
+                document.createElement("p");
+              confirmPasswordErrorMessageElement.className = "ipsFormPreviewErrorMessage";
+              confirmPasswordErrorMessageElement.id = `${item.inputId}_CPError`;
+
+              confirmPasswordSmallElement.appendChild(
+                confirmPasswordErrorMessageElement
+              );
+              inputContainer.appendChild(confirmPasswordSmallElement);
+            }
+          } else if (item?.type === "textarea") {
+            const inputContainer = document.createElement("div");
+            inputContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(inputContainer);
+
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            labelElement.style.color = appearanceFields?.labelColor
+              ? appearanceFields.labelColor
+              : "";
+            labelElement.textContent = hideLabel ? "" : label;
+            inputContainer.appendChild(labelElement);
+
+            const requiredElement = document.createElement("span");
+            requiredElement.className = "ipsFormPreviewTextRequired";
+            requiredElement.textContent = required ? " *" : "";
+            labelElement.appendChild(requiredElement);
+
+            const brElement = document.createElement("br");
+            inputContainer.appendChild(brElement);
+
+            const textareaInputElement = document.createElement("textarea");
+            textareaInputElement.placeholder = placeholder;
+            textareaInputElement.id = item.inputId;
+            textareaInputElement.setAttribute(
+              "data-id",
+              `${formElementId}_${item?.inputId}`
+            );
+            textareaInputElement.rows = 3;
+            textareaInputElement.name = `${item.inputId}_${item.id}`;
+            textareaInputElement.className = "ipsFormPreviewInputClassicInput";
+            textareaInputElement.required = "";
+            textareaInputElement.style.width = widthInput;
+            Object.assign(textareaInputElement.style, inputStyles);
+            textareaInputElement.style.resize = resizeTextarea
+              ? "vertical"
+              : "none";
+            textareaInputElement.style.maxHeight = "200px";
+            textareaInputElement.style.minHeight = "80px";
+            inputContainer.appendChild(textareaInputElement);
+            const element = document.querySelector(
+              `textarea[data-id=${formElementId}_${item?.inputId}]`
+            );
+            element.addEventListener("input", (e) =>
+              handleChange(formElementId, e)
+            );
+
+            const textareaDescriptionElement = document.createElement("span");
+            textareaDescriptionElement.className = "ipsPreviewDescription";
+            textareaDescriptionElement.textContent = description;
+            inputContainer.appendChild(textareaDescriptionElement);
+
+            const textareaSmallElement = document.createElement("small");
+            const textareaErrorMessageElement = document.createElement("p");
+            textareaErrorMessageElement.className = "ipsFormPreviewErrorMessage";
+            textareaErrorMessageElement.id = `${item.inputId}_error`;
+            textareaSmallElement.appendChild(textareaErrorMessageElement);
+            inputContainer.appendChild(textareaSmallElement);
+          } else if (item?.type === "checkbox") {
+            if (item?.id === "accept_terms") {
+              const checkboxContainer = document.createElement("div");
+              checkboxContainer.className = "ipsFormPreviewInputContainer";
+              innerDivElement.appendChild(checkboxContainer);
+
+              const checkboxWrapperElement = document.createElement("div");
+              checkboxWrapperElement.style.width = widthInput;
+              checkboxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
+              checkboxContainer.appendChild(checkboxWrapperElement);
+
+              const checkboxInputElement = document.createElement("input");
+              checkboxInputElement.className = "ipsFormPreviewInputCheckboxInput";
+              checkboxInputElement.id = item?.inputId;
+              checkboxInputElement.setAttribute(
+                "data-id",
+                `${formElementId}_${item?.inputId}`
+              );
+              checkboxInputElement.type = item?.type;
+              checkboxInputElement.name = `${item?.inputId}_${item?.id}`;
+
+              checkboxWrapperElement.appendChild(checkboxInputElement);
+
+              const checkboxLabelElement = document.createElement("label");
+              checkboxLabelElement.className = "checkBoxLabel checkbox-label";
+              checkboxLabelElement.htmlFor = item?.inputId;
+              checkboxWrapperElement.appendChild(checkboxLabelElement);
+
+              const labelContentElement = document.createElement("span");
+              labelContentElement.className = "ipsPreviewLabelContent";
+              labelContentElement.style.color = appearanceFields?.labelColor
+                ? appearanceFields.labelColor
+                : "";
+              labelContentElement.innerHTML = label;
+              checkboxLabelElement.appendChild(labelContentElement);
+
+              const textRequiredElement = document.createElement("span");
+              textRequiredElement.className = "ipsFormPreviewTextRequired";
+              textRequiredElement.textContent = required ? " *" : "";
+              checkboxWrapperElement.appendChild(textRequiredElement);
+
+              const descriptionElement = document.createElement("span");
+              descriptionElement.className = "ipsPreviewDescription";
+              descriptionElement.textContent = description;
+              checkboxContainer.appendChild(descriptionElement);
+
+              const smallElement = document.createElement("small");
+              const errorMessageElement = document.createElement("p");
+              errorMessageElement.className = "ipsFormPreviewErrorMessage";
+              errorMessageElement.id = `${item.inputId}_error`;
+              smallElement.appendChild(errorMessageElement);
+              checkboxContainer.appendChild(smallElement);
+              const element = document.querySelector(
+                `input[data-id=${formElementId}_${item?.inputId}]`
+              );
+              element.addEventListener("change", (e) =>
+                handleChange(formElementId, e)
+              );
+            } else {
+              const checkboxContainer = document.createElement("div");
+              checkboxContainer.className = "ipsFormPreviewInputContainer";
+              innerDivElement.appendChild(checkboxContainer);
+
+              const labelElement = document.createElement("label");
+              labelElement.htmlFor = item?.inputId;
+              labelElement.className = "ipsFormPreviewInputClassicLabel";
+              labelElement.style.color = appearanceFields?.labelColor
+                ? appearanceFields.labelColor
+                : "";
+              labelElement.textContent = hideLabel ? "" : label;
+              checkboxContainer.appendChild(labelElement);
+
+              const textRequiredElement = document.createElement("span");
+              textRequiredElement.className = "ipsFormPreviewTextRequired";
+              textRequiredElement.textContent = required ? " *" : "";
+              checkboxContainer.appendChild(textRequiredElement);
+
+              const ulElement = document.createElement("ul");
+              ulElement.style.listStyleType = "none";
+              ulElement.id = "checkbox123";
+              ulElement.style.margin = 0;
+              ulElement.style.padding = 0;
+              ulElement.style.width = widthInput;
+              ulElement.style.display = "flex";
+              ulElement.style.flexWrap = "wrap";
+              checkboxContainer.appendChild(ulElement);
+
+              options?.forEach((option) => {
+                const liElement = document.createElement("li");
+                liElement.style.width = inputWidth;
+                ulElement.appendChild(liElement);
+
+                const checkBoxWrapperElement = document.createElement("div");
+                checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
+                liElement.appendChild(checkBoxWrapperElement);
+
+                const checkBoxLabelElement = document.createElement("label");
+                checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
+                checkBoxLabelElement.style.color = appearanceFields?.optionColor
+                  ? appearanceFields.optionColor
+                  : "";
+                checkBoxWrapperElement.appendChild(checkBoxLabelElement);
+
+                const checkBoxInputElement = document.createElement("input");
+                checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
+                checkBoxInputElement.type = item?.type;
+                checkBoxInputElement.value = option.value;
+                checkBoxInputElement.id = `${item?.inputId}_${option.label
+                  .replace(/\s+/g, "-")
+                  .replace(/[^a-zA-Z0-9-_]/g, "")}`;
+
+                checkBoxInputElement.setAttribute(
+                  "data-id",
+                  `${formElementId}_${item?.inputId}_${option.label
+                    .replace(/\s+/g, "-")
+                    .replace(/[^a-zA-Z0-9-_]/g, "")}`
+                );
+                checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
+                checkBoxLabelElement.appendChild(checkBoxInputElement);
+
+                checkBoxLabelElement.appendChild(
+                  document.createTextNode(option.label)
+                );
+
+                const element = document.querySelector(
+                  `input[data-id=${formElementId}_${item?.inputId
+                  }_${option.label
+                    .replace(/\s+/g, "-")
+                    .replace(/[^a-zA-Z0-9-_]/g, "")}]`
+                );
+                element.addEventListener("change", (event) => {
+                  const selectedCheckboxes = ulElement.querySelectorAll(
+                    'input[type="checkbox"]:checked'
+                  );
+                  const selectedValues = Array.from(selectedCheckboxes).map(
+                    (checkbox) => {
+                      let checkValue = {
+                        label: checkbox.value,
+                        value: checkbox.value,
+                      };
+                      return checkValue;
+                    }
+                  );
+                  formData[formElementId][event.target.name] = selectedValues;
+                  checkValidation("checkbox", selectedValues);
+                });
+              });
+              const descriptionElement = document.createElement("span");
+              descriptionElement.className = "ipsPreviewDescription";
+              descriptionElement.textContent = description;
+              checkboxContainer.appendChild(descriptionElement);
+
+              const smallElement = document.createElement("small");
+              const errorMessageElement = document.createElement("p");
+              errorMessageElement.className = "ipsFormPreviewErrorMessage";
+              errorMessageElement.id = `${item.inputId}_error`;
+              smallElement.appendChild(errorMessageElement);
+              checkboxContainer.appendChild(smallElement);
+              if (default_value) {
+                const hobbiesCheckboxes = document.querySelectorAll(
+                  `input[name="${item?.inputId}_${item?.id}"]`
+                );
+                for (let checkbox of hobbiesCheckboxes) {
+                  for (let { label, value } of default_value) {
+                    if (value === checkbox.value) {
+                      checkbox.checked = true;
+                    }
+                  }
+                }
+              }
+            }
+          } else if (item?.type === "radio") {
+            const radioContainer = document.createElement("div");
+            radioContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(radioContainer);
 
             const labelElement = document.createElement("label");
             labelElement.htmlFor = item?.inputId;
@@ -994,24 +1162,23 @@ const catchFormDivAndAppendForm = (data) => {
               ? appearanceFields.labelColor
               : "";
             labelElement.textContent = hideLabel ? "" : label;
-            checkboxContainer.appendChild(labelElement);
+            radioContainer.appendChild(labelElement);
 
             const textRequiredElement = document.createElement("span");
             textRequiredElement.className = "ipsFormPreviewTextRequired";
             textRequiredElement.textContent = required ? " *" : "";
-            checkboxContainer.appendChild(textRequiredElement);
+            radioContainer.appendChild(textRequiredElement);
 
             const ulElement = document.createElement("ul");
             ulElement.style.listStyleType = "none";
-            ulElement.id = "checkbox123";
             ulElement.style.margin = 0;
             ulElement.style.padding = 0;
             ulElement.style.width = widthInput;
             ulElement.style.display = "flex";
             ulElement.style.flexWrap = "wrap";
-            checkboxContainer.appendChild(ulElement);
+            radioContainer.appendChild(ulElement);
 
-            options?.forEach((option) => {
+            radio_options?.forEach((option) => {
               const liElement = document.createElement("li");
               liElement.style.width = inputWidth;
               ulElement.appendChild(liElement);
@@ -1031,13 +1198,17 @@ const catchFormDivAndAppendForm = (data) => {
               checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
               checkBoxInputElement.type = item?.type;
               checkBoxInputElement.value = option.value;
-              checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
-
+              checkBoxInputElement.id = `${item?.inputId}_${option.label
+                .replace(/\s+/g, "-")
+                .replace(/[^a-zA-Z0-9-_]/g, "")}`;
               checkBoxInputElement.setAttribute(
                 "data-id",
-                `${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`
+                `${formElementId}_${item?.inputId}_${option.label
+                  .replace(/\s+/g, "-")
+                  .replace(/[^a-zA-Z0-9-_]/g, "")}`
               );
               checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
+              checkBoxInputElement.defaultChecked = default_value;
               checkBoxLabelElement.appendChild(checkBoxInputElement);
 
               checkBoxLabelElement.appendChild(
@@ -1045,383 +1216,320 @@ const catchFormDivAndAppendForm = (data) => {
               );
 
               const element = document.querySelector(
-                `input[data-id=${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}]`
+                `input[data-id=${formElementId}_${item?.inputId}_${option.label
+                  .replace(/\s+/g, "-")
+                  .replace(/[^a-zA-Z0-9-_]/g, "")}]`
               );
               element.addEventListener("change", (event) => {
-                const selectedCheckboxes = ulElement.querySelectorAll(
-                  'input[type="checkbox"]:checked'
+                const selectedRadio = ulElement.querySelector(
+                  'input[type="radio"]:checked'
                 );
-                const selectedValues = Array.from(selectedCheckboxes).map(
-                  (checkbox) => {
-                    let checkValue = {
-                      label: checkbox.value,
-                      value: checkbox.value,
-                    };
-                    return checkValue;
-                  }
-                );
-                formData[formElementId][event.target.name] = selectedValues;
-                checkValidation("checkbox", selectedValues);
+                if (selectedRadio) {
+                  const selectedValue = selectedRadio.value;
+                  formData[formElementId][event.target.name] = selectedValue;
+                  // formData[event.target.name] = selectedValue;
+                  checkValidation("radio", selectedValue);
+                }
               });
             });
+
             const descriptionElement = document.createElement("span");
             descriptionElement.className = "ipsPreviewDescription";
             descriptionElement.textContent = description;
-            checkboxContainer.appendChild(descriptionElement);
+            radioContainer.appendChild(descriptionElement);
 
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
             errorMessageElement.id = `${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
-            checkboxContainer.appendChild(smallElement);
+            radioContainer.appendChild(smallElement);
             if (default_value) {
-              const hobbiesCheckboxes = document.querySelectorAll(
+              const radioButtons = document.querySelectorAll(
                 `input[name="${item?.inputId}_${item?.id}"]`
               );
-              for (let checkbox of hobbiesCheckboxes) {
-                for (let { label, value } of default_value) {
-                  if (value === checkbox.value) {
-                    checkbox.checked = true;
-                  }
+              for (let radio of radioButtons) {
+                if (default_value === radio.value) {
+                  radio.checked = true;
                 }
               }
             }
-          }
+          } else if (item?.type === "select") {
+            const selectContainer = document.createElement("div");
+            selectContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(selectContainer);
 
-        } else if (item?.type === "radio") {
-          const radioContainer = document.createElement("div");
-          radioContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(radioContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item?.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : label;
-          radioContainer.appendChild(labelElement);
-
-          const textRequiredElement = document.createElement("span");
-          textRequiredElement.className = "ipsFormPreviewTextRequired";
-          textRequiredElement.textContent = required ? " *" : "";
-          radioContainer.appendChild(textRequiredElement);
-
-          const ulElement = document.createElement("ul");
-          ulElement.style.listStyleType = "none";
-          ulElement.style.margin = 0;
-          ulElement.style.padding = 0;
-          ulElement.style.width = widthInput;
-          ulElement.style.display = "flex";
-          ulElement.style.flexWrap = "wrap";
-          radioContainer.appendChild(ulElement);
-
-          radio_options?.forEach((option) => {
-            const liElement = document.createElement("li");
-            liElement.style.width = inputWidth;
-            ulElement.appendChild(liElement);
-
-            const checkBoxWrapperElement = document.createElement("div");
-            checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
-            liElement.appendChild(checkBoxWrapperElement);
-
-            const checkBoxLabelElement = document.createElement("label");
-            checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
-            checkBoxLabelElement.style.color = appearanceFields?.optionColor
-              ? appearanceFields.optionColor
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item?.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            labelElement.style.color = appearanceFields?.labelColor
+              ? appearanceFields.labelColor
               : "";
-            checkBoxWrapperElement.appendChild(checkBoxLabelElement);
+            labelElement.textContent = hideLabel ? "" : label;
+            selectContainer.appendChild(labelElement);
 
-            const checkBoxInputElement = document.createElement("input");
-            checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
-            checkBoxInputElement.type = item?.type;
-            checkBoxInputElement.value = option.value;
-            checkBoxInputElement.id = `${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`;
-            checkBoxInputElement.setAttribute(
+            const textRequiredElement = document.createElement("span");
+            textRequiredElement.className = "ipsFormPreviewTextRequired";
+            textRequiredElement.textContent = required ? " *" : "";
+            selectContainer.appendChild(textRequiredElement);
+
+            const selectElement = document.createElement("select");
+            selectElement.name = `${item?.inputId}_${item?.id}`;
+            selectElement.id = item?.inputId;
+            selectElement.setAttribute(
               "data-id",
-              `${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}`
+              `${formElementId}_${item?.inputId}`
             );
-            checkBoxInputElement.name = `${item?.inputId}_${item?.id}`;
-            checkBoxInputElement.defaultChecked = default_value;
-            checkBoxLabelElement.appendChild(checkBoxInputElement);
-
-            checkBoxLabelElement.appendChild(
-              document.createTextNode(option.label)
-            );
-
+            selectElement.className = "ipsFormPreviewInputClassicInput";
+            selectElement.style.width = widthInput;
+            Object.assign(selectElement.style, inputStyles);
+            selectContainer.appendChild(selectElement);
             const element = document.querySelector(
-              `input[data-id=${formElementId}_${item?.inputId}_${option.label.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '')}]`
+              `select[data-id=${formElementId}_${item?.inputId}]`
             );
-            element.addEventListener("change", (event) => {
-              const selectedRadio = ulElement.querySelector(
-                'input[type="radio"]:checked'
-              );
-              if (selectedRadio) {
-                const selectedValue = selectedRadio.value;
-                formData[formElementId][event.target.name] = selectedValue;
-                // formData[event.target.name] = selectedValue;
-                checkValidation("radio", selectedValue);
-              }
+            element.addEventListener("change", (e) =>
+              handleChange(formElementId, e)
+            );
+
+            const defaultOptionElement = document.createElement("option");
+            defaultOptionElement.value = "";
+            defaultOptionElement.disabled = true;
+            defaultOptionElement.selected = true;
+            defaultOptionElement.textContent = placeholder;
+            selectElement.appendChild(defaultOptionElement);
+
+            dropdown_options?.forEach((option) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = option.value;
+              optionElement.textContent = option.label;
+              selectElement.appendChild(optionElement);
             });
-          });
 
-          const descriptionElement = document.createElement("span");
-          descriptionElement.className = "ipsPreviewDescription";
-          descriptionElement.textContent = description;
-          radioContainer.appendChild(descriptionElement);
+            const descriptionElement = document.createElement("span");
+            descriptionElement.className = "ipsPreviewDescription";
+            descriptionElement.textContent = description;
+            selectContainer.appendChild(descriptionElement);
 
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-          smallElement.appendChild(errorMessageElement);
-          radioContainer.appendChild(smallElement);
-          if (default_value) {
-            const radioButtons = document.querySelectorAll(
-              `input[name="${item?.inputId}_${item?.id}"]`
-            );
-            for (let radio of radioButtons) {
-              if (default_value === radio.value) {
-                radio.checked = true;
-              }
+            const smallElement = document.createElement("small");
+            const errorMessageElement = document.createElement("p");
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
+            errorMessageElement.id = `${item.inputId}_error`;
+            smallElement.appendChild(errorMessageElement);
+            selectContainer.appendChild(smallElement);
+            if (default_value) {
+              const selectOptions = document.getElementById(`${item?.inputId}`);
+              selectOptions.value = default_value;
             }
-          }
-        } else if (item?.type === "select") {
-          const selectContainer = document.createElement("div");
-          selectContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(selectContainer);
+          } else if (item?.type === "divider") {
+            if (!hideDivider) {
+              const hrElement = document.createElement("hr");
+              hrElement.className = "ipsFormPreviewDivider";
+              innerDivElement.appendChild(hrElement);
+            }
+          } else if (item?.type === "hidden") {
+            const hiddenContainer = document.createElement("div");
+            hiddenContainer.className = "ipsFormPreviewInputContainer";
+            hiddenContainer.style.display = "none";
+            hiddenContainer.style.visibility = "hidden";
+            innerDivElement.appendChild(hiddenContainer);
 
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item?.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : label;
-          selectContainer.appendChild(labelElement);
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item?.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            hiddenContainer.appendChild(labelElement);
 
-          const textRequiredElement = document.createElement("span");
-          textRequiredElement.className = "ipsFormPreviewTextRequired";
-          textRequiredElement.textContent = required ? " *" : "";
-          selectContainer.appendChild(textRequiredElement);
+            const spanElement = document.createElement("span");
+            spanElement.dataset.label = "Hidden";
+            spanElement.textContent = label;
+            labelElement.appendChild(spanElement);
 
-          const selectElement = document.createElement("select");
-          selectElement.name = `${item?.inputId}_${item?.id}`;
-          selectElement.id = item?.inputId;
-          selectElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          selectElement.className = "ipsFormPreviewInputClassicInput";
-          selectElement.style.width = widthInput;
-          Object.assign(selectElement.style, inputStyles);
-          selectContainer.appendChild(selectElement);
-          const element = document.querySelector(
-            `select[data-id=${formElementId}_${item?.inputId}]`
-          );
-          element.addEventListener("change", (e) =>
-            handleChange(formElementId, e)
-          );
+            const inputElement = document.createElement("input");
+            inputElement.type = item?.type;
+            inputElement.dataset.type = "fixed";
+            inputElement.id = item?.inputId;
+            inputElement.name = `${item?.inputId}_${item?.id}`;
+            inputElement.value = hiddenValue;
+            hiddenContainer.appendChild(inputElement);
+          } else if (item?.type === "editor") {
+            const editorContainer = document.createElement("div");
+            editorContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(editorContainer);
 
-          const defaultOptionElement = document.createElement("option");
-          defaultOptionElement.value = "";
-          defaultOptionElement.disabled = true;
-          defaultOptionElement.selected = true;
-          defaultOptionElement.textContent = placeholder;
-          selectElement.appendChild(defaultOptionElement);
-
-          dropdown_options?.forEach((option) => {
-            const optionElement = document.createElement("option");
-            optionElement.value = option.value;
-            optionElement.textContent = option.label;
-            selectElement.appendChild(optionElement);
-          });
-
-          const descriptionElement = document.createElement("span");
-          descriptionElement.className = "ipsPreviewDescription";
-          descriptionElement.textContent = description;
-          selectContainer.appendChild(descriptionElement);
-
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-          smallElement.appendChild(errorMessageElement);
-          selectContainer.appendChild(smallElement);
-          if (default_value) {
-            const selectOptions = document.getElementById(`${item?.inputId}`);
-            selectOptions.value = default_value;
-          }
-        } else if (item?.type === "divider") {
-          if (!hideDivider) {
-            const hrElement = document.createElement("hr");
-            hrElement.className = "ipsFormPreviewDivider";
-            innerDivElement.appendChild(hrElement);
-          }
-        } else if (item?.type === "hidden") {
-          const hiddenContainer = document.createElement("div");
-          hiddenContainer.className = "ipsFormPreviewInputContainer";
-          hiddenContainer.style.display = "none";
-          hiddenContainer.style.visibility = "hidden";
-          innerDivElement.appendChild(hiddenContainer);
-
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item?.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          hiddenContainer.appendChild(labelElement);
-
-          const spanElement = document.createElement("span");
-          spanElement.dataset.label = "Hidden";
-          spanElement.textContent = label;
-          labelElement.appendChild(spanElement);
-
-          const inputElement = document.createElement("input");
-          inputElement.type = item?.type;
-          inputElement.dataset.type = "fixed";
-          inputElement.id = item?.inputId;
-          inputElement.name = `${item?.inputId}_${item?.id}`;
-          inputElement.value = hiddenValue;
-          hiddenContainer.appendChild(inputElement);
-        } else if (item?.type === "editor") {
-          const editorContainer = document.createElement("div");
-          editorContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(editorContainer);
-
-          const paragraphInput = document.createElement("div");
-          paragraphInput.className = "ipsFormPreviewParagraphInput";
-          paragraphInput.style.width = widthInput;
-          paragraphInput.style.color = appearanceFields?.paragraphColor
-            ? appearanceFields.paragraphColor
-            : "";
-          paragraphInput.style.background =
-            appearanceFields?.paragraphBackgroundColor
-              ? appearanceFields.paragraphBackgroundColor
+            const paragraphInput = document.createElement("div");
+            paragraphInput.className = "ipsFormPreviewParagraphInput";
+            paragraphInput.style.width = widthInput;
+            paragraphInput.style.color = appearanceFields?.paragraphColor
+              ? appearanceFields.paragraphColor
               : "";
-          paragraphInput.innerHTML = text;
-          editorContainer.appendChild(paragraphInput);
-        } else if (item?.type === "heading") {
-          const headingContainer = document.createElement("div"); 
-          headingContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(headingContainer);
+            paragraphInput.style.background =
+              appearanceFields?.paragraphBackgroundColor
+                ? appearanceFields.paragraphBackgroundColor
+                : "";
+            paragraphInput.innerHTML = text;
+            editorContainer.appendChild(paragraphInput);
+          } else if (item?.type === "heading") {
+            const headingContainer = document.createElement("div");
+            headingContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(headingContainer);
 
-          const headingTitle = document.createElement("h3");
-          headingTitle.className = "ipsFormPreviewHeadingTitle";
-          headingTitle.innerHTML = heading;
-          headingContainer.appendChild(headingTitle);
+            const headingTitle = document.createElement("h3");
+            headingTitle.className = "ipsFormPreviewHeadingTitle";
+            headingTitle.innerHTML = heading;
+            headingContainer.appendChild(headingTitle);
 
-          const headingCaption = document.createElement("p");
-          headingCaption.className = "ipsFormPreviewHeadingCaption";
-          headingCaption.innerHTML = caption;
-          headingContainer.appendChild(headingCaption);
-        } else if (item?.type === "HTML") {
-          const htmlContainer = document.createElement("div");
-          htmlContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(htmlContainer);
+            const headingCaption = document.createElement("p");
+            headingCaption.className = "ipsFormPreviewHeadingCaption";
+            headingCaption.innerHTML = caption;
+            headingContainer.appendChild(headingCaption);
+          } else if (item?.type === "HTML") {
+            const htmlContainer = document.createElement("div");
+            htmlContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(htmlContainer);
 
-          const htmlContent = document.createElement("div");
-          htmlContent.innerHTML = htmlCode ? htmlCode : caption;
-          htmlContainer.appendChild(htmlContent);
-        } else if (item?.type === "date") {
-          const dateContainer = document.createElement("div");
-          dateContainer.className = "ipsFormPreviewInputContainer";
-          innerDivElement.appendChild(dateContainer);
-          const labelElement = document.createElement("label");
-          labelElement.htmlFor = item.inputId;
-          labelElement.className = "ipsFormPreviewInputClassicLabel";
-          labelElement.style.color = appearanceFields?.labelColor
-            ? appearanceFields?.labelColor
-            : "";
-          labelElement.textContent = hideLabel ? "" : item.title;
-          dateContainer.appendChild(labelElement);
+            const htmlContent = document.createElement("div");
+            htmlContent.innerHTML = htmlCode ? htmlCode : caption;
+            htmlContainer.appendChild(htmlContent);
+          } else if (item?.type === "date") {
+            const dateContainer = document.createElement("div");
+            dateContainer.className = "ipsFormPreviewInputContainer";
+            innerDivElement.appendChild(dateContainer);
+            const labelElement = document.createElement("label");
+            labelElement.htmlFor = item.inputId;
+            labelElement.className = "ipsFormPreviewInputClassicLabel";
+            labelElement.style.color = appearanceFields?.labelColor
+              ? appearanceFields?.labelColor
+              : "";
+            labelElement.textContent = hideLabel ? "" : item.title;
+            dateContainer.appendChild(labelElement);
 
-          const requiredElement = document.createElement("span");
-          requiredElement.className = "ipsFormPreviewTextRequired";
-          requiredElement.textContent = required ? " *" : "";
-          labelElement.appendChild(requiredElement);
+            const requiredElement = document.createElement("span");
+            requiredElement.className = "ipsFormPreviewTextRequired";
+            requiredElement.textContent = required ? " *" : "";
+            labelElement.appendChild(requiredElement);
 
-          const brElement = document.createElement("br");
-          dateContainer.appendChild(brElement);
+            const brElement = document.createElement("br");
+            dateContainer.appendChild(brElement);
 
-          const inputElement = document.createElement("input");
-          inputElement.type = item.type;
-          inputElement.id = `datepicker_${item.inputId}`;
-          inputElement.setAttribute(
-            "data-id",
-            `${formElementId}_${item?.inputId}`
-          );
-          inputElement.className = "ipsFormPreviewInputClassicInput";
-          // inputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
-          inputElement.value = "";
-          inputElement.name = `${item.inputId}_${item.id}`;
-          inputElement.min = 0;
-          inputElement.required = "";
-          inputElement.placeholder = placeholder;
-          inputElement.autocomplete = "off";
-          // inputElement.maxLength = limit_chars ? limit_chars_count : undefined;
-          inputElement.style.width = widthInput;
-          Object.assign(inputElement.style, inputStyles);
-          // const element = document.querySelector(
-          //   `input[data-id=${formElementId}_${item?.inputId}]`
-          //   );
-          //   console.log('dateeee: ', element);
-          // element.addEventListener("change", (e) =>
-          //   handleChange(formElementId, e)
-          // );
-          // inputElement.addEventListener("change", (event) => handleChange(event));
-          dateContainer.appendChild(inputElement);
+            const inputElement = document.createElement("input");
+            inputElement.type = item.type;
+            inputElement.id = `datepicker_${item.inputId}`;
+            inputElement.setAttribute(
+              "data-id",
+              `${formElementId}_${item?.inputId}`
+            );
+            inputElement.className = "ipsFormPreviewInputClassicInput";
+            // inputElement.value = formSubmissionData[`${item.inputId}_${item.id}`];
+            inputElement.value = "";
+            inputElement.name = `${item.inputId}_${item.id}`;
+            inputElement.min = 0;
+            inputElement.required = "";
+            inputElement.placeholder = placeholder;
+            inputElement.autocomplete = "off";
+            // inputElement.maxLength = limit_chars ? limit_chars_count : undefined;
+            inputElement.style.width = widthInput;
+            Object.assign(inputElement.style, inputStyles);
+            // const element = document.querySelector(
+            //   `input[data-id=${formElementId}_${item?.inputId}]`
+            //   );
+            //   console.log('dateeee: ', element);
+            // element.addEventListener("change", (e) =>
+            //   handleChange(formElementId, e)
+            // );
+            // inputElement.addEventListener("change", (event) => handleChange(event));
+            dateContainer.appendChild(inputElement);
 
-          const descriptionElement = document.createElement("span");
-          descriptionElement.className = "ipsPreviewDescription";
-          descriptionElement.textContent = description;
-          dateContainer.appendChild(descriptionElement);
+            const descriptionElement = document.createElement("span");
+            descriptionElement.className = "ipsPreviewDescription";
+            descriptionElement.textContent = description;
+            dateContainer.appendChild(descriptionElement);
 
-          const smallElement = document.createElement("small");
-          const errorMessageElement = document.createElement("p");
-          errorMessageElement.className = "ipsFormPreviewErrorMessage";
-          errorMessageElement.id = `${item.inputId}_error`;
-          // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
-          smallElement.appendChild(errorMessageElement);
-          dateContainer.appendChild(smallElement);
-          const datepicker = document.getElementById(
-            `datepicker_${item.inputId}`
-          );
-          datepicker.addEventListener("input", (e) =>
-            handleChange(formElementId, e)
-          );
-          const timeFormatValue = timeFormat === "24h" ? "H:i" : "h:i K";
-          const getOptions = () => {
-            if (dateTimeFormat === "1") {
-              return {
-                noCalendar: false,
-                enableTime: true,
-                dateFormat: `${dateFormat} ${timeFormatValue}`,
-              };
-            } else if (dateTimeFormat === "2") {
-              return {
-                noCalendar: false,
-                enableTime: false,
-                dateFormat: dateFormat,
-              };
-            } else if (dateTimeFormat === "3") {
-              return {
-                noCalendar: true,
-                enableTime: true,
-                time_24hr: timeFormat === "24h" ? true : false,
-                dateFormat: timeFormatValue,
-              };
-            }
-          };
-          const options = getOptions();
-          flatpickr(datepicker, {
-            key: dateTimeFormat,
-            noCalendar: options.noCalendar,
-            enableTime: options.enableTime,
-            time_24hr: options.time_24hr,
-            dateFormat: options.dateFormat,
-          });
+            const smallElement = document.createElement("small");
+            const errorMessageElement = document.createElement("p");
+            errorMessageElement.className = "ipsFormPreviewErrorMessage";
+            errorMessageElement.id = `${item.inputId}_error`;
+            // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
+            smallElement.appendChild(errorMessageElement);
+            dateContainer.appendChild(smallElement);
+            const datepicker = document.getElementById(
+              `datepicker_${item.inputId}`
+            );
+            datepicker.addEventListener("input", (e) =>
+              handleChange(formElementId, e)
+            );
+            const timeFormatValue = timeFormat === "24h" ? "H:i" : "h:i K";
+            const getOptions = () => {
+              if (dateTimeFormat === "1") {
+                return {
+                  noCalendar: false,
+                  enableTime: true,
+                  dateFormat: `${dateFormat} ${timeFormatValue}`,
+                };
+              } else if (dateTimeFormat === "2") {
+                return {
+                  noCalendar: false,
+                  enableTime: false,
+                  dateFormat: dateFormat,
+                };
+              } else if (dateTimeFormat === "3") {
+                return {
+                  noCalendar: true,
+                  enableTime: true,
+                  time_24hr: timeFormat === "24h" ? true : false,
+                  dateFormat: timeFormatValue,
+                };
+              }
+            };
+            const options = getOptions();
+            flatpickr(datepicker, {
+              key: dateTimeFormat,
+              noCalendar: options.noCalendar,
+              enableTime: options.enableTime,
+              time_24hr: options.time_24hr,
+              dateFormat: options.dateFormat,
+            });
+          }
         }
-      });
+      );
+
+      if (enableRecaptcha) {
+        const captchaContainer = document.createElement("div");
+        captchaContainer.className = "captchaContainer";
+
+        const invisibleDiv = document.createElement("div");
+        invisibleDiv.style.width = "0";
+
+        const reCaptchaElement = document.createElement("div");
+        reCaptchaElement.className = "g-recaptcha";
+
+        reCaptchaElement.setAttribute("data-sitekey", recaptchadata?.siteKey);
+        captchaContainer.appendChild(reCaptchaElement);
+
+        const smallElement = document.createElement("small");
+        const captchaErrorMsgElement = document.createElement("p");
+        captchaErrorMsgElement.className = "errorMessage";
+        captchaErrorMsgElement.id = `captcha_error`;
+
+        smallElement.appendChild(captchaErrorMsgElement);
+        captchaContainer.appendChild(smallElement);
+        formElement.appendChild(captchaContainer);
+        formElement.appendChild(invisibleDiv);
+
+        setTimeout(() => {
+          grecaptcha.render(reCaptchaElement, {
+            sitekey: recaptchadata?.siteKey,
+            callback: handleCaptchaChange,
+          });
+        }, 2000);
+
+        const captchaError = document.getElementById("captcha_error");
+        if (enableRecaptcha) {
+          captchaContainer.style.display = "";
+          captchaError.style.display = "";
+        } else {
+          captchaContainer.style.display = "none";
+          captchaError.style.display = "none";
+        }
+      }
 
       if (footerFieldData && footerFieldData?.attributes) {
         const footerDivElement = document.createElement("div");
@@ -1494,7 +1602,8 @@ const catchFormDivAndAppendForm = (data) => {
             ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
             : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
             }`;
-          resetButton.textContent = footerFieldData?.attributes?.resetButtonText;
+          resetButton.textContent =
+            footerFieldData?.attributes?.resetButtonText;
           resetButton.style.color = appearanceFields?.buttonTextColor;
           footerDivElement.appendChild(resetButton);
         }
@@ -1562,11 +1671,13 @@ const catchFormDivAndAppendForm = (data) => {
       bannerElement.style.display = "none";
 
       const close = document.getElementById("close");
-      close.addEventListener("click", () => handleClose(data?.elementData?._id));
+      close.addEventListener("click", () =>
+        handleClose(data?.elementData?._id)
+      );
       // });
     }, 2000);
-  };
-}
+  }
+};
 
 function fetchData() {
   setTimeout(async () => {
@@ -1578,7 +1689,7 @@ function fetchData() {
       shopId = element.getAttribute("data-ap-key");
       try {
         const elementData = await getData(formId);
-        const user = await getUser(shopId)
+        const user = await getUser(shopId);
         const validationData = await getValidation(formId);
         const appearanceData = await getApperence(formId);
         const afterSubmit = await getAfterSubmit(formId);
@@ -1588,7 +1699,7 @@ function fetchData() {
           appearanceData,
           afterSubmit,
           element,
-          user: user.userData
+          user: user.userData,
         });
       } catch (error) {
         console.error("Error fetching data:", error);

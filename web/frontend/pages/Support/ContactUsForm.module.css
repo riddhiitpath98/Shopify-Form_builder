@@ -11,5 +11,5 @@
     width: 150px;
   }
   .ipsContactusFormLayoutContainer{
-    max-width: 800px;
+    max-width: 85% !important;
   }

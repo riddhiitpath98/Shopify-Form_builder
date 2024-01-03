@@ -91,8 +91,8 @@ export const SettingsInputTypeProvider = ({
       return (
         <TextField
           {...{ type, label }}
-          value={name === "appearanceWidth" && String(value)?.replace("px", "")}
-          prefix="px"
+          value={name === "appearanceWidth" && String(value)?.replace("%", "")}
+          prefix="%"
           onChange={(value) => {
             handleChange(name, value);
           }}
