@@ -96,8 +96,8 @@ export const addFormData = createAsyncThunk(
       const response = await axios.post(
         "/custom_form",
         formData.combinedObjectArr
-      );
-      dispatch(
+        );
+        dispatch(
         createNupdateValidation({
           formId: response.data.data._id,
           validationData: formData.updatedErrorMsg,
@@ -115,7 +115,7 @@ export const addFormData = createAsyncThunk(
           afterSubmitData: formData.updatedAfterSubmit,
         })
       );
-      toast.success(response?.message);
+      toast.success(response?.data?.message);
       return response.data;
     } catch (error) {
       toast.error(error?.response?.message);
@@ -162,7 +162,7 @@ export const updateFormData = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.put(`/custom_form/${data._id}`,
-        data.combinedObjectArr,
+      data.combinedObjectArr,
       );
       toast.success(response?.data?.message, toastConfig);
       return response?.data?.data;
