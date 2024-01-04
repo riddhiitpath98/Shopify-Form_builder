@@ -13,9 +13,11 @@ import Row from "react-bootstrap/Row";
 import Spinner from 'react-bootstrap/Spinner'
 import { useAppQuery } from "../../hooks";
 import { addShopData, getPriceDetails } from "../../redux/actions/allActions";
-import IFrameLoader from "../../components/IFrameLoader";
 import "./CardElement.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+const IFrameLoader = lazy(() => import("../../components/IFrameLoader"));
+
 
 function CheckoutForm({ priceId, setShowCardElement, toggleModal }) {
     const shopData = useAppQuery({ url: "/api/shop" });

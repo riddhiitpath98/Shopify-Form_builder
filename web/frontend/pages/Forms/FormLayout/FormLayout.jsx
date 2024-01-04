@@ -1,11 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { lazy, useEffect, useMemo } from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 import { useNavigate, useParams } from "react-router-dom";
-import Topbar from "../FormTopBar/Topbar";
-import FormSidebar from "../FormSidebar/FormSidebar";
 import { useDispatch, useSelector } from "react-redux";
-import FormPreview from "../FormPreview";
 import { clearForm } from "../../../redux/reducers/inputFieldSlice";
 import {
   fetchFormDataById,
@@ -26,6 +23,10 @@ import {
 import "../PolarisFormListStyles.css";
 import { setSelectedViewport } from "../../../redux/reducers/viewPortSlice";
 import { setFormSubmitted, setShowMessage } from "../../../redux/reducers/submissionSlice";
+
+const FormPreview = lazy(() => import("../FormPreview"));
+const FormSidebar = lazy(() => import("../FormSidebar/FormSidebar"));
+const Topbar = lazy(() => import("../FormTopBar/Topbar"));
 
 const FormLayout = ({ isEdit }) => {
   const app = useAppBridge();

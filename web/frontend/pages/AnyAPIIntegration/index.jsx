@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { lazy, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -23,9 +23,8 @@ import {
   getFormToAPIById,
 } from "../../redux/actions/allActions";
 import { useNavigate, useParams } from "react-router-dom";
-import APISettingsList from "./APISettingsList";
-import { replace } from "@shopify/app-bridge/actions/Navigation/History";
-import IFrameLoader from "../../components/IFrameLoader";
+
+const IFrameLoader = lazy(() => import("../../components/IFrameLoader"));
 
 const AnyAPIIntegration = ({ isEdit }) => {
   const dispatch = useDispatch();

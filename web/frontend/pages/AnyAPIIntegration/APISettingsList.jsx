@@ -20,7 +20,7 @@ import {
 } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
 import { Icons } from "../../constant";
-import CommonModal from "../../components/CommonModal";
+const CommonModal = lazy(() => import("../../components/CommonModal"));
 
 function APISettingsList() {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ function APISettingsList() {
     (state) => state?.inputField?.finalFormData?.formData
   );
 
-  const resourceName = {  
+  const resourceName = {
     singular: "apiList",
     plural: "apiLists",
   };
