@@ -516,7 +516,7 @@ const FormPreview = () => {
                   } ${selectedBackground === "image" && styles.ipsFormPreviewFormImageBackground
                   } `}
                 style={{
-                  maxWidth: appearanceFields?.appearanceWidth || "700px",
+                  maxWidth: appearanceFields?.appearanceWidth || "100%",
                   backgroundColor:
                     selectedBackground === "color"
                       ? appearanceFields?.formBackgroundColor

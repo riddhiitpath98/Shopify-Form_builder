@@ -39,7 +39,7 @@ iframe {
   height: 100%;
   left: 0;
   position: absolute;
-  top: -20px;
+  top: -20px !important;
   width: 100%;
 }
 .ipsFormBuilder {

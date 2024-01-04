@@ -341,7 +341,7 @@ export const appearanceAttributes = [
   },
   {
     id: "appearance_background",
-    label: "Background",
+    label: "Form Background",
     type: "select",
     name: "appearanceBackground",
     options: backgroundOptions,
@@ -349,14 +349,14 @@ export const appearanceAttributes = [
   },
   {
     id: "appearance_color_formBackgroundColor",
-    label: "Background Color",
+    label: "Form Background Color",
     type: "conditional_color_panel",
     name: "formBackgroundColor",
     value: "#ffffff",
   },
   {
     id: "appearance_image_url",
-    label: "Background image url",
+    label: "Form Background image url",
     type: "conditional_text",
     name: "backgroundImageUrl",
     placeholder: "https://",

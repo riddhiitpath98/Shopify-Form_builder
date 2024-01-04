@@ -170,11 +170,11 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   useEffect(() => {
     if (isSaveOrUpdate) {
-      // dispatch(clearForm());
-      // dispatch(setFormSubmitted(false));
-      // dispatch(setShowMessage(false));
-      // fullscreen.dispatch(Fullscreen.Action.EXIT);
-      // navigate("/form", { replace: true });
+      dispatch(clearForm());
+      dispatch(setFormSubmitted(false));
+      dispatch(setShowMessage(false));
+      fullscreen.dispatch(Fullscreen.Action.EXIT);
+      navigate("/form", { replace: true });
     }
   }, [isSaveOrUpdate]);
   useEffect(() => {
