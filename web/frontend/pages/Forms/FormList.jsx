@@ -170,7 +170,7 @@ function FormList() {
 
   useEffect(() => {
     dispatch(fetchFormData(shopId));
-    // fullscreen.dispatch(Fullscreen.Action.EXIT);
+    fullscreen.dispatch(Fullscreen.Action.EXIT);
   }, [dispatch, shopId]);
   const isShowPremium =
     sortedItems?.length >= subscription?.features?.form?.number_of_forms &&
