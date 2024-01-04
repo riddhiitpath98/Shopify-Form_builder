@@ -15,22 +15,22 @@ const generateElementId = (type, id) => {
     type === "form"
       ? formCounter
       : type === "submit"
-        ? submitButtonCouter
-        : type === "loader"
-          ? loaderCounter
-          : type === "banner"
-            ? bannerCounter
-            : "";
+      ? submitButtonCouter
+      : type === "loader"
+      ? loaderCounter
+      : type === "banner"
+      ? bannerCounter
+      : "";
   const uniqueElementId = `${id}-${counter}`;
   type === "form"
     ? formCounter++
     : type === "submit"
-      ? submitButtonCouter++
-      : type === "loader"
-        ? loaderCounter++
-        : type === "banner"
-          ? bannerCounter++
-          : "";
+    ? submitButtonCouter++
+    : type === "loader"
+    ? loaderCounter++
+    : type === "banner"
+    ? bannerCounter++
+    : "";
   return uniqueElementId;
 };
 
@@ -89,7 +89,7 @@ const catchFormDivAndAppendForm = async (data) => {
   const loaderElementId = generateElementId(
     "loader",
     `ipsFormPreviewLoader-${data?.elementData?._id}`
-    );
+  );
   const bannerElementId = generateElementId(
     "banner",
     `polaris-banner-${data.elementData?._id}`
@@ -98,22 +98,22 @@ const catchFormDivAndAppendForm = async (data) => {
   const checkElements = (plan, elem, checkPreview) => {
     const data = checkPreview
       ? elem.filter((val) => {
-        if (!val?.viewAccess) return val;
-        else if (val?.viewAccess?.includes(plan)) return val;
-        else return null;
-      })
+          if (!val?.viewAccess) return val;
+          else if (val?.viewAccess?.includes(plan)) return val;
+          else return null;
+        })
       : elem.map((val) => {
-        return {
-          ...val,
-          fields: val?.fields?.filter((item) => {
-            if (!item?.viewAccess) {
-              return item;
-            } else if (item?.viewAccess?.includes(plan)) {
-              return item;
-            } else return null;
-          }),
-        };
-      });
+          return {
+            ...val,
+            fields: val?.fields?.filter((item) => {
+              if (!item?.viewAccess) {
+                return item;
+              } else if (item?.viewAccess?.includes(plan)) {
+                return item;
+              } else return null;
+            }),
+          };
+        });
     return data;
   };
 
@@ -125,7 +125,6 @@ const catchFormDivAndAppendForm = async (data) => {
     if (!selectedPlan) return [];
     return checkElements(selectedPlan, inputFields, checkPreview);
   };
-
 
   let formFieldData = [];
   let formElement = [];
@@ -272,23 +271,20 @@ const catchFormDivAndAppendForm = async (data) => {
         checkValidation("radio", value);
         formData[renderId][name] = value;
       }
-    } else if (type === 'file') {
+    } else if (type === "file") {
       const fileList = Array.from(files);
       formFieldData = formFieldData.map((item) => {
         let fieldData = {};
         fieldData = {
           ...item,
           fieldValue: fileList,
-          fieldName: name
-        }
-        let error = validateInput(
-          fieldData.fieldName,
-          fieldData.fieldValue
-        );
+          fieldName: name,
+        };
+        let error = validateInput(fieldData.fieldName, fieldData.fieldValue);
         const errorElement = document.getElementById(`${item.id}_error`);
         errorElement.textContent = error && item.required ? error : "";
         return fieldData;
-      })
+      });
       formData[renderId][name] = fileList;
     } else {
       formFieldData = formFieldData.map((item) => {
@@ -442,10 +438,13 @@ const catchFormDivAndAppendForm = async (data) => {
         } else errorElement.textContent = "";
       }
     });
-    const captchaError = document.getElementById("captcha_error");
-    captchaError.textContent = recaptcha_response === "" ? "please varify Captcha" : "";
     if (enableRecaptcha) {
-      hasError = recaptcha_response !== "" ? false : true
+      const captchaError = document.getElementById("captcha_error");
+      captchaError.textContent =
+        recaptcha_response === "" ? "please varify Captcha" : "";
+      if (enableRecaptcha) {
+        hasError = recaptcha_response !== "" ? false : true;
+      }
     }
 
     if ((!hasError && accept_terms) || (!hasError && accept_terms === null)) {
@@ -529,30 +528,34 @@ const catchFormDivAndAppendForm = async (data) => {
     inputStyles.borderRadius = "20px";
   } else if (appearanceStyle === "flat") {
     inputStyles.boxShadow = "none";
-    inputStyles.border = '0.5px solid lightgrey';
-    inputStyles.background = 'none';
-  }
-  else if (appearanceStyle === "flatRounded") {
+    inputStyles.border = "0.5px solid lightgrey";
+    inputStyles.background = "none";
+  } else if (appearanceStyle === "flatRounded") {
     inputStyles.borderRadius = "20px";
-    inputStyles.background = 'none';
-    inputStyles.boxShadow = 'none';
-    inputStyles.border = '0.5px solid lightgrey';
+    inputStyles.background = "none";
+    inputStyles.boxShadow = "none";
+    inputStyles.border = "0.5px solid lightgrey";
   }
 
   const checkPlan = elements(user.subscriptionName, formElementData, true);
   if (checkPlan.length > 0) {
     setTimeout(() => {
       const divElement = document.createElement("div");
-      divElement.className = `${selectedBackground === 'none' ? 'formBuilderNone' : 'ipsFormBuilder'} ${selectedBackground === "image" ? "ipsFormPreviewFormImageBackground" : ""
-        }`;
+      divElement.className = `${
+        selectedBackground === "none" ? "ipsFormBuilderNone" : "ipsFormBuilder"
+      } ${
+        selectedBackground === "image"
+          ? "ipsFormPreviewFormImageBackground"
+          : ""
+      }`;
 
       divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
       divElement.style.backgroundColor =
         selectedBackground === "color" && appearanceFields?.formBackgroundColor
           ? appearanceFields?.formBackgroundColor
           : selectedBackground === "none"
-            ? "transparent"
-            : "#fff";
+          ? "transparent"
+          : "#fff";
       divElement.style.backgroundImage =
         selectedBackground === "image"
           ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -642,14 +645,14 @@ const catchFormDivAndAppendForm = async (data) => {
               column_width === "33%"
                 ? 4
                 : column_width === "50%"
-                  ? 6
-                  : column_width === "100%" && 12,
+                ? 6
+                : column_width === "100%" && 12,
             xl:
               column_width === "33%"
                 ? 4
                 : column_width === "50%"
-                  ? 6
-                  : column_width === "100%" && 12,
+                ? 6
+                : column_width === "100%" && 12,
           };
 
           const noOfOptions = parseInt(no_of_options?.[0]);
@@ -883,7 +886,8 @@ const catchFormDivAndAppendForm = async (data) => {
                 "data-id",
                 `${formElementId}_${item?.inputId}`
               );
-              confirmPasswordInputElement.className = "ipsFormPreviewInputClassicInput";
+              confirmPasswordInputElement.className =
+                "ipsFormPreviewInputClassicInput";
               confirmPasswordInputElement.name = `${item.inputId}_confirm_${item.id}`;
               confirmPasswordInputElement.placeholder =
                 confirmPasswordPlaceholder;
@@ -903,7 +907,8 @@ const catchFormDivAndAppendForm = async (data) => {
 
               const confirmPasswordDescriptionElement =
                 document.createElement("span");
-              confirmPasswordDescriptionElement.className = "ipsPreviewDescription";
+              confirmPasswordDescriptionElement.className =
+                "ipsPreviewDescription";
               confirmPasswordDescriptionElement.textContent =
                 confirmPasswordDescription;
               inputContainer.appendChild(confirmPasswordDescriptionElement);
@@ -912,7 +917,8 @@ const catchFormDivAndAppendForm = async (data) => {
                 document.createElement("small");
               const confirmPasswordErrorMessageElement =
                 document.createElement("p");
-              confirmPasswordErrorMessageElement.className = "ipsFormPreviewErrorMessage";
+              confirmPasswordErrorMessageElement.className =
+                "ipsFormPreviewErrorMessage";
               confirmPasswordErrorMessageElement.id = `${item.inputId}_CPError`;
 
               confirmPasswordSmallElement.appendChild(
@@ -975,7 +981,8 @@ const catchFormDivAndAppendForm = async (data) => {
 
             const textareaSmallElement = document.createElement("small");
             const textareaErrorMessageElement = document.createElement("p");
-            textareaErrorMessageElement.className = "ipsFormPreviewErrorMessage";
+            textareaErrorMessageElement.className =
+              "ipsFormPreviewErrorMessage";
             textareaErrorMessageElement.id = `${item.inputId}_error`;
             textareaSmallElement.appendChild(textareaErrorMessageElement);
             inputContainer.appendChild(textareaSmallElement);
@@ -987,11 +994,13 @@ const catchFormDivAndAppendForm = async (data) => {
 
               const checkboxWrapperElement = document.createElement("div");
               checkboxWrapperElement.style.width = widthInput;
-              checkboxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
+              checkboxWrapperElement.className =
+                "ipsFormPreviewInputCheckboxWrapper";
               checkboxContainer.appendChild(checkboxWrapperElement);
 
               const checkboxInputElement = document.createElement("input");
-              checkboxInputElement.className = "ipsFormPreviewInputCheckboxInput";
+              checkboxInputElement.className =
+                "ipsFormPreviewInputCheckboxInput";
               checkboxInputElement.id = item?.inputId;
               checkboxInputElement.setAttribute(
                 "data-id",
@@ -1072,18 +1081,21 @@ const catchFormDivAndAppendForm = async (data) => {
                 ulElement.appendChild(liElement);
 
                 const checkBoxWrapperElement = document.createElement("div");
-                checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
+                checkBoxWrapperElement.className =
+                  "ipsFormPreviewInputCheckboxWrapper";
                 liElement.appendChild(checkBoxWrapperElement);
 
                 const checkBoxLabelElement = document.createElement("label");
-                checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
+                checkBoxLabelElement.className =
+                  "ipsFormPreviewInputCheckboxLabel";
                 checkBoxLabelElement.style.color = appearanceFields?.optionColor
                   ? appearanceFields.optionColor
                   : "";
                 checkBoxWrapperElement.appendChild(checkBoxLabelElement);
 
                 const checkBoxInputElement = document.createElement("input");
-                checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
+                checkBoxInputElement.className =
+                  "ipsFormPreviewInputCheckboxInput";
                 checkBoxInputElement.type = item?.type;
                 checkBoxInputElement.value = option.value;
                 checkBoxInputElement.id = `${item?.inputId}_${option.label
@@ -1104,7 +1116,8 @@ const catchFormDivAndAppendForm = async (data) => {
                 );
 
                 const element = document.querySelector(
-                  `input[data-id=${formElementId}_${item?.inputId
+                  `input[data-id=${formElementId}_${
+                    item?.inputId
                   }_${option.label
                     .replace(/\s+/g, "-")
                     .replace(/[^a-zA-Z0-9-_]/g, "")}]`
@@ -1184,18 +1197,21 @@ const catchFormDivAndAppendForm = async (data) => {
               ulElement.appendChild(liElement);
 
               const checkBoxWrapperElement = document.createElement("div");
-              checkBoxWrapperElement.className = "ipsFormPreviewInputCheckboxWrapper";
+              checkBoxWrapperElement.className =
+                "ipsFormPreviewInputCheckboxWrapper";
               liElement.appendChild(checkBoxWrapperElement);
 
               const checkBoxLabelElement = document.createElement("label");
-              checkBoxLabelElement.className = "ipsFormPreviewInputCheckboxLabel";
+              checkBoxLabelElement.className =
+                "ipsFormPreviewInputCheckboxLabel";
               checkBoxLabelElement.style.color = appearanceFields?.optionColor
                 ? appearanceFields.optionColor
                 : "";
               checkBoxWrapperElement.appendChild(checkBoxLabelElement);
 
               const checkBoxInputElement = document.createElement("input");
-              checkBoxInputElement.className = "ipsFormPreviewInputCheckboxInput";
+              checkBoxInputElement.className =
+                "ipsFormPreviewInputCheckboxInput";
               checkBoxInputElement.type = item?.type;
               checkBoxInputElement.value = option.value;
               checkBoxInputElement.id = `${item?.inputId}_${option.label
@@ -1564,10 +1580,11 @@ const catchFormDivAndAppendForm = async (data) => {
         // footerDivElement.appendChild(buttonElement);
         const buttonElement = document.createElement("button");
         buttonElement.type = "submit";
-        buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
-          ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
-          : "ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
-          }`;
+        buttonElement.className = `${
+          footerFieldData?.attributes?.buttonWidth
+            ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
+            : "ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
+        }`;
         const spanSubmit = document.createElement("span");
         spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
         spanSubmit.id = "span_submit_button";
@@ -1598,10 +1615,11 @@ const catchFormDivAndAppendForm = async (data) => {
           const resetButton = document.createElement("button");
           resetButton.type = "button";
           resetButton.id = "resetButton";
-          resetButton.className = `${footerFieldData?.attributes?.buttonWidth
-            ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
-            : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
-            }`;
+          resetButton.className = `${
+            footerFieldData?.attributes?.buttonWidth
+              ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
+              : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
+          }`;
           resetButton.textContent =
             footerFieldData?.attributes?.resetButtonText;
           resetButton.style.color = appearanceFields?.buttonTextColor;

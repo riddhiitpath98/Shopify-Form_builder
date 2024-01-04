@@ -16,20 +16,11 @@
   max-width: 1440px;
   width: 100%;
 }
-.previewBox {
-  position: relative;
-  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 0 12px rgba(0, 0, 0, 0.1); */
-  height: calc(100% - 50px);
-  max-width: 1440px;
-  /* transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); */
-  width: 100%;
-  overflow-y: auto;
-}
 iframe {
   height: 100%;
   left: 0;
   position: absolute;
-  top: 0;
+  top: -20px;
   width: 100%;
 }
 .ipsFormBuilder {
@@ -46,7 +37,7 @@ iframe {
   padding: 15px;
   /* font-family: initial; */
 }
-.formBuilderNone {
+.ipsFormBuilderNone {
   height: auto !important;
   /* display: flex;
           justify-content: center; */

@@ -337,7 +337,7 @@ export const appearanceAttributes = [
     label: "Width",
     type: "number",
     name: "appearanceWidth",
-    value: 700,
+    value: 100,
   },
   {
     id: "appearance_background",

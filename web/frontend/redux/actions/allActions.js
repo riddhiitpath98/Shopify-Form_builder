@@ -632,23 +632,24 @@ export const getAllSubscription = createAsyncThunk(
   async (data) => {
     try {
       const response = await axios.get(`/subscriptions?shopId=${data.shopId}&code=${data?.countryCode}&country=${data?.country}`);
+      console.log('response: ', response);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-export const getAllTestSubscription = createAsyncThunk(
-  "subscription/getAllTestSubscription",
-  async (data) => {
-    try {
-      const response = await axios.get("/subscription/all/get-test-subscription");
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+// export const getAllTestSubscription = createAsyncThunk(
+//   "subscription/getAllTestSubscription",
+//   async (data) => {
+//     try {
+//       const response = await axios.get("/subscription/all/get-test-subscription");
+//       return response.data.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 
 export const getSubscriptionById = createAsyncThunk(
   "subscription/getSubscriptionById",

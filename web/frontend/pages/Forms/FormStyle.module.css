@@ -92,7 +92,7 @@
 .tabContent {
   height: calc(100vh - 5.6rem - 10px);
   overflow-y: auto;
-  padding-top: 10px;
+  /* padding-top: 10px; */
 }
 .rootContent {
   border-radius: 0;

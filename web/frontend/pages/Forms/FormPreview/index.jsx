@@ -504,15 +504,15 @@ const FormPreview = () => {
           </Layout>
         </SkeletonPage>
       ) : (
-        <div className={styles?.previewCard}>
+        <div className={styles?.ipsformPreviewCard}>
           <div
-            className={`${selectedBackground === 'none' ? styles?.previewBoxNone : styles.ipsFormPreviewBox} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewMobile : ""
+            className={`${selectedBackground === 'none' ? styles?.ipsPreviewBoxNone : styles.ipsFormPreviewBox} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewMobile : ""
               }`}
           >
             {inputFields?.length > 0 && (
               <div
                 id="form_builder"
-                className={`${selectedBackground === 'none' ? styles?.formBuilderNone : styles.ipsFormBuilder} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewFormBuilderMobile : ""
+                className={`${selectedBackground === 'none' ? styles?.ipsFormBuilderNone : styles.ipsFormBuilder} ${selectedViewPort === "mobile" ? styles.ipsFormPreviewFormBuilderMobile : ""
                   } ${selectedBackground === "image" && styles.ipsFormPreviewFormImageBackground
                   } `}
                 style={{
