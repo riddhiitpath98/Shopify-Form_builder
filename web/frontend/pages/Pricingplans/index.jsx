@@ -1,10 +1,13 @@
 import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { lazy, useCallback, useEffect, useMemo, useState } from "react";
+
+const CommonModal = lazy(() => import("../../components/CommonModal"));
+const PaymentModal = lazy(() => import("./paymentModal"));
+
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSessionToken } from "@shopify/app-bridge/utilities";
 import { Button } from "react-bootstrap";
 import {
   addShopData,
@@ -21,9 +24,7 @@ import {
 import axios from "axios";
 import { addShopId, getAppName } from "../../redux/reducers/appIdSlice";
 import { useAppQuery } from "../../hooks";
-import CommonModal from "../../components/CommonModal";
 import { ToastContainer } from "react-toastify";
-import PaymentModal from "./paymentModal";
 import {
   capitalizeFirstLetter,
   capitalizeFirstLetterAndAPI,
@@ -34,6 +35,9 @@ import helpBanner from "../../assets/ips_banner_3.jpg";
 import "./PricingPlan.module.css";
 import "../Forms/PolarisFormListStyles.css";
 import styles from "./PricingPlan.module.css";
+
+
+
 
 function Pricingplans() {
   const app = useAppBridge();
@@ -214,11 +218,10 @@ function Pricingplans() {
                 <div className={styles.planGridItem}>
                   <div className={styles.planBoxHeading}>
                     <h4
-                      className={`${styles.planBoxHeadingText} ${
-                        user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
-                          ? styles.freePlanHeader
-                          : styles.premiumPlanHeader
-                      }`}
+                      className={`${styles.planBoxHeadingText} ${user?.subscriptionName === SUBSCRIPTION_TYPES.FREE
+                        ? styles.freePlanHeader
+                        : styles.premiumPlanHeader
+                        }`}
                     >
                       Your current plan
                     </h4>
@@ -265,123 +268,122 @@ function Pricingplans() {
                           </div>
                           {item?.subscriptionName ===
                             SUBSCRIPTION_TYPES.FREE && (
-                            <div
-                              className="d-grid "
-                              style={{ visibility: "hidden" }}
-                            >
-                              <Button
-                                variant="secondary"
-                                className={`${
-                                  user?.subscriptionName !==
-                                  SUBSCRIPTION_TYPES.FREE
+                              <div
+                                className="d-grid "
+                                style={{ visibility: "hidden" }}
+                              >
+                                <Button
+                                  variant="secondary"
+                                  className={`${user?.subscriptionName !==
+                                    SUBSCRIPTION_TYPES.FREE
                                     ? styles.planButtonSuccess
                                     : ""
-                                }`}
-                                disabled={
-                                  user?.subscriptionName ===
-                                    SUBSCRIPTION_TYPES.FREE ||
-                                  (user &&
+                                    }`}
+                                  disabled={
                                     user?.subscriptionName ===
+                                    SUBSCRIPTION_TYPES.FREE ||
+                                    (user &&
+                                      user?.subscriptionName ===
                                       SUBSCRIPTION_TYPES.PREMIUM) ||
-                                  user?.subscription?.cancel_at_period_end
-                                }
-                                onClick={handleOpen}
-                              >
-                                <span>
+                                    user?.subscription?.cancel_at_period_end
+                                  }
+                                  onClick={handleOpen}
+                                >
                                   <span>
-                                    <span
-                                      className={styles.planButtonFontStyle}
-                                    >
-                                      {user?.subscriptionName ===
-                                      SUBSCRIPTION_TYPES.FREE
-                                        ? PLAN_TEXT.ACTIVE_PLAN
-                                        : PLAN_TEXT.CHOOSE_PLAN}
+                                    <span>
+                                      <span
+                                        className={styles.planButtonFontStyle}
+                                      >
+                                        {user?.subscriptionName ===
+                                          SUBSCRIPTION_TYPES.FREE
+                                          ? PLAN_TEXT.ACTIVE_PLAN
+                                          : PLAN_TEXT.CHOOSE_PLAN}
+                                      </span>
                                     </span>
                                   </span>
-                                </span>
-                              </Button>
-                            </div>
-                          )}
+                                </Button>
+                              </div>
+                            )}
 
                           {item?.subscriptionName ===
                             SUBSCRIPTION_TYPES.PREMIUM && (
-                            <>
-                              {user?.subscriptionName !==
-                              SUBSCRIPTION_TYPES.PREMIUM ? (
-                                <div className="d-grid gap-2">
-                                  <Button
-                                    variant="primary"
-                                    onClick={() =>
-                                      handleCreateSubscription(
-                                        item?.subscriptionName,
-                                        item?.stripePriceId
-                                      )
-                                    }
-                                    disabled={
-                                      user?.subscriptionName ===
-                                      SUBSCRIPTION_TYPES.PREMIUM
-                                    }
-                                    loading={!user}
-                                  >
-                                    <span>
+                              <>
+                                {user?.subscriptionName !==
+                                  SUBSCRIPTION_TYPES.PREMIUM ? (
+                                  <div className="d-grid gap-2">
+                                    <Button
+                                      variant="primary"
+                                      onClick={() =>
+                                        handleCreateSubscription(
+                                          item?.subscriptionName,
+                                          item?.stripePriceId
+                                        )
+                                      }
+                                      disabled={
+                                        user?.subscriptionName ===
+                                        SUBSCRIPTION_TYPES.PREMIUM
+                                      }
+                                      loading={!user}
+                                    >
                                       <span>
-                                        <span
-                                          className={styles.planButtonFontStyle}
-                                        >
-                                          {user?.subscriptionName ===
-                                          SUBSCRIPTION_TYPES.PREMIUM
-                                            ? PLAN_TEXT.CURRENT_PLAN
-                                            : PLAN_TEXT.UPGRADE_PLAN}
+                                        <span>
+                                          <span
+                                            className={styles.planButtonFontStyle}
+                                          >
+                                            {user?.subscriptionName ===
+                                              SUBSCRIPTION_TYPES.PREMIUM
+                                              ? PLAN_TEXT.CURRENT_PLAN
+                                              : PLAN_TEXT.UPGRADE_PLAN}
+                                          </span>
                                         </span>
                                       </span>
-                                    </span>
-                                  </Button>
-                                </div>
-                              ) : (
-                                //   <Button
-                                //   disabled={
-                                //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
-                                //   }
-                                //   loading={!user}
-                                //   primary
-                                //   fullWidth
-                                //   onClick={() =>
-                                //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
-                                //   }
-                                // >
-                                //   <span>
-                                //     <span>
-                                //       <span>
-                                //         {user?.subscriptionName ===
-                                //           SUBSCRIPTION_TYPES.PREMIUM
-                                //           ? PLAN_TEXT.CURRENT_PLAN
-                                //           : PLAN_TEXT.UPGRADE_PLAN}
-                                //       </span>
-                                //     </span>
-                                //   </span>
-                                // </Button>
-                                <div className="d-grid gap-2">
-                                  <Button
-                                    variant="danger"
-                                    onClick={handleOpen}
-                                    disabled={
-                                      user?.subscription?.cancel_at_period_end
-                                    }
-                                  >
-                                    <span>
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  //   <Button
+                                  //   disabled={
+                                  //     user?.subscriptionName === SUBSCRIPTION_TYPES.PREMIUM
+                                  //   }
+                                  //   loading={!user}
+                                  //   primary
+                                  //   fullWidth
+                                  //   onClick={() =>
+                                  //     handleCreateSubscription(item?.subscriptionName, item?.stripePriceId)
+                                  //   }
+                                  // >
+                                  //   <span>
+                                  //     <span>
+                                  //       <span>
+                                  //         {user?.subscriptionName ===
+                                  //           SUBSCRIPTION_TYPES.PREMIUM
+                                  //           ? PLAN_TEXT.CURRENT_PLAN
+                                  //           : PLAN_TEXT.UPGRADE_PLAN}
+                                  //       </span>
+                                  //     </span>
+                                  //   </span>
+                                  // </Button>
+                                  <div className="d-grid gap-2">
+                                    <Button
+                                      variant="danger"
+                                      onClick={handleOpen}
+                                      disabled={
+                                        user?.subscription?.cancel_at_period_end
+                                      }
+                                    >
                                       <span>
-                                        <span
-                                          className={styles.planButtonFontStyle}
-                                        >
-                                          {PLAN_TEXT.CANCEL_PLAN}
+                                        <span>
+                                          <span
+                                            className={styles.planButtonFontStyle}
+                                          >
+                                            {PLAN_TEXT.CANCEL_PLAN}
+                                          </span>
                                         </span>
                                       </span>
-                                    </span>
-                                  </Button>
-                                </div>
-                              )}
-                            </>
-                          )}
+                                    </Button>
+                                  </div>
+                                )}
+                              </>
+                            )}
                         </td>
                       ))}
                       <tr>

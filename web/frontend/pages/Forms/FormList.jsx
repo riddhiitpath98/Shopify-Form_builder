@@ -22,20 +22,22 @@ import {
   Link,
   Modal,
 } from "@shopify/polaris";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { lazy, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteFormData, fetchFormData } from "../../redux/actions/allActions";
-import ToggleSwitch from "../../components/ToggleSwitch";
 import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
-import Nodatafound from "../../components/NodataFound";
 import { useNavigate } from "react-router-dom";
 import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
-import ElementListBanner from "../../components/ElementListBanner";
-import CommonModal from "../../components/CommonModal";
 import useElements from "../../hooks/useElements";
+
+const CommonModal = lazy(() => import("../../components/CommonModal"));
+const ElementListBanner = lazy(() => import("../../components/ElementListBanner"));
+const Nodatafound = lazy(() => import("../../components/NodataFound"));
+const ToggleSwitch = lazy(() => import("../../components/ToggleSwitch"));
+
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -266,8 +268,8 @@ function FormList() {
       <ResourceItem id={index} name={items?._id} persistActions={true}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <div
-            className={styles.resouceItemTd} 
-            style={{padding: "2rem"}}
+            className={styles.resouceItemTd}
+            style={{ padding: "2rem" }}
             onClick={() => navigate(`/form/${items?._id}`)}
           >
             {formData?.loading ? (

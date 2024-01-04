@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy } from "react";
 import {
   Form,
   FormLayout,
@@ -27,7 +27,8 @@ import styles from "./Settings.module.css";
 import { getRestrictionWithPlan } from "../../utils/function";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
-import IFrameLoader from "../../components/IFrameLoader";
+
+const IFrameLoader = lazy(() => import("../../components/IFrameLoader"));
 
 const initialState = {
   smtpName: "",

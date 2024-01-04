@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { lazy, useCallback, useState } from "react";
 import {
   Layout,
   Page,
@@ -13,8 +13,8 @@ import {
 } from "../../redux/actions/allActions";
 import { useEffect } from "react";
 import styles from "./Dashboard.module.css";
-import ChartDashboard from "../../components/Chart";
 import { ToastContainer } from "react-toastify";
+const ChartDashboard = lazy(() => import("../../components/Chart"));
 
 function Dashboard() {
   const dispatch = useDispatch();

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { lazy, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchFormData,
@@ -17,8 +17,7 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import moment from "moment";
-import ModalLogs from "./ModalLogs";
-import "./logStyles.css"
+const ModalLogs = lazy(() => import("./ModalLogs"));
 
 const APILogs = () => {
   const dispatch = useDispatch();

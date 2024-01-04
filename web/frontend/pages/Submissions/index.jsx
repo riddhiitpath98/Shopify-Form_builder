@@ -10,7 +10,7 @@ import {
   LegacyCard,
   Text,
 } from "@shopify/polaris";
-import React, { useEffect, useMemo } from "react";
+import React, { lazy, useEffect, useMemo } from "react";
 import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -28,12 +28,14 @@ import { useLocation } from "react-router-dom";
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
-import ModalSubmission from "./ModalSubmission";
 import styles from "./Submissions.module.css";
 import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 import { SUBSCRIPTION_TYPES } from "../../constant";
-import CommonModal from "../../components/CommonModal";
+
+const CommonModal = lazy(() => import("../../components/CommonModal"));
+const ModalSubmission = lazy(() => import("./ModalSubmission"));
+
 
 function Submissions() {
   const [selectedItems, setSelectedItems] = useState([]);
@@ -373,8 +375,8 @@ function Submissions() {
               status[0] === "read"
                 ? true
                 : status[0] === "unread"
-                ? false
-                : "",
+                  ? false
+                  : "",
             formId: formStatus,
             page: currentPage,
             per_page: itemPrPage,

@@ -1,113 +1,21 @@
-// import {
-//   Card,
-//   Page,
-//   Layout,
-//   TextContainer,
-//   Image,
-//   Stack,
-//   Link,
-//   Text,
-// } from "@shopify/polaris";
-// import { TitleBar } from "@shopify/app-bridge-react";
-// import { useTranslation, Trans } from "react-i18next";
+import React, { lazy } from "react";
 
-// import { trophyImage } from "../assets";
+// lazy loading component
+const Dashboard = lazy(() => import('./Dashboard'));
+const Pricingplans = lazy(() => import('./Pricingplans'));
+const Settings = lazy(() => import('./Settings'));
+const Submissions = lazy(() => import('./Submissions'));
+const ContactUsForm = lazy(() => import('./Support/ContactUsForm'));
+const FeedbackForm = lazy(() => import('./Support/FeedbackForm'));
+const FormList = lazy(() => import('./Forms/FormList'));
+const FormLayout = lazy(() => import('./Forms/FormLayout/FormLayout'));
+const Auth = lazy(() => import('./Auth'));
+const AnyAPIIntegration = lazy(() => import('./AnyAPIIntegration'));
+const APISettingsList = lazy(() => import('./AnyAPIIntegration/APISettingsList'));
+const APILogs = lazy(() => import('./AnyAPIIntegration/APILogs'));
+const StripeCardPayment = lazy(() => import('./StripeCardPayment'));
 
-// import { ProductsCard } from "../components";
-
-// export default function HomePage() {
-//   const { t } = useTranslation();
-//   return (
-//     <Page narrowWidth>
-//       <TitleBar title={t("HomePage.title")} primaryAction={null} />
-//       <Layout>
-//         <Layout.Section>
-//           <Card sectioned>
-//             <Stack
-//               wrap={false}
-//               spacing="extraTight"
-//               distribution="trailing"
-//               alignment="center"
-//             >
-//               <Stack.Item fill>
-//                 <TextContainer spacing="loose">
-//                   <Text as="h2" variant="headingMd">
-//                     {t("HomePage.heading")}
-//                   </Text>
-//                   <p>
-//                     <Trans
-//                       i18nKey="HomePage.yourAppIsReadyToExplore"
-//                       components={{
-//                         PolarisLink: (
-//                           <Link url="https://polaris.shopify.com/" external />
-//                         ),
-//                         AdminApiLink: (
-//                           <Link
-//                             url="https://shopify.dev/api/admin-graphql"
-//                             external
-//                           />
-//                         ),
-//                         AppBridgeLink: (
-//                           <Link
-//                             url="https://shopify.dev/apps/tools/app-bridge"
-//                             external
-//                           />
-//                         ),
-//                       }}
-//                     />
-//                   </p>
-//                   <p>{t("HomePage.startPopulatingYourApp")}</p>
-//                   <p>
-//                     <Trans
-//                       i18nKey="HomePage.learnMore"
-//                       components={{
-//                         ShopifyTutorialLink: (
-//                           <Link
-//                             url="https://shopify.dev/apps/getting-started/add-functionality"
-//                             external
-//                           />
-//                         ),
-//                       }}
-//                     />
-//                   </p>
-//                 </TextContainer>
-//               </Stack.Item>
-//               <Stack.Item>
-//                 <div style={{ padding: "0 20px" }}>
-//                   <Image
-//                     source={trophyImage}
-//                     alt={t("HomePage.trophyAltText")}
-//                     width={120}
-//                   />
-//                 </div>
-//               </Stack.Item>
-//             </Stack>
-//           </Card>
-//         </Layout.Section>
-//         <Layout.Section>
-//           <ProductsCard />
-//         </Layout.Section>
-//       </Layout>
-//     </Page>
-//   );
-// }
-
-import React from "react";
-import Dashboard from "./Dashboard";
-import Pricingplans from "./Pricingplans";
-import Settings from "./Settings";
-import Submissions from "./Submissions";
-import ContactUsForm from "./Support/ContactUsForm";
-import FeedbackForm from "./Support/FeedbackForm";
-import FormList from "./Forms/FormList";
-import FormLayout from "./Forms/FormLayout/FormLayout";
-import Auth from "./Auth";
-import AnyAPIIntegration from "./AnyAPIIntegration";
-import APISettingsList from "./AnyAPIIntegration/APISettingsList";
-import { Icons } from "../constant";
-import APILogs from "./AnyAPIIntegration/APILogs";
-import StripeCardPayment from "./StripeCardPayment";
-
+import { Icons } from '../constant'
 export const navigation = [
   {
     label: "Dashboard",
@@ -151,76 +59,76 @@ export const Tabs = [
   {
     id: "dashboard",
     content: "Dashboard",
-    icon: Icons.dashboard,
+    icon: Icons?.dashboard,
     path: "/dashboard",
   },
   {
     id: "form",
     content: "Forms",
-    icon: Icons.form,
+    icon: Icons?.form,
     path: "/form",
   },
   {
     id: "submission",
     content: "Submissions",
-    icon: Icons.submission,
+    icon: Icons?.submission,
     path: "/submissions",
   },
   {
     id: "anyAPI",
     content: "API Settings",
-    icon: Icons.settings,
+    icon: Icons?.settings,
     path: "/api-settings",
-    viewAccess : ['premium']
+    viewAccess: ['premium']
   },
   {
     id: "anyAPILogs",
     content: "Logs",
-    icon: Icons.submission,
+    icon: Icons?.submission,
     path: "/logs",
-    viewAccess : ['premium']
+    viewAccess: ['premium']
   },
   {
     id: "settings",
     content: "Settings",
-    icon: Icons.settings,
+    icon: Icons?.settings,
     path: "/settings",
   },
   {
     id: "plans",
     content: "Plans",
-    icon: Icons.plans,
+    icon: Icons?.plans,
     path: "/plans",
   },
-  
+
   // {
   //   id: "billing-history",
   //   content: "Billing History",
-  //   icon: Icons.apiIntegrate,
+  //   icon: Icons?.apiIntegrate,
   //   path: "/billing-history",
   // },
   {
     id: "support",
     content: "Support",
-    icon: Icons.support,
+    icon: Icons?.support,
     children: [
       {
         id: "faq",
         content: "FAQ",
         path: "#",
-        icon: Icons.faq,
+        icon: Icons?.faq,
       },
       {
         id: "contact-us",
         content: "Contact Us",
         path: "/contact-us",
-        icon: Icons.email,
+        icon: Icons?.email,
       },
       {
         id: "feedback",
         content: "Feedback",
         path: "/feedback",
-        icon: Icons.faq,
+        icon: Icons?.faq,
       },
     ],
   },
