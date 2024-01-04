@@ -549,7 +549,7 @@ const catchFormDivAndAppendForm = async (data) => {
           : ""
       }`;
 
-      divElement.style.maxWidth = appearanceFields?.appearanceWidth || "700px";
+      divElement.style.maxWidth = appearanceFields?.appearanceWidth || "100%";
       divElement.style.backgroundColor =
         selectedBackground === "color" && appearanceFields?.formBackgroundColor
           ? appearanceFields?.formBackgroundColor

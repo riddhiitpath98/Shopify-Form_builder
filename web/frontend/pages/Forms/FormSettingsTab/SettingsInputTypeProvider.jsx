@@ -3,6 +3,7 @@ import {
   Checkbox,
   ChoiceList,
   Select,
+  Text,
   TextField,
 } from "@shopify/polaris";
 import Editor from "../../../components/CKEditor";
@@ -29,6 +30,7 @@ export const SettingsInputTypeProvider = ({
   setShowColorPicker = () => { },
   conditionalValue,
   isRedirect,
+  description,
   ...props
 }) => {
   const handleClickOutside = (event) => {
@@ -93,9 +95,11 @@ export const SettingsInputTypeProvider = ({
           {...{ type, label }}
           value={name === "appearanceWidth" && String(value)?.replace("%", "")}
           prefix="%"
+          max={100}
           onChange={(value) => {
             handleChange(name, value);
           }}
+          helpText="The form has a maximum width of 100%."
           {...props}
         />
       );

@@ -97,6 +97,8 @@ export const addFormData = createAsyncThunk(
         "/custom_form",
         formData.combinedObjectArr
         );
+      toast.success(response?.data?.message,toastConfig);
+
         dispatch(
         createNupdateValidation({
           formId: response.data.data._id,
@@ -115,7 +117,6 @@ export const addFormData = createAsyncThunk(
           afterSubmitData: formData.updatedAfterSubmit,
         })
       );
-      toast.success(response?.data?.message);
       return response.data;
     } catch (error) {
       toast.error(error?.response?.message);

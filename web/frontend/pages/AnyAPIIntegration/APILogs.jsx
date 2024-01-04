@@ -18,6 +18,7 @@ import {
 } from "@shopify/polaris";
 import moment from "moment";
 import ModalLogs from "./ModalLogs";
+import "./logStyles.css"
 
 const APILogs = () => {
   const dispatch = useDispatch();
