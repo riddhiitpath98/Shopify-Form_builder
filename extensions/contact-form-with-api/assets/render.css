@@ -1,3 +1,12 @@
+.ipsFormBuilder,
+.mainForm {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.mainForm,
+.myInput {
+  box-sizing: border-box;
+}
 .formContent {
   background: #f4f6f8;
   display: inline-block;
@@ -12,9 +21,22 @@
   height: 100%;
   justify-content: center;
 }
+.ipsFormBuilder,
+.ipsFormBuilderNone {
+  height: auto !important;
+  margin: 20px auto;
+  padding: 15px;
+}
 .messageBanner {
   max-width: 1440px;
   width: 100%;
+}
+.ipsFormBuilder,
+.ipsFormBuilderNone,
+.mainForm {
+  max-width: 600px;
+  width: -webkit-fill-available;
+  border-radius: 2px;
 }
 iframe {
   height: 100%;
@@ -23,49 +45,18 @@ iframe {
   top: -20px;
   width: 100%;
 }
-.ipsFormBuilder {
-  height: auto !important;
-  /* display: flex;
-        justify-content: center; */
-  max-width: 600px;
-  width: -webkit-fill-available;
-  /* background-color: #fff; */
-  margin: 20px auto;
-  border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  /* font-family: initial; */
-}
-.ipsFormBuilderNone {
-  height: auto !important;
-  /* display: flex;
-          justify-content: center; */
-  max-width: 600px;
-  width: -webkit-fill-available;
-  /* background-color: #fff; */
-  margin: 20px auto;
-  border-radius: 2px;
-  padding: 15px;
-  /* font-family: initial; */
-}
 .mainForm {
-  max-width: 600px;
-  width: -webkit-fill-available;
   background-color: #fff;
   position: relative;
   transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
-  border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
   margin: 30px auto;
 }
 .ipsFormPreviewHeader {
   padding: 0;
   margin-bottom: 2rem;
   display: block;
-  background: none;
+  background: 0 0;
+  text-align: left !important;
 }
 .form {
   display: flex;
@@ -74,33 +65,25 @@ iframe {
 .myGrid {
   width: 100% !important;
 }
-
 .myGridCell {
   grid-column: span 1;
 }
-
 .myInput {
   font-size: 16px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box;
 }
 .ipsFormPreviewContainer {
   display: grid;
-  /* grid-template-columns: 1fr 1fr; */
-  /* grid-gap: 10px; */
 }
 .ipsFormPreviewInputContainer {
   margin-bottom: 1.5rem;
   font-size: 14px;
   padding: 0 5px;
-  /* width: 100%; */
-  /* position: relative; */
 }
 .ipsFormPreviewInputClassicInput {
   display: block;
-  /* height: 41px; */
   padding: 10px 12px;
   color: #000;
   background-color: #f1f1f1;
@@ -109,24 +92,26 @@ iframe {
   position: relative;
   flex: 1 1 auto;
   margin-bottom: 0;
-  /* width: 100%; */
   box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
-  transition: box-shadow 0.15s ease;
+  transition: box-shadow 0.15s;
   background-image: none !important;
   border: none;
-  outline: none;
+  outline: 0;
+}
+.ipsFormPreviewInputCheckboxLabel,
+.ipsFormPreviewInputClassicLabel {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
 }
 .ipsFormPreviewInputClassicLabel {
   color: #000;
   text-align: left !important;
-  font-size: 14px;
-  display: inline-block;
   margin-bottom: 4px;
-  font-weight: 400;
   line-height: 20px;
   text-transform: initial;
   letter-spacing: initial;
-  cursor: pointer;
 }
 .ipsFormPreviewInputCheckboxWrapper {
   display: flex;
@@ -138,20 +123,15 @@ iframe {
   margin-right: 5px;
 }
 .ipsFormPreviewInputCheckboxLabel {
-  font-weight: 400;
   line-height: 24px;
   text-align: left;
   box-sizing: border-box;
-  display: inline-block;
   position: relative;
   margin-bottom: 0;
-  cursor: pointer;
-  font-size: 14px;
   top: 0;
   display: flex;
   align-items: center;
 }
-
 textarea {
   height: initial;
 }
@@ -164,10 +144,10 @@ textarea {
 }
 .ipsFormPreviewSubmitButton {
   background-color: #007bff;
-  color: #ffffff;
+  color: #fff;
 }
 .ipsFormPreviewResetButton {
-  color: #ffffff;
+  color: #fff;
 }
 .ipsFormPreviewClassicButton {
   border: 1px solid #90c3f9;
@@ -176,7 +156,7 @@ textarea {
   text-align: center;
   vertical-align: middle;
   user-select: none;
-  transition: all 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
   font-weight: 400;
   border-radius: 2px;
   padding: 11px 22px;
@@ -231,15 +211,14 @@ a {
   font-size: 17px;
 }
 button:focus {
-  outline: none;
+  outline: 0;
 }
 b {
-  font-weight: bold;
+  font-weight: 700;
 }
 .ipsFormPreviewHeaderDescription {
   margin-top: 0;
   font-size: 16px;
-  /* font-weight: 300;  */
   line-height: 1.7;
   color: #000;
 }
@@ -267,7 +246,7 @@ b {
 }
 .ipsFormPreviewGridContainer {
   display: grid;
-  gap: 0px 20px;
+  gap: 0 20px;
   grid-template-columns: auto auto auto;
 }
 .polaris-banner {
@@ -277,16 +256,13 @@ b {
   border: 1px solid #95c9b4;
   background-color: #f1f8f5;
   border-radius: 10px;
-  /* padding: 10px; */
 }
 .ips-banner-main {
   display: flex;
   justify-content: flex-start;
 }
 .Polaris-Banner__Ribbon {
-  margin: auto;
-  margin-top: 16px;
-  margin-left: 4px;
+  margin: 16px auto auto 4px;
 }
 .Polaris-Button {
   margin-top: 19px;
@@ -294,8 +270,8 @@ b {
 }
 .heading-text {
   font-size: medium;
-  font-weight: bold;
-  color: #000000;
+  font-weight: 700;
+  color: #000;
 }
 .Polaris-Banner__ContentWrapper {
   margin-left: 10px;
@@ -307,23 +283,20 @@ b {
   width: 25px;
   height: 25px;
   margin: auto;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
-  animation: spin 2s linear infinite;
+  -webkit-animation: 2s linear infinite spin;
+  animation: 2s linear infinite spin;
 }
-
-/* Safari */
 @-webkit-keyframes spin {
   0% {
-    -webkit-transform: rotate(0deg);
+    -webkit-transform: rotate(0);
   }
   100% {
     -webkit-transform: rotate(360deg);
   }
 }
-
 @keyframes spin {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0);
   }
   100% {
     transform: rotate(360deg);

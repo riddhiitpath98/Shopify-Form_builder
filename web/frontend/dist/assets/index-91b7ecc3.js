@@ -1,0 +1,1 @@
+import{j as e,M as r}from"./index-885978b8.js";const l="_ipsIframeContainer_1t9ez_1",m={ipsIframeContainer:l},d=({open:a,handleClose:n,src:s,title:i,height:o,width:t})=>e(r,{open:a,onClose:n,title:i,large:!0,children:e("div",{className:m.ipsIframeContainer,children:e(r.Section,{children:e("iframe",{src:s,height:o,width:t})})})});export{d as default};

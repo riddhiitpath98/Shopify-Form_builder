@@ -138,7 +138,7 @@ const Topbar = ({ handleRedirectToForm }) => {
     );
   };
   const handleUpdate = () => {
-    const updatedFormData = [
+    const updatedFormData = [ 
       { formTitle: titleValue.title },
       { header: headerFieldData },
       { element: inputFields },
