@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { lazy, useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import {
@@ -20,7 +20,8 @@ import {
 } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
 import { Icons } from "../../constant";
-const CommonModal = lazy(() => import("../../components/CommonModal"));
+import CommonModal from "../../components/CommonModal";
+
 
 function APISettingsList() {
   const dispatch = useDispatch();

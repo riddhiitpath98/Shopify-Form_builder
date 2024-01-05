@@ -32,9 +32,9 @@ import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 import useElements from "../../hooks/useElements";
+import CommonModal from "../../components/CommonModal";
+import ElementListBanner from "../../components/ElementListBanner";
 
-const CommonModal = lazy(() => import("../../components/CommonModal"));
-const ElementListBanner = lazy(() => import("../../components/ElementListBanner"));
 const Nodatafound = lazy(() => import("../../components/NodataFound"));
 const ToggleSwitch = lazy(() => import("../../components/ToggleSwitch"));
 

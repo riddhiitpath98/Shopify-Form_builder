@@ -17,6 +17,7 @@ import {
   useIndexResourceState,
 } from "@shopify/polaris";
 import moment from "moment";
+import "./logStyles.css"
 const ModalLogs = lazy(() => import("./ModalLogs"));
 
 const APILogs = () => {

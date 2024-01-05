@@ -1,9 +1,9 @@
 import { Badge, Icon, LegacyCard, Page } from "@shopify/polaris";
 // import { pricingPlanData } from "../../constant";
 import React, { lazy, useCallback, useEffect, useMemo, useState } from "react";
+import CommonModal from "../../components/CommonModal";
+import PaymentModal from "./paymentModal";
 
-const CommonModal = lazy(() => import("../../components/CommonModal"));
-const PaymentModal = lazy(() => import("./paymentModal"));
 
 import { Fullscreen, Redirect } from "@shopify/app-bridge/actions";
 import { useAppBridge, useNavigate } from "@shopify/app-bridge-react";
