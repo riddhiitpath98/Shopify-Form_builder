@@ -39,7 +39,6 @@ export const InputTypeProvider = ({
   hiddenOptions,
   ...props
 }) => {
-
   const dispatch = useDispatch();
   const handleRemoveElement = (tabId) => {
     dispatch(removeElement({ id: tabId?.inputId }));

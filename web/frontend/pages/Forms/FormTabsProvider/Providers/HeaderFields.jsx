@@ -15,10 +15,30 @@ const HeaderFields = ({ isEdit, tabId, toggleDrawer }) => {
   );
 
   const [headerData, setHeaderData] = useState({
-    showHeader: headerFieldData?.attributes ? headerFieldData?.attributes?.showHeader : attributes.showHeader,
-    title: headerFieldData?.attributes ? headerFieldData?.attributes?.title : attributes.title,
-    description: headerFieldData?.attributes ? headerFieldData?.attributes?.description : attributes.description,
+    showHeader: headerFieldData?.attributes
+      ? headerFieldData?.attributes?.showHeader
+      : attributes.showHeader,
+    title: headerFieldData?.attributes?.title
+      ? headerFieldData?.attributes?.title
+      : attributes.title,
+    description: headerFieldData?.attributes
+      ? headerFieldData?.attributes?.description
+      : attributes.description,
   });
+  
+  useEffect(() => {
+    setHeaderData({
+      showHeader: headerFieldData?.attributes
+        ? headerFieldData?.attributes?.showHeader
+        : attributes.showHeader,
+      title: headerFieldData?.attributes?.title
+        ? headerFieldData?.attributes?.title
+        : attributes.title,
+      description: headerFieldData?.attributes
+        ? headerFieldData?.attributes?.description
+        : attributes.description,
+    });
+  }, []);
 
   const handleChange = (name, value) => {
     const updatedCommonFormInputs = { ...headerData, [name]: value };
@@ -28,6 +48,7 @@ const HeaderFields = ({ isEdit, tabId, toggleDrawer }) => {
         id,
         title,
         attributes: updatedCommonFormInputs,
+        formTitleData: updatedCommonFormInputs,
       })
     );
   };

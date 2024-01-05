@@ -1,5 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createFormToAPIsettings, deleteFormToAPISettings, editFormToAPISettings, getAPILogsData, getFormToAPIById, getFormToAPISettings, loadMoreLogs } from "../actions/allActions";
+import {
+  createFormToAPIsettings,
+  deleteFormToAPISettings,
+  editFormToAPISettings,
+  getAPILogsData,
+  getFormToAPIByFormId,
+  getFormToAPIById,
+  getFormToAPISettings,
+  loadMoreLogs,
+} from "../actions/allActions";
 
 const initialState = {
   apiSettingData: {
@@ -9,6 +18,12 @@ const initialState = {
     success: false,
   },
   editAPISettingsData: {
+    data: {},
+    error: "",
+    loading: false,
+    success: false,
+  },
+  editAPISettingsDataByFormId: {
     data: {},
     error: "",
     loading: false,
@@ -66,7 +81,8 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(getFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(getFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -98,7 +114,8 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(deleteFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(deleteFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -163,7 +180,41 @@ const anyAPISettingSlice = createSlice({
             success: false,
           },
         };
-      }).addCase(editFormToAPISettings.pending, (state, action) => {
+      })
+      .addCase(getFormToAPIByFormId.pending, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsDataByFormId: {
+            success: false,
+            loading: true,
+            data: {},
+            error: "",
+          },
+        };
+      })
+      .addCase(getFormToAPIByFormId.fulfilled, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsDataByFormId: {
+            loading: false,
+            data: action.payload,
+            error: "",
+            success: true,
+          },
+        };
+      })
+      .addCase(getFormToAPIByFormId.rejected, (state, action) => {
+        return {
+          ...state,
+          editAPISettingsDataByFormId: {
+            loading: false,
+            data: {},
+            error: action.payload,
+            success: false,
+          },
+        };
+      })
+      .addCase(editFormToAPISettings.pending, (state, action) => {
         return {
           ...state,
           allApiSettingData: {
@@ -262,7 +313,7 @@ const anyAPISettingSlice = createSlice({
             error: action.payload,
           },
         };
-      })
+      });
   },
 });
 

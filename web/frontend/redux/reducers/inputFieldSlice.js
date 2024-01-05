@@ -13,6 +13,9 @@ import { formatter, reverseFormate } from "../../utils/function";
 const initialState = {
   inputFields: [],
   headerFieldData: {},
+  formTitleData: {
+    title: "",
+  },
   footerFieldData: {},
   allElementData: {},
   formSubmissionData: {},
@@ -72,13 +75,30 @@ export const inputFieldsSlice = createSlice({
     handleDragDrop: (state, action) => {
       return {
         ...state,
-        inputFields: action.payload
-      }
+        inputFields: action.payload,
+      };
     },
     addHeaderElement: (state, action) => {
       return {
         ...state,
         headerFieldData: action.payload,
+        formTitleData: { title: action.payload?.attributes?.title },
+      };
+    },
+    updateHeaderElement: (state, action) => {
+      return {
+        ...state,
+        headerFieldData: {
+          ...state.headerFieldData,
+          attributes: {
+            ...state.headerFieldData.attributes,
+            title: action.payload.title,
+          },
+        },
+        formTitleData: {
+          ...state.formTitleData,
+          ...action.payload,
+        },
       };
     },
 
@@ -98,18 +118,20 @@ export const inputFieldsSlice = createSlice({
     updateEnableRecaptcha: (state, action) => {
       return {
         ...state,
-        googelRecaptcha: action.payload
-      }
+        googelRecaptcha: action.payload,
+      };
     },
     addFormSubmission: (state, action) => {
       return {
-        ...state, formSubmissionData: action.payload
-      }
+        ...state,
+        formSubmissionData: action.payload,
+      };
     },
     setDateKeyName: (state, action) => {
       return {
-        ...state, dateKeyName: action.payload
-      }
+        ...state,
+        dateKeyName: action.payload,
+      };
     },
 
     updatePayload: (state, action) => {
@@ -212,7 +234,7 @@ export const inputFieldsSlice = createSlice({
             formData: [action.payload.data],
             error: "",
           },
-          isSaveOrUpdate: true
+          isSaveOrUpdate: true,
         };
       })
       .addCase(addFormData.rejected, (state, action) => {
@@ -323,7 +345,7 @@ export const inputFieldsSlice = createSlice({
             success: true,
             formData: action.payload,
           },
-          isSaveOrUpdate: true
+          isSaveOrUpdate: true,
         };
       })
       .addCase(updateFormData.rejected, (state, action) => {
@@ -350,6 +372,7 @@ export const {
   addFormSubmission,
   setDateKeyName,
   updateEnableRecaptcha,
-  handleDragDrop
+  handleDragDrop,
+  updateHeaderElement,
 } = inputFieldsSlice.actions;
 export default inputFieldsSlice.reducer;
