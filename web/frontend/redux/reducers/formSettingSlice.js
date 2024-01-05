@@ -112,6 +112,7 @@ const formSettingSlice = createSlice({
             ...state?.validationData,
             loading: true,
             success: false,
+
           },
         };
       })
@@ -122,6 +123,7 @@ const formSettingSlice = createSlice({
             loading: false,
             success: true,
             data: action.payload,
+            validationFields: handleAppereance(action.payload?.validation),
           },
         };
       })
@@ -185,6 +187,7 @@ const formSettingSlice = createSlice({
             loading: false,
             success: true,
             data: action.payload,
+            appearanceFields: handleAppereance(action.payload?.appearance),
           },
         };
       })
@@ -248,6 +251,7 @@ const formSettingSlice = createSlice({
             loading: false,
             success: true,
             data: action.payload,
+            afterSubmitFields: handleAppereance(action.payload?.afterSubmit),
           },
         };
       })
