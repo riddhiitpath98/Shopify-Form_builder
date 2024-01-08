@@ -1,1 +1,0 @@
-import{b as u}from"./index-a7d8285a.js";import{i as f}from"./index-f3e62e88.js";function o(r,e=f){const t=u.useRef(r);return e(t.current,r)||(t.current=r),t.current}function c(r,e,t){u.useEffect(r,o(e,t))}export{c as a,o as u};
