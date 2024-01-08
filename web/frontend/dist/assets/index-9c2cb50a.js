@@ -1,0 +1,1 @@
+import{j as e,aV as t}from"./index-02b1340d.js";const a=()=>e("div",{style:{display:"flex",justifyContent:"space-between",margin:"100px auto",height:"200px",width:"200px"},children:e(t,{accessibilityLabel:"Spinner example",size:"large"})});export{a as default};

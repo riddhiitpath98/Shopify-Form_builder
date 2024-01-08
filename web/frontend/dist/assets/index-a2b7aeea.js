@@ -1,1 +1,0 @@
-import{j as a,bC as o}from"./index-885978b8.js";const t="/assets/noData-a3e8bfef.gif",e=()=>a(o,{heading:"No form Data Found",image:t,children:a("p",{children:"Whoops.... this information is not available for a moment"})});export{e as default};

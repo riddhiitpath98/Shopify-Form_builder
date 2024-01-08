@@ -11,10 +11,7 @@ import {
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { Fullscreen } from "@shopify/app-bridge/actions";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  clearForm,
-  updateHeaderElement,
-} from "../../../redux/reducers/inputFieldSlice";
+import { clearForm } from "../../../redux/reducers/inputFieldSlice";
 import { formatter } from "../../../utils/function";
 import { Icons, SUBSCRIPTION_TYPES } from "../../../constant";
 import { setSelectedViewport } from "../../../redux/reducers/viewPortSlice";
@@ -27,7 +24,7 @@ import "../PolarisFormListStyles.css";
 
 const Topbar = ({ handleRedirectToForm }) => {
   const dispatch = useDispatch();
-
+  const [titleValue, setTitleValue] = useState({ title: "New Form" });
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
@@ -77,31 +74,20 @@ const Topbar = ({ handleRedirectToForm }) => {
   const finalFormData = useSelector(
     (state) => state?.inputField?.finalFormData
   );
-  const formTitleData = useSelector(
-    (state) => state?.inputField?.formTitleData
-  );
-  const [titleValue, setTitleValue] = useState(formTitleData && formTitleData);
 
-  const isSaveOrUpdate = useSelector(
-    (state) => state.inputField?.isSaveOrUpdate
-  );
+  const isSaveOrUpdate = useSelector((state) => state.inputField?.isSaveOrUpdate);
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
 
-  const googelRecaptcha = useSelector(
-    (state) => state?.inputField?.googelRecaptcha
-  );
+  const googelRecaptcha = useSelector(state => state?.inputField?.googelRecaptcha);
   const formTitle = formatter(formDataById)?.formTitle;
-  const user = useSelector((state) => state.user.userData.user);
+  const user = useSelector(state => state.user.userData.user);
 
   const handleChange = (name, value) => {
-    // setTitleValue({
-    //   [name]: value,
-    // });
-    const updatedFormTitle = { ...titleValue, [name]: value };
-    setTitleValue(updatedFormTitle);
-    dispatch(updateHeaderElement({ title: updatedFormTitle.title }));
+    setTitleValue({
+      [name]: value,
+    });
   };
 
   const handleViewPortClick = (viewPort) => {
@@ -112,21 +98,22 @@ const Topbar = ({ handleRedirectToForm }) => {
     let fields = [];
     inputFields.map((item) => {
       if (item?.viewAccess?.includes(SUBSCRIPTION_TYPES.PREMIUM)) {
-        fields = [...fields, item.id];
+        fields = [...fields, item.id]
       }
-    });
-    return fields;
-  }, [inputFields]);
+    })
+    return fields
+  }, [inputFields])
+
 
   const hasFreeInput = useMemo(() => {
     let fields = [];
     inputFields.map((item) => {
       if (!item?.viewAccess) {
-        fields = [...fields, item.id];
+        fields = [...fields, item.id]
       }
-    });
-    return fields;
-  }, [inputFields]);
+    })
+    return fields
+  }, [inputFields])
 
   const handleSubmit = () => {
     const combinedObjectArr = {
@@ -134,13 +121,12 @@ const Topbar = ({ handleRedirectToForm }) => {
       hasPremiumInput,
       hasFreeInput,
       enableReCaptcha: googelRecaptcha?.enable || false,
-      customForm: [
-        { formTitle: titleValue.title },
-        { header: headerFieldData },
-        { element: inputFields },
-        { allElements: allElementData },
-        { footer: footerFieldData },
-      ],
+      customForm: [{ formTitle: titleValue.title },
+      { header: headerFieldData },
+      { element: inputFields },
+      { allElements: allElementData },
+      { footer: footerFieldData },
+      ]
     };
     dispatch(
       addFormData({
@@ -152,7 +138,7 @@ const Topbar = ({ handleRedirectToForm }) => {
     );
   };
   const handleUpdate = () => {
-    const updatedFormData = [
+    const updatedFormData = [ 
       { formTitle: titleValue.title },
       { header: headerFieldData },
       { element: inputFields },
@@ -160,14 +146,7 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({
-        _id: editFormId,
-        combinedObjectArr: {
-          customForm: updatedFormData,
-          hasFreeInput,
-          hasPremiumInput,
-        },
-      })
+      updateFormData({ _id: editFormId, combinedObjectArr: { customForm: updatedFormData, hasFreeInput, hasPremiumInput } })
     );
     dispatch(
       createNupdateValidation({
@@ -198,18 +177,13 @@ const Topbar = ({ handleRedirectToForm }) => {
       navigate("/form", { replace: true });
     }
   }, [isSaveOrUpdate]);
-  // useEffect(() => {
-  //   if (formTitle) {
-  //     setTitleValue({
-  //       title: formTitle,
-  //     });
-  //   }
-  // }, [formTitle]);
   useEffect(() => {
-    if (formTitleData) {
-      setTitleValue(formTitleData);
+    if (formTitle) {
+      setTitleValue({
+        title: formTitle,
+      });
     }
-  }, [formTitleData]);
+  }, [formTitle]);
 
   return (
     <div>
@@ -240,17 +214,15 @@ const Topbar = ({ handleRedirectToForm }) => {
             <div className={styles.itemViewPort}>
               <ul className={styles.viewPortSelector}>
                 <li
-                  className={`${styles.mobileView} ${
-                    selectedViewPort === "mobile" ? styles.ipsTabActive : ""
-                  }`}
+                  className={`${styles.mobileView} ${selectedViewPort === "mobile" ? styles.ipsTabActive : ""
+                    }`}
                   onClick={() => handleViewPortClick("mobile")}
                 >
                   <Icon source={Icons.mobile} />
                 </li>
                 <li
-                  className={`${styles.desktopView} ${
-                    selectedViewPort === "desktop" ? styles.ipsTabActive : ""
-                  }`}
+                  className={`${styles.desktopView} ${selectedViewPort === "desktop" ? styles.ipsTabActive : ""
+                    }`}
                   onClick={() => handleViewPortClick("desktop")}
                 >
                   <Icon source={Icons.desktop} />

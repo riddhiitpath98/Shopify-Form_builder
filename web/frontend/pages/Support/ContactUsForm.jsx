@@ -11,10 +11,10 @@ import {
   LegacyCard,
 } from "@shopify/polaris";
 import { useDispatch, useSelector } from 'react-redux';
-import { contactUs, createFormToAPIsettings } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
 import styles from "./ContactUsForm.module.css";
 import { validateTextField } from "../../constant";
+import { contactUs } from "../../redux/actions/allActions";
 
 const initialState = {
   firstName: "",
@@ -53,7 +53,8 @@ function ContactUsForm() {
       setErrorValues(errorMessages)
       return
     }
-    dispatch(createFormToAPIsettings({ ...formValues, shopId }));
+    dispatch(contactUs(formValues));
+    // dispatch(createFormToAPIsettings({ ...formValues, shopId }));
     setFormValues({ shopId: shopId });
   };
 
