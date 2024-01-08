@@ -33,30 +33,39 @@ export const getUserByShopId = createAsyncThunk(
   }
 );
 
-export const getPriceDetails = createAsyncThunk("/shop/getPriceDetails", async (id, { rejectWithValue, dispatch }) => {
-  try {
-    const response = await axios.get(`/payment/get-price-details/${id}`);
-    return response.data.data;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const getPriceDetails = createAsyncThunk(
+  "/shop/getPriceDetails",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.get(`/payment/get-price-details/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
+);
 
-})
-
-export const updateUserSubscription = createAsyncThunk("/shop/updateUserSubscription", async (data, { rejectWithValue, dispatch }) => {
-  try {
-    const response = await axios.get(`/user/update-subscription?shopId=${data?.shopId}&SSId=${data.SSId}&subscriptionId=${data.subscriptionId}`);
-    return response.data.data;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const updateUserSubscription = createAsyncThunk(
+  "/shop/updateUserSubscription",
+  async (data, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.get(
+        `/user/update-subscription?shopId=${data?.shopId}&SSId=${data.SSId}&subscriptionId=${data.subscriptionId}`
+      );
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
 
 export const cancelSubscription = createAsyncThunk(
   "shop/cancelSubscription",
   async (data, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.delete(`/payment/delete-subscription/${data?.id}?shopId=${data.shopId}`);
+      const response = await axios.delete(
+        `/payment/delete-subscription/${data?.id}?shopId=${data.shopId}`
+      );
       toast.success(response.data?.message, toastConfig);
       return response?.data?.user;
     } catch (error) {
@@ -96,10 +105,10 @@ export const addFormData = createAsyncThunk(
       const response = await axios.post(
         "/custom_form",
         formData.combinedObjectArr
-        );
-      toast.success(response?.data?.message,toastConfig);
+      );
+      toast.success(response?.data?.message, toastConfig);
 
-        dispatch(
+      dispatch(
         createNupdateValidation({
           formId: response.data.data._id,
           validationData: formData.updatedErrorMsg,
@@ -162,8 +171,9 @@ export const updateFormData = createAsyncThunk(
   "inputs/editFormData",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/custom_form/${data._id}`,
-      data.combinedObjectArr,
+      const response = await axios.put(
+        `/custom_form/${data._id}`,
+        data.combinedObjectArr
       );
       toast.success(response?.data?.message, toastConfig);
       return response?.data?.data;
@@ -424,8 +434,9 @@ export const sortNFilterSubmission = createAsyncThunk(
             ? `${isRead !== "" ? "&" : "?"}${queryString}`
             : "",
           shopId !== ""
-            ? `${isRead !== "" || formId.length !== 0 ? "&" : "?"
-            }shopId=${shopId}`
+            ? `${
+                isRead !== "" || formId.length !== 0 ? "&" : "?"
+              }shopId=${shopId}`
             : "",
           page ? `&page=${page}` : "",
           per_page ? `&per_page=${per_page}` : ""
@@ -632,7 +643,9 @@ export const getAllSubscription = createAsyncThunk(
   "subscription/getAllSubscription",
   async (data) => {
     try {
-      const response = await axios.get(`/subscriptions?shopId=${data.shopId}&code=${data?.countryCode}&country=${data?.country}`);
+      const response = await axios.get(
+        `/subscriptions?shopId=${data.shopId}&code=${data?.countryCode}&country=${data?.country}`
+      );
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -739,6 +752,19 @@ export const getFormToAPIById = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       toast.error(error?.response?.message, toastConfig);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getFormToAPIByFormId = createAsyncThunk(
+  "anyAPISettings/getFormToAPIByFormId",
+  async (formId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/contact-to-api/form/${formId}`);
+      return response.data.data
+    } catch (error) {
+      toast.error(error.response.message, toastConfig);
       return rejectWithValue(error.response.data);
     }
   }

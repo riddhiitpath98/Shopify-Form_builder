@@ -20,6 +20,7 @@ import {
   createFormToAPIsettings,
   editFormToAPISettings,
   fetchFormData,
+  getFormToAPIByFormId,
   getFormToAPIById,
 } from "../../redux/actions/allActions";
 import { useNavigate, useParams } from "react-router-dom";
@@ -65,6 +66,9 @@ const AnyAPIIntegration = ({ isEdit }) => {
   const formData = useSelector(
     (state) => state?.inputField?.finalFormData?.formData
   );
+  const apiSettingDataByFormId = useSelector(
+    (state) => state?.anyAPISetting?.editAPISettingsDataByFormId?.data
+    );
 
   const [showForm, setShowForm] = useState(false);
 
@@ -113,7 +117,6 @@ const AnyAPIIntegration = ({ isEdit }) => {
     setFormValues({
       ...formValues,
       shopId: shopId,
-
       elementKey: elementsValue,
     });
   }, [elementsValue]);
@@ -130,14 +133,35 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
     if (name === "formId") {
       const selectedFormId = value;
-      const elementData = getElementDataByFormId(selectedFormId);
-      if (elementData) {
-        setFormElementData(elementData);
-        let form_fields = {};
-        elementData.forEach((item) => {
-          form_fields[`${item?.inputId}_${item.id}`] = "";
-        });
-        setElementsValue({ ...form_fields });
+      if (apiId) {
+        dispatch(getFormToAPIByFormId(selectedFormId));
+        if(Object.keys(apiSettingDataByFormId).length > 0){
+          setFormValues({
+            apiTitle: apiSettingDataByFormId?.apiTitle,
+            apiUrl: apiSettingDataByFormId?.apiUrl,
+            headerRequest: apiSettingDataByFormId?.headerRequest,
+            inputType: apiSettingDataByFormId?.inputType,
+            method: apiSettingDataByFormId?.method,
+            formId: apiSettingDataByFormId?.form,
+            shopId: apiSettingDataByFormId?.shopId,
+          });
+          const elementData = getElementDataByFormId(apiSettingDataById?.form);
+          if (elementData) {
+            setFormElementData(elementData);
+            setElementsValue({ ...apiSettingDataById?.elementKey });
+          }
+        }
+        
+      } else {
+        const elementData = getElementDataByFormId(selectedFormId);
+        if (elementData) {
+          setFormElementData(elementData);
+          let form_fields = {};
+          elementData.forEach((item) => {
+            form_fields[`${item?.inputId}_${item.id}`] = "";
+          });
+          setElementsValue({ ...form_fields });
+        }
       }
     }
 
@@ -354,34 +378,34 @@ const AnyAPIIntegration = ({ isEdit }) => {
 
                       {formElementData && formElementData?.length > 0
                         ? formElementData?.map((element) => (
-                          <Grid.Cell
-                            columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
-                          >
-                            <TextField
-                              value={
-                                elementsValue[
-                                `${element.inputId}_${element.id}`
-                                ] || ""
-                              }
-                              name={`${element.inputId}_${element.id}`}
-                              onChange={(value) =>
-                                handleChange(
-                                  `${element.inputId}_${element.id}`,
-                                  value,
-                                  true
-                                )
-                              }
-                              label={element.attributes.label}
-                              type="text"
-                              placeholder="Enter mapping key field name"
-                              requiredIndicator
-                              autoComplete="off"
-                              error={
-                                error[`${element.inputId}_${element.id}`]
-                              }
-                            />
-                          </Grid.Cell>
-                        ))
+                            <Grid.Cell
+                              columnSpan={{ xs: 6, sm: 6, md: 6, lg: 6 }}
+                            >
+                              <TextField
+                                value={
+                                  elementsValue[
+                                    `${element.inputId}_${element.id}`
+                                  ] || ""
+                                }
+                                name={`${element.inputId}_${element.id}`}
+                                onChange={(value) =>
+                                  handleChange(
+                                    `${element.inputId}_${element.id}`,
+                                    value,
+                                    true
+                                  )
+                                }
+                                label={element.attributes.label}
+                                type="text"
+                                placeholder="Enter mapping key field name"
+                                requiredIndicator
+                                autoComplete="off"
+                                error={
+                                  error[`${element.inputId}_${element.id}`]
+                                }
+                              />
+                            </Grid.Cell>
+                          ))
                         : null}
 
                       <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 12, lg: 12 }}>

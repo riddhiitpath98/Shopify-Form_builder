@@ -33,11 +33,9 @@ import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 import useElements from "../../hooks/useElements";
 import CommonModal from "../../components/CommonModal";
+import Nodatafound from "../../components/NodataFound";
+import ToggleSwitch from "../../components/ToggleSwitch";
 import ElementListBanner from "../../components/ElementListBanner";
-
-const Nodatafound = lazy(() => import("../../components/NodataFound"));
-const ToggleSwitch = lazy(() => import("../../components/ToggleSwitch"));
-
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
@@ -62,8 +60,9 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${filter[0].isVisible ? id : ""
-      }'></div>`;
+    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
+      filter[0].isVisible ? id : ""
+    }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
       function () {
         toast.success("Code Coiped", toastConfig);
@@ -248,12 +247,13 @@ function FormList() {
             description="<p><strong>Note:</strong> Deleting this form will result in the removal of the following:</p>
             <ul>
               <li>The form and its contents.</li>
-              <li>API and Logs created for this form.</li>
+              <li>Submissions created for this form</li>
+              <li>Associated API connections and logs.</li>
             </ul>
             <p>Be sure to Export any important data or files related to this form.</p>"
           />
         )}
-      <ToastContainer />
+        <ToastContainer />
       </Page>
     </>
   );
