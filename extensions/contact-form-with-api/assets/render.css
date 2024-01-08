@@ -42,7 +42,7 @@ iframe {
   height: 100%;
   left: 0;
   position: absolute;
-  top: -20px;
+  top: 0;
   width: 100%;
 }
 .mainForm {
@@ -240,6 +240,7 @@ b {
   -webkit-transform-origin: left top;
   position: relative;
   max-width: 304px;
+  margin: 1.7rem 0.5rem !important;
 }
 .ipsFormPreviewDivider {
   margin: 1.5rem 0 !important;

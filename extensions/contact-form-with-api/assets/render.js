@@ -182,7 +182,7 @@ const catchFormDivAndAppendForm = async (data) => {
 
   const handleCaptchaChange = async (response) => {
     recaptcha_response = response;
-    const captchaError = document.getElementById("captcha_error");
+    const captchaError = document.getElementById(`${formElementId}_captcha_error`);
     captchaError.textContent = response === "" ? "please varify Captcha" : "";
   };
 
@@ -250,13 +250,14 @@ const catchFormDivAndAppendForm = async (data) => {
         return "";
     }
   }
+  // console.log('formData', formData)
 
   const checkValidation = (type, value) => {
     formFieldData = formFieldData.map((item) => {
       if (item.fieldType === type && value) {
         let fieldData = { ...item, fieldValue: value };
         let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
-        const errorElement = document.getElementById(`${item.id}_error`);
+        const errorElement = document.getElementById(`${formElementId}_${item.id}_error`);
         errorElement.textContent = error && item.required ? error : "";
         return fieldData;
       } else return item;
@@ -265,56 +266,67 @@ const catchFormDivAndAppendForm = async (data) => {
 
   const handleChange = (renderId, event, confirmPassword) => {
     const { id, name, value, type, checked, files } = event.target;
+    // console.log('files: ', files);
+    // console.log('type: ', type);
     formData[renderId][name] = value;
     if (type === "radio") {
       if (checked) {
         checkValidation("radio", value);
         formData[renderId][name] = value;
       }
-    } else if (type === "file") {
-      const fileList = Array.from(files);
-      formFieldData = formFieldData.map((item) => {
-        let fieldData = {};
-        fieldData = {
-          ...item,
-          fieldValue: fileList,
-          fieldName: name,
-        };
-        let error = validateInput(fieldData.fieldName, fieldData.fieldValue);
-        const errorElement = document.getElementById(`${item.id}_error`);
-        errorElement.textContent = error && item.required ? error : "";
-        return fieldData;
-      });
-      formData[renderId][name] = fileList;
     } else {
-      formFieldData = formFieldData.map((item) => {
-        let fieldData = {};
-        if (item.confirmfieldId === name && confirmPassword) {
+      if (type === 'file') {
+        // console.log("object111111");
+        const fileList = Array.from(files);
+        formFieldData = formFieldData.map((item) => {
+          let fieldData = {};
           fieldData = {
             ...item,
-            confirmfieldValue: value,
-            confirmfieldName: name.replace(/^[a-z0-9]+_/, ""),
+            fieldValue: fileList,
+            fieldName: name,
           };
-          let error = validateInput(
-            fieldData.confirmfieldName,
-            fieldData.confirmfieldValue,
-            fieldData
-          );
-          const errorElement = document.getElementById(`${item.id}_CPError`);
-          errorElement.textContent = error && item.required ? error : "";
-        }
-        if (item.fieldId === name) {
-          if (type === "checkbox") {
-            checkValidation("accept_terms", checked);
-            formData[renderId][name] = checked;
-            fieldData = { ...item, fieldValue: checked };
-          } else fieldData = { ...item, fieldValue: value };
-          let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
-          const errorElement = document.getElementById(`${item.id}_error`);
+          let error = validateInput(fieldData.fieldName, fieldData.fieldValue);
+          const errorElement = document.getElementById(`${formElementId}_${item.id}_error`);
+          // console.log('${formElementId}_${item.id}_error: ', `${formElementId}_${item.id}_error`);
+          // console.log('error: ', error);
+          // console.log('errorElement: ', errorElement);
           errorElement.textContent = error && item.required ? error : "";
           return fieldData;
-        } else return item;
-      });
+        });
+        formData[renderId][name] = fileList;
+        // console.log('fileList: ', fileList);
+        // console.log('formData 11111: ', formData);
+      } else {
+        formFieldData = formFieldData.map((item) => {
+          let fieldData = {};
+          if (item.confirmfieldId === name && confirmPassword) {
+            fieldData = {
+              ...item,
+              confirmfieldValue: value,
+              confirmfieldName: name.replace(/^[a-z0-9]+_/, ""),
+            };
+            let error = validateInput(
+              fieldData.confirmfieldName,
+              fieldData.confirmfieldValue,
+              fieldData
+            );
+            const errorElement = document.getElementById(`${formElementId}_${item.id}_CPError`);
+            errorElement.textContent = error && item.required ? error : "";
+          }
+          if (item.fieldId === name) {
+            if (type === "checkbox") {
+              checkValidation("accept_terms", checked);
+              formData[renderId][name] = checked;
+              fieldData = { ...item, fieldValue: checked };
+            } else fieldData = { ...item, fieldValue: value };
+            let error = validateInput(fieldData.fieldType, fieldData.fieldValue);
+            const errorElement = document.getElementById(`${formElementId}_${item.id}_error`);
+            errorElement.textContent = error && item.required ? error : "";
+            return fieldData;
+          } else return item;
+        });
+      }
+
       if (name.replace(/^[a-z0-9]+_/, "") !== "confirm_password") {
         formData[renderId][name] = type === "checkbox" ? checked : value;
       }
@@ -370,11 +382,11 @@ const catchFormDivAndAppendForm = async (data) => {
   const setDefaultValue = () => {
     formElement.forEach((data) => {
       const { id, attributes, inputId } = data;
-      const initialErrorElement = document.getElementById(`${inputId}_error`);
+      const initialErrorElement = document.getElementById(`${formElementId}_${inputId}_error`);
       const confirmPasswordError =
         attributes.confirmPassword &&
-        document.getElementById(`${inputId}_CPError`);
-      const captchaError = document.getElementById("captcha_error");
+        document.getElementById(`${formElementId}_${inputId}_CPError`);
+      const captchaError = document.getElementById(`${formElementId}_captcha_error`);
       captchaError.textContent = "";
       if (attributes.confirmPassword) confirmPasswordError.textContent = "";
       if (id === "radio") {
@@ -419,7 +431,7 @@ const catchFormDivAndAppendForm = async (data) => {
           input.fieldValue,
           input
         );
-        const errorElement = document.getElementById(`${input.id}_CPError`);
+        const errorElement = document.getElementById(`${formElementId}_${input.id}_CPError`);
         if (errorMessage !== "" && input.required) {
           hasError = true;
           errorElement.textContent = errorMessage;
@@ -430,7 +442,7 @@ const catchFormDivAndAppendForm = async (data) => {
       else accept_terms = null;
 
       const errorMessage = validateInput(input.fieldType, input.fieldValue);
-      const errorElement = document.getElementById(`${input.id}_error`);
+      const errorElement = document.getElementById(`${formElementId}_${input.id}_error`);
       if (errorElement) {
         if (errorMessage !== "" && input.required) {
           hasError = true;
@@ -439,7 +451,7 @@ const catchFormDivAndAppendForm = async (data) => {
       }
     });
     if (enableRecaptcha) {
-      const captchaError = document.getElementById("captcha_error");
+      const captchaError = document.getElementById(`${formElementId}_captcha_error`);
       captchaError.textContent =
         recaptcha_response === "" ? "please varify Captcha" : "";
       if (enableRecaptcha) {
@@ -722,7 +734,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
 
             smallElement.appendChild(errorMessageElement);
             inputContainer.appendChild(smallElement);
@@ -772,13 +784,16 @@ const catchFormDivAndAppendForm = async (data) => {
             Object.assign(fileInputElement.style, inputStyles);
             fileInputElement.multiple = allowMultiple ? true : false;
             inputContainer.appendChild(fileInputElement);
+
             const element = document.querySelector(
               `input[data-id=${formElementId}_${item?.inputId}]`
             );
+            // console.log('element', element)
 
-            element.addEventListener("input", (e) =>
+            element.addEventListener("change", (e) =>
               handleChange(formElementId, e)
             );
+
             // const element = document.getElementById(item.inputId)
             // element.addEventListener("input", handleChange);
             const fileDescriptionElement = document.createElement("span");
@@ -788,11 +803,14 @@ const catchFormDivAndAppendForm = async (data) => {
 
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
+            // console.log('23232: ', errorMessageElement);
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
+            // console.log('mainnnnn: ', errorMessageElement);
             // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
             smallElement.appendChild(errorMessageElement);
             inputContainer.appendChild(smallElement);
+
           } else if (item?.type === "password") {
             const inputContainer = document.createElement("div");
             inputContainer.className = "ipsFormPreviewInputContainer";
@@ -849,7 +867,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
 
             smallElement.appendChild(errorMessageElement);
             inputContainer.appendChild(smallElement);
@@ -861,7 +879,7 @@ const catchFormDivAndAppendForm = async (data) => {
 
               const labelElement = document.createElement("label");
               labelElement.htmlFor = item.inputId;
-              labelElement.className = "ipsFormPreviewInputClassicInput";
+              labelElement.className = "ipsFormPreviewInputClassicLabel";
               labelElement.style.color = appearanceFields?.labelColor
                 ? appearanceFields.labelColor
                 : "";
@@ -882,7 +900,7 @@ const catchFormDivAndAppendForm = async (data) => {
               confirmPasswordInputElement.id = `confirm_${item.inputId}`;
               confirmPasswordInputElement.setAttribute(
                 "data-id",
-                `${formElementId}_${item?.inputId}`
+                `${formElementId}_${item?.inputId}_confirm_password`
               );
               confirmPasswordInputElement.className =
                 "ipsFormPreviewInputClassicInput";
@@ -897,7 +915,7 @@ const catchFormDivAndAppendForm = async (data) => {
 
               inputContainer.appendChild(confirmPasswordInputElement);
               const element = document.querySelector(
-                `input[data-id=${formElementId}_${item?.inputId}]`
+                `input[data-id=${formElementId}_${item?.inputId}_confirm_password]`
               );
               element.addEventListener("input", (event) =>
                 handleChange(formElementId, event, confirmPassword)
@@ -917,7 +935,7 @@ const catchFormDivAndAppendForm = async (data) => {
                 document.createElement("p");
               confirmPasswordErrorMessageElement.className =
                 "ipsFormPreviewErrorMessage";
-              confirmPasswordErrorMessageElement.id = `${item.inputId}_CPError`;
+              confirmPasswordErrorMessageElement.id = `${formElementId}_${item.inputId}_CPError`;
 
               confirmPasswordSmallElement.appendChild(
                 confirmPasswordErrorMessageElement
@@ -981,7 +999,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const textareaErrorMessageElement = document.createElement("p");
             textareaErrorMessageElement.className =
               "ipsFormPreviewErrorMessage";
-            textareaErrorMessageElement.id = `${item.inputId}_error`;
+            textareaErrorMessageElement.id = `${formElementId}_${item.inputId}_error`;
             textareaSmallElement.appendChild(textareaErrorMessageElement);
             inputContainer.appendChild(textareaSmallElement);
           } else if (item?.type === "checkbox") {
@@ -1035,7 +1053,7 @@ const catchFormDivAndAppendForm = async (data) => {
               const smallElement = document.createElement("small");
               const errorMessageElement = document.createElement("p");
               errorMessageElement.className = "ipsFormPreviewErrorMessage";
-              errorMessageElement.id = `${item.inputId}_error`;
+              errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
               smallElement.appendChild(errorMessageElement);
               checkboxContainer.appendChild(smallElement);
               const element = document.querySelector(
@@ -1144,7 +1162,7 @@ const catchFormDivAndAppendForm = async (data) => {
               const smallElement = document.createElement("small");
               const errorMessageElement = document.createElement("p");
               errorMessageElement.className = "ipsFormPreviewErrorMessage";
-              errorMessageElement.id = `${item.inputId}_error`;
+              errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
               smallElement.appendChild(errorMessageElement);
               checkboxContainer.appendChild(smallElement);
               if (default_value) {
@@ -1254,7 +1272,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
             radioContainer.appendChild(smallElement);
             if (default_value) {
@@ -1326,7 +1344,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
             smallElement.appendChild(errorMessageElement);
             selectContainer.appendChild(smallElement);
             if (default_value) {
@@ -1459,7 +1477,7 @@ const catchFormDivAndAppendForm = async (data) => {
             const smallElement = document.createElement("small");
             const errorMessageElement = document.createElement("p");
             errorMessageElement.className = "ipsFormPreviewErrorMessage";
-            errorMessageElement.id = `${item.inputId}_error`;
+            errorMessageElement.id = `${formElementId}_${item.inputId}_error`;
             // errorMessageElement.textContent = required ? formFeildData[index]?.errorMessage : null;
             smallElement.appendChild(errorMessageElement);
             dateContainer.appendChild(smallElement);
@@ -1506,21 +1524,20 @@ const catchFormDivAndAppendForm = async (data) => {
 
       if (enableRecaptcha) {
         const captchaContainer = document.createElement("div");
-        captchaContainer.className = "captchaContainer";
+        captchaContainer.className = "ipsFormPreviewCaptchaContainer";
 
         const invisibleDiv = document.createElement("div");
         invisibleDiv.style.width = "0";
 
         const reCaptchaElement = document.createElement("div");
         reCaptchaElement.className = "g-recaptcha";
-
         reCaptchaElement.setAttribute("data-sitekey", recaptchadata?.siteKey);
         captchaContainer.appendChild(reCaptchaElement);
 
         const smallElement = document.createElement("small");
         const captchaErrorMsgElement = document.createElement("p");
-        captchaErrorMsgElement.className = "errorMessage";
-        captchaErrorMsgElement.id = `captcha_error`;
+        captchaErrorMsgElement.className = "ipsFormPreviewErrorMessage";
+        captchaErrorMsgElement.id = `${formElementId}_captcha_error`;
 
         smallElement.appendChild(captchaErrorMsgElement);
         captchaContainer.appendChild(smallElement);
@@ -1534,14 +1551,14 @@ const catchFormDivAndAppendForm = async (data) => {
           });
         }, 2000);
 
-        const captchaError = document.getElementById("captcha_error");
-        if (enableRecaptcha) {
-          captchaContainer.style.display = "";
-          captchaError.style.display = "";
-        } else {
-          captchaContainer.style.display = "none";
-          captchaError.style.display = "none";
-        }
+        // const captchaError = document.getElementById(`${formElementId}_captcha_error`);
+        // if (enableRecaptcha) {
+        //   captchaContainer.style.display = "";
+        //   captchaError.style.display = "";
+        // } else {
+        //   captchaContainer.style.display = "none";
+        //   captchaError.style.display = "none";
+        // }
       }
 
       if (footerFieldData && footerFieldData?.attributes) {
