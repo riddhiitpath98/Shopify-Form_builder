@@ -15,22 +15,22 @@ const generateElementId = (type, id) => {
     type === "form"
       ? formCounter
       : type === "submit"
-      ? submitButtonCouter
-      : type === "loader"
-      ? loaderCounter
-      : type === "banner"
-      ? bannerCounter
-      : "";
+        ? submitButtonCouter
+        : type === "loader"
+          ? loaderCounter
+          : type === "banner"
+            ? bannerCounter
+            : "";
   const uniqueElementId = `${id}-${counter}`;
   type === "form"
     ? formCounter++
     : type === "submit"
-    ? submitButtonCouter++
-    : type === "loader"
-    ? loaderCounter++
-    : type === "banner"
-    ? bannerCounter++
-    : "";
+      ? submitButtonCouter++
+      : type === "loader"
+        ? loaderCounter++
+        : type === "banner"
+          ? bannerCounter++
+          : "";
   return uniqueElementId;
 };
 
@@ -98,22 +98,22 @@ const catchFormDivAndAppendForm = async (data) => {
   const checkElements = (plan, elem, checkPreview) => {
     const data = checkPreview
       ? elem.filter((val) => {
-          if (!val?.viewAccess) return val;
-          else if (val?.viewAccess?.includes(plan)) return val;
-          else return null;
-        })
+        if (!val?.viewAccess) return val;
+        else if (val?.viewAccess?.includes(plan)) return val;
+        else return null;
+      })
       : elem.map((val) => {
-          return {
-            ...val,
-            fields: val?.fields?.filter((item) => {
-              if (!item?.viewAccess) {
-                return item;
-              } else if (item?.viewAccess?.includes(plan)) {
-                return item;
-              } else return null;
-            }),
-          };
-        });
+        return {
+          ...val,
+          fields: val?.fields?.filter((item) => {
+            if (!item?.viewAccess) {
+              return item;
+            } else if (item?.viewAccess?.includes(plan)) {
+              return item;
+            } else return null;
+          }),
+        };
+      });
     return data;
   };
 
@@ -541,21 +541,19 @@ const catchFormDivAndAppendForm = async (data) => {
   if (checkPlan.length > 0) {
     setTimeout(() => {
       const divElement = document.createElement("div");
-      divElement.className = `${
-        selectedBackground === "none" ? "ipsFormBuilderNone" : "ipsFormBuilder"
-      } ${
-        selectedBackground === "image"
+      divElement.className = `${selectedBackground === "none" ? "ipsFormBuilderNone" : "ipsFormBuilder"
+        } ${selectedBackground === "image"
           ? "ipsFormPreviewFormImageBackground"
           : ""
-      }`;
+        }`;
 
       divElement.style.maxWidth = appearanceFields?.appearanceWidth || "100%";
       divElement.style.backgroundColor =
         selectedBackground === "color" && appearanceFields?.formBackgroundColor
           ? appearanceFields?.formBackgroundColor
           : selectedBackground === "none"
-          ? "transparent"
-          : "#fff";
+            ? "transparent"
+            : "#fff";
       divElement.style.backgroundImage =
         selectedBackground === "image"
           ? `url(${appearanceFields?.backgroundImageUrl})`
@@ -645,14 +643,14 @@ const catchFormDivAndAppendForm = async (data) => {
               column_width === "33%"
                 ? 4
                 : column_width === "50%"
-                ? 6
-                : column_width === "100%" && 12,
+                  ? 6
+                  : column_width === "100%" && 12,
             xl:
               column_width === "33%"
                 ? 4
                 : column_width === "50%"
-                ? 6
-                : column_width === "100%" && 12,
+                  ? 6
+                  : column_width === "100%" && 12,
           };
 
           const noOfOptions = parseInt(no_of_options?.[0]);
@@ -1116,8 +1114,7 @@ const catchFormDivAndAppendForm = async (data) => {
                 );
 
                 const element = document.querySelector(
-                  `input[data-id=${formElementId}_${
-                    item?.inputId
+                  `input[data-id=${formElementId}_${item?.inputId
                   }_${option.label
                     .replace(/\s+/g, "-")
                     .replace(/[^a-zA-Z0-9-_]/g, "")}]`
@@ -1580,11 +1577,10 @@ const catchFormDivAndAppendForm = async (data) => {
         // footerDivElement.appendChild(buttonElement);
         const buttonElement = document.createElement("button");
         buttonElement.type = "submit";
-        buttonElement.className = `${
-          footerFieldData?.attributes?.buttonWidth
-            ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
-            : "ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
-        }`;
+        buttonElement.className = `${footerFieldData?.attributes?.buttonWidth
+          ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
+          : "ipsFormPreviewClassicButton ipsFormPreviewSubmitButton"
+          }`;
         const spanSubmit = document.createElement("span");
         spanSubmit.textContent = footerFieldData?.attributes?.submitButton;
         spanSubmit.id = "span_submit_button";
@@ -1615,11 +1611,10 @@ const catchFormDivAndAppendForm = async (data) => {
           const resetButton = document.createElement("button");
           resetButton.type = "button";
           resetButton.id = "resetButton";
-          resetButton.className = `${
-            footerFieldData?.attributes?.buttonWidth
-              ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
-              : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
-          }`;
+          resetButton.className = `${footerFieldData?.attributes?.buttonWidth
+            ? "ipsFormPreviewButtonWidth ipsFormPreviewClassicButton ipsFormPreviewResetButton"
+            : "ipsFormPreviewClassicButton ipsFormPreviewResetButton"
+            }`;
           resetButton.textContent =
             footerFieldData?.attributes?.resetButtonText;
           resetButton.style.color = appearanceFields?.buttonTextColor;

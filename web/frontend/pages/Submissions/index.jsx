@@ -32,9 +32,9 @@ import styles from "./Submissions.module.css";
 import "./Modal.css";
 import { updateCurrentPage } from "../../redux/reducers/submissionSlice";
 import { SUBSCRIPTION_TYPES } from "../../constant";
+import CommonModal from "../../components/CommonModal";
+import ModalSubmission from "./ModalSubmission";
 
-const CommonModal = lazy(() => import("../../components/CommonModal"));
-const ModalSubmission = lazy(() => import("./ModalSubmission"));
 
 
 function Submissions() {

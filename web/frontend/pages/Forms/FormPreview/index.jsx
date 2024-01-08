@@ -91,7 +91,7 @@ const FormPreview = () => {
 
   const appearanceFields = useSelector(
     (state) => state.formSetting?.appearanceData?.appearanceFields
-    );
+  );
   const selectedBackground =
     appearanceFields && appearanceFields?.appearanceBackground;
 

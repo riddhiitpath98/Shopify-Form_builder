@@ -20,7 +20,8 @@ import {
 } from "../../redux/actions/allActions";
 import { ToastContainer } from "react-toastify";
 import { Icons } from "../../constant";
-const CommonModal = lazy(() => import("../../components/CommonModal"));
+import CommonModal from "../../components/CommonModal";
+
 
 function APISettingsList() {
   const dispatch = useDispatch();

@@ -32,13 +32,10 @@ import { Icons, SUBSCRIPTION_TYPES, toastConfig } from "../../constant";
 import styles from "./FormStyle.module.css";
 import "./PolarisFormListStyles.css";
 import useElements from "../../hooks/useElements";
-
-const CommonModal = lazy(() => import("../../components/CommonModal"));
-const ElementListBanner = lazy(() =>
-  import("../../components/ElementListBanner")
-);
-const Nodatafound = lazy(() => import("../../components/NodataFound"));
-const ToggleSwitch = lazy(() => import("../../components/ToggleSwitch"));
+import CommonModal from "../../components/CommonModal";
+import Nodatafound from "../../components/NodataFound";
+import ToggleSwitch from "../../components/ToggleSwitch";
+import ElementListBanner from "../../components/ElementListBanner";
 
 function FormList() {
   const [sortValue, setSortValue] = useState("DATE_MODIFIED_DESC");
