@@ -1,0 +1,1 @@
+import{j as e,aY as t}from"./index-2383bb64.js";const a=()=>e("div",{style:{display:"flex",justifyContent:"space-between",margin:"100px auto",height:"200px",width:"200px"},children:e(t,{accessibilityLabel:"Spinner example",size:"large"})});export{a as default};

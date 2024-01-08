@@ -1,1 +1,0 @@
-import{bB as r,j as e,M as l,bC as i,bD as n}from"./index-02b1340d.js";const p=r("pk_live_IGCZ91wblgKajj7dxA8xci0E"),d=({active:s,priceId:t,toggleModal:o,setShowCardElement:a})=>e(l,{open:s,onClose:()=>a(!1),title:"Make Payment",large:!0,children:e(i,{stripe:p,children:e(n,{priceId:t,toggleModal:o,setShowCardElement:a})})});export{d as default};

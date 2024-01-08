@@ -440,7 +440,7 @@ const AnyAPIIntegration = ({ isEdit }) => {
         <IFrameLoader
           open={iframeVisible}
           handleClose={handleIframeClose}
-          src="https://www.contactformtoapi.com/mapping-fields/"
+          src="https://www.contactformtoapi.com/shopify-app-documentation/"
           title="Mapping Fields"
           width="1000"
           height="1000"

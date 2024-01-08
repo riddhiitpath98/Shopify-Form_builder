@@ -60,7 +60,9 @@ function FormList() {
 
   const handleCopyCode = (id) => {
     const filter = formData.formData?.filter?.((item) => item._id === id);
-    const textToCopy = `<div class="form-builder-ips" data-ap-key='${shopId}' data-key='${
+    const textToCopy = `<div class="form-builder-ips" form-name='${
+      filter[0]?.customForm[0]?.formTitle
+    }' data-ap-key='${shopId}' data-key='${
       filter[0].isVisible ? id : ""
     }'></div>`;
     navigator.clipboard.writeText(textToCopy).then(
