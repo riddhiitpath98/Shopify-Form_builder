@@ -35,6 +35,7 @@ import { SUBSCRIPTION_TYPES } from "../../../constant";
 import styles from "./FormPreview.module.css";
 import ElementListBanner from "../../../components/ElementListBanner";
 import useElements from "../../../hooks/useElements";
+import { ToastContainer } from "react-toastify";
 
 const FormPreview = () => {
   const dispatch = useDispatch();
@@ -712,6 +713,7 @@ const FormPreview = () => {
           </div>
         </div>
       )}
+    <ToastContainer/>
     </div>
   );
 };

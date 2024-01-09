@@ -25,6 +25,8 @@ import "../PolarisFormListStyles.css";
 const Topbar = ({ handleRedirectToForm }) => {
   const dispatch = useDispatch();
   const [titleValue, setTitleValue] = useState({ title: "New Form" });
+  const [isSaveForm, setIsSaveForm] = useState(false);
+  const [editFormIdUpdate, setEditFormIdUpdate] = useState("");
   const app = useAppBridge();
   const fullscreen = Fullscreen.create(app);
   const navigate = useNavigate();
@@ -73,16 +75,20 @@ const Topbar = ({ handleRedirectToForm }) => {
 
   const finalFormData = useSelector(
     (state) => state?.inputField?.finalFormData
-  );
+    );
 
-  const isSaveOrUpdate = useSelector((state) => state.inputField?.isSaveOrUpdate);
+  const isSaveOrUpdate = useSelector(
+    (state) => state.inputField?.isSaveOrUpdate
+  );
   const formDataById = useSelector(
     (state) => state?.inputField?.editFormData?.formData?.customForm
   );
 
-  const googelRecaptcha = useSelector(state => state?.inputField?.googelRecaptcha);
+  const googelRecaptcha = useSelector(
+    (state) => state?.inputField?.googelRecaptcha
+  );
   const formTitle = formatter(formDataById)?.formTitle;
-  const user = useSelector(state => state.user.userData.user);
+  const user = useSelector((state) => state.user.userData.user);
 
   const handleChange = (name, value) => {
     setTitleValue({
@@ -98,22 +104,21 @@ const Topbar = ({ handleRedirectToForm }) => {
     let fields = [];
     inputFields.map((item) => {
       if (item?.viewAccess?.includes(SUBSCRIPTION_TYPES.PREMIUM)) {
-        fields = [...fields, item.id]
+        fields = [...fields, item.id];
       }
-    })
-    return fields
-  }, [inputFields])
-
+    });
+    return fields;
+  }, [inputFields]);
 
   const hasFreeInput = useMemo(() => {
     let fields = [];
     inputFields.map((item) => {
       if (!item?.viewAccess) {
-        fields = [...fields, item.id]
+        fields = [...fields, item.id];
       }
-    })
-    return fields
-  }, [inputFields])
+    });
+    return fields;
+  }, [inputFields]);
 
   const handleSubmit = () => {
     const combinedObjectArr = {
@@ -121,12 +126,13 @@ const Topbar = ({ handleRedirectToForm }) => {
       hasPremiumInput,
       hasFreeInput,
       enableReCaptcha: googelRecaptcha?.enable || false,
-      customForm: [{ formTitle: titleValue.title },
-      { header: headerFieldData },
-      { element: inputFields },
-      { allElements: allElementData },
-      { footer: footerFieldData },
-      ]
+      customForm: [
+        { formTitle: titleValue.title },
+        { header: headerFieldData },
+        { element: inputFields },
+        { allElements: allElementData },
+        { footer: footerFieldData },
+      ],
     };
     dispatch(
       addFormData({
@@ -135,7 +141,12 @@ const Topbar = ({ handleRedirectToForm }) => {
         updatedAppearance,
         updatedAfterSubmit,
       })
-    );
+    ).then((data) => {
+      if (data?.payload?.data) {
+        setIsSaveForm(true);
+        setEditFormIdUpdate(data?.payload?.data?._id)
+      }
+    });
   };
   const handleUpdate = () => {
     const updatedFormData = [
@@ -146,23 +157,30 @@ const Topbar = ({ handleRedirectToForm }) => {
       { footer: footerFieldData },
     ];
     dispatch(
-      updateFormData({ _id: editFormId, combinedObjectArr: { customForm: updatedFormData, hasFreeInput, hasPremiumInput } })
+      updateFormData({
+        _id: editFormId ? editFormId : editFormIdUpdate,
+        combinedObjectArr: {
+          customForm: updatedFormData,
+          hasFreeInput,
+          hasPremiumInput,
+        },
+      })
     );
     dispatch(
       createNupdateValidation({
-        formId: editFormId,
+        formId: editFormId ? editFormId : editFormIdUpdate,
         validationData: updatedErrorMsg || validation,
       })
     );
     dispatch(
       createNupdateAppearance({
-        formId: editFormId,
+        formId: editFormId ? editFormId : editFormIdUpdate,
         appearanceData: updatedAppearance || appearance,
       })
     );
     dispatch(
       createNupdateAfterSubmit({
-        formId: editFormId,
+        formId: editFormId ? editFormId : editFormIdUpdate,
         afterSubmitData: updatedAfterSubmit || afterSubmit,
       })
     );
@@ -212,15 +230,17 @@ const Topbar = ({ handleRedirectToForm }) => {
             <div className={styles.itemViewPort}>
               <ul className={styles.viewPortSelector}>
                 <li
-                  className={`${styles.mobileView} ${selectedViewPort === "mobile" ? styles.ipsTabActive : ""
-                    }`}
+                  className={`${styles.mobileView} ${
+                    selectedViewPort === "mobile" ? styles.ipsTabActive : ""
+                  }`}
                   onClick={() => handleViewPortClick("mobile")}
                 >
                   <Icon source={Icons.mobile} />
                 </li>
                 <li
-                  className={`${styles.desktopView} ${selectedViewPort === "desktop" ? styles.ipsTabActive : ""
-                    }`}
+                  className={`${styles.desktopView} ${
+                    selectedViewPort === "desktop" ? styles.ipsTabActive : ""
+                  }`}
                   onClick={() => handleViewPortClick("desktop")}
                 >
                   <Icon source={Icons.desktop} />
@@ -230,7 +250,7 @@ const Topbar = ({ handleRedirectToForm }) => {
             <div className={styles.itemAction}>
               <ButtonGroup>
                 <Button onClick={handleRedirectToForm}>Cancel</Button>
-                {editFormId ? (
+                {editFormId || isSaveForm ? (
                   <Button
                     primary
                     onClick={handleUpdate}
